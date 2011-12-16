@@ -404,7 +404,8 @@ class WP_Migrate_DB {
 								$value = ( null === $value || '' === $value) ? $defs[strtolower($key)] : $value;
 								$values[] = ( '' === $value ) ? "''" : $value;
 							} else {
-								$values[] = "'" . str_replace($search, $replace, $this->sql_addslashes($value)) . "'";
+								if(null === $value) $values[] = 'NULL';
+								else $values[] = "'" . str_replace($search, $replace, $this->sql_addslashes($value)) . "'";
 							}
 						}
 						$this->stow(" \n" . $entries . implode(', ', $values) . ') ;');
