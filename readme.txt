@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
-Tested up to: 3.2
-Stable tag: 0.2.2
+Tested up to: 3.3
+Stable tag: 0.3
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
 
@@ -18,13 +18,8 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
 == Installation ==
 
-1. Download wp-migrate-db.&lt;version&gt;.zip
-2. Unzip the archive
-3. Upload the wp-migrate-db folder to your wp-content/plugins directory
-4. Activate the plugin through the WordPress admin interface
-5. Access the WP Migrate DB menu option in Settings
-
-Enjoy!
+1. Use WordPress' built-in installer
+2. Access the WP Migrate DB menu option under Tools
 
 == Screenshots ==
 
@@ -32,6 +27,11 @@ Enjoy!
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.3 - 2011-12-16 =
+* Bug fix: [Null formatting error](http://plugins.trac.wordpress.org/ticket/1430)
+* Bug fix: [Deprecated capability](http://plugins.trac.wordpress.org/ticket/1431)
+* Bug fix: Serialized string lengths incorrect when string contains double quotes
 
 = 0.2.2 - 2011-09-23 =
 * Bug fix: [Breaks Export](http://wordpress.org/support/topic/plugin-wp-migrate-db-breaks-export?replies=1)
