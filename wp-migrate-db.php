@@ -556,7 +556,7 @@ class WP_Migrate_DB {
 
     function admin_menu() {
         if (function_exists('add_management_page')) {
-            add_management_page('WP Migrate DB','WP Migrate DB',8,'wp-migrate-db',array($this, 'options_page'));
+            add_management_page('WP Migrate DB','WP Migrate DB','level_8','wp-migrate-db',array($this, 'options_page'));
         }
     }
 
