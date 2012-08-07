@@ -5,6 +5,7 @@ Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
 Tested up to: 3.4.1
 Stable tag: 0.4
+License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
 
@@ -59,7 +60,7 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 == Upgrade Notice ==
 
 = 0.4 =
-Adds some nice new features often requested. Upgrade recommended.
+Runs export over 4x faster and adds some nice new features often requested. Upgrade recommended.
 
 = 0.2.2 =
 This version fixes a bug that breaks the WordPress core export feature. It is highly recommended that everyone upgrade.
