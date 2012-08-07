@@ -4,7 +4,7 @@ Plugin Name: WP-Migrate-DB
 Plugin URI: http://wordpress.org/extend/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Brad Touesnard
-Version: 0.3
+Version: 0.4
 Author URI: http://bradt.ca/
 */
 
@@ -42,23 +42,54 @@ class WP_Migrate_DB {
     var $errors;
     var $upload_dir;
     var $upload_url;
-    var $filename;
-	var $nicename;
     var $fp;
     var $replaced;
+    var $datetime;
 
     function __construct() {
         $this->errors = array();
         $this->upload_dir = ( defined('WP_CONTENT_DIR') ) ? WP_CONTENT_DIR . '/uploads' : ABSPATH . 'wp-content' . DS . 'uploads';
         $this->upload_url = ( defined('WP_CONTENT_URL') ) ? WP_CONTENT_URL . '/uploads' : get_option('siteurl') . '/wp-content/uploads';
 
-        $hash = substr( md5( md5( DB_PASSWORD ) ), -5 );
-        $this->filename = DB_NAME . '-migrate-' . $hash . '.sql';
-        $this->nicename = DB_NAME . '-migrate.sql';
+        $this->datetime = date('YmdHis');
 
         $this->replaced['serialized']['count'] = 0;
         $this->replaced['serialized']['strings'] = '';
         $this->replaced['nonserialized']['count'] = 0;
+
+        add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+
+        $this->handle_request();
+    }
+
+    function handle_request() {
+        if ( !isset( $_GET['page'] ) || 'wp-migrate-db' != $_GET['page'] )
+            return;
+
+        if (isset($_POST['Submit'])) {
+            $this->options_validate();
+        }
+
+        if ( empty( $this->errors ) && isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
+            add_action( 'admin_head-tools_page_wp-migrate-db', array( $this, 'admin_head' ) );
+        }
+        
+        if ( isset( $_GET['download'] ) && $_GET['download']) {
+            add_action( 'admin_init', array( $this, 'download_file' ) );
+        }
+    }
+
+    function get_filename( $datetime, $gzip ) {
+        $hash = substr( sha1( DB_PASSWORD . AUTH_SALT ), -5 );
+        $filename = DB_NAME . '-migrate-' . $datetime . '-' . $hash . '.sql';
+        if ( $gzip ) $filename .= '.gz';
+        return $filename;
+    }
+
+    function get_nicename( $datetime, $gzip ) {
+        $name = DB_NAME . '-migrate-' . $datetime . '.sql';
+        if ( $gzip ) $name .= '.gz';
+        return $name;
     }
 
     function options_validate() {
@@ -89,14 +120,12 @@ class WP_Migrate_DB {
         ?>
 
         <div class="wrap">
-            <h2 style="margin-bottom: 0.5em;">WP Migrate DB</h2>
+            <div id="icon-tools" class="icon32"><br /></div><h2>WP Migrate DB</h2>
 
             <?php
             if (isset($_POST['Submit'])) {
-                $this->options_validate();
-
                 if (empty($this->errors)) {
-                    $this->fp = $this->open($this->upload_dir . DS . $this->filename);
+                    $this->fp = $this->open($this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ) );
                     $this->db_backup_header();
                     $this->db_backup();
                     $this->close($this->fp);
@@ -120,8 +149,9 @@ class WP_Migrate_DB {
                     else {
                         ?>
                         <p>
-                            Your database (SQL) file has been successfully generated.
-                            <a href="<?php echo $this->upload_url, '/', $this->filename; ?>">Click
+                            Your database (SQL) file has been successfully generated and 
+                            saved to <br /><?php echo $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>.
+                            <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>">Click
                             here to download.</a>
                         </p>
                         <?php
@@ -152,6 +182,8 @@ class WP_Migrate_DB {
                     $wp_dir = str_replace('/', DS, $wp_dir);
                     $form_values['old_path'] = str_replace($wp_dir, '', $form_values['old_path']);
                 }
+
+                $form_values['new_path'] = $form_values['new_url'] = '';
             }
 
             if (!isset($_POST['Submit']) || (isset($_POST['Submit']) && !empty($this->errors))) {
@@ -191,10 +223,11 @@ class WP_Migrate_DB {
                 <p>
                     Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
                 </p>
-                <form method="post">
+
+                <form method="post" id="migrate-form">
                     <table class="form-table">
                     <tbody>
-                        <tr valign="top">
+                        <tr valign="top" class="row-old-url">
                             <th scope="row">
                                 <label for="old_url">Current address (URL)</label>
                             </th>
@@ -203,7 +236,7 @@ class WP_Migrate_DB {
                                 <?php $this->show_error('old_url'); ?>
                             </td>
                         </tr>
-                        <tr valign="top">
+                        <tr valign="top" class="row-new-url">
                             <th scope="row">
                                 <label for="new_url">New address (URL)</label>
                             </th>
@@ -212,14 +245,7 @@ class WP_Migrate_DB {
                                 <?php $this->show_error('new_url'); ?>
                             </td>
                         </tr>
-                    </tbody>
-                    </table>
-
-                    <br /><br />
-
-                    <table class="form-table">
-                    <tbody>
-                        <tr valign="top">
+                        <tr valign="top" class="row-old-path">
                             <th scope="row">
                                 <label for="old_path">Current file path</label>
                             </th>
@@ -228,7 +254,7 @@ class WP_Migrate_DB {
                                 <?php $this->show_error('old_path'); ?>
                             </td>
                         </tr>
-                        <tr valign="top">
+                        <tr valign="top" class="row-new-path">
                             <th scope="row">
                                 <label for="new_path">New file path</label>
                             </th>
@@ -237,8 +263,46 @@ class WP_Migrate_DB {
                                 <?php $this->show_error('new_path'); ?>
                             </td>
                         </tr>
-                        <tr valign="top">
+                        <tr valign="top" class="row-guids">
+                            <th scope="row">Data Options</th>
+                            <td>
+                                <label for="replace-guids">
+                                    <input id="replace-guids" type="checkbox" checked="checked" value="1" name="replaceguids"/>
+                                    Replace GUIDs</label>
+
+                                <a href="" id="replace-guids-info-link">show more</a>
+
+                                <div id="replace-guids-info" style="display: none;">
+                                    <p>
+                                        Although the <a href="http://codex.wordpress.org/Changing_The_Site_URL#Important_GUID_Note" target="_blank">WordPress Codex emphasizes</a>
+                                        that GUIDs should not be changed, this is limited to sites that are already live.
+                                        If the site has never been live, I recommend replacing the GUIDs. For example, you may be
+                                        developing a new site locally at dev.somedomain.com and want to 
+                                        migrate the site live to somedomain.com.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr valign="top" class="row-spam">
                             <th scope="row">&nbsp;</th>
+                            <td>
+                                <label for="exclude-spam">
+                                    <input id="exclude-spam" type="checkbox" value="1" name="exclude-spam" />
+                                    Do not export spam comments
+                                </label>
+                            </td>
+                        </tr>
+                        <tr valign="top" class="row-revisions">
+                            <th scope="row">&nbsp;</th>
+                            <td>
+                                <label for="exclude-revisions">
+                                    <input id="exclude-revisions" type="checkbox" value="1" name="exclude-revisions" />
+                                    Do not export post revisions
+                                </label>
+                            </td>
+                        </tr>
+                        <tr valign="top" class="row-save-file">
+                            <th scope="row">File Options</th>
                             <td>
                                 <label for="savefile">
                                     <input id="savefile" type="checkbox" checked="checked" value="1" name="savefile"/>
@@ -246,6 +310,17 @@ class WP_Migrate_DB {
                                 </label>
                             </td>
                         </tr>
+                        <?php if ( $this->gzip() ) : ?>
+                        <tr valign="top" class="row-gzip">
+                            <th scope="row">&nbsp;</th>
+                            <td>
+                                <label for="gzipfile">
+                                    <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
+                                    Compress file with gzip
+                                </label>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
                     </tbody>
                     </table>
 
@@ -302,6 +377,25 @@ class WP_Migrate_DB {
         $this->replaced['nonserialized']['count'] += $count;
 
         return $subject;
+    }
+
+    function apply_replaces( $subject, $is_serialized = false ) {
+        $search = array( $_POST['old_path'], $_POST['old_url'] );
+        $replace = array( $_POST['new_path'], $_POST['new_url'] );
+        $new = str_replace( $search, $replace, $subject, $count );
+
+        if ( $count ) {
+            if ( $is_serialized ) {
+                $this->replaced['serialized']['strings'] .= $subject . "\n";
+                $this->replaced['serialized']['strings'] .= $new . "\n\n";
+                $this->replaced['serialized']['count'] += $count;
+            }
+            else {
+                $this->replaced['nonserialized']['count'] += $count;
+            }
+        }
+
+        return $new;
     }
 
 	/**
@@ -388,12 +482,10 @@ class WP_Migrate_DB {
 			}
 
 			do {
-				// don't include extra stuff, if so requested
-				$excs = (array) get_option('wp_db_backup_excs');
 				$where = '';
-				if ( is_array($excs['spam'] ) && in_array($table, $excs['spam']) ) {
+				if ( isset( $_POST['exclude-spam'] ) && $wpdb->comments == $table ) {
 					$where = ' WHERE comment_approved != "spam"';
-				} elseif ( is_array($excs['revisions'] ) && in_array($table, $excs['revisions']) ) {
+				} elseif ( isset( $_POST['exclude-revisions'] ) && $wpdb->posts == $table ) {
 					$where = ' WHERE post_type != "revision"';
 				}
 
@@ -408,14 +500,33 @@ class WP_Migrate_DB {
 					foreach ($table_data as $row) {
 						$values = array();
 						foreach ($row as $key => $value) {
-							if ($ints[strtolower($key)]) {
+							if (isset( $ints[strtolower($key)] ) && $ints[strtolower($key)]) {
 								// make sure there are no blank spots in the insert syntax,
 								// yet try to avoid quotation marks around integers
 								$value = ( null === $value || '' === $value) ? $defs[strtolower($key)] : $value;
 								$values[] = ( '' === $value ) ? "''" : $value;
 							} else {
-								if(null === $value) $values[] = 'NULL';
-								else $values[] = "'" . str_replace($search, $replace, $this->sql_addslashes($value)) . "'";
+								if (null === $value) {
+                                    $values[] = 'NULL';
+                                }
+								else {
+                                    if ( is_serialized( $value ) && false !== ( $data = @unserialize( $value ) ) ) {
+                                        if ( is_array( $data ) ) {
+                                            array_walk_recursive( $data, array( $this, 'replace_array_values' ) );
+                                        }
+                                        elseif ( is_string( $data ) ) {
+                                            $data = $this->apply_replaces( $data, true );
+                                        }
+
+                                        $value = serialize( $data );
+                                    }
+                                    // Skip replacing GUID if the option is set
+                                    elseif ( 'guid' != $key || isset( $_POST['replaceguids'] ) ) {
+                                        $value = $this->apply_replaces( $value );
+                                    }
+
+                                    $values[] = "'" . str_replace( $search, $replace, $this->sql_addslashes( $value ) ) . "'";
+                                }
 							}
 						}
 						$this->stow(" \n" . $entries . implode(', ', $values) . ') ;');
@@ -434,6 +545,11 @@ class WP_Migrate_DB {
 			$this->stow("\n");
 		}
 	} // end backup_table()
+
+    function replace_array_values( &$value, $key ) {
+        if ( !is_string( $value ) ) return;
+        $value = $this->apply_replaces( $value, true );
+    }
 
 	function db_backup() {
 		global $table_prefix, $wpdb;
@@ -485,12 +601,12 @@ class WP_Migrate_DB {
     }
 
 	function gzip() {
-        return false; //function_exists('gzopen');
+        return function_exists('gzopen');
 	}
 
 	function open($filename = '', $mode = 'w') {
 		if ('' == $filename) return false;
-		if ($this->gzip())
+		if ($this->gzip() && isset( $_POST['gzipfile'] ))
 			$fp = gzopen($filename, $mode);
 		else
 			$fp = fopen($filename, $mode);
@@ -498,17 +614,12 @@ class WP_Migrate_DB {
 	}
 
 	function close($fp) {
-		if ($this->gzip()) gzclose($fp);
+		if ($this->gzip() && isset( $_POST['gzipfile'] )) gzclose($fp);
 		else fclose($fp);
 	}
 
 	function stow($query_line, $replace = true) {
-        if ($replace) {
-            $query_line = $this->replace_sql_strings($_POST['old_url'], $_POST['new_url'], $query_line);
-            $query_line = $this->replace_sql_strings($_POST['old_path'], $_POST['new_path'], $query_line);
-        }
-
-        if ($this->gzip()) {
+        if ($this->gzip() && isset( $_POST['gzipfile'] )) {
             if(! @gzwrite($this->fp, $query_line))
                 $this->errors['file_write'] = __('There was an error writing a line to the backup script:','wp-db-backup') . '  ' . $query_line . '  ' . $php_errormsg;
         } else {
@@ -549,49 +660,49 @@ class WP_Migrate_DB {
 
     function download_file() {
         set_time_limit(0);
-        $diskfile = $this->upload_dir . DS . $this->filename;
+        $datetime = preg_replace( '@[^0-9]@', '', $_GET['download'] );
+        $diskfile = $this->upload_dir . DS . $this->get_filename( $datetime, isset( $_GET['gz'] ) );
         if (file_exists($diskfile)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
             header('Content-Length: ' . filesize($diskfile));
-            header("Content-Disposition: attachment; filename={$this->nicename}");
+            header('Content-Disposition: attachment; filename=' . $this->get_nicename( $datetime, isset( $_GET['gz'] ) ) );
             $success = readfile($diskfile);
             unlink($diskfile);
             exit;
         }
         else {
-            wp_die('Could not find the file to download.');
+            wp_die("Could not find the file to download:<br />$diskfile.");
         }
     }
 
     function admin_menu() {
         if (function_exists('add_management_page')) {
-            add_management_page('WP Migrate DB','WP Migrate DB','level_8','wp-migrate-db',array($this, 'options_page'));
+            add_management_page('WP Migrate DB','WP Migrate DB','update_core','wp-migrate-db',array($this, 'options_page'));
         }
+
+        $src = plugins_url( 'styles.css', __FILE__ );
+        wp_enqueue_style( 'wp-migrate-db-styles', $src );
+        $src = plugins_url( 'script.js', __FILE__ );
+        wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
     }
 
     function admin_head() {
-        $url = admin_url('tools.php?page=wp-migrate-db&download=true');
+        $url = admin_url('tools.php?page=wp-migrate-db&download=' . urlencode( $this->datetime ) );
+        if ( isset( $_POST['gzipfile'] ) ) $url .= '&gz=1';
         ?>
         <meta http-equiv="refresh" content="1;url=<?php echo $url; ?>"/>
         <?php
     }
 }
 
-global $wpmdb;
-$wpmdb = new WP_Migrate_DB;
+function wp_migrate_db_init() {
+    if ( !is_admin() ) return;
 
-if (is_admin()) {
-    add_action('admin_menu', array($wpmdb, 'admin_menu'));
-
-	if (isset($_GET['page']) && $_GET['page'] == 'wp-migrate-db') {
-		if (isset($_POST['savefile']) && $_POST['savefile']) {
-			add_action('admin_head-tools_page_wp-migrate-db', array($wpmdb, 'admin_head'));
-		}
-	
-		if (isset($_GET['download']) && $_GET['download']) {
-			add_action('init', array($wpmdb, 'download_file'));
-		}
-	}
+    global $wpmdb;
+    $wpmdb = new WP_Migrate_DB();
 }
-?>
+
+add_action( 'init', 'wp_migrate_db_init' );
+
+include dirname( __FILE__ ) . DS . '/installer.php';

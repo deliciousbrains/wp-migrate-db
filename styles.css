@@ -1,0 +1,38 @@
+#migrate-form {
+	padding-top: 10px;
+}
+
+.form-table .row-new-url th,
+.form-table .row-new-url td,
+.form-table .row-new-path th,
+.form-table .row-new-path td,
+.form-table .row-revisions th,
+.form-table .row-revisions td {
+	padding-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+}
+
+.form-table .row-old-path th,
+.form-table .row-old-path td,
+.form-table .row-save-file th,
+.form-table .row-save-file td,
+.form-table .row-guids th,
+.form-table .row-guids td {
+	padding-top: 20px;
+}
+
+p.submit {
+	overflow: hidden;
+	padding-top: 20px;
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+}
+
+p.submit input {
+	float: left;
+}
+
+p.submit img {
+	float: left;
+	margin: 3px 0 0 5px;
+}

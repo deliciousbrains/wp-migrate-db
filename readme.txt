@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
-Tested up to: 3.3
-Stable tag: 0.3
+Tested up to: 3.4.1
+Stable tag: 0.4
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
 
@@ -27,6 +27,16 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4 - 2012-08-07 =
+* New: More than 4x faster than version 0.3 due to find & replace improvements
+* New: Option to turn off replacing GUIDs
+* New: Option to exclude spam comments and post revisions from the export
+* New: Option to save file with gzip compression
+* New: Added date and time to file names
+* New: Display path to SQL file on the server
+* New: WP App Store installer integration
+* Bug fix: Notices and warnings displayed when WP_DEBUG is on
 
 = 0.3 - 2011-12-16 =
 * Bug fix: [Null formatting error](http://plugins.trac.wordpress.org/ticket/1430)
