@@ -58,6 +58,8 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
 == Upgrade Notice ==
 
-= 0.2.2 =
+= 0.4 =
+Adds some nice new features often requested. Upgrade recommended.
 
+= 0.2.2 =
 This version fixes a bug that breaks the WordPress core export feature. It is highly recommended that everyone upgrade.
