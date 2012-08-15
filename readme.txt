@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
 Tested up to: 3.4.1
-Stable tag: 0.4
+Stable tag: 0.4.1
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -28,6 +28,9 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4.1 - 2012-08-15 =
+* Removed WP App Store installer - not allowed in WP.org repo
 
 = 0.4 - 2012-08-07 =
 * New: More than 4x faster than version 0.3 due to find & replace improvements
