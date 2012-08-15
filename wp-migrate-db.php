@@ -704,5 +704,3 @@ function wp_migrate_db_init() {
 }
 
 add_action( 'init', 'wp_migrate_db_init' );
-
-include dirname( __FILE__ ) . DS . '/installer.php';
