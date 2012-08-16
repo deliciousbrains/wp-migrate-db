@@ -1,38 +1,168 @@
+/* line 1, ../sass/styles.scss */
 #migrate-form {
-	padding-top: 10px;
+  padding-top: 10px;
 }
 
-.form-table .row-new-url th,
-.form-table .row-new-url td,
+/* line 9, ../sass/styles.scss */
+.form-table .row-new-url th, .form-table .row-new-url td,
 .form-table .row-new-path th,
 .form-table .row-new-path td,
 .form-table .row-revisions th,
 .form-table .row-revisions td {
-	padding-bottom: 20px;
-	border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ccc;
 }
-
-.form-table .row-old-path th,
-.form-table .row-old-path td,
+/* line 18, ../sass/styles.scss */
+.form-table .row-old-path th, .form-table .row-old-path td,
 .form-table .row-save-file th,
 .form-table .row-save-file td,
 .form-table .row-guids th,
 .form-table .row-guids td {
-	padding-top: 20px;
+  padding-top: 20px;
 }
 
+/* line 24, ../sass/styles.scss */
 p.submit {
-	overflow: hidden;
-	padding-top: 20px;
-	border-top: 1px solid #ccc;
-	margin-top: 20px;
+  overflow: hidden;
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
 }
-
+/* line 30, ../sass/styles.scss */
 p.submit input {
-	float: left;
+  float: left;
+}
+/* line 34, ../sass/styles.scss */
+p.submit img {
+  float: left;
+  margin: 3px 0 0 5px;
 }
 
-p.submit img {
-	float: left;
-	margin: 3px 0 0 5px;
+/* line 40, ../sass/styles.scss */
+#wpmdb-container {
+  position: relative;
+}
+
+/* line 44, ../sass/styles.scss */
+#wpmdb-main {
+  margin-right: 320px;
+  min-height: 1000px;
+}
+
+/* line 49, ../sass/styles.scss */
+#wpmdb-sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+/* line 57, ../sass/styles.scss */
+#wpmdb-sidebar .author {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+  overflow: hidden;
+}
+/* line 63, ../sass/styles.scss */
+#wpmdb-sidebar .author img {
+  float: left;
+  margin-right: 20px;
+}
+/* line 68, ../sass/styles.scss */
+#wpmdb-sidebar .author .desc {
+  float: left;
+}
+/* line 72, ../sass/styles.scss */
+#wpmdb-sidebar .author h3 {
+  font-size: 12px;
+  margin: 0;
+}
+/* line 77, ../sass/styles.scss */
+#wpmdb-sidebar .author h2 {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+}
+/* line 82, ../sass/styles.scss */
+#wpmdb-sidebar .author h2 a {
+  color: #464646;
+  text-decoration: none;
+}
+/* line 86, ../sass/styles.scss */
+#wpmdb-sidebar .author h2 a:hover {
+  color: #000;
+}
+/* line 92, ../sass/styles.scss */
+#wpmdb-sidebar .author p {
+  margin: 0;
+}
+/* line 98, ../sass/styles.scss */
+#wpmdb-sidebar .poll h2 {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 0.5em;
+  color: #666;
+  font-size: 20px;
+}
+/* line 106, ../sass/styles.scss */
+#wpmdb-sidebar .poll ul {
+  list-style-type: disc;
+}
+/* line 110, ../sass/styles.scss */
+#wpmdb-sidebar .poll li {
+  margin-left: 1.5em;
+  color: #666;
+}
+/* line 115, ../sass/styles.scss */
+#wpmdb-sidebar .poll p {
+  margin: 0;
+}
+/* line 119, ../sass/styles.scss */
+#wpmdb-sidebar .poll .error {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+/* line 125, ../sass/styles.scss */
+#wpmdb-sidebar .poll .thanks {
+  color: #333;
+}
+/* line 129, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field {
+  margin-bottom: 1em;
+}
+/* line 132, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field p {
+  margin-bottom: 0.3em;
+}
+/* line 136, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field .willing-copy {
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1.4em;
+  margin-bottom: 1em;
+}
+/* line 144, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field.how-much input {
+  width: 50px;
+}
+/* line 150, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field.notify-me input {
+  position: absolute;
+}
+/* line 154, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field.notify-me label {
+  display: block;
+  padding-left: 20px;
+}
+/* line 162, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field.comments textarea {
+  width: 230px;
+  height: 3em;
+}
+/* line 167, ../sass/styles.scss */
+#wpmdb-sidebar .poll .field.comments textarea.has-content, #wpmdb-sidebar .poll .field.comments textarea:focus {
+  height: 5em;
 }

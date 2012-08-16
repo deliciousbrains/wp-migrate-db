@@ -1,0 +1,174 @@
+#migrate-form {
+	padding-top: 10px;
+}
+
+.form-table {
+	.row-new-url,
+	.row-new-path,
+	.row-revisions {
+		th, td {
+			padding-bottom: 20px;
+			border-bottom: 1px solid #ccc; 
+		}
+	}
+
+	.row-old-path,
+	.row-save-file,
+	.row-guids {
+		th, td {
+			padding-top: 20px; 
+		} 
+	}
+}
+
+p.submit {
+	overflow: hidden;
+	padding-top: 20px;
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+	
+	input {
+		float: left; 
+	}
+
+	img {
+		float: left;
+		margin: 3px 0 0 5px; 
+	} 
+}
+
+#wpmdb-container {
+	position: relative;
+}
+
+#wpmdb-main {
+	margin-right: 320px;
+	min-height: 1000px;
+}
+
+#wpmdb-sidebar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 250px;
+	border: 1px solid #ccc;
+	padding: 20px;
+
+	.author {
+		padding-bottom: 20px;
+		margin-bottom: 20px;
+		border-bottom: 1px solid #ccc;
+		overflow: hidden;
+
+		img {
+			float: left;
+			margin-right: 20px;
+		}
+
+		.desc {
+			float: left;
+		}
+
+		h3 {
+			font-size: 12px;
+			margin: 0;
+		}
+
+		h2 {
+			font-size: 18px;
+			margin: 0;
+			padding: 0;
+
+			a {
+				color: #464646;
+				text-decoration: none;
+
+				&:hover {
+					color: #000;
+				}
+			}
+		}
+
+		p {
+			margin: 0;
+		}
+	}
+
+	.poll {
+		h2 {
+			padding: 0;
+			margin: 0;
+			margin-bottom: 0.5em;
+			color: #666;
+			font-size: 20px;
+		}
+
+		ul {
+			list-style-type: disc;
+		}
+
+		li {
+			margin-left: 1.5em;
+			color: #666;
+		}
+
+		p {
+			margin: 0;
+		}
+
+		.error {
+			color: red;
+			font-weight: bold;
+			margin-bottom: 1em;
+		}
+
+		.thanks {
+			color: #333;
+		}
+
+		.field {
+			margin-bottom: 1em;
+
+			p {
+				margin-bottom: 0.3em;
+			}
+
+			.willing-copy {
+				font-weight: bold;
+				font-size: 14px;
+				line-height: 1.4em;
+				margin-bottom: 1em;
+			}
+
+			&.how-much {
+				input {
+					width: 50px;
+				}
+			}
+
+			&.notify-me {
+				input {
+					position: absolute;
+				}
+
+				label {
+					display: block;
+					padding-left: 20px;
+				}
+
+			}
+
+			&.comments {
+				textarea {
+					width: 230px;
+					height: 3em;
+
+					&.has-content,
+					&:focus {
+						height: 5em;
+					}
+				}
+			}
+		}
+	}
+}
