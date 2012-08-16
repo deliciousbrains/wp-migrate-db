@@ -43,7 +43,7 @@ p.submit {
 
 #wpmdb-main {
 	margin-right: 320px;
-	min-height: 1000px;
+	min-height: 1200px;
 }
 
 #wpmdb-sidebar {
@@ -95,6 +95,10 @@ p.submit {
 	}
 
 	.poll {
+		padding-bottom: 20px;
+		margin-bottom: 20px;
+		border-bottom: 1px solid #ccc;
+
 		h2 {
 			padding: 0;
 			margin: 0;

@@ -426,6 +426,15 @@ class WP_Migrate_DB {
                     </div>
                 </form>
 
+                <?php $url = 'http://wpappstore.com/?utm_source=plugin&amp;utm_medium=wordpress&amp;utm_campaign=wpmigratedb'; ?>
+                <div class="wpas-promo">
+                    <a href="<?php echo $url; ?>"><img src="<?php echo plugins_url( 'asset/img/wpappstore-logo.png', __FILE__ ); ?>" alt="WP App Store" width="220" /></a>
+                    <p>
+                        Purchase &amp; install themes and plugins from top brands directly from your WordPress dashboard.
+                        <a href="<?php echo $url; ?>">Check&nbsp;it&nbsp;out&nbsp;&raquo;</a>
+                    </p>
+                </div>
+
             </div>
 
             </div>
