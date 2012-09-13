@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
-Tested up to: 3.4.1
-Stable tag: 0.4.1
+Tested up to: 3.4.2
+Stable tag: 0.4.2
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -28,6 +28,10 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4.2 - 2012-09-13 =
+* Moved screenshots to /assets folder and updated them to support retina
+* Added sidebar including author profile and survey to gauge interest for a pro version
 
 = 0.4.1 - 2012-08-15 =
 * Removed WP App Store installer - not allowed in WP.org repo
