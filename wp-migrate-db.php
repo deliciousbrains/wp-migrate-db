@@ -377,13 +377,16 @@ class WP_Migrate_DB {
                     </p>
 
                     <ul>
-                        <li>Ability to transmit the data to the migrated site and
-                            import it in one click. No downloading,
-                            no uploading, no command line, no phpMyAdmin.
+                        <li>
+                            One click to transmit the data to the migrated
+                            site and import it. No downloading, no uploading,
+                            no command line, no phpMyAdmin.
                         </li>
                         <li>
-                            Priority email support to troubleshoot migration issues.
-                            Very quick response times during business hours.
+                            Automatically keep your local dev database
+                            in-sync with the live production database.
+                        <li>
+                            1 year of updates and priority email support.
                         </li>
                     </ul>
 
@@ -397,7 +400,7 @@ class WP_Migrate_DB {
                     <div class="yes-questions" style="display: none;">
 
                         <div class="field how-much">
-                            <p>How much per month?</p>
+                            <p>How much would you pay?</p>
                             $ <input type="text" name="how-much" /> USD
                         </div>
 

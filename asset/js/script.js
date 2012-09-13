@@ -35,6 +35,7 @@
                     }
                     else {
                         $form.html('<p class="thanks">Thanks for your input.</p>').fadeIn();
+                        document.location.hash = '#top';
                     }
                 });
                 return false;
