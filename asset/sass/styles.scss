@@ -94,7 +94,7 @@ p.submit {
 		}
 	}
 
-	.poll {
+	.subscribe {
 		padding-bottom: 20px;
 		margin-bottom: 20px;
 		border-bottom: 1px solid #ccc;
@@ -120,6 +120,10 @@ p.submit {
 			margin: 0;
 		}
 
+		p.interesting {
+			margin-bottom: 1em;
+		}
+
 		.error {
 			color: red;
 			font-weight: bold;
@@ -128,6 +132,8 @@ p.submit {
 
 		.thanks {
 			color: #333;
+			font-weight: bold;
+			font-size: 14px;
 		}
 
 		.field {
@@ -172,6 +178,10 @@ p.submit {
 						height: 5em;
 					}
 				}
+			}
+
+			&.submit-button {
+				margin-bottom: 0;
 			}
 		}
 	}

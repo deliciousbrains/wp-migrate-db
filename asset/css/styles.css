@@ -99,13 +99,13 @@ p.submit img {
   margin: 0;
 }
 /* line 97, ../sass/styles.scss */
-#wpmdb-sidebar .poll {
+#wpmdb-sidebar .subscribe {
   padding-bottom: 20px;
   margin-bottom: 20px;
   border-bottom: 1px solid #ccc;
 }
 /* line 102, ../sass/styles.scss */
-#wpmdb-sidebar .poll h2 {
+#wpmdb-sidebar .subscribe h2 {
   padding: 0;
   margin: 0;
   margin-bottom: 0.5em;
@@ -113,62 +113,72 @@ p.submit img {
   font-size: 20px;
 }
 /* line 110, ../sass/styles.scss */
-#wpmdb-sidebar .poll ul {
+#wpmdb-sidebar .subscribe ul {
   list-style-type: disc;
 }
 /* line 114, ../sass/styles.scss */
-#wpmdb-sidebar .poll li {
+#wpmdb-sidebar .subscribe li {
   margin-left: 1.5em;
   color: #666;
 }
 /* line 119, ../sass/styles.scss */
-#wpmdb-sidebar .poll p {
+#wpmdb-sidebar .subscribe p {
   margin: 0;
 }
 /* line 123, ../sass/styles.scss */
-#wpmdb-sidebar .poll .error {
+#wpmdb-sidebar .subscribe p.interesting {
+  margin-bottom: 1em;
+}
+/* line 127, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .error {
   color: red;
   font-weight: bold;
   margin-bottom: 1em;
 }
-/* line 129, ../sass/styles.scss */
-#wpmdb-sidebar .poll .thanks {
-  color: #333;
-}
 /* line 133, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field {
+#wpmdb-sidebar .subscribe .thanks {
+  color: #333;
+  font-weight: bold;
+  font-size: 14px;
+}
+/* line 139, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field {
   margin-bottom: 1em;
 }
-/* line 136, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field p {
+/* line 142, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field p {
   margin-bottom: 0.3em;
 }
-/* line 140, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field .willing-copy {
+/* line 146, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field .willing-copy {
   font-weight: bold;
   font-size: 14px;
   line-height: 1.4em;
   margin-bottom: 1em;
 }
-/* line 148, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field.how-much input {
+/* line 154, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.how-much input {
   width: 50px;
 }
-/* line 154, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field.notify-me input {
+/* line 160, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.notify-me input {
   position: absolute;
 }
-/* line 158, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field.notify-me label {
+/* line 164, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.notify-me label {
   display: block;
   padding-left: 20px;
 }
-/* line 166, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field.comments textarea {
+/* line 172, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.comments textarea {
   width: 230px;
   height: 3em;
 }
-/* line 171, ../sass/styles.scss */
-#wpmdb-sidebar .poll .field.comments textarea.has-content, #wpmdb-sidebar .poll .field.comments textarea:focus {
+/* line 177, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.comments textarea.has-content, #wpmdb-sidebar .subscribe .field.comments textarea:focus {
   height: 5em;
+}
+/* line 183, ../sass/styles.scss */
+#wpmdb-sidebar .subscribe .field.submit-button {
+  margin-bottom: 0;
 }

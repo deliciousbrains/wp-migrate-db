@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 2.0.3
-Tested up to: 3.4.2
-Stable tag: 0.4.2
+Tested up to: 3.5
+Stable tag: 0.4.3
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -17,6 +17,8 @@ It even takes into account serialized data and updates the string length values.
 
 Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
+[**Contribute on Github**](https://github.com/bradt/wp-migrate-db)
+
 == Installation ==
 
 1. Use WordPress' built-in installer
@@ -28,6 +30,9 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4.3 - 2012-12-17 =
+* Compatibility tested with WordPress 3.5
 
 = 0.4.2 - 2012-09-13 =
 * Moved screenshots to /assets folder and updated them to support retina

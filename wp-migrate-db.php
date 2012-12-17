@@ -4,7 +4,7 @@ Plugin Name: WP-Migrate-DB
 Plugin URI: http://wordpress.org/extend/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Brad Touesnard
-Version: 0.4.2
+Version: 0.4.3
 Author URI: http://bradt.ca/
 */
 
@@ -58,13 +58,13 @@ class WP_Migrate_DB {
         $this->replaced['nonserialized']['count'] = 0;
 
         add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-        add_action( 'wp_ajax_poll_submission', array( $this, 'poll_submission' ) );
+        add_action( 'wp_ajax_subscribe_submission', array( $this, 'subscribe_submission' ) );
 
         $this->handle_request();
     }
 
-    function poll_submission() {
-        $response = wp_remote_post( 'http://bradt.ca/wpmdb-poll.php', array(
+    function subscribe_submission() {
+        $response = wp_remote_post( 'http://bradt.ca/wpmdb-subscribe.php', array(
             'timeout' => 60,
             'body' => $_POST
         ));
@@ -370,56 +370,49 @@ class WP_Migrate_DB {
                     </div>
                 </div>
 
-                <form method="post" action="http://bradt.ca/wpmdb-poll.php" class="poll">
-                    <h2>PRO Version?</h2>
+                <form method="post" action="http://bradt.ca/wpmdb-subscribe.php" class="subscribe">
+                    <h2>Pro Version</h2>
                     <p>
-                        What if there was a PRO version of this plugin that included the following?
+                        We're working on a PRO version of this plugin that will include...
                     </p>
 
                     <ul>
                         <li>
-                            One click to transmit the data to the migrated
-                            site and import it. No downloading, no uploading,
-                            no command line, no phpMyAdmin.
+                            Pull production/staging db down and replace local db
                         </li>
                         <li>
-                            Automatically keep your local dev database
-                            in-sync with the live production database.
+                            Push local db up and replace production/staging db
+                        </li>
                         <li>
-                            1 year of updates and priority email support.
+                            Select tables to export
+                        </li>
+                        <li>
+                            Unlimited find &amp; replaces (currently you can
+                            only do 2)
+                        </li>
+                        <li>
+                            Compatibility with multi-site
+                        </li>
+                        <li>
+                            Priority email support
                         </li>
                     </ul>
 
-                    <div class="field">
-                        <p class="willing-copy">Is that something you'd be willing to pay for?</p>
-                        <label><input type="radio" name="willing-pay" value="Yes" /> Yes</label>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label><input type="radio" name="willing-pay" value="No" /> No</label>
+                    <?php $user = wp_get_current_user(); ?>
+
+                    <p class="interesting">Interested? Send us your email and we'll let you know when a beta is available.</p>
+
+                    <div class="field notify-email">
+                        <p>Your Email</p>
+                        <input type="email" name="notify-email" value="<?php echo esc_attr( $user->user_email ); ?>" />
                     </div>
 
-                    <div class="yes-questions" style="display: none;">
-
-                        <div class="field how-much">
-                            <p>How much would you pay?</p>
-                            $ <input type="text" name="how-much" /> USD
-                        </div>
-
-                        <div class="field notify-me">
-                            <input type="checkbox" name="notify-me" value="Yes" id="notify-me" />
-                            <label for="notify-me">
-                                Send me an email if this thing ever gets off the ground.
-                            </label>
-                        </div>
-
-                        <div class="field notify-email" style="display: none;">
-                            <p>Your Email</p>
-                            <?php $user = wp_get_current_user(); ?>
-                            <input type="email" name="notify-email" value="<?php echo esc_attr( $user->user_email ); ?>" />
-                        </div>
-
+                    <div class="field notify-email">
+                        <p>Your Name (optional)</p>
+                        <input type="text" name="notify-name" value="<?php echo trim( esc_attr( $user->first_name ) . ' ' . esc_attr( $user->last_name ) ); ?>" />
                     </div>
 
-                    <div class="field comments" style="display: none;">
+                    <div class="field comments">
                         <p>Comments (optional)</p>
                         <textarea name="comments"></textarea>
                     </div>

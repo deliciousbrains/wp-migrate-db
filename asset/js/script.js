@@ -18,14 +18,12 @@
             var $sidebar = $(this);
 
             $('form', $sidebar).submit(function() {
-                if (!$('input[name=notify-me]', $sidebar).attr('checked')) {
-                    $('input[name=notify-email]', $sidebar).val('');
-                }
-
                 var $form = $(this),
                     data = $(this).serializeArray();
 
-                data.push({name: 'action', value: 'poll_submission'});
+                $('.button', $form).attr('disabled', 'true');
+
+                data.push({name: 'action', value: 'subscribe_submission'});
 
                 $.post( ajaxurl, data, function(result) {
                     if (result) {
@@ -34,33 +32,11 @@
                         $('.error', $sidebar).fadeIn();
                     }
                     else {
-                        $form.html('<p class="thanks">Thanks for your input.</p>').fadeIn();
+                        $form.html('<p class="thanks">Thanks for subscribing. We promise to protect your email from weasels.</p>').fadeIn();
                         document.location.hash = '#top';
                     }
                 });
                 return false;
-            });
-
-            $('input[name=willing-pay]', $sidebar).change(function() {
-                var $yes_questions = $('.yes-questions', $sidebar);
-                if ('Yes' == $(this).val()) {
-                    $yes_questions.show();
-                }
-                else {
-                    $yes_questions.hide();
-                }
-
-                $('.field.comments', $sidebar).show();
-            });
-
-            $('input[name=notify-me]', $sidebar).click(function() {
-                var $notify_email = $('.notify-email', $sidebar);
-                if ($(this).attr('checked')) {
-                    $notify_email.show();
-                }
-                else {
-                    $notify_email.hide();
-                }
             });
 
             $('.field.comments textarea', $sidebar).blur(function() {
@@ -70,7 +46,7 @@
                 else {
                     $(this).removeClass('has-content');
                 }
-            })
+            });
         });
     });
 
