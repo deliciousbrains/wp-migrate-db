@@ -657,8 +657,7 @@ class WP_Migrate_DB {
 	function db_backup() {
 		global $table_prefix, $wpdb;
 
-        $tables = $wpdb->get_results("SHOW TABLES", ARRAY_N);
-        $tables = array_map(create_function('$a', 'return $a[0];'), $tables);
+        $tables = $wpdb->get_results("SHOW FULL TABLES", ARRAY_N);
 
 		/*
         if (is_writable($this->backup_dir)) {
@@ -673,6 +672,8 @@ class WP_Migrate_DB {
 		}*/
 
 		foreach ($tables as $table) {
+            if ( 'VIEW' == $table[1] ) continue;
+            $table = $table[0];
 			// Increase script execution time-limit to 15 min for every table.
 			if ( !ini_get('safe_mode')) @set_time_limit(15*60);
 			// Create the SQL statements
