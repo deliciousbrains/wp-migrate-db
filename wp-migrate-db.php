@@ -192,14 +192,14 @@ class WP_Migrate_DB {
                 $form_values = $_POST;
             }
             else {
-                $form_values['old_url'] = get_bloginfo('siteurl');
+                $form_values['old_url'] = get_bloginfo('url');
 
                 $form_values['old_path'] = dirname(__FILE__);
                 $form_values['old_path'] = str_replace(DS . 'wp-migrate-db', '', $form_values['old_path']);
                 $form_values['old_path'] = realpath($form_values['old_path'] . '/../..');
 
-                if (get_bloginfo('siteurl') != get_bloginfo('wpurl')) {
-                    $wp_dir = str_replace(get_bloginfo('siteurl'), '', get_bloginfo('wpurl'));
+                if (get_bloginfo('url') != get_bloginfo('wpurl')) {
+                    $wp_dir = str_replace(get_bloginfo('url'), '', get_bloginfo('wpurl'));
                     $wp_dir = str_replace('/', DS, $wp_dir);
                     $form_values['old_path'] = str_replace($wp_dir, '', $form_values['old_path']);
                 }
