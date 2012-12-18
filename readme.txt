@@ -11,7 +11,7 @@ Exports your database, does a find and replace on URLs and file paths, then allo
 
 == Description ==
 
-WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who develop locally and need to to move their Wordpress site to a staging or production server.
+WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who develop locally and need to move their Wordpress site to a staging or production server.
 
 It even takes into account serialized data and updates the string length values.
 
@@ -31,7 +31,9 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
 == Changelog ==
 
-= 0.4.3 - 2012-12-17 =
+= 0.4.3 - 2012-12-18 =
+* Fixed deprecated error notices when debug mode is on
+* Bug fix: [Exports views as tables](https://github.com/bradt/wp-migrate-db/issues/3)
 * Compatibility tested with WordPress 3.5
 
 = 0.4.2 - 2012-09-13 =
