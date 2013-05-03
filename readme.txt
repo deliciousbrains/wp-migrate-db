@@ -2,8 +2,8 @@
 Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
-Requires at least: 2.0.3
-Tested up to: 3.5
+Requires at least: 3.0
+Tested up to: 3.6
 Stable tag: 0.4.3
 License: GPLv2
 
