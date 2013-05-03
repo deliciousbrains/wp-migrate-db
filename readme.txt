@@ -24,6 +24,20 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 1. Use WordPress' built-in installer
 2. Access the WP Migrate DB menu option under Tools
 
+== Frequently Asked Questions ==
+
+= Does this plugin support multisite? =
+
+Not at this time. The Developer license of the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=faq&utm_campaign=wporg) does support multisite.
+
+= Does the plugin migrate files as well? =
+
+No, it only operates on the database.
+
+= Why do I end up with a wp-login.php download instead of the exported SQL file? =
+
+It is likely you have a download manager plugin or extension installed in your web browser. You will need to disable it for the SQL download to work properly.
+
 == Screenshots ==
 
 1. Main screen
