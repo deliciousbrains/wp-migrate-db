@@ -45,6 +45,7 @@ class WP_Migrate_DB {
     var $fp;
     var $replaced;
     var $datetime;
+    var $hookname;
 
     function __construct() {
         $this->errors = array();
@@ -59,8 +60,6 @@ class WP_Migrate_DB {
 
         add_action( 'admin_menu', array( $this, 'admin_menu' ) );
         add_action( 'wp_ajax_subscribe_submission', array( $this, 'subscribe_submission' ) );
-
-        $this->handle_request();
     }
 
     function subscribe_submission() {
@@ -80,20 +79,22 @@ class WP_Migrate_DB {
     }
 
     function handle_request() {
-        if ( !isset( $_GET['page'] ) || 'wp-migrate-db' != $_GET['page'] )
-            return;
-
         if ( isset( $_POST['Submit'] ) ) {
             $this->options_validate();
         }
 
         if ( empty( $this->errors ) && isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
-            add_action( 'admin_head-tools_page_wp-migrate-db', array( $this, 'admin_head' ) );
+            add_action( 'admin_head-' . $this->hookname, array( $this, 'admin_head' ) );
         }
 
         if ( isset( $_GET['download'] ) && $_GET['download'] ) {
-            add_action( 'admin_init', array( $this, 'download_file' ) );
+            $this->download_file();
         }
+
+        $src = plugins_url( 'asset/css/styles.css', __FILE__ );
+        wp_enqueue_style( 'wp-migrate-db-styles', $src );
+        $src = plugins_url( 'asset/js/script.js', __FILE__ );
+        wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
     }
 
     function get_filename( $datetime, $gzip ) {
@@ -784,14 +785,9 @@ class WP_Migrate_DB {
     }
 
     function admin_menu() {
-        if ( function_exists( 'add_management_page' ) ) {
-            add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
-        }
+        $this->hookname = add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
 
-        $src = plugins_url( 'asset/css/styles.css', __FILE__ );
-        wp_enqueue_style( 'wp-migrate-db-styles', $src );
-        $src = plugins_url( 'asset/js/script.js', __FILE__ );
-        wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
+        add_action( 'load-' . $this->hookname , array( $this, 'handle_request' ) );
     }
 
     function admin_head() {
