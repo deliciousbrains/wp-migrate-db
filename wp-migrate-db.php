@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: WP-Migrate-DB
+Plugin Name: WP Migrate DB
 Plugin URI: http://wordpress.org/extend/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Brad Touesnard
@@ -137,7 +137,7 @@ class WP_Migrate_DB {
         ?>
 
         <div class="wrap">
-            <div id="icon-tools" class="icon32"><br /></div><h2>WP Migrate DB</h2>
+            <div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB</h2>
 
             <div id="wpmdb-container">
 
@@ -505,7 +505,7 @@ class WP_Migrate_DB {
 	 * Taken partially from phpMyAdmin and partially from
 	 * Alain Wolf, Zurich - Switzerland
 	 * Website: http://restkultur.ch/personal/wolf/scripts/db_backup/
-
+     *
 	 * Modified by Scott Merrill (http://www.skippy.net/)
 	 * to use the WordPress $wpdb object
 	 * @param string $table
@@ -782,7 +782,7 @@ class WP_Migrate_DB {
 
     function admin_menu() {
         if (function_exists('add_management_page')) {
-            add_management_page('WP Migrate DB','WP Migrate DB','update_core','wp-migrate-db',array($this, 'options_page'));
+            add_management_page('Migrate DB','Migrate DB','update_core','wp-migrate-db',array($this, 'options_page'));
         }
 
         $src = plugins_url( 'asset/css/styles.css', __FILE__ );
