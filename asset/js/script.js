@@ -51,12 +51,12 @@
     });
 
     var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ),
-        spinner_url = admin_url + '/images/wpspin_light.gif';
+        spinner_url = admin_url + '/images/wpspin_light-2x.gif';
     
     var spinner = new Image();
     spinner.src = spinner_url;
 
     $('#migrate-form').submit(function() {
-        $('p.submit', this).append('<img src="' + spinner_url + '" alt="" />');
+        $('p.submit', this).append('<img src="' + spinner_url + '" width="16" alt="" />');
     });
 })(jQuery);
