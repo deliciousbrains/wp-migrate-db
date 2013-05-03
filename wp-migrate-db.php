@@ -439,50 +439,6 @@ class WP_Migrate_DB {
         <?php
     }
 
-    function replace_sql_strings( $search, $replace, $subject ) {
-        $search_esc = mysql_real_escape_string( $search );
-        $replace_esc = mysql_real_escape_string( $replace );
-
-        $regex = '@s:([0-9]+):"(.*?)' . preg_quote( $search_esc, '@' ) . '(.*?)";@';
-
-        if ( preg_match_all( $regex, $subject, $matches, PREG_SET_ORDER ) ) {
-            foreach ( $matches as $match ) {
-                /*
-                 For some reason, the ungreedy regex above is not working as
-                 you'd expect ungreedy to work and is matching strings with
-                 multiple serialized strings (PHP 5.3.2). So we need to to
-                 isolate each.
-                */
-                if ( preg_match_all( '@s:([0-9]+):"(.*?)";@', $match[0], $finds, PREG_SET_ORDER ) ) {
-                    foreach ( $finds as $find ) {
-                        if ( false === strpos( $find[0], $search_esc ) ) continue;
-
-                        list( $old_line, $old_strlen, $old_str ) = $find;
-
-                        $new_str = str_replace( $search_esc, $replace_esc, $old_str );
-                        $new_strlen = strlen( $new_str ) - strlen( $old_str ) + $old_strlen;
-                        $new_line = sprintf( 's:%s:"%s";', $new_strlen, $new_str );
-
-                        $subject = str_replace( $old_line, $new_line, $subject, $count );
-
-                        if ( $count ) {
-                            $this->replaced['serialized']['strings'] .= $old_line . "\n";
-                            $this->replaced['serialized']['strings'] .= $new_line . "\n\n";
-
-                            $this->replaced['serialized']['count'] += $count;
-                        }
-                    }
-                }
-            }
-        }
-
-        $subject = str_replace( $search_esc, $replace_esc, $subject, $count );
-
-        $this->replaced['nonserialized']['count'] += $count;
-
-        return $subject;
-    }
-
     function apply_replaces( $subject, $is_serialized = false ) {
         $search = array( $_POST['old_path'], $_POST['old_url'] );
         $replace = array( $_POST['new_path'], $_POST['new_url'] );
