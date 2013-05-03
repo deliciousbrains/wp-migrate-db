@@ -784,7 +784,7 @@ class WP_Migrate_DB {
 
     function admin_menu() {
         if (function_exists('add_management_page')) {
-            add_management_page('Migrate DB','Migrate DB','update_core','wp-migrate-db',array($this, 'options_page'));
+            add_management_page('Migrate DB','Migrate DB','export','wp-migrate-db',array($this, 'options_page'));
         }
 
         $src = plugins_url( 'asset/css/styles.css', __FILE__ );
