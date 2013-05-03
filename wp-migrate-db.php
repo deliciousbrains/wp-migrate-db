@@ -617,19 +617,9 @@ class WP_Migrate_DB {
                                     $values[] = 'NULL';
                                 }
                                 else {
-                                    if ( is_serialized( $value ) && false !== ( $data = @unserialize( $value ) ) ) {
-                                        if ( is_array( $data ) ) {
-                                            array_walk_recursive( $data, array( $this, 'replace_array_values' ) );
-                                        }
-                                        elseif ( is_string( $data ) ) {
-                                            $data = $this->apply_replaces( $data, true );
-                                        }
-
-                                        $value = serialize( $data );
-                                    }
                                     // Skip replacing GUID if the option is set
-                                    elseif ( 'guid' != $key || isset( $_POST['replaceguids'] ) ) {
-                                        $value = $this->apply_replaces( $value );
+                                    if ( 'guid' != $key || isset( $_POST['replaceguids'] ) ) {
+                                        $value = $this->recursive_unserialize_replace( $value );
                                     }
 
                                     $values[] = "'" . str_replace( $search, $replace, $this->sql_addslashes( $value ) ) . "'";
@@ -653,9 +643,58 @@ class WP_Migrate_DB {
         }
     } // end backup_table()
 
-    function replace_array_values( &$value, $key ) {
-        if ( !is_string( $value ) ) return;
-        $value = $this->apply_replaces( $value, true );
+    /**
+     * Take a serialized array and unserialize it replacing elements as needed and
+     * unserialising any subordinate arrays and performing the replace on those too.
+     *
+     * Mostly from https://github.com/interconnectit/Search-Replace-DB
+     *
+     * @param array  $data               Used to pass any subordinate arrays back to in.
+     * @param bool   $serialized         Does the array passed via $data need serialising.
+     * @param bool   $parent_serialized  Passes whether the original data passed in was serialized
+     *
+     * @return array    The original array with all elements replaced as needed.
+     */
+    function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false ) {
+
+        // some unseriliased data cannot be re-serialized eg. SimpleXMLElements
+        try {
+
+            if ( is_string( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
+                $data = $this->recursive_unserialize_replace( $unserialized, true, true );
+            }
+            elseif ( is_array( $data ) ) {
+                $_tmp = array( );
+                foreach ( $data as $key => $value ) {
+                    $_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+                }
+
+                $data = $_tmp;
+                unset( $_tmp );
+            }
+            // Submitted by Tina Matter
+            elseif ( is_object( $data ) ) {
+                $dataClass = get_class( $data );
+                $_tmp = new $dataClass( );
+                foreach ( $data as $key => $value ) {
+                    $_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+                }
+
+                $data = $_tmp;
+                unset( $_tmp );
+            }
+            elseif ( is_string( $data ) ) {
+                $data = $this->apply_replaces( $data, $parent_serialized );
+            }
+
+            if ( $serialized )
+                return serialize( $data );
+
+        } catch( Exception $error ) {
+
+        }
+
+        return $data;
     }
 
     function db_backup() {
