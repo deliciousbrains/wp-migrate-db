@@ -95,10 +95,6 @@ p.submit {
 	}
 
 	.subscribe {
-		padding-bottom: 20px;
-		margin-bottom: 20px;
-		border-bottom: 1px solid #ccc;
-
 		h2 {
 			padding: 0;
 			margin: 0;
@@ -107,13 +103,9 @@ p.submit {
 			font-size: 20px;
 		}
 
-		ul {
-			list-style-type: disc;
-		}
-
-		li {
-			margin-left: 1.5em;
-			color: #666;
+		h3 {
+			font-size: 16px;
+			margin: 0;
 		}
 
 		p {
@@ -124,16 +116,16 @@ p.submit {
 			margin-bottom: 1em;
 		}
 
-		.error {
-			color: red;
-			font-weight: bold;
-			margin-bottom: 1em;
+		.links {
+			margin-bottom: 2em;
+
+			a {
+				text-decoration: none;
+			}
 		}
 
-		.thanks {
-			color: #333;
-			font-weight: bold;
-			font-size: 14px;
+		.promise {
+			color: #999;
 		}
 
 		.field {
@@ -143,45 +135,8 @@ p.submit {
 				margin-bottom: 0.3em;
 			}
 
-			.willing-copy {
-				font-weight: bold;
-				font-size: 14px;
-				line-height: 1.4em;
-				margin-bottom: 1em;
-			}
-
-			&.how-much {
-				input {
-					width: 50px;
-				}
-			}
-
-			&.notify-me {
-				input {
-					position: absolute;
-				}
-
-				label {
-					display: block;
-					padding-left: 20px;
-				}
-
-			}
-
-			&.comments {
-				textarea {
-					width: 230px;
-					height: 3em;
-
-					&.has-content,
-					&:focus {
-						height: 5em;
-					}
-				}
-			}
-
 			&.submit-button {
-				margin-bottom: 0;
+				margin-bottom: 1em;
 			}
 		}
 	}

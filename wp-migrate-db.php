@@ -371,66 +371,44 @@ class WP_Migrate_DB {
                 </div>
             </div>
 
-            <form method="post" action="http://bradt.ca/wpmdb-subscribe.php" class="subscribe">
-                <h2>Pro Version</h2>
-                <p>
-                    We're working on a PRO version of this plugin that will include...
-                </p>
+            <form method="post" action="http://deliciousbrains.createsend.com/t/t/s/virn/" target="_blank" class="subscribe">
+                <h2>Pro Version Has Arrived!</h2>
 
-                <ul>
-                    <li>
-                        Pull production/staging db down and replace local db
-                    </li>
-                    <li>
-                        Push local db up and replace production/staging db
-                    </li>
-                    <li>
-                        Select tables to export
-                    </li>
-                    <li>
-                        Unlimited find &amp; replaces (currently you can
-                        only do 2)
-                    </li>
-                    <li>
-                        Compatibility with multi-site
-                    </li>
-                    <li>
-                        Priority email support
-                    </li>
-                </ul>
+                <a class="video" target="_blank" href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin#play-intro"><img src="<?php echo plugins_url( 'asset/img/video@2x.jpg', __FILE__ ); ?>" width="250" height="164" alt="" /></a>
+
+                <p class="links">
+                    <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank">View Features &rarr;</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank">View Pricing &rarr;</a>
+                </p>
 
                 <?php $user = wp_get_current_user(); ?>
 
-                <p class="interesting">Interested? Send us your email and we'll let you know when a beta is available.</p>
+                <h3><em>Get 20% Off!</em></h3>
+
+                <p class="interesting">
+                    Subscribe to receive news &amp; updates below and we'll
+                    instantly send you a coupon code to get 20% off any WP Migrate DB Pro license.
+                </p>
+
+                <div class="field notify-name">
+                    <p>Your Name</p>
+                    <input type="text" name="cm-name" value="<?php echo trim( esc_attr( $user->first_name ) . ' ' . esc_attr( $user->last_name ) ); ?>" />
+                </div>
 
                 <div class="field notify-email">
                     <p>Your Email</p>
-                    <input type="email" name="notify-email" value="<?php echo esc_attr( $user->user_email ); ?>" />
-                </div>
-
-                <div class="field notify-email">
-                    <p>Your Name (optional)</p>
-                    <input type="text" name="notify-name" value="<?php echo trim( esc_attr( $user->first_name ) . ' ' . esc_attr( $user->last_name ) ); ?>" />
-                </div>
-
-                <div class="field comments">
-                    <p>Comments (optional)</p>
-                    <textarea name="comments"></textarea>
+                    <input type="email" name="cm-virn-virn" value="<?php echo esc_attr( $user->user_email ); ?>" />
                 </div>
 
                 <div class="field submit-button">
-                    <input type="submit" class="button" value="Submit" />
+                    <input type="submit" class="button" value="Subscribe" />
                 </div>
-            </form>
 
-            <?php $url = 'http://wpappstore.com/?utm_source=plugin&amp;utm_medium=wordpress&amp;utm_campaign=wpmigratedb'; ?>
-            <div class="wpas-promo">
-                <a href="<?php echo $url; ?>"><img src="<?php echo plugins_url( 'asset/img/wpappstore-logo.png', __FILE__ ); ?>" alt="WP App Store" width="220" /></a>
-                <p>
-                    Purchase &amp; install themes and plugins from top brands directly from your WordPress dashboard.
-                    <a href="<?php echo $url; ?>">Check&nbsp;it&nbsp;out&nbsp;&raquo;</a>
+                <p class="promise">
+                    I promise I will not use your email for anything else 
+                    and you can unsubscribe with <span style="white-space: nowrap;">1-click anytime</span>.
                 </p>
-            </div>
+            </form>
 
             </div>
 
