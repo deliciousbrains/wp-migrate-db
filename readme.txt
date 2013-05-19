@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: database, migrate, backup, mysql
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 0.4.3
+Stable tag: 0.4.4
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -59,6 +59,14 @@ It is likely you have a download manager plugin or extension installed in your w
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4.4 - 2013-05-19 =
+* [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=changelog&utm_campaign=freeplugin) Added some info to the sidebar.
+* Updated required version to WordPress 3.0+
+* Bug fix: [Does not handle serialized objects](https://github.com/bradt/wp-migrate-db/issues/11)
+* Bug fix: [Admin menu disappears when DISALLOW_FILE_MODS is true](https://github.com/bradt/wp-migrate-db/issues/8)
+* Bug fix: [Duplicate records on export](https://github.com/bradt/wp-migrate-db/issues/5)
+* Bug fix: Updated spinner image for HiDPI displays
 
 = 0.4.3 - 2012-12-18 =
 * Fixed deprecated error notices when debug mode is on
