@@ -23,6 +23,8 @@ Author URI: http://bradt.ca/
 // which in turn borrowed from the phpMyAdmin project.
 // Thanks to both for GPL.
 
+// Load textdomain
+load_plugin_textdomain( 'wp-migrate-db', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 // Define the directory seperator if it isn't already
 if ( !defined( 'DS' ) ) {
@@ -95,6 +97,13 @@ class WP_Migrate_DB {
         wp_enqueue_style( 'wp-migrate-db-styles', $src );
         $src = plugins_url( 'asset/js/script.js', __FILE__ );
         wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
+
+        $wp_migrate_db_translate_script = array(
+                                                  'show_less' => __( 'show less', 'wp-migrate-db' ),
+                                                  'show_more' => __( 'show more', 'wp-migrate-db' )
+                                                  );
+
+        wp_localize_script( 'wp-migrate-db-script', 'wp_migrate_db_translate_script', $wp_migrate_db_translate_script );
     }
 
     function get_filename( $datetime, $gzip ) {
@@ -138,7 +147,7 @@ class WP_Migrate_DB {
         ?>
 
         <div class="wrap">
-            <div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB</h2>
+            <div id="icon-tools" class="icon32"><br /></div><h2><?php _e( 'Migrate DB', 'wp-migrate-db' ); ?></h2>
 
             <div id="wpmdb-container">
 
@@ -163,18 +172,20 @@ class WP_Migrate_DB {
                     add_action( 'admin_head-settings_page_wp-migrate-db', array( $this, 'admin_head' ) );
                     ?>
                     <p>
-                        Your database (SQL) file has been successfully generated.
-                        Your download should begin any second.
+                        <?php _e( 'Your database (SQL) file has been successfully generated. Your download should begin any second.', 'wp-migrate-db' ); ?>
                     </p>
                     <?php
                 }
                 else {
                     ?>
                     <p>
-                        Your database (SQL) file has been successfully generated and
-                        saved to <br /><?php echo $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>.
-                        <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>">Click
-                        here to download.</a>
+                        <?php
+                            _e( 'Your database (SQL) file has been successfully generated and saved to', 'wp-migrate-db' );
+                            echo '<br />';
+                            echo $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) );
+                            echo '.';
+                        ?>
+                        <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>"><?php _e( 'Click here to download.', 'wp-migrate-db' ); ?></a>
                     </p>
                     <?php
                 }
@@ -183,8 +194,18 @@ class WP_Migrate_DB {
                 </div>
 
                 <p>
-                    <b>Non-Serialized Strings Replaced: <?php echo $this->replaced['nonserialized']['count']; ?></b><br />
-                    <b>Serialized Strings Replaced: <?php echo $this->replaced['serialized']['count']; ?></b><br />
+                    <b>
+                        <?php
+                            _e( 'Non-Serialized Strings Replaced:', 'wp-migrate-db');
+                            echo $this->replaced['nonserialized']['count'];
+                            ?>
+                    </b><br />
+                    <b>
+                        <?php
+                            _e( 'Serialized Strings Replaced:', 'wp-migrate-db');
+                            echo $this->replaced['serialized']['count'];
+                        ?>
+                    </b><br />
                     <textarea style="width: 100%; height: 200px;" wrap="off"><?php echo $this->replaced['serialized']['strings']; ?></textarea>
                 </p>
                 <?php
@@ -214,8 +235,7 @@ class WP_Migrate_DB {
 
                 <div id="message" class="message error">
                     <p>
-                       The directory <?php echo $this->upload_dir; ?> needs
-                       to be writable.
+                        <?php sprintf( __('The directory %s needs to be writable.', 'wp-migrate-db'), $this->upload_dir ); ?>
                     </p>
                 </div>
 
@@ -227,8 +247,7 @@ class WP_Migrate_DB {
 
                 <div id="message" class="message error">
                     <p>
-                        Sorry, there were errors with your form submission.
-                        Please correct them below and try again.
+                        <?php _e( 'Sorry, there were errors with your form submission. Please correct them below and try again.', 'wp-migrate-db' ); ?>
                     </p>
                 </div>
 
@@ -237,13 +256,10 @@ class WP_Migrate_DB {
             ?>
 
             <p>
-                WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin),
-                does a find and replace on URLs and file paths, then allows you to save
-                it to your computer. It even takes into account serialized data and updates the
-                string length values.
+                <?php _e( 'WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It even takes into account serialized data and updates the string length values.', 'wp-migrate-db' ); ?>
             </p>
             <p>
-                Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
+                <?php _e( 'Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>', 'wp-migrate-db' ); ?>
             </p>
 
             <form method="post" id="migrate-form">
@@ -251,7 +267,7 @@ class WP_Migrate_DB {
                 <tbody>
                     <tr valign="top" class="row-old-url">
                         <th scope="row">
-                            <label for="old_url">Current address (URL)</label>
+                            <label for="old_url"><?php _e( 'Current address (URL)', 'wp-migrate-db' ); ?></label>
                         </th>
                         <td>
                             <input type="text" size="40" name="old_url" class="code" id="old_url" value="<?php echo htmlentities( $form_values['old_url'] ); ?>" />
@@ -260,7 +276,7 @@ class WP_Migrate_DB {
                     </tr>
                     <tr valign="top" class="row-new-url">
                         <th scope="row">
-                            <label for="new_url">New address (URL)</label>
+                            <label for="new_url"><?php _e( 'New address (URL)', 'wp-migrate-db' ); ?></label>
                         </th>
                         <td>
                             <input type="text" size="40" name="new_url" class="code" id="new_url" value="<?php echo htmlentities( $form_values['new_url'] ); ?>" />
@@ -269,7 +285,7 @@ class WP_Migrate_DB {
                     </tr>
                     <tr valign="top" class="row-old-path">
                         <th scope="row">
-                            <label for="old_path">Current file path</label>
+                            <label for="old_path"><?php _e( 'Current file path', 'wp-migrate-db' ); ?></label>
                         </th>
                         <td>
                             <input type="text" size="40" name="old_path" class="code" id="old_path" value="<?php echo htmlentities( $form_values['old_path'] ); ?>" />
@@ -278,7 +294,7 @@ class WP_Migrate_DB {
                     </tr>
                     <tr valign="top" class="row-new-path">
                         <th scope="row">
-                            <label for="new_path">New file path</label>
+                            <label for="new_path"><?php _e( 'New file path', 'wp-migrate-db' ); ?></label>
                         </th>
                         <td>
                             <input type="text" size="40" name="new_path" class="code" id="new_path" value="<?php echo htmlentities( $form_values['new_path'] ); ?>" />
@@ -286,21 +302,17 @@ class WP_Migrate_DB {
                         </td>
                     </tr>
                     <tr valign="top" class="row-guids">
-                        <th scope="row">Data Options</th>
+                        <th scope="row"><?php _e( 'Data Options', 'wp-migrate-db' ); ?></th>
                         <td>
                             <label for="replace-guids">
                                 <input id="replace-guids" type="checkbox" checked="checked" value="1" name="replaceguids"/>
-                                Replace GUIDs</label>
+                                <?php _e( 'Replace GUIDs', 'wp-migrate-db' ); ?></label>
 
-                            <a href="" id="replace-guids-info-link">show more</a>
+                            <a href="" id="replace-guids-info-link"><?php _e( 'show more', 'wp-migrate-db' ); ?></a>
 
                             <div id="replace-guids-info" style="display: none;">
                                 <p>
-                                    Although the <a href="http://codex.wordpress.org/Changing_The_Site_URL#Important_GUID_Note" target="_blank">WordPress Codex emphasizes</a>
-                                    that GUIDs should not be changed, this is limited to sites that are already live.
-                                    If the site has never been live, I recommend replacing the GUIDs. For example, you may be
-                                    developing a new site locally at dev.somedomain.com and want to
-                                    migrate the site live to somedomain.com.
+                                    <?php echo sprintf( __( 'Although the <a href="%s" target="_blank">WordPress Codex emphasizes</a> that GUIDs should not be changed, this is limited to sites that are already live. If the site has never been live, I recommend replacing the GUIDs. For example, you may be developing a new site locally at dev.somedomain.com and want to migrate the site live to somedomain.com.', 'wp-migrate-db' ), 'http://codex.wordpress.org/Changing_The_Site_URL#Important_GUID_Note' ); ?>
                                 </p>
                             </div>
                         </td>
@@ -310,7 +322,7 @@ class WP_Migrate_DB {
                         <td>
                             <label for="exclude-spam">
                                 <input id="exclude-spam" type="checkbox" value="1" name="exclude-spam" />
-                                Do not export spam comments
+                                <?php _e( 'Do not export spam comments', 'wp-migrate-db' ); ?>
                             </label>
                         </td>
                     </tr>
@@ -319,16 +331,16 @@ class WP_Migrate_DB {
                         <td>
                             <label for="exclude-revisions">
                                 <input id="exclude-revisions" type="checkbox" value="1" name="exclude-revisions" />
-                                Do not export post revisions
+                                <?php _e( 'Do not export post revisions', 'wp-migrate-db' ); ?>
                             </label>
                         </td>
                     </tr>
                     <tr valign="top" class="row-save-file">
-                        <th scope="row">File Options</th>
+                        <th scope="row"><?php _e( 'File Options', 'wp-migrate-db' ); ?></th>
                         <td>
                             <label for="savefile">
                                 <input id="savefile" type="checkbox" checked="checked" value="1" name="savefile"/>
-                                Save as file to your computer
+                                <?php _e( 'Save as file to your computer', 'wp-migrate-db' ); ?>
                             </label>
                         </td>
                     </tr>
@@ -338,7 +350,7 @@ class WP_Migrate_DB {
                         <td>
                             <label for="gzipfile">
                                 <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
-                                Compress file with gzip
+                                <?php _e( 'Compress file with gzip', 'wp-migrate-db' ); ?>
                             </label>
                         </td>
                     </tr>
@@ -347,7 +359,7 @@ class WP_Migrate_DB {
                 </table>
 
                 <p class="submit">
-                    <input class="button" type="submit" value="Export Database" name="Submit"/>
+                    <input class="button" type="submit" value="<?php _e( 'Export Database', 'wp-migrate-db' ); ?>" name="Submit"/>
                 </p>
             </form>
 
@@ -361,52 +373,50 @@ class WP_Migrate_DB {
             <div class="author">
                 <img src="http://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?s=128&amp;d" width="64" height="64" />
                 <div class="desc">
-                    <h3>Created &amp; maintained by</h3>
+                    <h3><?php _e( 'Created &amp; maintained by', 'wp-migrate-db' ); ?></h3>
                     <h2>Brad Touesnard</h2>
                     <p>
-                        <a href="http://profiles.wordpress.org/bradt/">Profile</a>
+                        <a href="http://profiles.wordpress.org/bradt/" target="_blank"><?php _e( 'Profile', 'wp-migrate-db' ); ?></a>
                         &nbsp;&nbsp;
-                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5VPMGLLK94XJC">Donate</a>
+                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5VPMGLLK94XJC" target="_blank"><?php _e( 'Donate', 'wp-migrate-db' ); ?></a>
                     </p>
                 </div>
             </div>
 
             <form method="post" action="http://deliciousbrains.createsend.com/t/t/s/virn/" target="_blank" class="subscribe">
-                <h2>Pro Version Has Arrived!</h2>
+                <h2><?php _e( 'Pro Version Has Arrived!', 'wp-migrate-db' ); ?></h2>
 
                 <a class="video" target="_blank" href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin#play-intro"><img src="<?php echo plugins_url( 'asset/img/video@2x.jpg', __FILE__ ); ?>" width="250" height="164" alt="" /></a>
 
                 <p class="links">
-                    <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank">View Features &rarr;</a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank">View Pricing &rarr;</a>
+                    <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank"><?php _e( 'View Features &rarr;', 'wp-migrate-db' ); ?></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=insideplugin&utm_medium=web&utm_campaign=freeplugin" target="_blank"><?php _e( 'View Pricing &rarr;', 'wp-migrate-db' ); ?></a>
                 </p>
 
                 <?php $user = wp_get_current_user(); ?>
 
-                <h3><em>Get 20% Off!</em></h3>
+                <h3><em><?php _e( 'Get 20% Off!', 'wp-migrate-db' ); ?></em></h3>
 
                 <p class="interesting">
-                    Subscribe to receive news &amp; updates below and we'll
-                    instantly send you a coupon code to get 20% off any WP Migrate DB Pro license.
+                    <?php _e( 'Subscribe to receive news &amp; updates below and we\'ll instantly send you a coupon code to get 20% off any WP Migrate DB Pro license.', 'wp-migrate-db' ); ?>
                 </p>
 
                 <div class="field notify-name">
-                    <p>Your Name</p>
+                    <p><?php _e( 'Your Name', 'wp-migrate-db' ); ?></p>
                     <input type="text" name="cm-name" value="<?php echo trim( esc_attr( $user->first_name ) . ' ' . esc_attr( $user->last_name ) ); ?>" />
                 </div>
 
                 <div class="field notify-email">
-                    <p>Your Email</p>
+                    <p><?php _e( 'Your Email', 'wp-migrate-db' ); ?></p>
                     <input type="email" name="cm-virn-virn" value="<?php echo esc_attr( $user->user_email ); ?>" />
                 </div>
 
                 <div class="field submit-button">
-                    <input type="submit" class="button" value="Subscribe" />
+                    <input type="submit" class="button" value="<?php _e( 'Subscribe', 'wp-migrate-db' ); ?>" />
                 </div>
 
                 <p class="promise">
-                    I promise I will not use your email for anything else 
-                    and you can unsubscribe with <span style="white-space: nowrap;">1-click anytime</span>.
+                    <?php _e( 'I promise I will not use your email for anything else and you can unsubscribe with <span style="white-space: nowrap;">1-click anytime</span>.', 'wp-migrate-db' ); ?>
                 </p>
             </form>
 
@@ -758,7 +768,7 @@ class WP_Migrate_DB {
     }
 
     function admin_menu() {
-        $this->hookname = add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
+        $this->hookname = add_management_page( __( 'Migrate DB', 'wp-migrate-db'), __( 'Migrate DB', 'wp-migrate-db'), 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
 
         add_action( 'load-' . $this->hookname , array( $this, 'handle_request' ) );
     }
