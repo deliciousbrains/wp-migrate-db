@@ -451,7 +451,7 @@ class WP_Migrate_DB {
     function backup_table( $table, $segment = 'none' ) {
         global $wpdb;
 
-        $table_structure = $wpdb->get_results( "DESCRIBE $table" );
+        $table_structure = $wpdb->get_results( "DESCRIBE " . $this->backquote( $table ) );
         if ( ! $table_structure ) {
             $this->error( __( 'Error getting table details', 'wp-migrate-db' ) . ": $table" );
             return false;
@@ -474,7 +474,7 @@ class WP_Migrate_DB {
             $this->stow( "#\n" );
             $this->stow( "\n" );
 
-            $create_table = $wpdb->get_results( "SHOW CREATE TABLE $table", ARRAY_N );
+            $create_table = $wpdb->get_results( "SHOW CREATE TABLE " . $this->backquote( $table ), ARRAY_N );
             if ( false === $create_table ) {
                 $err_msg = sprintf( __( 'Error with SHOW CREATE TABLE for %s.', 'wp-migrate-db' ), $table );
                 $this->error( $err_msg );
@@ -531,7 +531,9 @@ class WP_Migrate_DB {
                 }
 
                 if ( !ini_get( 'safe_mode' ) ) @set_time_limit( 15*60 );
-                $table_data = $wpdb->get_results( "SELECT * FROM $table $where LIMIT {$row_start}, {$row_inc}", ARRAY_A );
+                $sql = "SELECT " . $this->backquote( $table ) . ".* FROM " . $this->backquote( $table ) . " $where LIMIT {$row_start}, {$row_inc}";
+
+                $table_data = $wpdb->get_results( $sql );
 
                 $entries = 'INSERT INTO ' . $this->backquote( $table ) . ' VALUES (';
                 //    \x08\\x09, not required
