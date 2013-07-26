@@ -1,0 +1,270 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Migrate DB\n"
+"POT-Creation-Date: 2013-06-12 19:59-0300\n"
+"PO-Revision-Date: 2013-06-12 19:59-0300\n"
+"Last-Translator: Rafael Funchal <rafaelfunchal@gmail.com>\n"
+"Language-Team: Rafael Funchal <contato@rafaelfunchal.com.br>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../wp-migrate-db.php:102
+msgid "show less"
+msgstr ""
+
+#: ../wp-migrate-db.php:103 ../wp-migrate-db.php:311
+msgid "show more"
+msgstr ""
+
+#: ../wp-migrate-db.php:124
+msgid "Please enter the current URL."
+msgstr ""
+
+#: ../wp-migrate-db.php:128
+msgid "Please enter a new URL."
+msgstr ""
+
+#: ../wp-migrate-db.php:132
+msgid "Please enter the current file path."
+msgstr ""
+
+#: ../wp-migrate-db.php:136
+msgid "Please enter a new file path."
+msgstr ""
+
+#: ../wp-migrate-db.php:150 ../wp-migrate-db.php:771
+msgid "Migrate DB"
+msgstr ""
+
+#: ../wp-migrate-db.php:175
+msgid ""
+"Your database (SQL) file has been successfully generated. Your download "
+"should begin any second."
+msgstr ""
+
+#: ../wp-migrate-db.php:183
+msgid "Your database (SQL) file has been successfully generated and saved to"
+msgstr ""
+
+#: ../wp-migrate-db.php:188
+msgid "Click here to download."
+msgstr ""
+
+#: ../wp-migrate-db.php:199
+msgid "Non-Serialized Strings Replaced:"
+msgstr ""
+
+#: ../wp-migrate-db.php:205
+msgid "Serialized Strings Replaced:"
+msgstr ""
+
+#: ../wp-migrate-db.php:238
+#, php-format
+msgid "The directory %s needs to be writable."
+msgstr ""
+
+#: ../wp-migrate-db.php:250
+msgid ""
+"Sorry, there were errors with your form submission. Please correct them "
+"below and try again."
+msgstr ""
+
+#: ../wp-migrate-db.php:259
+msgid ""
+"WP Migrate DB exports your database as a MySQL data dump (much like "
+"phpMyAdmin), does a find and replace on URLs and file paths, then allows you "
+"to save it to your computer. It even takes into account serialized data and "
+"updates the string length values."
+msgstr ""
+
+#: ../wp-migrate-db.php:262
+msgid ""
+"Example: <code>s:5:\"hello\"</code> becomes <code>s:11:\"hello world\"</code>"
+msgstr ""
+
+#: ../wp-migrate-db.php:270
+msgid "Current address (URL)"
+msgstr ""
+
+#: ../wp-migrate-db.php:279
+msgid "New address (URL)"
+msgstr ""
+
+#: ../wp-migrate-db.php:288
+msgid "Current file path"
+msgstr ""
+
+#: ../wp-migrate-db.php:297
+msgid "New file path"
+msgstr ""
+
+#: ../wp-migrate-db.php:305
+msgid "Data Options"
+msgstr ""
+
+#: ../wp-migrate-db.php:309
+msgid "Replace GUIDs"
+msgstr ""
+
+#: ../wp-migrate-db.php:315
+#, php-format
+msgid ""
+"Although the <a href=\"%s\" target=\"_blank\">WordPress Codex emphasizes</a> "
+"that GUIDs should not be changed, this is limited to sites that are already "
+"live. If the site has never been live, I recommend replacing the GUIDs. For "
+"example, you may be developing a new site locally at dev.somedomain.com and "
+"want to migrate the site live to somedomain.com."
+msgstr ""
+
+#: ../wp-migrate-db.php:325
+msgid "Do not export spam comments"
+msgstr ""
+
+#: ../wp-migrate-db.php:334
+msgid "Do not export post revisions"
+msgstr ""
+
+#: ../wp-migrate-db.php:339
+msgid "File Options"
+msgstr ""
+
+#: ../wp-migrate-db.php:343
+msgid "Save as file to your computer"
+msgstr ""
+
+#: ../wp-migrate-db.php:353
+msgid "Compress file with gzip"
+msgstr ""
+
+#: ../wp-migrate-db.php:362
+msgid "Export Database"
+msgstr ""
+
+#: ../wp-migrate-db.php:376
+msgid "Created &amp; maintained by"
+msgstr ""
+
+#: ../wp-migrate-db.php:379
+msgid "Profile"
+msgstr ""
+
+#: ../wp-migrate-db.php:381
+msgid "Donate"
+msgstr ""
+
+#: ../wp-migrate-db.php:387
+msgid "Pro Version Has Arrived!"
+msgstr ""
+
+#: ../wp-migrate-db.php:392
+msgid "View Features &rarr;"
+msgstr ""
+
+#: ../wp-migrate-db.php:393
+msgid "View Pricing &rarr;"
+msgstr ""
+
+#: ../wp-migrate-db.php:398
+msgid "Get 20% Off!"
+msgstr ""
+
+#: ../wp-migrate-db.php:401
+#, php-format
+msgid ""
+"Subscribe to receive news &amp; updates below and we'll instantly send you a "
+"coupon code to get 20% off any WP Migrate DB Pro license."
+msgstr ""
+
+#: ../wp-migrate-db.php:405
+msgid "Your Name"
+msgstr ""
+
+#: ../wp-migrate-db.php:410
+msgid "Your Email"
+msgstr ""
+
+#: ../wp-migrate-db.php:415
+msgid "Subscribe"
+msgstr ""
+
+#: ../wp-migrate-db.php:419
+msgid ""
+"I promise I will not use your email for anything else and you can "
+"unsubscribe with <span style=\"white-space: nowrap;\">1-click anytime</span>."
+msgstr ""
+
+#: ../wp-migrate-db.php:466
+msgid "Error getting table details"
+msgstr ""
+
+#: ../wp-migrate-db.php:474
+#, php-format
+msgid "Delete any existing table %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:483
+#, php-format
+msgid "Table structure of table %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:489
+#, php-format
+msgid "Error with SHOW CREATE TABLE for %s."
+msgstr ""
+
+#: ../wp-migrate-db.php:496
+#, php-format
+msgid "Error getting table structure of %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:504
+#, php-format
+msgid "Data contents of table %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:584
+#, php-format
+msgid "End of data contents of table %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:668
+#, php-format
+msgid "Table: %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:685
+msgid "WordPress MySQL database migration"
+msgstr ""
+
+#: ../wp-migrate-db.php:686
+#, php-format
+msgid "From %s to %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:688
+#, php-format
+msgid "Generated: %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:689
+#, php-format
+msgid "Hostname: %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:690
+#, php-format
+msgid "Database: %s"
+msgstr ""
+
+#: ../wp-migrate-db.php:715 ../wp-migrate-db.php:718
+msgid "There was an error writing a line to the backup script:"
+msgstr ""
