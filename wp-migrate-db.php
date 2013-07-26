@@ -106,21 +106,24 @@ class WP_Migrate_DB {
         wp_localize_script( 'wp-migrate-db-script', 'wp_migrate_db_translate_script', $wp_migrate_db_translate_script );
     }
 
+    function get_base_filename( $datetime ) {
+        $filename = DB_NAME . '-migrate-' . $datetime;
+        return apply_filters( 'wpmdb_base_filename', $filename, $datetime );
+    }
+
     function get_filename( $datetime, $gzip ) {
         $hash = substr( sha1( DB_PASSWORD . AUTH_SALT ), -5 );
-        $filename = DB_NAME . '-migrate-' . $datetime . '-' . $hash;
-        $filename = apply_filters( 'wpmdb_filename', $filename, $datetime );
-        $filename .= '.sql';
+        $filename = $this->get_base_filename( $datetime );
+        $filename .= '-' . $hash . '.sql';
         if ( $gzip ) $filename .= '.gz';
-        return $filename;
+        return apply_filters( 'wpmdb_filesystem_filename', $filename, $datetime, $gzip );
     }
 
     function get_nicename( $datetime, $gzip ) {
-        $name = DB_NAME . '-migrate-' . $datetime;
-        $name = apply_filters( 'wpmdb_filename', $name, $datetime );
+        $name = $this->get_base_filename( $datetime );
         $name .= '.sql';
         if ( $gzip ) $name .= '.gz';
-        return $name;
+        return apply_filters( 'wpmdb_save_as_filename', $name, $datetime, $gzip );
     }
 
     function options_validate() {
