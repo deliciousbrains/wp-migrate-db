@@ -420,7 +420,7 @@ class WP_Migrate_DB {
     function apply_replaces( $subject, $is_serialized = false ) {
         $search = array( $_POST['old_path'], $_POST['old_url'] );
         $replace = array( $_POST['new_path'], $_POST['new_url'] );
-        $new = str_replace( $search, $replace, $subject, $count );
+        $new = str_ireplace( $search, $replace, $subject, $count );
 
         if ( $count ) {
             if ( $is_serialized ) {
