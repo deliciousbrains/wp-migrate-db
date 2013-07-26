@@ -1,15 +1,19 @@
 (function($) {
     $(document).ready(function() {
+        // Localization strings
+        var show_less = wp_migrate_db_translate_script.show_less;
+        var show_more = wp_migrate_db_translate_script.show_more;
+
         $('#replace-guids-info-link').click(function() {
             var $div = $('#replace-guids-info');
             if ( 'none' == $div.css('display') ) {
                 $div.show();
-                $(this).html('show less');
+                $(this).html( show_less );
                 return false;
             }
             else {
                 $div.hide();
-                $(this).html('show more');
+                $(this).html( show_more );
                 return false;
             }
         });
