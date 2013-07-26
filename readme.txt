@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: database, migrate, backup, mysql
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 0.4.4
+Stable tag: 0.5
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -59,6 +59,15 @@ It is likely you have a download manager plugin or extension installed in your w
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.5 - 2013-07-26 =
+* Language support! Thanks to an awesome [pull request](https://github.com/bradt/wp-migrate-db/pull/19) from [Rafael Funchal](https://github.com/rafaelfunchal).
+* New Language: Brazilian Portugese
+* [Added filter for the filename of the exported file](https://github.com/bradt/wp-migrate-db/issues/16)
+* Bug fix: [Spam commentmeta included when "Do not export spam comments" checked](https://github.com/bradt/wp-migrate-db/issues/18)
+* Bug fix: [Fatal error method `error` does not exist](https://github.com/bradt/wp-migrate-db/issues/20)
+* Bug fix: [Table names with dashes not exporting](https://github.com/bradt/wp-migrate-db/issues/15)
+* Bug fix: [Find & replace is case-sensitive but shouldn't](https://github.com/bradt/wp-migrate-db/issues/13)
 
 = 0.4.4 - 2013-05-19 =
 * [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=changelog&utm_campaign=freeplugin) Added some info to the sidebar.
