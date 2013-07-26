@@ -467,7 +467,7 @@ class WP_Migrate_DB {
 
         $table_structure = $wpdb->get_results( "DESCRIBE $table" );
         if ( ! $table_structure ) {
-            $this->error( __( 'Error getting table details', 'wp-migrate-db' ) . ": $table" );
+            $this->errors['describe'] = __( 'Error getting table details', 'wp-migrate-db' ) . ": $table";
             return false;
         }
 
@@ -491,14 +491,14 @@ class WP_Migrate_DB {
             $create_table = $wpdb->get_results( "SHOW CREATE TABLE $table", ARRAY_N );
             if ( false === $create_table ) {
                 $err_msg = sprintf( __( 'Error with SHOW CREATE TABLE for %s.', 'wp-migrate-db' ), $table );
-                $this->error( $err_msg );
+                $this->errors['show_create'] = $err_msg;
                 $this->stow( "#\n# $err_msg\n#\n" );
             }
             $this->stow( $create_table[0][1] . ' ;' );
 
             if ( false === $table_structure ) {
                 $err_msg = sprintf( __( 'Error getting table structure of %s', 'wp-migrate-db' ), $table );
-                $this->error( $err_msg );
+                $this->errors['table_structure'] =  $err_msg;
                 $this->stow( "#\n# $err_msg\n#\n" );
             }
 
