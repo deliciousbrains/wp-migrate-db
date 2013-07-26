@@ -81,6 +81,47 @@ p.submit img {
 #wpmdb-sidebar .author p {
   margin: 0;
 }
+#wpmdb-sidebar .video {
+  position: relative;
+  display: block;
+}
+#wpmdb-sidebar .video:before, #wpmdb-sidebar .video:after {
+  position: absolute;
+  content: " ";
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+#wpmdb-sidebar .video:before {
+  width: 60px;
+  height: 60px;
+  -webkit-border-radius: 60px;
+  -moz-border-radius: 60px;
+  -ms-border-radius: 60px;
+  -o-border-radius: 60px;
+  border-radius: 60px;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  z-index: 2;
+}
+#wpmdb-sidebar .video:after {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  border: 20px solid transparent;
+  border-top-width: 12px;
+  border-bottom-width: 12px;
+  border-left-color: #333;
+  background: transparent;
+  display: block;
+  left: 23.4375px;
+  width: 0px;
+  height: 0px;
+  z-index: 3;
+}
 #wpmdb-sidebar .subscribe h2 {
   padding: 0;
   margin: 0;

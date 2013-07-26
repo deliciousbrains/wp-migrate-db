@@ -1,3 +1,5 @@
+@import "compass";
+
 #migrate-form {
 	padding-top: 10px;
 }
@@ -91,6 +93,46 @@ p.submit {
 
 		p {
 			margin: 0;
+		}
+	}
+
+	.video {
+		position: relative;
+		display: block;
+		$size: 60px;
+
+		&:before, &:after {
+		    position: absolute;
+		    content: " ";
+		    margin: auto;
+		    left: 0;
+		    right: 0;
+		    top: 0;
+		    bottom: 0;
+		}
+
+		&:before {
+		    width: $size;
+		    height: $size;
+		    @include border-radius($size);
+		    @include opacity(0.8);
+		    border: 1px solid #ddd;
+		    background-color: #fff;
+		    z-index: 2;
+		}
+
+		&:after {
+			@include opacity(0.8);
+		    border: $size/3 solid transparent;
+		    border-top-width: $size/5;
+		    border-bottom-width: $size/5;
+		    border-left-color: #333;
+		    background: transparent;
+		    display: block;
+		    left: $size/2.56;
+		    width: 0px;
+		    height: 0px;
+		    z-index: 3;
 		}
 	}
 
