@@ -524,14 +524,25 @@ class WP_Migrate_DB {
                 $where = '';
                 // We need ORDER BY here because with LIMIT, sometimes it will return
                 // the same results from the previous query and we'll have duplicate insert statements
-                if ( isset( $_POST['exclude-spam'] ) && $wpdb->comments == $table ) {
-                    $where = ' WHERE comment_approved != "spam" ORDER BY comment_ID';
+                if ( isset( $_POST['exclude-spam'] ) ) {
+                    if ( $wpdb->comments == $table ) {
+                        $where = ' WHERE comment_approved != "spam" ORDER BY comment_ID';
+                    }
+                    elseif ( $wpdb->commentmeta == $table ) {
+                        $where = sprintf( ' INNER JOIN %1$s
+                            ON %1$s.comment_ID = %2$s.comment_id AND %1$s.comment_approved != \'spam\'
+                            ORDER BY %2$s.meta_id',
+                            $this->backquote( $wpdb->comments ), $this->backquote( $wpdb->commentmeta ) );
+                    }
                 } elseif ( isset( $_POST['exclude-revisions'] ) && $wpdb->posts == $table ) {
                     $where = ' WHERE post_type != "revision" ORDER BY ID';
                 }
 
                 if ( !ini_get( 'safe_mode' ) ) @set_time_limit( 15*60 );
-                $table_data = $wpdb->get_results( "SELECT * FROM $table $where LIMIT {$row_start}, {$row_inc}", ARRAY_A );
+
+                $sql = "SELECT " . $this->backquote( $table ) . ".* FROM " . $this->backquote( $table ) . " $where LIMIT {$row_start}, {$row_inc}";
+
+                $table_data = $wpdb->get_results( $sql, ARRAY_A );
 
                 $entries = 'INSERT INTO ' . $this->backquote( $table ) . ' VALUES (';
                 //    \x08\\x09, not required
