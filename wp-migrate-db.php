@@ -99,13 +99,17 @@ class WP_Migrate_DB {
 
     function get_filename( $datetime, $gzip ) {
         $hash = substr( sha1( DB_PASSWORD . AUTH_SALT ), -5 );
-        $filename = DB_NAME . '-migrate-' . $datetime . '-' . $hash . '.sql';
+        $filename = DB_NAME . '-migrate-' . $datetime . '-' . $hash;
+        $filename = apply_filters( 'wpmdb_filename', $filename, $datetime );
+        $filename .= '.sql';
         if ( $gzip ) $filename .= '.gz';
         return $filename;
     }
 
     function get_nicename( $datetime, $gzip ) {
-        $name = DB_NAME . '-migrate-' . $datetime . '.sql';
+        $name = DB_NAME . '-migrate-' . $datetime;
+        $name = apply_filters( 'wpmdb_filename', $name, $datetime );
+        $name .= '.sql';
         if ( $gzip ) $name .= '.gz';
         return $name;
     }
