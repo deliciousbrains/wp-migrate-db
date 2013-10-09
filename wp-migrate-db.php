@@ -700,6 +700,7 @@ class WP_Migrate_DB {
     } //wp_db_backup
 
     function db_backup_header() {
+        $charset = ( defined( 'DB_CHARSET' ) ? DB_CHARSET : 'utf8' );
         $this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-migrate-db' ) . "\n", false );
         $this->stow( "# " . sprintf( __( 'From %s to %s', 'wp-migrate-db' ), $_POST['old_url'], $_POST['new_url'] ) . "\n", false );
         $this->stow( "#\n", false );
@@ -707,6 +708,7 @@ class WP_Migrate_DB {
         $this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-migrate-db' ), DB_HOST ) . "\n", false );
         $this->stow( "# " . sprintf( __( 'Database: %s', 'wp-migrate-db' ), $this->backquote( DB_NAME ) ) . "\n", false );
         $this->stow( "# --------------------------------------------------------\n\n", false );
+        $this->stow( "/*!40101 SET NAMES $charset */;\n\n", false );
     }
 
     function gzip() {
