@@ -37,7 +37,7 @@ if ( !defined( 'DS' ) ) {
 }
 
 if ( ! defined( 'ROWS_PER_SEGMENT' ) ) {
-    define( 'ROWS_PER_SEGMENT', 100 );
+    define( 'ROWS_PER_SEGMENT', 500 );
 }
 
 class WP_Migrate_DB {
@@ -537,6 +537,8 @@ class WP_Migrate_DB {
                 $row_inc = ROWS_PER_SEGMENT;
             }
 
+            $current_row = 1;
+            
             do {
                 $where = '';
                 // We need ORDER BY here because with LIMIT, sometimes it will return
@@ -560,13 +562,30 @@ class WP_Migrate_DB {
                 $sql = "SELECT " . $this->backquote( $table ) . ".* FROM " . $this->backquote( $table ) . " $where LIMIT {$row_start}, {$row_inc}";
 
                 $table_data = $wpdb->get_results( $sql, ARRAY_A );
-
-                $entries = 'INSERT INTO ' . $this->backquote( $table ) . ' VALUES (';
+                
                 //    \x08\\x09, not required
                 $search = array( "\x00", "\x0a", "\x0d", "\x1a" );
                 $replace = array( '\0', '\n', '\r', '\Z' );
                 if ( $table_data ) {
                     foreach ( $table_data as $row ) {
+                        
+                        if ( $current_row == 1 ) {
+                            $start_of_row = "\nINSERT INTO " . $this->backquote( $table ) . " VALUES \n(";
+                            $end_of_row = ', ';
+                        } else {
+                            $start_of_row = '(';
+                            $end_of_row = ', ';
+
+                            if ( $current_row == 500 || $current_row == count($table_data) ) {
+                                $end_of_row = '; ';
+                                $current_row = 0;
+                            }
+                        }
+                        
+                        if ( count($table_data) == 1 ) {
+                            $end_of_row = '; ';
+                        }
+                        
                         $values = array();
                         foreach ( $row as $key => $value ) {
                             if ( isset( $ints[strtolower( $key )] ) && $ints[strtolower( $key )] ) {
@@ -588,10 +607,12 @@ class WP_Migrate_DB {
                                 }
                             }
                         }
-                        $this->stow( " \n" . $entries . implode( ', ', $values ) . ') ;' );
+                        $this->stow( " \n" . $start_of_row . implode( ', ', $values ) . ') ' . $end_of_row );
+                        $current_row++;
                     }
                     $row_start += $row_inc;
                 }
+                
             } while ( ( count( $table_data ) > 0 ) and ( $segment=='none' ) );
         }
 
