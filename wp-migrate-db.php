@@ -572,19 +572,18 @@ class WP_Migrate_DB {
                         if ( $current_row == 1 ) {
                             $start_of_row = "\nINSERT INTO " . $this->backquote( $table ) . " VALUES \n(";
                             $end_of_row = ', ';
-
-                            if ( count($table_data) == 1 ) {
-                                $end_of_row = '; ';
-                            }
-
                         } else {
                             $start_of_row = '(';
                             $end_of_row = ', ';
 
-                            if ( $current_row == 499 || $current_row == count($table_data) ) {
+                            if ( $current_row == 500 || $current_row == count($table_data) ) {
                                 $end_of_row = '; ';
                                 $current_row = 0;
                             }
+                        }
+                        
+                        if ( count($table_data) == 1 ) {
+                            $end_of_row = '; ';
                         }
                         
                         $values = array();
