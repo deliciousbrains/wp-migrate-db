@@ -1,159 +1,161 @@
 #migrate-form {
-  padding-top: 10px;
+    padding-top: 10px;
 }
 
 .form-table .row-new-url th, .form-table .row-new-url td,
 .form-table .row-new-path th,
 .form-table .row-new-path td,
+.form-table .row-new-prefix td,
+.form-table .row-new-prefix th,
 .form-table .row-revisions th,
 .form-table .row-revisions td {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
 }
 .form-table .row-old-path th, .form-table .row-old-path td,
 .form-table .row-save-file th,
 .form-table .row-save-file td,
 .form-table .row-guids th,
 .form-table .row-guids td {
-  padding-top: 20px;
+    padding-top: 20px;
 }
 
 p.submit {
-  overflow: hidden;
-  padding-top: 20px;
-  border-top: 1px solid #ccc;
-  margin-top: 20px;
+    overflow: hidden;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
 }
 p.submit input {
-  float: left;
+    float: left;
 }
 p.submit img {
-  float: left;
-  margin: 3px 0 0 5px;
+    float: left;
+    margin: 3px 0 0 5px;
 }
 
 #wpmdb-container {
-  position: relative;
+    position: relative;
 }
 
 #wpmdb-main {
-  margin-right: 320px;
-  min-height: 1200px;
+    margin-right: 320px;
+    min-height: 1200px;
 }
 
 #wpmdb-sidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 250px;
-  border: 1px solid #ccc;
-  padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    border: 1px solid #ccc;
+    padding: 20px;
 }
 #wpmdb-sidebar .author {
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ccc;
-  overflow: hidden;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    overflow: hidden;
 }
 #wpmdb-sidebar .author img {
-  float: left;
-  margin-right: 20px;
+    float: left;
+    margin-right: 20px;
 }
 #wpmdb-sidebar .author .desc {
-  float: left;
+    float: left;
 }
 #wpmdb-sidebar .author h3 {
-  font-size: 12px;
-  margin: 0;
+    font-size: 12px;
+    margin: 0;
 }
 #wpmdb-sidebar .author h2 {
-  font-size: 18px;
-  margin: 0;
-  padding: 0;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
 }
 #wpmdb-sidebar .author h2 a {
-  color: #464646;
-  text-decoration: none;
+    color: #464646;
+    text-decoration: none;
 }
 #wpmdb-sidebar .author h2 a:hover {
-  color: #000;
+    color: #000;
 }
 #wpmdb-sidebar .author p {
-  margin: 0;
+    margin: 0;
 }
 #wpmdb-sidebar .video {
-  position: relative;
-  display: block;
+    position: relative;
+    display: block;
 }
 #wpmdb-sidebar .video:before, #wpmdb-sidebar .video:after {
-  position: absolute;
-  content: " ";
-  margin: auto;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+    position: absolute;
+    content: " ";
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 #wpmdb-sidebar .video:before {
-  width: 60px;
-  height: 60px;
-  -webkit-border-radius: 60px;
-  -moz-border-radius: 60px;
-  -ms-border-radius: 60px;
-  -o-border-radius: 60px;
-  border-radius: 60px;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
-  opacity: 0.8;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  z-index: 2;
+    width: 60px;
+    height: 60px;
+    -webkit-border-radius: 60px;
+    -moz-border-radius: 60px;
+    -ms-border-radius: 60px;
+    -o-border-radius: 60px;
+    border-radius: 60px;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+    opacity: 0.8;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    z-index: 2;
 }
 #wpmdb-sidebar .video:after {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
-  opacity: 0.8;
-  border: 20px solid transparent;
-  border-top-width: 12px;
-  border-bottom-width: 12px;
-  border-left-color: #333;
-  background: transparent;
-  display: block;
-  left: 23.4375px;
-  width: 0px;
-  height: 0px;
-  z-index: 3;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+    opacity: 0.8;
+    border: 20px solid transparent;
+    border-top-width: 12px;
+    border-bottom-width: 12px;
+    border-left-color: #333;
+    background: transparent;
+    display: block;
+    left: 23.4375px;
+    width: 0px;
+    height: 0px;
+    z-index: 3;
 }
 #wpmdb-sidebar .subscribe h2 {
-  padding: 0;
-  margin: 0;
-  margin-bottom: 0.5em;
-  color: #666;
-  font-size: 20px;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.5em;
+    color: #666;
+    font-size: 20px;
 }
 #wpmdb-sidebar .subscribe h3 {
-  font-size: 16px;
-  margin: 0;
+    font-size: 16px;
+    margin: 0;
 }
 #wpmdb-sidebar .subscribe p {
-  margin: 0;
+    margin: 0;
 }
 #wpmdb-sidebar .subscribe p.interesting {
-  margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 #wpmdb-sidebar .subscribe .links {
-  margin-bottom: 2em;
+    margin-bottom: 2em;
 }
 #wpmdb-sidebar .subscribe .links a {
-  text-decoration: none;
+    text-decoration: none;
 }
 #wpmdb-sidebar .subscribe .promise {
-  color: #999;
+    color: #999;
 }
 #wpmdb-sidebar .subscribe .field {
-  margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 #wpmdb-sidebar .subscribe .field p {
-  margin-bottom: 0.3em;
+    margin-bottom: 0.3em;
 }
 #wpmdb-sidebar .subscribe .field.submit-button {
-  margin-bottom: 1em;
+    margin-bottom: 1em;
 }

@@ -221,6 +221,7 @@ class WP_Migrate_DB {
             $form_values = $_POST;
         }
         else {
+            global $wpdb;
             $form_values['old_url'] = get_bloginfo( 'url' );
 
             $form_values['old_path'] = dirname( __FILE__ );
@@ -290,6 +291,7 @@ class WP_Migrate_DB {
                             <?php $this->show_error( 'new_url' ); ?>
                         </td>
                     </tr>
+
                     <tr valign="top" class="row-old-path">
                         <th scope="row">
                             <label for="old_path"><?php _e( 'Current file path', 'wp-migrate-db' ); ?></label>
@@ -308,6 +310,26 @@ class WP_Migrate_DB {
                             <?php $this->show_error( 'new_path' ); ?>
                         </td>
                     </tr>
+
+                    <tr valign="top" class="row-old-prefix">
+                        <th scope="row">
+                            <label for="old_prefix"><?php _e('Table Prefix', 'wp-migrate-db'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" size="10" name="old_prefix" class="code" id="old_prefix" value="<?php echo  $wpdb->prefix; ?>" />
+                        </td>
+                    </tr>
+
+                    <tr valign="top" class="row-new-prefix">
+                        <th scope="row">
+                            <label for="new_prefix"><?php _e('New Table Prefix', 'wp-migrate-db'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" size="10" name="new_prefix" class="code" id="new_prefix" value="" />
+                        </td>
+                    </tr>
+
+
                     <tr valign="top" class="row-guids">
                         <th scope="row"><?php _e( 'Data Options', 'wp-migrate-db' ); ?></th>
                         <td>
