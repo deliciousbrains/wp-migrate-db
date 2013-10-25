@@ -695,6 +695,10 @@ class WP_Migrate_DB {
 
     function db_backup($old_prefix = '', $new_prefix = '') {
         global $table_prefix, $wpdb;
+        $new_table_name = $table;
+        if ($new_prefix != '' && $old_prefix != '') {
+            $new_table_name = str_replace($old_prefix, $new_prefix, $table, $rep_count);
+        }
 
         $tables = $wpdb->get_results( "SHOW FULL TABLES", ARRAY_N );
 
@@ -717,7 +721,7 @@ class WP_Migrate_DB {
             if ( !ini_get( 'safe_mode' ) ) @set_time_limit( 15*60 );
             // Create the SQL statements
             $this->stow( "# --------------------------------------------------------\n" );
-            $this->stow( "# " . sprintf( __( 'Table: %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+            $this->stow( "# " . sprintf( __( 'Table: %s', 'wp-migrate-db' ), $this->backquote( $new_table_name ) ) . "\n" );
             $this->stow( "# --------------------------------------------------------\n" );
             $this->backup_table( $table, 'none', $old_prefix, $new_prefix );
         }
