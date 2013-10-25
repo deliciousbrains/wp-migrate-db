@@ -695,10 +695,6 @@ class WP_Migrate_DB {
 
     function db_backup($old_prefix = '', $new_prefix = '') {
         global $table_prefix, $wpdb;
-        $new_table_name = $table;
-        if ($new_prefix != '' && $old_prefix != '') {
-            $new_table_name = str_replace($old_prefix, $new_prefix, $table, $rep_count);
-        }
 
         $tables = $wpdb->get_results( "SHOW FULL TABLES", ARRAY_N );
 
@@ -717,6 +713,11 @@ class WP_Migrate_DB {
         foreach ( $tables as $table ) {
             if ( 'VIEW' == $table[1] ) continue;
             $table = $table[0];
+            $new_table_name = $table;
+            if ($new_prefix != '' && $old_prefix != '') {
+                $new_table_name = str_replace($old_prefix, $new_prefix, $new_table_name, $rep_count);
+            }
+
             // Increase script execution time-limit to 15 min for every table.
             if ( !ini_get( 'safe_mode' ) ) @set_time_limit( 15*60 );
             // Create the SQL statements
@@ -741,6 +742,10 @@ class WP_Migrate_DB {
         $charset = ( defined( 'DB_CHARSET' ) ? DB_CHARSET : 'utf8' );
         $this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-migrate-db' ) . "\n", false );
         $this->stow( "# " . sprintf( __( 'From %s to %s', 'wp-migrate-db' ), $_POST['old_url'], $_POST['new_url'] ) . "\n", false );
+        if ($_POST['old_prefix'] != '' && $_POST['new_prefix'] != '')
+        {
+            $this->stow( "# " . sprintf( __('Table prefix changed from %s to %s'), $_POST['old_prefix'], $_POST['new_prefix'], 'wp-migrate-db') . "\n", false);
+        }
         $this->stow( "#\n", false );
         $this->stow( "# " . sprintf( __( 'Generated: %s', 'wp-migrate-db' ), date( "l j. F Y H:i T" ) ) . "\n", false );
         $this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-migrate-db' ), DB_HOST ) . "\n", false );
