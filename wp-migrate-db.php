@@ -461,8 +461,12 @@ class WP_Migrate_DB {
      * Modified by Scott Merrill (http://www.skippy.net/)
      * to use the WordPress $wpdb object
      *
+     * Modified by Ivan Yivoff so it's able to change the prefix on exported tables
+     *
      * @param string  $table
      * @param string  $segment
+     * @param string $old_prefix
+     * @param string $new_prefix
      * @return void
      */
     function backup_table( $table, $segment = 'none', $old_prefix = '', $new_prefix = '' ) {
