@@ -66,9 +66,9 @@ class WP_Migrate_DB {
 
     function subscribe_submission() {
         $response = wp_remote_post( 'http://bradt.ca/wpmdb-subscribe.php', array(
-                'timeout' => 60,
-                'body' => $_POST
-            ) );
+            'timeout' => 60,
+            'body' => $_POST
+        ) );
 
         if ( is_wp_error( $response ) ) {
             echo "Error attempting to save your submission.";
@@ -99,9 +99,9 @@ class WP_Migrate_DB {
         wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
 
         $wp_migrate_db_translate_script = array(
-                                                  'show_less' => __( 'show less', 'wp-migrate-db' ),
-                                                  'show_more' => __( 'show more', 'wp-migrate-db' )
-                                                  );
+            'show_less' => __( 'show less', 'wp-migrate-db' ),
+            'show_more' => __( 'show more', 'wp-migrate-db' )
+        );
 
         wp_localize_script( 'wp-migrate-db-script', 'wp_migrate_db_translate_script', $wp_migrate_db_translate_script );
     }
@@ -154,11 +154,11 @@ class WP_Migrate_DB {
         ?>
 
         <div class="wrap">
-            <div id="icon-tools" class="icon32"><br /></div><h2><?php _e( 'Migrate DB', 'wp-migrate-db' ); ?></h2>
+        <div id="icon-tools" class="icon32"><br /></div><h2><?php _e( 'Migrate DB', 'wp-migrate-db' ); ?></h2>
 
-            <div id="wpmdb-container">
+        <div id="wpmdb-container">
 
-            <div id="wpmdb-main">
+        <div id="wpmdb-main">
 
         <?php
         if ( isset( $_POST['Submit'] ) ) {
@@ -174,48 +174,48 @@ class WP_Migrate_DB {
 
                 <div class="message updated">
 
-                <?php
-                if ( isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
-                    add_action( 'admin_head-settings_page_wp-migrate-db', array( $this, 'admin_head' ) );
-                    ?>
-                    <p>
-                        <?php _e( 'Your database (SQL) file has been successfully generated. Your download should begin any second.', 'wp-migrate-db' ); ?>
-                    </p>
                     <?php
-                }
-                else {
-                    ?>
-                    <p>
-                        <?php
+                    if ( isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
+                        add_action( 'admin_head-settings_page_wp-migrate-db', array( $this, 'admin_head' ) );
+                        ?>
+                        <p>
+                            <?php _e( 'Your database (SQL) file has been successfully generated. Your download should begin any second.', 'wp-migrate-db' ); ?>
+                        </p>
+                    <?php
+                    }
+                    else {
+                        ?>
+                        <p>
+                            <?php
                             _e( 'Your database (SQL) file has been successfully generated and saved to', 'wp-migrate-db' );
                             echo '<br />';
                             echo $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) );
                             echo '.';
-                        ?>
-                        <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>"><?php _e( 'Click here to download.', 'wp-migrate-db' ); ?></a>
-                    </p>
+                            ?>
+                            <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>"><?php _e( 'Click here to download.', 'wp-migrate-db' ); ?></a>
+                        </p>
                     <?php
-                }
-                ?>
+                    }
+                    ?>
 
                 </div>
 
                 <p>
                     <b>
                         <?php
-                            _e( 'Non-Serialized Strings Replaced:', 'wp-migrate-db');
-                            echo $this->replaced['nonserialized']['count'];
-                            ?>
+                        _e( 'Non-Serialized Strings Replaced:', 'wp-migrate-db');
+                        echo $this->replaced['nonserialized']['count'];
+                        ?>
                     </b><br />
                     <b>
                         <?php
-                            _e( 'Serialized Strings Replaced:', 'wp-migrate-db');
-                            echo $this->replaced['serialized']['count'];
+                        _e( 'Serialized Strings Replaced:', 'wp-migrate-db');
+                        echo $this->replaced['serialized']['count'];
                         ?>
                     </b><br />
                     <textarea style="width: 100%; height: 200px;" wrap="off"><?php echo $this->replaced['serialized']['strings']; ?></textarea>
                 </p>
-                <?php
+            <?php
             }
 
             $form_values = $_POST;
@@ -246,7 +246,7 @@ class WP_Migrate_DB {
                     </p>
                 </div>
 
-                <?php
+            <?php
             }
 
             if ( !empty( $this->errors ) ) {
@@ -258,7 +258,7 @@ class WP_Migrate_DB {
                     </p>
                 </div>
 
-                <?php
+            <?php
             }
             ?>
 
@@ -271,7 +271,7 @@ class WP_Migrate_DB {
 
             <form method="post" id="migrate-form">
                 <table class="form-table">
-                <tbody>
+                    <tbody>
                     <tr valign="top" class="row-old-url">
                         <th scope="row">
                             <label for="old_url"><?php _e( 'Current address (URL)', 'wp-migrate-db' ); ?></label>
@@ -352,17 +352,17 @@ class WP_Migrate_DB {
                         </td>
                     </tr>
                     <?php if ( $this->gzip() ) : ?>
-                    <tr valign="top" class="row-gzip">
-                        <th scope="row">&nbsp;</th>
-                        <td>
-                            <label for="gzipfile">
-                                <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
-                                <?php _e( 'Compress file with gzip', 'wp-migrate-db' ); ?>
-                            </label>
-                        </td>
-                    </tr>
+                        <tr valign="top" class="row-gzip">
+                            <th scope="row">&nbsp;</th>
+                            <td>
+                                <label for="gzipfile">
+                                    <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
+                                    <?php _e( 'Compress file with gzip', 'wp-migrate-db' ); ?>
+                                </label>
+                            </td>
+                        </tr>
                     <?php endif; ?>
-                </tbody>
+                    </tbody>
                 </table>
 
                 <p class="submit">
@@ -370,7 +370,7 @@ class WP_Migrate_DB {
                 </p>
             </form>
 
-            <?php
+        <?php
         }
         ?>
         </div>
@@ -427,11 +427,11 @@ class WP_Migrate_DB {
                 </p>
             </form>
 
-            </div>
-
-            </div>
         </div>
-        <?php
+
+        </div>
+        </div>
+    <?php
     }
 
     function apply_replaces( $subject, $is_serialized = false ) {
@@ -465,8 +465,15 @@ class WP_Migrate_DB {
      * @param string  $segment
      * @return void
      */
-    function backup_table( $table, $segment = 'none' ) {
+    function backup_table( $table, $segment = 'none', $old_prefix = '', $new_prefix = '' ) {
         global $wpdb;
+
+        $rep_count = 1;
+
+        $new_table_name = $table;
+        if ($new_prefix != '' && $old_prefix != '') {
+            $new_table_name = str_replace($old_prefix, $new_prefix, $table, $rep_count);
+        }
 
         $table_structure = $wpdb->get_results( "DESCRIBE " . $this->backquote( $table ) );
         if ( ! $table_structure ) {
@@ -478,29 +485,29 @@ class WP_Migrate_DB {
             // Add SQL statement to drop existing table
             $this->stow( "\n\n" );
             $this->stow( "#\n" );
-            $this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+            $this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-migrate-db' ), $this->backquote( $new_table_name ) ) . "\n" );
             $this->stow( "#\n" );
             $this->stow( "\n" );
-            $this->stow( "DROP TABLE IF EXISTS " . $this->backquote( $table ) . ";\n" );
+            $this->stow( "DROP TABLE IF EXISTS " . $this->backquote( $new_table_name ) . ";\n" );
 
             // Table structure
             // Comment in SQL-file
             $this->stow( "\n\n" );
             $this->stow( "#\n" );
-            $this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+            $this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-migrate-db' ), $this->backquote( $new_table_name ) ) . "\n" );
             $this->stow( "#\n" );
             $this->stow( "\n" );
 
             $create_table = $wpdb->get_results( "SHOW CREATE TABLE " . $this->backquote( $table ), ARRAY_N );
             if ( false === $create_table ) {
-                $err_msg = sprintf( __( 'Error with SHOW CREATE TABLE for %s.', 'wp-migrate-db' ), $table );
+                $err_msg = sprintf( __( 'Error with SHOW CREATE TABLE for %s (original name).', 'wp-migrate-db' ), $table );
                 $this->errors['show_create'] = $err_msg;
                 $this->stow( "#\n# $err_msg\n#\n" );
             }
-            $this->stow( $create_table[0][1] . ' ;' );
+            $this->stow( str_replace($table, $new_table_name, $create_table[0][1], $rep_count) . ' ;' );
 
             if ( false === $table_structure ) {
-                $err_msg = sprintf( __( 'Error getting table structure of %s', 'wp-migrate-db' ), $table );
+                $err_msg = sprintf( __( 'Error getting table structure of %s (original name)', 'wp-migrate-db' ), $table );
                 $this->errors['table_structure'] =  $err_msg;
                 $this->stow( "#\n# $err_msg\n#\n" );
             }
@@ -508,7 +515,7 @@ class WP_Migrate_DB {
             // Comment in SQL-file
             $this->stow( "\n\n" );
             $this->stow( "#\n" );
-            $this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+            $this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-migrate-db' ), $this->backquote( $new_table_name ) ) . "\n" );
             $this->stow( "#\n" );
         }
 
@@ -561,7 +568,7 @@ class WP_Migrate_DB {
 
                 $table_data = $wpdb->get_results( $sql, ARRAY_A );
 
-                $entries = 'INSERT INTO ' . $this->backquote( $table ) . ' VALUES (';
+                $entries = 'INSERT INTO ' . $this->backquote( $new_table_name ) . ' VALUES (';
                 //    \x08\\x09, not required
                 $search = array( "\x00", "\x0a", "\x0d", "\x1a" );
                 $replace = array( '\0', '\n', '\r', '\Z' );
@@ -599,7 +606,7 @@ class WP_Migrate_DB {
             // Create footer/closing comment in SQL-file
             $this->stow( "\n" );
             $this->stow( "#\n" );
-            $this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+            $this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-migrate-db' ), $this->backquote( $new_table_name ) ) . "\n" );
             $this->stow( "# --------------------------------------------------------\n" );
             $this->stow( "\n" );
         }
@@ -798,7 +805,7 @@ class WP_Migrate_DB {
         if ( isset( $_POST['gzipfile'] ) ) $url .= '&gz=1';
         ?>
         <meta http-equiv="refresh" content="1;url=<?php echo $url; ?>"/>
-        <?php
+    <?php
     }
 }
 
