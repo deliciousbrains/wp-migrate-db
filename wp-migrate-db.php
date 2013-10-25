@@ -165,7 +165,7 @@ class WP_Migrate_DB {
             if ( empty( $this->errors ) ) {
                 $this->fp = $this->open( $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ) );
                 $this->db_backup_header();
-                $this->db_backup();
+                $this->db_backup($_POST['old_prefix'], $_POST['new_prefix']);
                 $this->close( $this->fp );
             }
 
@@ -326,6 +326,7 @@ class WP_Migrate_DB {
                         </th>
                         <td>
                             <input type="text" size="10" name="new_prefix" class="code" id="new_prefix" value="" />
+                            <p class="description">Optional. Only does something if both Original and New prefix are filled in</p>
                         </td>
                     </tr>
 
@@ -692,7 +693,7 @@ class WP_Migrate_DB {
         return $data;
     }
 
-    function db_backup() {
+    function db_backup($old_prefix = '', $new_prefix = '') {
         global $table_prefix, $wpdb;
 
         $tables = $wpdb->get_results( "SHOW FULL TABLES", ARRAY_N );
@@ -718,7 +719,7 @@ class WP_Migrate_DB {
             $this->stow( "# --------------------------------------------------------\n" );
             $this->stow( "# " . sprintf( __( 'Table: %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
             $this->stow( "# --------------------------------------------------------\n" );
-            $this->backup_table( $table );
+            $this->backup_table( $table, 'none', $old_prefix, $new_prefix );
         }
 
         //$this->close($this->fp);
