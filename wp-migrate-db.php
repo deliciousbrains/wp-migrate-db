@@ -221,7 +221,7 @@ class WP_Migrate_DB {
             $form_values = $_POST;
         }
         else {
-            global $wpdb;
+
             $form_values['old_url'] = get_bloginfo( 'url' );
 
             $form_values['old_path'] = dirname( __FILE__ );
@@ -238,6 +238,7 @@ class WP_Migrate_DB {
         }
 
         if ( !isset( $_POST['Submit'] ) || ( isset( $_POST['Submit'] ) && !empty( $this->errors ) ) ) {
+            global $wpdb;
             if ( !is_writable( $this->upload_dir ) ) {
                 ?>
 
