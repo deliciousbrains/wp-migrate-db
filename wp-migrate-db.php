@@ -4,8 +4,12 @@ Plugin Name: WP Migrate DB
 Plugin URI: http://wordpress.org/extend/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Brad Touesnard
-Version: 0.5
+Version: 0.5.1
 Author URI: http://bradt.ca/
+
+Text Domain: wp-migrate-db
+Domain Path: /languages
+
 */
 
 // Copyright (c) 2008 Brad Touesnard. All rights reserved.
@@ -66,9 +70,9 @@ class WP_Migrate_DB {
 
     function subscribe_submission() {
         $response = wp_remote_post( 'http://bradt.ca/wpmdb-subscribe.php', array(
-            'timeout' => 60,
-            'body' => $_POST
-        ) );
+                'timeout' => 60,
+                'body' => $_POST
+            ) );
 
         if ( is_wp_error( $response ) ) {
             echo "Error attempting to save your submission.";
@@ -99,9 +103,9 @@ class WP_Migrate_DB {
         wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
 
         $wp_migrate_db_translate_script = array(
-            'show_less' => __( 'show less', 'wp-migrate-db' ),
-            'show_more' => __( 'show more', 'wp-migrate-db' )
-        );
+                                                  'show_less' => __( 'show less', 'wp-migrate-db' ),
+                                                  'show_more' => __( 'show more', 'wp-migrate-db' )
+                                                  );
 
         wp_localize_script( 'wp-migrate-db-script', 'wp_migrate_db_translate_script', $wp_migrate_db_translate_script );
     }
@@ -154,11 +158,11 @@ class WP_Migrate_DB {
         ?>
 
         <div class="wrap">
-        <div id="icon-tools" class="icon32"><br /></div><h2><?php _e( 'Migrate DB', 'wp-migrate-db' ); ?></h2>
+            <div id="icon-tools" class="icon32"><br /></div><h2><?php _e( 'Migrate DB', 'wp-migrate-db' ); ?></h2>
 
-        <div id="wpmdb-container">
+            <div id="wpmdb-container">
 
-        <div id="wpmdb-main">
+            <div id="wpmdb-main">
 
         <?php
         if ( isset( $_POST['Submit'] ) ) {
@@ -174,48 +178,48 @@ class WP_Migrate_DB {
 
                 <div class="message updated">
 
+                <?php
+                if ( isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
+                    add_action( 'admin_head-settings_page_wp-migrate-db', array( $this, 'admin_head' ) );
+                    ?>
+                    <p>
+                        <?php _e( 'Your database (SQL) file has been successfully generated. Your download should begin any second.', 'wp-migrate-db' ); ?>
+                    </p>
                     <?php
-                    if ( isset( $_POST['savefile'] ) && $_POST['savefile'] ) {
-                        add_action( 'admin_head-settings_page_wp-migrate-db', array( $this, 'admin_head' ) );
-                        ?>
-                        <p>
-                            <?php _e( 'Your database (SQL) file has been successfully generated. Your download should begin any second.', 'wp-migrate-db' ); ?>
-                        </p>
-                    <?php
-                    }
-                    else {
-                        ?>
-                        <p>
-                            <?php
+                }
+                else {
+                    ?>
+                    <p>
+                        <?php
                             _e( 'Your database (SQL) file has been successfully generated and saved to', 'wp-migrate-db' );
                             echo '<br />';
                             echo $this->upload_dir . DS . $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) );
                             echo '.';
-                            ?>
-                            <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>"><?php _e( 'Click here to download.', 'wp-migrate-db' ); ?></a>
-                        </p>
+                        ?>
+                        <a href="<?php echo $this->upload_url, '/', $this->get_filename( $this->datetime, isset( $_POST['gzipfile'] ) ); ?>"><?php _e( 'Click here to download.', 'wp-migrate-db' ); ?></a>
+                    </p>
                     <?php
-                    }
-                    ?>
+                }
+                ?>
 
                 </div>
 
                 <p>
                     <b>
                         <?php
-                        _e( 'Non-Serialized Strings Replaced:', 'wp-migrate-db');
-                        echo $this->replaced['nonserialized']['count'];
-                        ?>
+                            _e( 'Non-Serialized Strings Replaced:', 'wp-migrate-db');
+                            echo $this->replaced['nonserialized']['count'];
+                            ?>
                     </b><br />
                     <b>
                         <?php
-                        _e( 'Serialized Strings Replaced:', 'wp-migrate-db');
-                        echo $this->replaced['serialized']['count'];
+                            _e( 'Serialized Strings Replaced:', 'wp-migrate-db');
+                            echo $this->replaced['serialized']['count'];
                         ?>
                     </b><br />
                     <textarea style="width: 100%; height: 200px;" wrap="off"><?php echo $this->replaced['serialized']['strings']; ?></textarea>
                 </p>
-            <?php
+                <?php
             }
 
             $form_values = $_POST;
@@ -241,14 +245,14 @@ class WP_Migrate_DB {
             global $wpdb;
             if ( !is_writable( $this->upload_dir ) ) {
                 ?>
-
                 <div id="message" class="message error">
                     <p>
-                        <?php sprintf( __('The directory %s needs to be writable.', 'wp-migrate-db'), $this->upload_dir ); ?>
+                        <?php echo sprintf( __('The directory %s needs to be writable.', 'wp-migrate-db'), $this->upload_dir ); ?>
+
                     </p>
                 </div>
 
-            <?php
+                <?php
             }
 
             if ( !empty( $this->errors ) ) {
@@ -260,7 +264,7 @@ class WP_Migrate_DB {
                     </p>
                 </div>
 
-            <?php
+                <?php
             }
             ?>
 
@@ -273,7 +277,7 @@ class WP_Migrate_DB {
 
             <form method="post" id="migrate-form">
                 <table class="form-table">
-                    <tbody>
+                <tbody>
                     <tr valign="top" class="row-old-url">
                         <th scope="row">
                             <label for="old_url"><?php _e( 'Current address (URL)', 'wp-migrate-db' ); ?></label>
@@ -327,7 +331,7 @@ class WP_Migrate_DB {
                         </th>
                         <td>
                             <input type="text" size="10" name="new_prefix" class="code" id="new_prefix" value="" />
-                            <p class="description">Optional. Only does something if both Original and New prefix are filled in</p>
+                            <p class="description"><?php _e("Optional. Only does something if both Original and New prefix are filled in", 'wp-migrate-db'); ?></p>
                         </td>
                     </tr>
 
@@ -376,17 +380,17 @@ class WP_Migrate_DB {
                         </td>
                     </tr>
                     <?php if ( $this->gzip() ) : ?>
-                        <tr valign="top" class="row-gzip">
-                            <th scope="row">&nbsp;</th>
-                            <td>
-                                <label for="gzipfile">
-                                    <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
-                                    <?php _e( 'Compress file with gzip', 'wp-migrate-db' ); ?>
-                                </label>
-                            </td>
-                        </tr>
+                    <tr valign="top" class="row-gzip">
+                        <th scope="row">&nbsp;</th>
+                        <td>
+                            <label for="gzipfile">
+                                <input id="gzipfile" type="checkbox" value="1" name="gzipfile" />
+                                <?php _e( 'Compress file with gzip', 'wp-migrate-db' ); ?>
+                            </label>
+                        </td>
+                    </tr>
                     <?php endif; ?>
-                    </tbody>
+                </tbody>
                 </table>
 
                 <p class="submit">
@@ -394,7 +398,7 @@ class WP_Migrate_DB {
                 </p>
             </form>
 
-        <?php
+            <?php
         }
         ?>
         </div>
@@ -451,11 +455,11 @@ class WP_Migrate_DB {
                 </p>
             </form>
 
-        </div>
+            </div>
 
+            </div>
         </div>
-        </div>
-    <?php
+        <?php
     }
 
     function apply_replaces( $subject, $is_serialized = false ) {
@@ -842,7 +846,7 @@ class WP_Migrate_DB {
         if ( isset( $_POST['gzipfile'] ) ) $url .= '&gz=1';
         ?>
         <meta http-equiv="refresh" content="1;url=<?php echo $url; ?>"/>
-    <?php
+        <?php
     }
 }
 
