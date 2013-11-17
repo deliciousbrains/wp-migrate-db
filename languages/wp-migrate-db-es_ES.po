@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Migrate DB\n"
+"POT-Creation-Date: 2013-11-17 10:01+0100\n"
+"PO-Revision-Date: 2013-11-17 10:25+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../wp-migrate-db.php:102
+msgid "show less"
+msgstr "mostrar menos"
+
+#: ../wp-migrate-db.php:103 ../wp-migrate-db.php:342
+msgid "show more"
+msgstr "mostrar más"
+
+#: ../wp-migrate-db.php:131
+msgid "Please enter the current URL."
+msgstr "Introduzca el URL actual"
+
+#: ../wp-migrate-db.php:135
+msgid "Please enter a new URL."
+msgstr "Introduzca el URL nuevo"
+
+#: ../wp-migrate-db.php:139
+msgid "Please enter the current file path."
+msgstr "Introduzca la ruta actual de WP"
+
+#: ../wp-migrate-db.php:143
+msgid "Please enter a new file path."
+msgstr "Introduzca la nueva ruta de WP"
+
+#: ../wp-migrate-db.php:157 ../wp-migrate-db.php:835
+msgid "Migrate DB"
+msgstr "Migrar Base de Datos"
+
+#: ../wp-migrate-db.php:182
+msgid ""
+"Your database (SQL) file has been successfully generated. Your download "
+"should begin any second."
+msgstr ""
+"Su archivo de base de datos (SQL) ha sido generado con éxito! La descarga "
+"comenzará inmediatamente."
+
+#: ../wp-migrate-db.php:190
+msgid "Your database (SQL) file has been successfully generated and saved to"
+msgstr ""
+"Su archivo de base de datos (SQL) ha sido generado con éxito y guardado en "
+
+#: ../wp-migrate-db.php:195
+msgid "Click here to download."
+msgstr "Pinche aquí para descargar"
+
+#: ../wp-migrate-db.php:206
+msgid "Non-Serialized Strings Replaced:"
+msgstr "Cadenas no-serializadas reemplazadas:"
+
+#: ../wp-migrate-db.php:212
+msgid "Serialized Strings Replaced:"
+msgstr "Cadenas serializadas reemplazadas:"
+
+#: ../wp-migrate-db.php:247
+#, php-format
+msgid "The directory %s needs to be writable."
+msgstr "Hace falta permiso de escritura en el directorio %s."
+
+#: ../wp-migrate-db.php:259
+msgid ""
+"Sorry, there were errors with your form submission. Please correct them "
+"below and try again."
+msgstr ""
+"Lo siento. Hay algún error en su formulario. Por favor corríjalos y vuelva a "
+"intentarlo."
+
+#: ../wp-migrate-db.php:268
+msgid ""
+"WP Migrate DB exports your database as a MySQL data dump (much like "
+"phpMyAdmin), does a find and replace on URLs and file paths, then allows you "
+"to save it to your computer. It even takes into account serialized data and "
+"updates the string length values."
+msgstr ""
+"WP Migrate DB exporta su base de datos como un volcado de datos de MySQL "
+"(tal y como se haría desde phpMyAdmin, por ejemplo), busca y reemplaza URLs "
+"y rutas de archivos, y luego permite guardar el archivo generado en su "
+"ordenador. Hasta tiene en cuenta los datos serializados y genera los largos "
+"de cadena correspondientes."
+
+#: ../wp-migrate-db.php:271
+msgid ""
+"Example: <code>s:5:\"hello\"</code> becomes <code>s:11:\"hello world\"</code>"
+msgstr ""
+"Ejemplo: <code>s:4\"hola\"</code> se convierte en <code>s:9:\"hola mundo\"</"
+"code>"
+
+#: ../wp-migrate-db.php:279
+msgid "Current address (URL)"
+msgstr "URL actual"
+
+#: ../wp-migrate-db.php:288
+msgid "New address (URL)"
+msgstr "Nuevo URL"
+
+#: ../wp-migrate-db.php:298
+msgid "Current file path"
+msgstr "Ruta actual"
+
+#: ../wp-migrate-db.php:307
+msgid "New file path"
+msgstr "Nueva ruta:"
+
+#: ../wp-migrate-db.php:317
+msgid "Table Prefix"
+msgstr "Prefijo de tabla actual:"
+
+#: ../wp-migrate-db.php:326
+msgid "New Table Prefix"
+msgstr "Nuevo prefijo de tabla:"
+
+#: ../wp-migrate-db.php:330
+msgid ""
+"Optional. Only does something if both Original and New prefix are filled in"
+msgstr ""
+"<b>Opcional</b>. Sólo efectúa cambios si se proporciona valores para ambos "
+"campos (actual y nuevo)"
+
+#: ../wp-migrate-db.php:336
+msgid "Data Options"
+msgstr "Opciones de Datos"
+
+#: ../wp-migrate-db.php:340
+msgid "Replace GUIDs"
+msgstr "Reemplazar GUIDs"
+
+#: ../wp-migrate-db.php:346
+#, php-format
+msgid ""
+"Although the <a href=\"%s\" target=\"_blank\">WordPress Codex emphasizes</a> "
+"that GUIDs should not be changed, this is limited to sites that are already "
+"live. If the site has never been live, I recommend replacing the GUIDs. For "
+"example, you may be developing a new site locally at dev.somedomain.com and "
+"want to migrate the site live to somedomain.com."
+msgstr ""
+"Aunque el <a href=\"%s\" target=\"_blank\">WordPress Codex enfatiza</a> que "
+"los GUIDs no debieran modificarse, esto se aplica a sitios que ya están "
+"funcionando. Para un sitio que nunca ha estado en producción, se puede "
+"recomendar reemplazar los GUIDs y comenzar desde 0. Por ejemplo, en el caso "
+"de estar desarrollando localmente en dev.dominio.es y queremos migrar al "
+"servidor remoto www.dominio.es para poner el sitio en línea."
+
+#: ../wp-migrate-db.php:356
+msgid "Do not export spam comments"
+msgstr "No exportar SPAM"
+
+#: ../wp-migrate-db.php:365
+msgid "Do not export post revisions"
+msgstr "No exportar revisiones de publicaciones"
+
+#: ../wp-migrate-db.php:370
+msgid "File Options"
+msgstr "Opciones de fichero"
+
+#: ../wp-migrate-db.php:374
+msgid "Save as file to your computer"
+msgstr "Guardar archivo en su ordenador"
+
+#: ../wp-migrate-db.php:384
+msgid "Compress file with gzip"
+msgstr "Comprimir fichero con gzip"
+
+#: ../wp-migrate-db.php:393
+msgid "Export Database"
+msgstr "Exportar Base de Datos"
+
+#: ../wp-migrate-db.php:407
+msgid "Created &amp; maintained by"
+msgstr "Craeado y Mantenido por"
+
+#: ../wp-migrate-db.php:410
+msgid "Profile"
+msgstr "Perfil"
+
+#: ../wp-migrate-db.php:412
+msgid "Donate"
+msgstr "Donar"
+
+#: ../wp-migrate-db.php:418
+msgid "Pro Version Has Arrived!"
+msgstr "Pro Version"
+
+#: ../wp-migrate-db.php:423
+msgid "View Features &rarr;"
+msgstr "Ver características &rarr;"
+
+#: ../wp-migrate-db.php:424
+msgid "View Pricing &rarr;"
+msgstr "Ver precios &rarr;"
+
+#: ../wp-migrate-db.php:429
+msgid "Get 20% Off!"
+msgstr "Consigue un 20% de descuento!"
+
+#: ../wp-migrate-db.php:432
+#, php-format
+msgid ""
+"Subscribe to receive news &amp; updates below and we'll instantly send you a "
+"coupon code to get 20% off any WP Migrate DB Pro license."
+msgstr ""
+"Suscríbase para recibir noticias &amp; actualizaciones e instantáneamente le "
+"enviaremos un cupón de 20% de descuento en cualquier licencia de WP Migrate "
+"DB Pro."
+
+#: ../wp-migrate-db.php:436
+msgid "Your Name"
+msgstr "Su nombre"
+
+#: ../wp-migrate-db.php:441
+msgid "Your Email"
+msgstr "Su correo"
+
+#: ../wp-migrate-db.php:446
+msgid "Subscribe"
+msgstr "Suscribirse"
+
+#: ../wp-migrate-db.php:450
+msgid ""
+"I promise I will not use your email for anything else and you can "
+"unsubscribe with <span style=\"white-space: nowrap;\">1-click anytime</span>."
+msgstr ""
+"Prometo que no usaré su dirección para nada más y que es posible "
+"desuscribirse en cualqueir momento con 1 sólo click."
+
+#: ../wp-migrate-db.php:508
+msgid "Error getting table details"
+msgstr "Error obteniendo la información de la tabla"
+
+#: ../wp-migrate-db.php:516
+#, php-format
+msgid "Delete any existing table %s"
+msgstr "Borra la tabla %s si existe"
+
+#: ../wp-migrate-db.php:525
+#, php-format
+msgid "Table structure of table %s"
+msgstr "Estructura de la tabla %s"
+
+#: ../wp-migrate-db.php:531
+#, php-format
+msgid "Error with SHOW CREATE TABLE for %s (original name)."
+msgstr "Error con SHOW CREATE TABLE para %s (nombre original)"
+
+#: ../wp-migrate-db.php:538
+#, php-format
+msgid "Error getting table structure of %s (original name)"
+msgstr "Error obteniendo la estructura de la tabla %s (nombre original)"
+
+#: ../wp-migrate-db.php:546
+#, php-format
+msgid "Data contents of table %s"
+msgstr "Datos de \"%s\""
+
+#: ../wp-migrate-db.php:637
+#, php-format
+msgid "End of data contents of table %s"
+msgstr "Final de los datos de \"%s\""
+
+#: ../wp-migrate-db.php:726
+#, php-format
+msgid "Table: %s"
+msgstr "Tabla: \"%s\""
+
+#: ../wp-migrate-db.php:744
+msgid "WordPress MySQL database migration"
+msgstr "Migración de MySQL DB de Wordpress"
+
+#: ../wp-migrate-db.php:745
+#, php-format
+msgid "From %s to %s"
+msgstr "De %s a %s"
+
+#: ../wp-migrate-db.php:748
+#, php-format
+msgid "Table prefix changed from %s to %s"
+msgstr "Prefijo de tabla cambiado de %s a %s"
+
+#: ../wp-migrate-db.php:751
+#, php-format
+msgid "Generated: %s"
+msgstr "Generado: %s"
+
+#: ../wp-migrate-db.php:752
+#, php-format
+msgid "Hostname: %s"
+msgstr "Nombre de servidor: %s"
+
+#: ../wp-migrate-db.php:753
+#, php-format
+msgid "Database: %s"
+msgstr "Base de Datos: %s"
+
+#: ../wp-migrate-db.php:779 ../wp-migrate-db.php:782
+msgid "There was an error writing a line to the backup script:"
+msgstr "Error escribiendo una línea al script de copia de seguridad:"
