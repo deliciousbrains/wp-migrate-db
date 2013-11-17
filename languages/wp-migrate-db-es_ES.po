@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Migrate DB\n"
-"POT-Creation-Date: 2013-11-17 11:15+0100\n"
-"PO-Revision-Date: 2013-11-17 11:16+0100\n"
+"Project-Id-Version: wp-migrate-db\n"
+"POT-Creation-Date: 2013-11-17 11:01+0100\n"
+"PO-Revision-Date: 2013-11-17 13:38+0100\n"
 "Last-Translator: Ivan <ivan@yivoff.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -310,3 +310,16 @@ msgstr "Base de Datos: %s"
 #: ../wp-migrate-db.php:783 ../wp-migrate-db.php:786
 msgid "There was an error writing a line to the backup script:"
 msgstr "Error escribiendo una línea al script de copia de seguridad:"
+
+# @wp-migrate-db
+#. translators: plugin header field 'Description'
+#: wp-migrate-db.php:0
+msgid ""
+"Exports your database as a MySQL data dump (much like phpMyAdmin), does a "
+"find and replace on URLs and file paths, then allows you to save it to your "
+"computer."
+msgstr ""
+"WP Migrate DB exporta su base de datos como un volcado de datos de MySQL "
+"(tal y como se haría desde phpMyAdmin, por ejemplo), busca y reemplaza URLs "
+"y rutas de archivos, y luego permite guardar el archivo generado en su "
+"ordenador."
