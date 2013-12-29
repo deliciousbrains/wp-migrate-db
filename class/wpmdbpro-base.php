@@ -187,7 +187,7 @@ class WPMDBPro_Base {
 			return false;
 		}
 		elseif ( $response['body'] === '0' ) {
-			$this->error = 'WP Migrate DB Pro does not seem to be installed or active on the remote site. (#131 - scope: ' . $scope . ')';
+			$this->error = 'WP Migrate DB does not seem to be installed or active on the remote site. (#131 - scope: ' . $scope . ')';
 			$this->log_error( $this->error, $response );
 			return false;
 		}
@@ -436,7 +436,7 @@ class WPMDBPro_Base {
 		$licence = $this->get_licence_key();
 		if( empty( $licence ) ) {
 			$settings_link = sprintf( '<a href="%s">%s</a>', network_admin_url( $this->plugin_base ) . '#settings', __( 'Settings', 'wp-migrate-db-pro' ) );
-			$message = 'To finish activating WP Migrate DB Pro, please go to ' . $settings_link . ' and enter your licence key. 
+			$message = 'To finish activating WP Migrate DB, please go to ' . $settings_link . ' and enter your licence key. 
 				If you don\'t have a licence key, you may 
 				<a href="http://deliciousbrains.com/wp-migrate-db-pro/pricing/">purchase one</a>.';
 			return array( 'errors' => array( 'no_licence' => $message ) );

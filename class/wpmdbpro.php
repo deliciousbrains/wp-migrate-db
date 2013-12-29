@@ -2282,7 +2282,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		$addon = $addons[$args->slug];
 
 		$res = new stdClass();
-		$res->name = 'WP Migrate DB Pro ' . $addon['name'];
+		$res->name = 'WP Migrate DB ' . $addon['name'];
 		$res->version = $addon['version'];
 		$res->download_link = $this->get_plugin_update_download_url( $args->slug );
 

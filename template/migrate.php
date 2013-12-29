@@ -115,7 +115,7 @@ if( false == $is_default_profile ) {
 			<?php
 			$plugin_info = get_plugin_data( $this->plugin_file_path );
 			?>
-			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $plugin_info['Version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
+			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB at <span class="remote-location"></span> but are using <?php echo $plugin_info['Version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
 		</div>
 
 		<div class="notification-message error-notice directory-permission-notice" style="display: none;">
