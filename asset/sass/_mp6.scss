@@ -1,0 +1,344 @@
+body.mp6 {
+
+	input[type=checkbox]:disabled {
+		opacity: 1;
+		border-color: #ccc;
+	}
+
+	#wpmdb-main {
+		margin-top: 15px;
+		font-size: 14px;
+	}
+
+	p {
+		font-size: 14px;
+	}
+	
+	.wrap h2 {
+		float: left;
+	}
+
+	.wpmdb {
+	
+		input[type=checkbox],
+		input[type=radio]{
+			vertical-align: middle;
+			margin-top: -4px;
+		}
+
+		input[type=text],
+		input[type=password] {
+			padding: 3px 5px;
+		}
+
+		input.code {
+			padding-top: 6px;
+		}
+
+		label {
+			font-size: 14px;
+		}
+
+		h2.nav-tab-wrapper {
+			float: none;
+			margin-bottom: 0;
+			width: 722px;
+		}
+
+		.help-tab {
+			h3 {
+				margin-top: 0;
+			}
+		}
+
+		.temp-disabled {
+			background-color: #f9f9f9;
+		}
+
+		.migration-profile-options li a{
+			border-color: #ccc;
+			color: #555;
+			background-color: #e4e4e4;
+		}
+
+		.migration-profile-options li a:hover{
+			background-color: #fff;
+			color: #464646;
+		}
+
+		.settings-tab {
+			.slider-label {
+				span {
+					vertical-align: middle;
+				}
+			}
+
+			.slider-label-wrapper {
+				font-size: 14px;
+			}
+
+			.ui-slider {
+				border-color: #ccc;
+				background-color: #fff;
+			}
+
+			.ui-slider-range {
+				background-color: #d8fcd1;
+			}
+
+			.option-section {
+				li label {
+					font-size: 14px;
+				}
+			}
+		}
+
+		.connection-info,
+		.migrate-tab .pull-push-connection-info {
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.general-helper {
+			border: 0;
+			width: auto;
+			height: auto;
+			top: auto;
+			margin: 0;
+		}
+
+		.general-helper:after {
+			content: "\f223";
+			display: inline-block;
+			-webkit-font-smoothing: antialiased;
+			font: normal 22px/1 'dashicons';
+			vertical-align: top;
+			top: auto;
+			left: auto;
+			position: relative;
+		}
+
+		.helper-message {
+			font-size: 14px;
+			line-height: 1.4em;
+		}
+
+		.right-arrow {
+			display: none;
+		}
+
+		.arrow-col {
+			width: 75px;
+		}
+
+		.arrow-col:after {
+			content: "\f344";
+			display: inline-block;
+			-webkit-font-smoothing: antialiased;
+			font: normal 22px/1 'dashicons';
+			vertical-align: top;
+			color: #999;
+		}
+
+		.find-heading {
+			width: 388px;
+		}
+
+		.replace-fields {
+			input {
+				width: 304px;
+			}
+		}
+
+		.replace-right-col {
+			span {
+				border-color: #999;
+
+				&:hover {
+					border-color: #666;
+				}
+			}
+		}
+
+		.replace-remove-row, .replace-add-row {
+			&:after, &:before {
+				background-color: #999;
+			}
+
+			&:hover:after, &:hover:before {
+				background-color: #666;
+			}
+		}
+
+		.option-group.migrate-selection {
+			> li > label {
+				font-size: 16px;
+			}
+		}
+
+		.saved-migration-profile-label {
+			font-size: 16px;
+		}
+
+		.option-heading, .checkbox-label {
+			font-size: 16px;
+		}
+
+		.checkbox-label {
+			input[type=checkbox] {
+				top: auto;
+			}
+		}
+
+		.return-to-profile-selection {
+			font-size: 14px;
+		}
+
+		.option-description{
+			font-size: 13px;
+		}
+		
+		.save-migration-profile-wrap {
+			li {
+				position: relative;
+			}
+		}
+
+		.delete-profile {
+			border: 0;
+			border-radius: 0;
+			height: auto;
+			width: auto;
+			left: 0;
+			top: 50%;
+			margin-left: 0;
+
+			&:after {
+				content: "\f153";
+				display: inline-block;
+				-webkit-font-smoothing: antialiased;
+				font: normal 18px/1 'dashicons';
+				vertical-align: middle;
+				color: #999;
+			}
+			
+			&:hover:after {
+				color: #666;
+			}
+		}
+
+		.addons-tab {
+			.addon {
+				h1 {
+					font-family: 'Open Sans', sans-serif;
+					font-weight: 200;
+					font-size: 24px;
+					margin-top: 2px;
+				}
+
+				p {
+					font-size: 14px;
+					line-height: 1.4em;
+				}
+			}
+		}
+
+		.help-tab {
+			.support {
+				p, .email a {
+					font-size: 14px;
+				}
+			}
+
+			.videos {
+				h4, p {
+					font-size: 14px;
+				}
+			}
+		}
+
+		.inline-message, .notification-message {
+			border-radius: 0;
+			border: 0;
+			box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+			padding: 10px 14px;
+			font-size: 13px;
+		}
+
+		.notification-message {
+			margin-bottom: 20px;
+			background-color: #fff;
+
+			p {
+				font-size: 13px;
+				margin-top: 0;
+			}
+
+			p:last-child {
+				margin: 0;
+			}
+
+			h4 {
+				margin-top: 0;
+			}
+
+			a {
+				color: #0074a2;
+				text-decoration: none;
+
+				&:hover {
+					color: #2ea2cc;
+				}
+			}
+		}
+
+		.inline-message.error, .notification-message.error-notice {
+			border-left: 4px solid #dd3d36;
+			background-color: #fff;
+		}
+
+		.inline-message.warning, .notification-message.warning-notice {
+			background-color: #fff;
+			border-left: 4px solid #ffba00;
+		}
+
+		.inline-message.success, .notication-message.success-notice {
+			border-left: 4px solid #7ad03a;
+		}
+
+		.ssl-notice {
+			margin-bottom: 0;
+		}
+
+		.different-plugin-version-notice, .directory-permission-notice {
+			margin-bottom: 10px;
+		}
+		
+	}
+
+	.progress-content {
+		font-size: 14px;
+		box-shadow: 0 0 10px rgba(0,0,0,0.5);
+		background-color: #eee;
+
+		.progress-title {		
+			font-family: 'Open Sans', sans-serif;
+			font-weight: normal;
+			font-size: 22px;
+		}
+
+		.progress-bar {
+			background-image: none;
+			background-color: #0074a2;
+		}
+	}
+
+	#overlay {
+		background-color: rgba(0,0,0,0.5);
+	}
+
+	.migration-progress-ajax-spinner {
+		top: 20px;
+	}
+
+}

@@ -1,5 +1,6 @@
 <?php
 global $wpdb;
+global $loaded_profile;
 
 if( isset( $_GET['wpmdb-profile'] ) ){
 	$loaded_profile = $this->get_profile( $_GET['wpmdb-profile'] );
@@ -9,6 +10,18 @@ else{
 }
 
 $is_default_profile = isset( $loaded_profile['default_profile'] );
+
+$convert_exclude_revisions = false;
+if( ! $is_default_profile ) {
+	if( isset( $loaded_profile['exclude_revisions'] ) ) {
+		$convert_exclude_revisions = true;
+	}
+	$loaded_profile = $this->maybe_update_profile( $loaded_profile, $_GET['wpmdb-profile'] );
+}
+
+if( false == $is_default_profile ) {
+	$loaded_profile = wp_parse_args( $loaded_profile, $this->default_profile );
+}
 ?>
 <script type='text/javascript'>
 	var wpmdb_default_profile = <?php echo ( $is_default_profile ? 'true' : 'false' ); ?>;
@@ -16,6 +29,11 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 	<?php if( isset( $loaded_profile['select_tables'] ) && ! empty( $loaded_profile['select_tables'] ) ) : ?>
 		var wpmdb_loaded_tables = '<?php echo json_encode( $loaded_profile['select_tables'] ); ?>';
 	<?php endif; ?>
+	var wpmdb_migrate_all_post_types = <?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_all_post_types' ? 'true' : 'false' ); ?>;
+	<?php if( isset( $loaded_profile['select_post_types'] ) ) : ?>
+		var wpmdb_loaded_post_types = '<?php echo json_encode( $loaded_profile['select_post_types'] ); ?>';
+	<?php endif; ?>
+	var wpmdb_convert_exclude_revisions = <?php echo ( $convert_exclude_revisions ? 'true' : 'false' ); ?>;
 </script>
 
 <div class="migrate-tab content-tab">
@@ -81,7 +99,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 				<input class="button connect-button" type="submit" value="Connect" name="Connect" autocomplete="off" />
 			</div>
 
-			<div class="ssl-notice">
+			<div class="notification-message warning-notice ssl-notice">
 				<p><strong>SSL Disabled</strong> &mdash; We couldn't connect over SSL but regular http (no SSL) appears to be working so we've switched to that. If you run a push or pull, your data will be transmitted unencrypted. Most people are fine with this, but just a heads up.</p>
 			</div>
 		
@@ -93,11 +111,18 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 
 		<p class="connection-status">Please enter the connection information above to continue.</p>
 
-		<div class="different-plugin-version-notice">
+		<div class="notification-message error-notice different-plugin-version-notice" style="display: none;">
 			<?php
 			$plugin_info = get_plugin_data( $this->plugin_file_path );
 			?>
 			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $plugin_info['Version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
+		</div>
+
+		<div class="notification-message error-notice directory-permission-notice" style="display: none;">
+			<p>
+				<strong>Cannot Access Uploads Directory</strong> &mdash;
+				We require write permissions to the standard WordPress uploads directory. Without this permission exports are unavailable. Please grant 755 permissions on the following directory: <?php echo $this->get_upload_info( 'path' ); ?>
+			</p>
 		</div>
 		
 		<div class="step-two">
@@ -152,19 +177,19 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 							</td>
 						</tr>
 						<?php if( is_multisite() ) : ?>
-							<tr class="replace-row">
-								<td class="old-replace-col">
-									<input type="text" size="40" name="replace_old[]" class="code" id="old-domain" placeholder="Old domain" value="<?php echo htmlentities( DOMAIN_CURRENT_SITE ); ?>" autocomplete="off" />
-								</td>
-								<td class="arrow-col">
-									<span class="right-arrow">&rarr;</span>
-								</td>
-								<td class="replace-right-col">
-									<input type="text" size="40" name="replace_new[]" class="code" id="new-domain" placeholder="New domain" autocomplete="off" />
-									<span class="replace-remove-row"></span>
-									<span class="replace-add-row"></span>
-								</td>
-							</tr>
+						<tr class="replace-row">
+							<td class="old-replace-col">
+								<input type="text" size="40" name="replace_old[]" class="code" id="old-domain" placeholder="Old domain" value="<?php echo htmlentities( $this->get_domain_current_site() ); ?>" autocomplete="off" />
+							</td>
+							<td class="arrow-col">
+								<span class="right-arrow">&rarr;</span>
+							</td>
+							<td class="replace-right-col">
+								<input type="text" size="40" name="replace_new[]" class="code" id="new-domain" placeholder="New domain" autocomplete="off" />
+								<span class="replace-remove-row"></span>
+								<span class="replace-add-row"></span>
+							</td>
+						</tr>
 						<?php endif; ?>
 					<?php else :
 						$i = 1;
@@ -193,37 +218,29 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 			<div class="option-section">
 				<?php $tables = $this->get_table_sizes(); ?>
 				<div class="header-expand-collapse clearfix">
-					<?php
-						if( isset( $loaded_profile['table_migrate_option'] ) && $loaded_profile['table_migrate_option'] == 'migrate_select' ){
-							$collapse = '';
-						}
-						else{
-							$collapse = ' collapsed';
-						}
-					?>
-					<div class="expand-collapse-arrow<?php echo $collapse; ?>">&#x25BC;</div>
+					<div class="expand-collapse-arrow collapsed">&#x25BC;</div>
 					<div class="option-heading tables-header">Tables</div>
 				</div>
 
-				<div class="indent-wrap expandable-content table-select-wrap" style="display: <?php echo ( $collapse == '' ? 'block' : 'none' ); ?>;">
+				<div class="indent-wrap expandable-content table-select-wrap" style="display: none;">
 
 					<ul class="option-group table-migrate-options">
 						<li>
 							<label for="migrate-only-with-prefix">
-							<input id="migrate-only-with-prefix" type="radio" value="migrate_only_with_prefix" name="table_migrate_option"<?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? ' checked="checked"' : '' ); ?> />
+							<input id="migrate-only-with-prefix" class="multiselect-toggle" type="radio" value="migrate_only_with_prefix" name="table_migrate_option"<?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? ' checked="checked"' : '' ); ?> />
 							Migrate all tables with prefix "<span class="table-prefix"><?php echo $wpdb->prefix; ?></span>"
 							</label>
 						</li>
 						<li>
 							<label for="migrate-selected">
-							<input id="migrate-selected" type="radio" value="migrate_select" name="table_migrate_option"<?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_select' ? ' checked="checked"' : '' ); ?> />
+							<input id="migrate-selected" class="multiselect-toggle show-multiselect" type="radio" value="migrate_select" name="table_migrate_option"<?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_select' ? ' checked="checked"' : '' ); ?> />
 							Migrate only selected tables below
 							</label>
 						</li>
 					</ul>
 
-					<div class="select-tables-wrap">
-						<select multiple="multiple" name="select_tables[]" id="select-tables" autocomplete="off">
+					<div class="select-tables-wrap select-wrap">
+						<select multiple="multiple" name="select_tables[]" id="select-tables" class="multiselect" autocomplete="off">
 						<?php foreach( $tables as $table => $size ) :
 							$size = (int) $size * 1024;
 							if( ! empty( $loaded_profile['select_tables'] ) && in_array( $table, $loaded_profile['select_tables'] ) ){
@@ -235,11 +252,56 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 						endforeach; ?>
 						</select>
 						<br />
-						<a href="#" class="tables-select-all js-action-link">Select All</a>
+						<a href="#" class="multiselect-select-all js-action-link">Select All</a>
 						<span class="select-deselect-divider">/</span>
-						<a href="#" class="tables-deselect-all js-action-link">Deselect All</a>
+						<a href="#" class="multiselect-deselect-all js-action-link">Deselect All</a>
 						<span class="select-deselect-divider">/</span>
-						<a href="#" class="tables-invert-selection js-action-link">Invert Selection</a>
+						<a href="#" class="multiselect-invert-selection js-action-link">Invert Selection</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="option-section">
+				<?php $post_types = $this->get_post_types(); ?>
+				<div class="header-expand-collapse clearfix">
+					<div class="expand-collapse-arrow collapsed">&#x25BC;</div>
+					<div class="option-heading tables-header">Post Types</div>
+				</div>
+
+				<div class="indent-wrap expandable-content table-select-wrap" style="display: none;">
+
+					<ul class="option-group table-migrate-options">
+						<li>
+							<label for="migrate-all-post-types">
+							<input id="migrate-all-post-types" class="multiselect-toggle" type="radio" value="migrate_all_post_types" name="post_type_migrate_option"<?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_all_post_types' ? ' checked="checked"' : '' ); ?> />
+							Migrate all post types
+							</label>
+						</li>
+						<li>
+							<label for="migrate-select-post-types">
+							<input id="migrate-select-post-types" class="multiselect-toggle show-multiselect" type="radio" value="migrate_select_post_types" name="post_type_migrate_option"<?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_select_post_types' ? ' checked="checked"' : '' ); ?> />
+							Migrate only selected post types below
+							</label>
+						</li>
+					</ul>
+
+					<div class="select-post-types-wrap select-wrap">
+						<select multiple="multiple" name="select_post_types[]" id="select-post-types" class="multiselect" autocomplete="off">
+						<?php foreach( $post_types as $post_type ) :
+							if( ! empty( $loaded_profile['select_post_types'] ) && in_array( $post_type, $loaded_profile['select_post_types'] ) ){
+								printf( '<option value="%1$s" selected="selected">%1$s</option>', $post_type );
+							}
+							else{
+								printf( '<option value="%1$s">%1$s</option>', $post_type );
+							}
+						endforeach; ?>
+						</select>
+						<br />
+						<a href="#" class="multiselect-select-all js-action-link">Select All</a>
+						<span class="select-deselect-divider">/</span>
+						<a href="#" class="multiselect-deselect-all js-action-link">Deselect All</a>
+						<span class="select-deselect-divider">/</span>
+						<a href="#" class="multiselect-invert-selection js-action-link">Invert Selection</a>
 					</div>
 				</div>
 			</div>
@@ -266,7 +328,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 								that GUIDs should not be changed, this is limited to sites that are already live.
 								If the site has never been live, I recommend replacing the GUIDs. For example, you may be
 								developing a new site locally at dev.somedomain.com and want to 
-								migrate the site live to somedomain.com.
+								migrate the site live to&nbsp;somedomain.com.
 							</div>
 						</li>
 						<li>
@@ -275,17 +337,12 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 							Exclude spam comments
 							</label>
 						</li>
-						<li>
-							<label for="exclude-revisions">
-							<input id="exclude-revisions" type="checkbox" autocomplete="off" value="1" name="exclude_revisions"<?php echo ( isset( $loaded_profile['exclude_revisions'] ) ? ' checked="checked"' : '' ); ?> />
-							Exclude post revisions
-							</label>
-						</li>
 						<li class="backup-options">
-							<label for="create-backup">
+							<label id="create-backup-label" for="create-backup">
 							<input id="create-backup" type="checkbox" value="1" autocomplete="off" name="create_backup"<?php echo ( isset( $loaded_profile['create_backup'] ) ? ' checked="checked"' : '' ); ?> />
 							Backup the database that will be overwritten and save to: <span class="uploads-dir"><?php echo $this->get_short_uploads_dir(); ?></span>
 							</label>
+							<p class="backup-option-disabled inline-message error" style="display: none;">The backup option has been disabled as your <span class="directory-scope">local</span> uploads directory is currently not writeable. The following directory should have 755 permissions: <span class="upload-directory-location"><?php echo $this->get_upload_info( 'path' ); ?></span></p>
 						</li>
 						<li class="keep-active-plugins">
 							<label for="keep-active-plugins">
@@ -297,9 +354,11 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 
 				</div>
 			</div>
+
+			<?php do_action( 'wpmdb_after_advanced_options' ); ?>
 			
 			<div class="option-section save-migration-profile-wrap">
-				<label for="save-migration-profile" class="save-migration-profile">
+				<label for="save-migration-profile" class="save-migration-profile checkbox-label">
 				<input id="save-migration-profile" type="checkbox" value="1" name="save_migration_profile"<?php echo ( ! $is_default_profile ? ' checked="checked"' : '' ); ?> />
 				Save Migration Profile<span class="option-description">Save the above settings for the next time you do a similiar migration</span>
 				</label>
@@ -328,7 +387,9 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 				</div>
 			</div>
 
-			<div class="prefix-notice pull">
+			<div class="notification-message warning-notice prefix-notice pull">
+				<h4>Warning: Different Table Prefixes</h4>
+
 				<p>Whoa! We've detected that the database table prefix differs between installations. Clicking the Migrate DB button below will create new database tables in your local database with prefix "<span class="remote-prefix"></span>".</p>
 
 				<p>However, your local install is configured to use table prefix "<?php echo $wpdb->prefix; ?>" and will ignore the migrated tables. So, <b>AFTER</b> migration is complete, you will need to edit your local install's wp-config.php and change the "<?php echo $wpdb->prefix; ?>" variable to "<span class="remote-prefix"></span>".</p>
@@ -336,7 +397,9 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 				<p>This will allow your local install the use the migrated tables. Once you do this, you shouldn't have to do it again.</p>
 			</div>
 
-			<div class="prefix-notice push">
+			<div class="notification-message warning-notice prefix-notice push">
+				<h4>Warning: Different Table Prefixes</h4>
+
 				<p>Whoa! We've detected that the database table prefix differs between installations. Clicking the Migrate DB button below will create new database tables in the remote database with prefix "<?php echo $wpdb->prefix; ?>".</p>
 
 				<p>However, your remote install is configured to use table prefix "<span class="remote-prefix"></span>" and will ignore the migrated tables. So, <b>AFTER</b> migration is complete, you will need to edit your remote install's wp-config.php and change the "<span class="remote-prefix"></span>" variable to "<?php echo $wpdb->prefix; ?>".</p>

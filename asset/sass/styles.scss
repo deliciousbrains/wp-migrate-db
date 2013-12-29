@@ -1,8 +1,20 @@
 @import "compass";
 
+#wpmdb-main {
+	width: 742px;
+}
+
+#overlay {
+	background-color: rgba(255,255,255,0.9);
+}
+
 .wpmdb{
-	> .warning {
-		max-width: 750px;
+	> div.updated.warning {
+		max-width: 742px;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		margin: 10px 0;
 	}
 
 	/* =============================================================================
@@ -33,10 +45,16 @@
 		padding: 5px;
 	}
 
+	label.disabled {
+		color: #888;
+		cursor: default;
+	}
+
 	.option-section {
 		border-bottom: 1px solid #ccc;
 		padding-bottom: 20px;
 		margin-bottom: 20px;
+
 		h3 {
 			font-size: 18px;
 			font-weight: normal;
@@ -62,7 +80,7 @@
 	}
 
 	.indent-wrap {
-		margin-left: 25px;
+		margin-left: 24px;
 	}
 
 	.expandable-content{
@@ -120,7 +138,7 @@
 	.licence-input {
 		clear: both;
 		display: block;
-		font-family: "Courier New",Courier,monospace;
+		font-family: Consolas, Monaco, monospace;
 		font-size: 14px;
 		margin-bottom: 7px;
 		padding: 10px;
@@ -129,6 +147,7 @@
 
 	.register-licence {
 		float: left;
+		outline: none;
 	}
 
 	.licence-status {
@@ -141,10 +160,6 @@
 
 	.licence-status.success {
 		color: #333;
-	}
-
-	.licence-information {
-		margin-bottom: 5px;
 	}
 
 	.register-licence-ajax-spinner {
@@ -171,8 +186,8 @@
 	h2.nav-tab-wrapper {
 		margin-top: 10px;
 		margin-bottom: 20px;
-		padding-left: 10px;
-		
+		padding-left: 5px;
+
 		a {
 			margin-right: 4px;
 		}
@@ -189,11 +204,6 @@
 	}
 
 	/* Saved migration profile selection */
-
-	.saved-migration-profile-label{
-		font-weight: bold;
-		font-size: 14px;
-	}
 
 	.migration-profile-options li{
 		position: relative;
@@ -274,9 +284,17 @@
 		}
 	}
 
-	.option-heading {
+	.option-heading, .checkbox-label {
 		font-size: 14px;
 		font-weight: bold;
+	}
+
+	.checkbox-label {
+		input[type=checkbox] {
+			margin-right: 7px;
+			position: relative;
+			top: -1px;
+		}
 	}
 
 	.expand-collapse-arrow {
@@ -292,7 +310,7 @@
 		width: 418px;
 		height: 65px;
 	    color: #333;
-	    font-family: "Courier New",Courier,monospace;
+	    font-family: Consolas, Monaco, monospace;
 	    font-size: 15px;
 	    line-height: 21px;
 	    padding: 10px;
@@ -324,7 +342,7 @@
 	.temp-disabled {
 		background-color: #EEEEEE;
 		color: #888888;
-		font-family: "Courier New",Courier,monospace;
+		font-family: Consolas, Monaco, monospace;
 		text-shadow: 0 1px 0 #FFFFFF;
 	}
 	
@@ -459,12 +477,12 @@
 		margin: 0 6px;
 	}
 
-	.select-tables-wrap{
+	.select-wrap{
 		display: none;
 		margin-top: 12px;
 	}
 
-	#select-tables {
+	.multiselect {
 		min-width: 420px;
 		min-height: 180px;
 		margin-bottom: 10px;
@@ -521,14 +539,20 @@
 		box-shadow: 0px 0px 5px #ccc;
 	}
 
-	.ssl-verify-message {
-		left: 182px;
-		top: -10px;
+	.inline-message {
+		padding: 10px;
+		border-radius: 3px;
+		margin-top: 5px;
 	}
 
-	.replace-guids-info {
-		left: 140px;
-		top: -10px;
+	.inline-message.error {
+		border: 1px solid #CC0000;
+		background-color: #FFEBE8;		
+	}
+
+	.inline-message.warning {
+		background-color: #FFFFE0;
+		border: 1px solid #E6DB55;
 	}
 	
 	.helper-message:after {
@@ -561,14 +585,13 @@
 		color: #888;
 	}
 
-	.prefix-notice, .ssl-notice, .different-plugin-version-notice, .mysqli-notice {
+	.prefix-notice, .ssl-notice, .different-plugin-version-notice, .directory-permission-notice {
 		background-color: #FFFFE0;
 		border: 1px solid #E6DB55;
 		padding: 15px;
 		border-radius: 3px;
 		margin-bottom: 15px;
 		display: none;
-		width: 710px;
 		p{
 			margin-top: 0px;
 		}
@@ -577,7 +600,7 @@
 		}
 	}
 
-	.different-plugin-version-notice, .mysqli-notice {
+	.different-plugin-version-notice, .directory-permission-notice {
 		background-color: #FFEBE8;
 		border-color: #CC0000;
 		a {
@@ -586,21 +609,12 @@
 		}
 	}
 
-	.mysqli-notice {
-		display: block;
-	}
-
 	.ssl-notice {
 		margin-bottom: 0;
 		margin-top: 15px;
 	}
 	
 	/* Save migration profile */
-	
-	.save-migration-profile {
-		font-size: 14px;
-		font-weight: bold;
-	}
 	
 	.save-migration-profile-wrap {
 
@@ -709,11 +723,6 @@
 			float: left;
 		}
 
-		.slider-message {
-			top: -11px;
-			left: 164px;
-		}
-
 		.slider-spinner {
 			position: absolute;
 			right: -35px;
@@ -809,11 +818,9 @@
 	
 	.connection-info{
 		clear: both;
-		background-color: #eee;
-		color: #888;
 		font-size: 15px;
 		line-height: 21px;
-		font-family: "Courier New", Courier, monospace;
+		font-family: Consolas, Monaco, monospace;
 		padding: 10px 10px;
 		height: 67px;
 		text-shadow: 0px 1px 0px #fff;
@@ -833,6 +840,16 @@
 	.reset-api-key-ajax-spinner{
 		float: left;
 		margin: 4px 7px;
+	}
+
+	.masked-licence {
+		margin-top: 0px;
+	}
+
+	.bull {
+		font-size: 22px;
+		position: relative;
+		top: 4px;
 	}
 
 	/* =============================================================================
@@ -954,7 +971,7 @@
 			textarea{
 				width: 100%;
 				min-height: 200px;
-				font-family: "Courier New",Courier,monospace;
+				font-family: Consolas, Monaco, monospace;
 				margin-bottom: 5px;
 			}
 		}
@@ -971,6 +988,80 @@
 			display: none;
 		}
 
+	}
+
+	/* =============================================================================
+	   Addons Tab
+	   ========================================================================== */
+
+	.addons-tab {
+		display: none;
+
+		.addon {
+			position: relative;
+			width: 100%;
+			min-height: 138px;
+			padding: 25px 30px 30px 165px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			color: #fff;
+
+			.actions {
+				float: right;
+				font-size: 14px;
+
+				> * {
+					margin-right: 10px;
+				}
+
+				*:last-child {
+					margin-right: 0;
+				}
+
+				.action {
+					background-color: #fff;
+					font-weight: bold;
+					display: inline-block;
+					padding: 0.2em 0.4em;
+
+					&:hover {
+						background-color: rgba(255,255,255,0.92);
+					}
+				}
+
+				.status {
+					border-bottom: 2px solid #fff;
+					padding-bottom: 0.1em;
+				}
+			}
+
+			h1 {
+				font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+				font-weight: normal;
+				float: left;
+				margin: 0;
+				margin-top: 5px;
+			}
+
+			p {
+				font-size: 16px;
+				line-height: 1.2em;
+				clear: both;
+				padding-top: 15px;
+				margin: 0;
+			}
+
+			&.wp-migrate-db-pro-media-files {
+				$bgcolor: #3fab3f;
+				background: $bgcolor url(../img/icon-media-files.svg) no-repeat 30px 30px;
+				background-size: 110px 85px;
+
+				.action {
+					color: $bgcolor;
+				}
+			}
+		}
 	}
 
 }
@@ -1039,6 +1130,7 @@
 	.progress-text {
 		clear: left;
 		float: left;
+		width: 100%;
 	}
 
 	.timer {
@@ -1096,7 +1188,7 @@
 		position: relative;
 		text-align: center;
 
-		span {
+		> span {
 			padding: 0px 3px;
 			white-space: nowrap;
 			text-overflow: ellipsis;
@@ -1110,7 +1202,7 @@
 		border: 1px solid #ccc;
 		border-radius: 3px;
 		background-color: #fff;
-		font-family: "Courier New",Courier,monospace;
+		font-family: Consolas, Monaco, monospace;
 		font-size: 12px;
 		display: inline-block;
 		top: -35px;
@@ -1180,3 +1272,5 @@
 	}
 
 }
+
+@import "mp6";

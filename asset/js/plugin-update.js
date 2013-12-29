@@ -21,7 +21,7 @@
 
 			doing_check_licence = true;
 
-			$('.check-my-licence-again').after( '<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />' );
+			$(this).after( '<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />' );
 
 			var check_again_link = ' <a class="check-my-licence-again" href="#">Check my license again</a>';
 
