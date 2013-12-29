@@ -19,8 +19,11 @@
      Settings Tab
      ========================================================================== */
   /* =============================================================================
-     Settings Tab
+     Help Tab
      ========================================================================== */
+}
+.wpmdb > .warning {
+  max-width: 750px;
 }
 .wpmdb a {
   text-decoration: none;
@@ -38,7 +41,8 @@
   vertical-align: baseline;
   margin-top: 0;
 }
-.wpmdb input[type=text] {
+.wpmdb input[type=text],
+.wpmdb input[type=password] {
   padding: 5px;
 }
 .wpmdb .option-section {
@@ -92,6 +96,7 @@
 }
 .wpmdb .connection-status {
   display: none;
+  overflow: auto;
 }
 .wpmdb .connection-status.error {
   color: #9D1818;
@@ -237,6 +242,17 @@
   line-height: 21px;
   padding: 10px;
 }
+.wpmdb .basic-access-auth-wrapper {
+  display: none;
+  margin-bottom: 5px;
+}
+.wpmdb .auth-username, .wpmdb .auth-password {
+  width: 206px;
+  margin-top: 3px;
+}
+.wpmdb .auth-password {
+  width: 207px;
+}
 .wpmdb .connection-info-wrapper {
   display: none;
   width: 670px;
@@ -371,7 +387,7 @@
 .wpmdb .table-migrate-options li {
   margin-bottom: 5px;
 }
-.wpmdb .replace-guid-helper {
+.wpmdb .general-helper {
   border-radius: 50%;
   border: 1px solid #ccc;
   background-color: #eee;
@@ -380,13 +396,14 @@
   display: inline-block;
   position: relative;
   top: 4px;
+  margin-top: -4px;
   cursor: pointer;
   margin-left: 2px;
 }
-.wpmdb .replace-guid-helper:hover {
+.wpmdb .general-helper:hover {
   border-color: #aaa;
 }
-.wpmdb .replace-guid-helper:after {
+.wpmdb .general-helper:after {
   content: "?";
   color: #999999;
   font-size: 10px;
@@ -395,20 +412,26 @@
   position: absolute;
   top: -1px;
 }
-.wpmdb .replace-guids-info {
+.wpmdb .helper-message {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   background-color: #fff;
   position: absolute;
   width: 500px;
-  left: 140px;
   z-index: 100;
-  top: -7px;
   display: none;
   box-shadow: 0px 0px 5px #ccc;
 }
-.wpmdb .replace-guids-info:after {
+.wpmdb .ssl-verify-message {
+  left: 182px;
+  top: -10px;
+}
+.wpmdb .replace-guids-info {
+  left: 140px;
+  top: -10px;
+}
+.wpmdb .helper-message:after {
   content: '';
   border-bottom: 7px solid transparent;
   border-right: 7px solid #fff;
@@ -420,7 +443,7 @@
   top: 11px;
   width: 0;
 }
-.wpmdb .replace-guids-info:before {
+.wpmdb .helper-message:before {
   content: '';
   border-bottom: 7px solid transparent;
   border-right: 7px solid #aaa;
@@ -434,6 +457,36 @@
 }
 .wpmdb .label-disabled {
   color: #888;
+}
+.wpmdb .prefix-notice, .wpmdb .ssl-notice, .wpmdb .different-plugin-version-notice, .wpmdb .mysqli-notice {
+  background-color: #FFFFE0;
+  border: 1px solid #E6DB55;
+  padding: 15px;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  display: none;
+  width: 710px;
+}
+.wpmdb .prefix-notice p, .wpmdb .ssl-notice p, .wpmdb .different-plugin-version-notice p, .wpmdb .mysqli-notice p {
+  margin-top: 0px;
+}
+.wpmdb .prefix-notice p:last-child, .wpmdb .ssl-notice p:last-child, .wpmdb .different-plugin-version-notice p:last-child, .wpmdb .mysqli-notice p:last-child {
+  margin: 0px;
+}
+.wpmdb .different-plugin-version-notice, .wpmdb .mysqli-notice {
+  background-color: #FFEBE8;
+  border-color: #CC0000;
+}
+.wpmdb .different-plugin-version-notice a, .wpmdb .mysqli-notice a {
+  color: #CC0000;
+  text-decoration: underline;
+}
+.wpmdb .mysqli-notice {
+  display: block;
+}
+.wpmdb .ssl-notice {
+  margin-bottom: 0;
+  margin-top: 15px;
 }
 .wpmdb .save-migration-profile {
   font-size: 14px;
@@ -499,6 +552,65 @@
 .wpmdb .settings-tab {
   display: none;
 }
+.wpmdb .settings-tab .slider {
+  max-width: 416px;
+}
+.wpmdb .settings-tab .slider-label {
+  display: block;
+  margin-bottom: 10px;
+  float: left;
+  width: 50%;
+}
+.wpmdb .settings-tab .slider-label-wrapper {
+  max-width: 416px;
+  width: 100%;
+  position: relative;
+}
+.wpmdb .settings-tab .amount {
+  width: 50%;
+  text-align: right;
+  display: block;
+  text-align: right;
+  float: left;
+}
+.wpmdb .settings-tab .slider-message {
+  top: -11px;
+  left: 164px;
+}
+.wpmdb .settings-tab .slider-spinner {
+  position: absolute;
+  right: -35px;
+  bottom: -13px;
+}
+.wpmdb .settings-tab .slider-success-msg {
+  display: none;
+  right: -53px;
+  bottom: -13px;
+  position: absolute;
+  font-weight: bold;
+}
+.wpmdb .settings-tab .ui-slider {
+  border: 1px solid #dfdfdf;
+  height: 10px;
+  border-radius: 2px;
+  position: relative;
+}
+.wpmdb .settings-tab .ui-slider-handle {
+  width: 7px;
+  height: 20px;
+  background-color: #aaa;
+  display: block;
+  position: absolute;
+  top: -5px;
+  outline: none;
+}
+.wpmdb .settings-tab .ui-slider-handle:active {
+  background-color: #999;
+}
+.wpmdb .settings-tab .ui-slider-range {
+  background-color: #eee;
+  height: 100%;
+}
 .wpmdb .settings-tab .option-section li label {
   font-size: 12px;
   font-weight: normal;
@@ -522,6 +634,12 @@
   top: 0px;
   position: absolute;
   font-weight: bold;
+}
+.wpmdb .settings-tab .option-section .verify-ssl .ajax-spinner {
+  right: -45px;
+}
+.wpmdb .settings-tab .option-section .verify-ssl .ajax-success-msg {
+  right: -65px;
 }
 .wpmdb .allow-remote-reqeusts {
   font-size: 14px;
@@ -582,9 +700,6 @@
 }
 .wpmdb .help-tab .videos {
   width: 640px;
-  border-bottom: 1px solid #CCCCCC;
-  margin-bottom: 25px;
-  padding-bottom: 28px;
 }
 .wpmdb .help-tab .videos ul > li {
   margin-bottom: 30px;
@@ -650,6 +765,9 @@
 }
 .wpmdb .help-tab .debug {
   width: 640px;
+  border-bottom: 1px solid #CCCCCC;
+  margin-bottom: 25px;
+  padding-bottom: 28px;
 }
 .wpmdb .help-tab .debug textarea {
   width: 100%;
@@ -689,7 +807,12 @@
 
 .migration-error {
   color: #A21B1B;
+  display: block;
   font-weight: bold;
+  max-height: 400px;
+  max-width: 100%;
+  overflow: scroll;
+  word-wrap: break-word;
 }
 
 .progress-content {
@@ -796,7 +919,6 @@
   border: 1px solid #ccc;
   border-radius: 3px;
   background-color: #fff;
-  colour: #333;
   font-family: "Courier New",Courier,monospace;
   font-size: 12px;
   display: inline-block;

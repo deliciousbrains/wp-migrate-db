@@ -17,7 +17,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 		var wpmdb_loaded_tables = '<?php echo json_encode( $loaded_profile['select_tables'] ); ?>';
 	<?php endif; ?>
 </script>
-	
+
 <div class="migrate-tab content-tab">
 
 	<form method="post" id="migrate-form" action="#migrate" enctype="multipart/form-data">
@@ -74,7 +74,15 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 			<div class="connection-info-wrapper clearfix">
 				<textarea class="pull-push-connection-info" name="connection_info" placeholder="Connection Info - Site URL &amp; Secret Key"><?php echo ( isset( $loaded_profile['connection_info'] ) ? $loaded_profile['connection_info'] : '' ); ?></textarea>
 				<br />
+				<div class="basic-access-auth-wrapper clearfix">
+					<input type="text" name="auth_username" class="auth-username auth-credentials" placeholder="Username" autocomplete="off" />
+					<input type="password" name="auth_password" class="auth-password auth-credentials" placeholder="Password" autocomplete="off" />
+				</div>
 				<input class="button connect-button" type="submit" value="Connect" name="Connect" autocomplete="off" />
+			</div>
+
+			<div class="ssl-notice">
+				<p><strong>SSL Disabled</strong> &mdash; We couldn't connect over SSL but regular http (no SSL) appears to be working so we've switched to that. If you run a push or pull, your data will be transmitted unencrypted. Most people are fine with this, but just a heads up.</p>
 			</div>
 		
 		</div>
@@ -84,6 +92,13 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 		</div>
 
 		<p class="connection-status">Please enter the connection information above to continue.</p>
+
+		<div class="different-plugin-version-notice">
+			<?php
+			$plugin_info = get_plugin_data( $this->plugin_file_path );
+			?>
+			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $plugin_info['Version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
+		</div>
 		
 		<div class="step-two">
 
@@ -112,7 +127,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 					<?php if( $is_default_profile ) : ?>
 						<tr class="replace-row">
 							<td class="old-replace-col">
-								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" value="<?php echo htmlentities( home_url() ); ?>" autocomplete="off" />
+								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" placeholder="Old URL" value="<?php echo htmlentities( home_url() ); ?>" autocomplete="off" />
 							</td>
 							<td class="arrow-col">
 								<span class="right-arrow">&rarr;</span>
@@ -125,7 +140,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 						</tr>
 						<tr class="replace-row">
 							<td class="old-replace-col">
-								<input type="text" size="40" name="replace_old[]" class="code" id="old-path" value="<?php echo htmlentities( $this->absolute_root_file_path ); ?>" autocomplete="off" />
+								<input type="text" size="40" name="replace_old[]" class="code" id="old-path" placeholder="Old file path" value="<?php echo htmlentities( $this->absolute_root_file_path ); ?>" autocomplete="off" />
 							</td>
 							<td class="arrow-col">
 								<span class="right-arrow">&rarr;</span>
@@ -136,6 +151,21 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 								<span class="replace-add-row"></span>
 							</td>
 						</tr>
+						<?php if( is_multisite() ) : ?>
+							<tr class="replace-row">
+								<td class="old-replace-col">
+									<input type="text" size="40" name="replace_old[]" class="code" id="old-domain" placeholder="Old domain" value="<?php echo htmlentities( DOMAIN_CURRENT_SITE ); ?>" autocomplete="off" />
+								</td>
+								<td class="arrow-col">
+									<span class="right-arrow">&rarr;</span>
+								</td>
+								<td class="replace-right-col">
+									<input type="text" size="40" name="replace_new[]" class="code" id="new-domain" placeholder="New domain" autocomplete="off" />
+									<span class="replace-remove-row"></span>
+									<span class="replace-add-row"></span>
+								</td>
+							</tr>
+						<?php endif; ?>
 					<?php else :
 						$i = 1;
 						foreach( $loaded_profile['replace_old'] as $replace_old ) : ?>
@@ -161,7 +191,7 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 			</div>
 
 			<div class="option-section">
-				<?php $tables = $this->get_tables(); ?>
+				<?php $tables = $this->get_table_sizes(); ?>
 				<div class="header-expand-collapse clearfix">
 					<?php
 						if( isset( $loaded_profile['table_migrate_option'] ) && $loaded_profile['table_migrate_option'] == 'migrate_select' ){
@@ -194,12 +224,13 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 
 					<div class="select-tables-wrap">
 						<select multiple="multiple" name="select_tables[]" id="select-tables" autocomplete="off">
-						<?php foreach( $tables as $table ) :
+						<?php foreach( $tables as $table => $size ) :
+							$size = (int) $size * 1024;
 							if( ! empty( $loaded_profile['select_tables'] ) && in_array( $table, $loaded_profile['select_tables'] ) ){
-								printf( '<option value="%1$s" selected="selected">%1$s</option>', $table );
+								printf( '<option value="%1$s" selected="selected">%1$s (%2$s)</option>', $table, size_format( $size ) );
 							}
 							else{
-								printf( '<option value="%1$s">%1$s</option>', $table );
+								printf( '<option value="%1$s">%1$s (%2$s)</option>', $table, size_format( $size ) );
 							}
 						endforeach; ?>
 						</select>
@@ -228,9 +259,9 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 							Replace GUIDs
 							</label>
 
-							<a href="#" class="replace-guid-helper js-action-link"></a>
+							<a href="#" class="general-helper replace-guid-helper js-action-link"></a>
 
-							<div class="replace-guids-info">
+							<div class="replace-guids-info helper-message">
 								Although the <a href="http://codex.wordpress.org/Changing_The_Site_URL#Important_GUID_Note" target="_blank">WordPress Codex emphasizes</a>
 								that GUIDs should not be changed, this is limited to sites that are already live.
 								If the site has never been live, I recommend replacing the GUIDs. For example, you may be
@@ -253,7 +284,13 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 						<li class="backup-options">
 							<label for="create-backup">
 							<input id="create-backup" type="checkbox" value="1" autocomplete="off" name="create_backup"<?php echo ( isset( $loaded_profile['create_backup'] ) ? ' checked="checked"' : '' ); ?> />
-							Backup the database that will be overwritten and save to the "uploads" folder
+							Backup the database that will be overwritten and save to: <span class="uploads-dir"><?php echo $this->get_short_uploads_dir(); ?></span>
+							</label>
+						</li>
+						<li class="keep-active-plugins">
+							<label for="keep-active-plugins">
+							<input id="keep-active-plugins" type="checkbox" value="1" autocomplete="off" name="keep_active_plugins"<?php echo ( isset( $loaded_profile['keep_active_plugins'] ) ? ' checked="checked"' : '' ); ?> />
+							Do not migrate the 'active_plugins' setting (i.e. which plugins are activated/deactivated)
 							</label>
 						</li>
 					</ul>
@@ -289,6 +326,22 @@ $is_default_profile = isset( $loaded_profile['default_profile'] );
 						</li>
 					</ul>
 				</div>
+			</div>
+
+			<div class="prefix-notice pull">
+				<p>Whoa! We've detected that the database table prefix differs between installations. Clicking the Migrate DB button below will create new database tables in your local database with prefix "<span class="remote-prefix"></span>".</p>
+
+				<p>However, your local install is configured to use table prefix "<?php echo $wpdb->prefix; ?>" and will ignore the migrated tables. So, <b>AFTER</b> migration is complete, you will need to edit your local install's wp-config.php and change the "<?php echo $wpdb->prefix; ?>" variable to "<span class="remote-prefix"></span>".</p>
+
+				<p>This will allow your local install the use the migrated tables. Once you do this, you shouldn't have to do it again.</p>
+			</div>
+
+			<div class="prefix-notice push">
+				<p>Whoa! We've detected that the database table prefix differs between installations. Clicking the Migrate DB button below will create new database tables in the remote database with prefix "<?php echo $wpdb->prefix; ?>".</p>
+
+				<p>However, your remote install is configured to use table prefix "<span class="remote-prefix"></span>" and will ignore the migrated tables. So, <b>AFTER</b> migration is complete, you will need to edit your remote install's wp-config.php and change the "<span class="remote-prefix"></span>" variable to "<?php echo $wpdb->prefix; ?>".</p>
+
+				<p>This will allow your remote install the use the migrated tables. Once you do this, you shouldn't have to do it again.</p>
 			</div>
 
 			<p class="migrate-db">

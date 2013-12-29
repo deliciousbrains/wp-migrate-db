@@ -1,6 +1,9 @@
 @import "compass";
 
 .wpmdb{
+	> .warning {
+		max-width: 750px;
+	}
 
 	/* =============================================================================
 	   Common & Global
@@ -25,7 +28,8 @@
 		margin-top: 0;
 	}
 
-	input[type=text] {
+	input[type=text],
+	input[type=password] {
 		padding: 5px;
 	}
 
@@ -92,6 +96,7 @@
 	
 	.connection-status{
 		display: none;
+		overflow: auto;
 	}
 	
 	.connection-status.error{
@@ -293,6 +298,20 @@
 	    padding: 10px;
 	}
 
+	.basic-access-auth-wrapper {
+		display: none;
+		margin-bottom: 5px;
+	}
+
+	.auth-username, .auth-password {
+		width: 206px;
+		margin-top: 3px;
+	}
+
+	.auth-password {
+		width: 207px;
+	}
+
 	.connection-info-wrapper {
 		display: none;
 		width: 670px;
@@ -462,7 +481,7 @@
 	
 	/* Advanced Options */
 	
-	.replace-guid-helper {
+	.general-helper {
 		border-radius: 50%;
 		border: 1px solid #ccc;
 		background-color: #eee;
@@ -471,15 +490,16 @@
 		display: inline-block;
 		position: relative;
 		top: 4px;
+		margin-top: -4px;
 		cursor: pointer;
 		margin-left: 2px;
 	}
 	
-	.replace-guid-helper:hover {
+	.general-helper:hover {
 		border-color: #aaa;
 	}
 	
-	.replace-guid-helper:after {
+	.general-helper:after {
 	    content: "?";
 		color: #999999;
 		font-size: 10px;
@@ -489,21 +509,29 @@
 		top: -1px;
 	}
 	
-	.replace-guids-info {
+	.helper-message {
 		padding: 10px;
 		border: 1px solid #ccc;
 		border-radius: 3px;
 		background-color: #fff;
 		position: absolute;
 		width: 500px;
-		left: 140px;
 		z-index: 100;
-		top: -7px;
 		display: none;
 		box-shadow: 0px 0px 5px #ccc;
 	}
+
+	.ssl-verify-message {
+		left: 182px;
+		top: -10px;
+	}
+
+	.replace-guids-info {
+		left: 140px;
+		top: -10px;
+	}
 	
-	.replace-guids-info:after {
+	.helper-message:after {
 		content: '';
 		border-bottom: 7px solid transparent;
 		border-right: 7px solid #fff;
@@ -516,7 +544,7 @@
 		width: 0;
 	}
 	
-	.replace-guids-info:before {
+	.helper-message:before {
 		content: '';
 		border-bottom: 7px solid transparent;
 		border-right: 7px solid #aaa;
@@ -531,6 +559,40 @@
 
 	.label-disabled {
 		color: #888;
+	}
+
+	.prefix-notice, .ssl-notice, .different-plugin-version-notice, .mysqli-notice {
+		background-color: #FFFFE0;
+		border: 1px solid #E6DB55;
+		padding: 15px;
+		border-radius: 3px;
+		margin-bottom: 15px;
+		display: none;
+		width: 710px;
+		p{
+			margin-top: 0px;
+		}
+		p:last-child {
+			margin: 0px;
+		}
+	}
+
+	.different-plugin-version-notice, .mysqli-notice {
+		background-color: #FFEBE8;
+		border-color: #CC0000;
+		a {
+			color: #CC0000;
+			text-decoration: underline;
+		}
+	}
+
+	.mysqli-notice {
+		display: block;
+	}
+
+	.ssl-notice {
+		margin-bottom: 0;
+		margin-top: 15px;
 	}
 	
 	/* Save migration profile */
@@ -622,6 +684,76 @@
 	.settings-tab{
 		display: none;
 
+		.slider {
+			max-width: 416px;
+		}
+
+		.slider-label {
+			display: block;
+			margin-bottom: 10px;
+			float: left;
+			width: 50%;
+		}
+
+		.slider-label-wrapper {
+			max-width: 416px;
+			width: 100%;
+			position: relative;
+		}
+
+		.amount {
+			width: 50%;
+			text-align: right;
+			display: block;
+			text-align: right;
+			float: left;
+		}
+
+		.slider-message {
+			top: -11px;
+			left: 164px;
+		}
+
+		.slider-spinner {
+			position: absolute;
+			right: -35px;
+			bottom: -13px;
+		}
+
+		.slider-success-msg {
+			display: none;
+			right: -53px;
+			bottom: -13px;
+			position: absolute;
+			font-weight: bold;
+		}
+
+		.ui-slider {
+			border: 1px solid #dfdfdf;
+			height: 10px;
+			border-radius: 2px;
+			position: relative;
+		}
+
+		.ui-slider-handle {
+			width: 7px;
+			height: 20px;
+			background-color: #aaa;
+			display: block;
+			position: absolute;
+			top: -5px;
+			outline: none;
+		}
+
+		.ui-slider-handle:active {
+			background-color: #999;
+		}
+
+		.ui-slider-range {
+			background-color: #eee;
+			height: 100%;
+		}
+
 		.option-section{
 
 			li label{
@@ -651,6 +783,14 @@
 				top: 0px;
 				position: absolute;
 				font-weight: bold;
+			}
+
+			.verify-ssl .ajax-spinner {
+				right: -45px;
+			}
+
+			.verify-ssl .ajax-success-msg {
+				right: -65px;
 			}
 
 		}
@@ -696,7 +836,7 @@
 	}
 
 	/* =============================================================================
-	   Settings Tab
+	   Help Tab
 	   ========================================================================== */
 
 	.help-tab {
@@ -737,9 +877,6 @@
 
 		.videos {
 			width: 640px;
-			border-bottom: 1px solid #CCCCCC;
-			margin-bottom: 25px;
-			padding-bottom: 28px;
 
 			ul > li {
 				margin-bottom: 30px;
@@ -810,6 +947,9 @@
 
 		.debug {
 			width: 640px;
+			border-bottom: 1px solid #CCCCCC;
+			margin-bottom: 25px;
+			padding-bottom: 28px;
 
 			textarea{
 				width: 100%;
@@ -830,6 +970,7 @@
 		iframe {
 			display: none;
 		}
+
 	}
 
 }
@@ -847,8 +988,13 @@
 }
 
 .migration-error {
-	color: #A21B1B;
-	font-weight: bold;
+    color: #A21B1B;
+    display: block;
+    font-weight: bold;
+    max-height: 400px;
+    max-width: 100%;
+    overflow: scroll;
+    word-wrap: break-word;
 }
 
 .progress-content{
@@ -964,7 +1110,6 @@
 		border: 1px solid #ccc;
 		border-radius: 3px;
 		background-color: #fff;
-		colour: #333;
 		font-family: "Courier New",Courier,monospace;
 		font-size: 12px;
 		display: inline-block;
