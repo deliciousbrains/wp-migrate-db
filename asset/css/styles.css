@@ -1,184 +1,861 @@
-/* line 1, ../sass/styles.scss */
-#migrate-form {
-  padding-top: 10px;
+.wpmdb {
+  /* =============================================================================
+     Common & Global
+     ========================================================================== */
+  /* =============================================================================
+     Migrate Tab
+     ========================================================================== */
+  /* Misc */
+  /* Tabs */
+  /* Saved migration profile selection */
+  /* Output Selection */
+  /* Find and Replace */
+  /* Select Tables */
+  /* Advanced Options */
+  /* Save migration profile */
+  /* Action buttons */
+  /* Import DB */
+  /* =============================================================================
+     Settings Tab
+     ========================================================================== */
+  /* =============================================================================
+     Settings Tab
+     ========================================================================== */
 }
-
-/* line 9, ../sass/styles.scss */
-.form-table .row-new-url th, .form-table .row-new-url td,
-.form-table .row-new-path th,
-.form-table .row-new-path td,
-.form-table .row-revisions th,
-.form-table .row-revisions td {
-  padding-bottom: 20px;
+.wpmdb a {
+  text-decoration: none;
+}
+.wpmdb li {
+  margin-bottom: 5px;
+  position: relative;
+}
+.wpmdb ul {
+  margin: 0;
+}
+.wpmdb input[type=checkbox],
+.wpmdb input[type=radio] {
+  margin-right: 5px;
+  vertical-align: baseline;
+  margin-top: 0;
+}
+.wpmdb input[type=text] {
+  padding: 5px;
+}
+.wpmdb .option-section {
   border-bottom: 1px solid #ccc;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
-/* line 18, ../sass/styles.scss */
-.form-table .row-old-path th, .form-table .row-old-path td,
-.form-table .row-save-file th,
-.form-table .row-save-file td,
-.form-table .row-guids th,
-.form-table .row-guids td {
-  padding-top: 20px;
+.wpmdb .option-section h3 {
+  font-size: 18px;
+  font-weight: normal;
 }
-
-/* line 24, ../sass/styles.scss */
-p.submit {
+.wpmdb p.migrate-db {
   overflow: hidden;
-  padding-top: 20px;
-  border-top: 1px solid #ccc;
-  margin-top: 20px;
 }
-/* line 30, ../sass/styles.scss */
-p.submit input {
+.wpmdb p.migrate-db input {
   float: left;
 }
-/* line 34, ../sass/styles.scss */
-p.submit img {
+.wpmdb p.migrate-db img {
   float: left;
   margin: 3px 0 0 5px;
 }
-
-/* line 40, ../sass/styles.scss */
-#wpmdb-container {
+.wpmdb p.migrate-db .save-settings-button {
+  margin-left: 10px;
+  display: none;
+}
+.wpmdb .indent-wrap {
+  margin-left: 25px;
+}
+.wpmdb .expandable-content {
+  display: none;
+  margin-top: 10px;
+}
+.wpmdb .expandable-content li:last-child {
+  margin-bottom: 0px;
+}
+.wpmdb .header-wrapper {
+  margin-bottom: 10px;
+}
+.wpmdb .header-expand-collapse {
+  cursor: pointer;
+  display: inline-block;
+}
+.wpmdb .option-description {
+  font-size: 12px;
+  color: #999;
+  margin-left: 8px;
+  font-weight: normal;
+}
+.wpmdb .option-group li:last-child {
+  margin-bottom: 0;
+}
+.wpmdb .connection-status {
+  display: none;
+}
+.wpmdb .connection-status.error {
+  color: #9D1818;
+}
+.wpmdb .ajax-spinner {
+  left: 6px;
+  position: relative;
+  top: 3px;
+}
+.wpmdb div.message {
+  margin: 15px 0 0;
+}
+.wpmdb .licence-wrap h3 {
+  margin: 0 0 10px 0;
+}
+.wpmdb .licence-input {
+  clear: both;
+  display: block;
+  font-family: "Courier New",Courier,monospace;
+  font-size: 14px;
+  margin-bottom: 7px;
+  padding: 10px;
+  width: 418px;
+}
+.wpmdb .register-licence {
+  float: left;
+}
+.wpmdb .licence-status {
+  color: #A21B1B;
+  font-weight: bold;
+  clear: both;
+  padding-top: 0.5em;
+  margin: 0;
+}
+.wpmdb .licence-status.success {
+  color: #333;
+}
+.wpmdb .licence-information {
+  margin-bottom: 5px;
+}
+.wpmdb .register-licence-ajax-spinner {
+  margin: 4px 0 0 8px;
+}
+.wpmdb .return-to-profile-selection {
+  margin-bottom: 15px;
+  display: inline-block;
+}
+.wpmdb .return-to-profile-selection.bottom {
+  margin-top: 10px;
+}
+.wpmdb h2.nav-tab-wrapper {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding-left: 10px;
+}
+.wpmdb h2.nav-tab-wrapper a {
+  margin-right: 4px;
+}
+.wpmdb h2.nav-tab-wrapper a.nav-tab-active {
+  color: #464646;
+  cursor: default;
+}
+.wpmdb label {
+  display: inline-block;
+  clear: both;
+}
+.wpmdb .saved-migration-profile-label {
+  font-weight: bold;
+  font-size: 14px;
+}
+.wpmdb .migration-profile-options li {
+  position: relative;
+  width: 520px;
+}
+.wpmdb .migration-profile-options li a {
+  padding: 5px 10px;
+  width: 500px;
+  border: 1px solid #ddd;
+  margin: 0px 0px 7px;
+  display: block;
+  font-size: 14px;
+  color: #333;
+}
+.wpmdb .migration-profile-options li a:hover {
+  border-color: #bbb;
+}
+.wpmdb .main-list-delete-profile-link {
+  color: #999999;
+  font-family: "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 200;
+  position: absolute;
+  right: 7px;
+  top: 6px;
+  cursor: pointer;
+}
+.wpmdb .main-list-delete-profile-link:hover {
+  color: #444;
+}
+.wpmdb .option-group li {
+  margin-bottom: 5px;
+}
+.wpmdb .option-group > li {
+  margin-bottom: 8px;
+}
+.wpmdb .option-group li > label {
+  font-size: 14px;
+  font-weight: bold;
+}
+.wpmdb .option-group ul {
+  display: none;
+  margin: 10px 0px 10px 25px;
+}
+.wpmdb .option-group ul label {
+  font-size: 12px;
+  font-weight: normal;
+}
+.wpmdb .import-file label {
+  margin-right: 1em;
+}
+.wpmdb .import-file .note {
+  display: block;
+  color: #999;
+  font-style: italic;
+}
+.wpmdb .option-heading {
+  font-size: 14px;
+  font-weight: bold;
+}
+.wpmdb .expand-collapse-arrow {
+  margin-right: 9px;
+}
+.wpmdb .migrate-connection-info {
+  min-width: 675px;
+  margin: 0;
+}
+.wpmdb .migrate-tab .pull-push-connection-info {
+  width: 418px;
+  height: 65px;
+  color: #333;
+  font-family: "Courier New",Courier,monospace;
+  font-size: 15px;
+  line-height: 21px;
+  padding: 10px;
+}
+.wpmdb .connection-info-wrapper {
+  display: none;
+  width: 670px;
+}
+.wpmdb .connect-button {
+  margin-top: 2px;
+}
+.wpmdb .temp-disabled {
+  background-color: #EEEEEE;
+  color: #888888;
+  font-family: "Courier New",Courier,monospace;
+  text-shadow: 0 1px 0 #FFFFFF;
+}
+.wpmdb .push-list ul {
+  margin-bottom: 0px;
+}
+.wpmdb .find-heading, .wpmdb .replace-heading {
+  float: left;
+}
+.wpmdb .find-heading {
+  width: 400px;
+}
+.wpmdb .replace-fields {
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+.wpmdb .replace-fields input {
+  width: 295px;
+}
+.wpmdb .replace-fields tr td {
+  padding-bottom: 7px;
+}
+.wpmdb .replace-fields tr:last-child td {
+  padding-bottom: 0px;
+}
+.wpmdb .arrow-col {
+  width: 93px;
+  text-align: center;
+  vertical-align: middle;
+}
+.wpmdb .right-arrow {
+  font-size: 36px;
+  color: #aaa;
+  font-family: arial, sans-serif;
+}
+.wpmdb .replace-right-col span {
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  cursor: pointer;
+}
+.wpmdb .replace-right-col span:hover {
+  border-color: #aaa;
+}
+.wpmdb .replace-remove-row {
+  margin: 0px 2px;
+}
+.wpmdb .replace-remove-row:after {
+  content: '';
+  background-color: #aaa;
+  display: block;
+  height: 2px;
+  left: 5px;
+  position: absolute;
+  top: 7px;
+  width: 6px;
+}
+.wpmdb .replace-add-row:after {
+  content: '';
+  background-color: #aaa;
+  display: block;
+  height: 2px;
+  left: 5px;
+  position: absolute;
+  top: 7px;
+  width: 6px;
+}
+.wpmdb .replace-add-row:before {
+  content: '';
+  background-color: #aaa;
+  display: block;
+  height: 6px;
+  left: 7px;
+  position: absolute;
+  top: 5px;
+  width: 2px;
+}
+.wpmdb .original-repeatable-field {
+  display: none;
+}
+.wpmdb .no-replaces-message {
+  display: none;
+  margin-bottom: 0px;
+}
+.wpmdb .tables-header {
+  display: inline-block;
+}
+.wpmdb .expand-collapse-arrow {
+  display: inline-block;
+  position: relative;
+  top: -2px;
+  font-size: 11px;
+}
+.wpmdb .collapsed {
+  -moz-transform: scale(1) rotate(-90deg) translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+  -webkit-transform: scale(1) rotate(-90deg) translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+  -o-transform: scale(1) rotate(-90deg) translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+  -ms-transform: scale(1) rotate(-90deg) translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+  transform: scale(1) rotate(-90deg) translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+}
+.wpmdb .select-deselect-divider {
+  margin: 0 6px;
+}
+.wpmdb .select-tables-wrap {
+  display: none;
+  margin-top: 12px;
+}
+.wpmdb #select-tables {
+  min-width: 420px;
+  min-height: 180px;
+  margin-bottom: 10px;
+}
+.wpmdb .table-migrate-options li label {
+  font-size: 12px;
+  font-weight: normal;
+}
+.wpmdb .table-migrate-options li {
+  margin-bottom: 5px;
+}
+.wpmdb .replace-guid-helper {
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  cursor: pointer;
+  margin-left: 2px;
+}
+.wpmdb .replace-guid-helper:hover {
+  border-color: #aaa;
+}
+.wpmdb .replace-guid-helper:after {
+  content: "?";
+  color: #999999;
+  font-size: 10px;
+  font-weight: bold;
+  left: 4px;
+  position: absolute;
+  top: -1px;
+}
+.wpmdb .replace-guids-info {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  position: absolute;
+  width: 500px;
+  left: 140px;
+  z-index: 100;
+  top: -7px;
+  display: none;
+  box-shadow: 0px 0px 5px #ccc;
+}
+.wpmdb .replace-guids-info:after {
+  content: '';
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #fff;
+  border-top: 7px solid transparent;
+  display: block;
+  height: 0;
+  left: -7px;
+  position: absolute;
+  top: 11px;
+  width: 0;
+}
+.wpmdb .replace-guids-info:before {
+  content: '';
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #aaa;
+  border-top: 7px solid transparent;
+  display: block;
+  height: 0;
+  left: -8px;
+  position: absolute;
+  top: 11px;
+  width: 0;
+}
+.wpmdb .label-disabled {
+  color: #888;
+}
+.wpmdb .save-migration-profile {
+  font-size: 14px;
+  font-weight: bold;
+}
+.wpmdb .save-migration-profile-wrap li label {
+  font-size: 12px;
+  font-weight: normal;
+}
+.wpmdb .save-migration-profile-wrap li {
+  margin-bottom: 5px;
+  padding-left: 25px;
+}
+.wpmdb .save-migration-profile-wrap .indent-wrap {
+  margin-left: 0px;
+}
+.wpmdb .create-new-label {
+  margin-right: 8px;
+}
+.wpmdb .create-new-profile {
+  position: absolute;
+  top: -5px;
+}
+.wpmdb .delete-profile {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 50% 50% 50% 50%;
+  cursor: pointer;
+  height: 11px;
+  left: 5px;
+  margin-left: 2px;
+  position: absolute;
+  margin-top: -6px;
+  top: 50%;
+  width: 11px;
+  display: none;
+  background-position: 50% 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+.wpmdb .delete-profile:after {
+  content: "\00d7";
+  left: 2px;
+  position: absolute;
+  top: -3px;
+  color: #aaa;
+  font-size: 12px;
+}
+.wpmdb .delete-profile:hover {
+  border-color: #aaa;
+}
+.wpmdb .migrate-db .ajax-success-msg {
+  font-weight: bold;
+  margin: 3px 0 0 9px;
+  display: inline-block;
+}
+.wpmdb p img.save-profile-ajax-spinner {
+  margin-left: 10px;
+}
+.wpmdb .import-button {
+  display: none;
+}
+.wpmdb .settings-tab {
+  display: none;
+}
+.wpmdb .settings-tab .option-section li label {
+  font-size: 12px;
+  font-weight: normal;
   position: relative;
 }
-
-/* line 44, ../sass/styles.scss */
-#wpmdb-main {
-  margin-right: 320px;
-  min-height: 1200px;
+.wpmdb .settings-tab .option-section li {
+  margin-bottom: 5px;
 }
-
-/* line 49, ../sass/styles.scss */
-#wpmdb-sidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 250px;
-  border: 1px solid #ccc;
-  padding: 20px;
+.wpmdb .settings-tab .option-section li:last-child {
+  margin-bottom: 0px;
 }
-/* line 57, ../sass/styles.scss */
-#wpmdb-sidebar .author {
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ccc;
-  overflow: hidden;
-}
-/* line 63, ../sass/styles.scss */
-#wpmdb-sidebar .author img {
-  float: left;
-  margin-right: 20px;
-}
-/* line 68, ../sass/styles.scss */
-#wpmdb-sidebar .author .desc {
-  float: left;
-}
-/* line 72, ../sass/styles.scss */
-#wpmdb-sidebar .author h3 {
-  font-size: 12px;
-  margin: 0;
-}
-/* line 77, ../sass/styles.scss */
-#wpmdb-sidebar .author h2 {
-  font-size: 18px;
-  margin: 0;
-  padding: 0;
-}
-/* line 82, ../sass/styles.scss */
-#wpmdb-sidebar .author h2 a {
-  color: #464646;
-  text-decoration: none;
-}
-/* line 86, ../sass/styles.scss */
-#wpmdb-sidebar .author h2 a:hover {
-  color: #000;
-}
-/* line 92, ../sass/styles.scss */
-#wpmdb-sidebar .author p {
-  margin: 0;
-}
-/* line 97, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe {
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ccc;
-}
-/* line 102, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe h2 {
-  padding: 0;
-  margin: 0;
-  margin-bottom: 0.5em;
-  color: #666;
-  font-size: 20px;
-}
-/* line 110, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe ul {
-  list-style-type: disc;
-}
-/* line 114, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe li {
-  margin-left: 1.5em;
-  color: #666;
-}
-/* line 119, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe p {
-  margin: 0;
-}
-/* line 123, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe p.interesting {
-  margin-bottom: 1em;
-}
-/* line 127, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .error {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 1em;
-}
-/* line 133, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .thanks {
-  color: #333;
-  font-weight: bold;
-  font-size: 14px;
-}
-/* line 139, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field {
-  margin-bottom: 1em;
-}
-/* line 142, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field p {
-  margin-bottom: 0.3em;
-}
-/* line 146, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field .willing-copy {
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 1.4em;
-  margin-bottom: 1em;
-}
-/* line 154, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.how-much input {
-  width: 50px;
-}
-/* line 160, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.notify-me input {
+.wpmdb .settings-tab .option-section .ajax-spinner {
+  right: -23px;
+  left: inherit;
+  top: 0px;
   position: absolute;
 }
-/* line 164, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.notify-me label {
+.wpmdb .settings-tab .option-section .ajax-success-msg {
+  right: -42px;
+  left: inherit;
+  top: 0px;
+  position: absolute;
+  font-weight: bold;
+}
+.wpmdb .allow-remote-reqeusts {
+  font-size: 14px;
+  font-weight: bold;
+}
+.wpmdb .connection-info-label {
+  margin-top: 15px;
+  margin-bottom: 5px;
   display: block;
-  padding-left: 20px;
 }
-/* line 172, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.comments textarea {
-  width: 230px;
-  height: 3em;
+.wpmdb .connection-info {
+  clear: both;
+  background-color: #eee;
+  color: #888;
+  font-size: 15px;
+  line-height: 21px;
+  font-family: "Courier New", Courier, monospace;
+  padding: 10px 10px;
+  height: 67px;
+  text-shadow: 0px 1px 0px #fff;
+  display: block;
+  margin-bottom: 7px;
+  width: 418px;
 }
-/* line 177, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.comments textarea.has-content, #wpmdb-sidebar .subscribe .field.comments textarea:focus {
-  height: 5em;
+.wpmdb .reset-button-wrap {
+  width: 418px;
 }
-/* line 183, ../sass/styles.scss */
-#wpmdb-sidebar .subscribe .field.submit-button {
-  margin-bottom: 0;
+.wpmdb .reset-api-key {
+  float: left;
+}
+.wpmdb .reset-api-key-ajax-spinner {
+  float: left;
+  margin: 4px 7px;
+}
+.wpmdb .help-tab {
+  display: none;
+}
+.wpmdb .help-tab h3 {
+  font-size: 18px;
+  font-weight: normal;
+}
+.wpmdb .help-tab .support {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 25px;
+  padding-bottom: 18px;
+}
+.wpmdb .help-tab .support p {
+  width: 640px;
+}
+.wpmdb .help-tab .support .email a {
+  font-size: 12px;
+}
+.wpmdb .help-tab .support .ajax-spinner {
+  top: 2px;
+}
+.wpmdb .help-tab .video-viewer {
+  margin-bottom: 30px;
+}
+.wpmdb .help-tab .videos {
+  width: 640px;
+  border-bottom: 1px solid #CCCCCC;
+  margin-bottom: 25px;
+  padding-bottom: 28px;
+}
+.wpmdb .help-tab .videos ul > li {
+  margin-bottom: 30px;
+  overflow: hidden;
+  position: relative;
+}
+.wpmdb .help-tab .videos ul > li a {
+  overflow: hidden;
+  display: block;
+  width: 320px;
+  height: 180px;
+  float: left;
+  margin-right: 15px;
+  position: relative;
+  z-index: 1;
+}
+.wpmdb .help-tab .videos ul > li a:before, .wpmdb .help-tab .videos ul > li a:after {
+  position: absolute;
+  content: " ";
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.wpmdb .help-tab .videos ul > li a:before {
+  width: 64px;
+  height: 64px;
+  -webkit-border-radius: 64px;
+  -moz-border-radius: 64px;
+  -ms-border-radius: 64px;
+  -o-border-radius: 64px;
+  border-radius: 64px;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  z-index: 2;
+}
+.wpmdb .help-tab .videos ul > li a:after {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
+  border: 21.33333px solid transparent;
+  border-top-width: 12.8px;
+  border-bottom-width: 12.8px;
+  border-left-color: #333;
+  background: transparent;
+  display: block;
+  left: 25px;
+  width: 0px;
+  height: 0px;
+  z-index: 3;
+}
+.wpmdb .help-tab .videos .video:last-child {
+  margin-bottom: 0px;
+}
+.wpmdb .help-tab .videos img {
+  width: 320px;
+  height: 240px;
+  position: relative;
+  top: 50%;
+  margin-top: -120px;
+}
+.wpmdb .help-tab .debug {
+  width: 640px;
+}
+.wpmdb .help-tab .debug textarea {
+  width: 100%;
+  min-height: 200px;
+  font-family: "Courier New",Courier,monospace;
+  margin-bottom: 5px;
+}
+.wpmdb .help-tab h4 {
+  margin: 0 0 0.2em 0;
+}
+.wpmdb .help-tab p {
+  margin: 0 0 0.5em 0;
+}
+.wpmdb .help-tab iframe {
+  display: none;
+}
+
+/* Progress Information */
+/* Contain floats: h5bp.com/q */
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+.general-spinner {
+  width: 16px;
+  height: 16px;
+}
+
+.migration-error {
+  color: #A21B1B;
+  font-weight: bold;
+}
+
+.progress-content {
+  display: none;
+  position: relative;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 50px;
+  box-shadow: 0 0 10px #ccc;
+  cursor: default;
+  width: 80%;
+  z-index: 99999;
+  position: fixed;
+  left: 50%;
+  margin-left: -40%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.progress-content .progress-bar {
+  height: 10px;
+  background-color: #8cc1e9;
+  margin-bottom: 5px;
+  background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, #72a7cf), color-stop(100%, #8cc1e9));
+  background-image: -webkit-linear-gradient(bottom, #72a7cf, #8cc1e9);
+  background-image: -moz-linear-gradient(bottom, #72a7cf, #8cc1e9);
+  background-image: -o-linear-gradient(bottom, #72a7cf, #8cc1e9);
+  background-image: linear-gradient(bottom, #72a7cf, #8cc1e9);
+}
+.progress-content .progress-title {
+  font-size: 18px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+  font-weight: normal;
+  float: left;
+}
+.progress-content .progress-bar {
+  width: 0%;
+}
+.progress-content .progress-info-wrapper {
+  margin-bottom: 10px;
+}
+.progress-content .progress-text {
+  clear: left;
+  float: left;
+}
+.progress-content .timer {
+  float: right;
+}
+.progress-content .progress-tables {
+  overflow: hidden;
+  margin-bottom: 2px;
+  padding: 0 0 20px 0;
+}
+.progress-content .progress-bar-wrapper {
+  position: relative;
+}
+.progress-content .progress-bar-wrapper:before {
+  content: '';
+  display: block;
+  height: 5px;
+  width: 1px;
+  background-color: #ccc;
+  position: absolute;
+  top: 15px;
+  left: 0px;
+}
+.progress-content .progress-tables-hover-boxes {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: block;
+  width: 100%;
+}
+.progress-content .progress-chunk-hover {
+  display: block;
+  float: left;
+  height: 35px;
+  position: relative;
+  top: -5px;
+  z-index: 1;
+}
+.progress-content .progress-chunk {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  display: block;
+  height: 6px;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  color: #999;
+  position: relative;
+  text-align: center;
+}
+.progress-content .progress-chunk span {
+  padding: 0px 3px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top: 10px;
+  display: inline-block;
+}
+.progress-content .progress-label {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  colour: #333;
+  font-family: "Courier New",Courier,monospace;
+  font-size: 12px;
+  display: inline-block;
+  top: -35px;
+  position: absolute;
+  opacity: 0;
+  -webkit-transition: opacity 200ms ease-in-out;
+  -moz-transition: opacity 200ms ease-in-out;
+  -ms-transition: opacity 200ms ease-in-out;
+  -o-transition: opacity 200ms ease-in-out;
+  transition: opacity 200ms ease-in-out;
+}
+.progress-content .label-visible {
+  opacity: 1;
+}
+.progress-content .progress-label:before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #ccc;
+  display: block;
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  margin-left: -2px;
+}
+.progress-content .progress-label:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #fff;
+  display: block;
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  margin-left: -2px;
+}
+.progress-content .migration-progress-ajax-spinner {
+  left: 7px;
+  position: relative;
+  top: 15px;
+}
+.progress-content .close-progress-content {
+  color: #999999;
+  cursor: pointer;
+  font-family: "Times New Roman",serif;
+  font-size: 26px;
+  font-weight: 200;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  padding: 5px;
+  display: none;
+}
+.progress-content .close-progress-content:hover {
+  color: #666;
+  border-color: #aaa;
 }
