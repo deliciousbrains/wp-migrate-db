@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Migrate DB
-Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
+Plugin URI: http://deliciousbrains.com/wp-migrate-db/
 Description: Export, push, and pull to migrate your WordPress databases.
 Author: Delicious Brains
 Version: 1.3
@@ -27,15 +27,15 @@ if( !defined( 'DS' ) ) {
 	}
 }
 
-function wp_migrate_db_pro_init() {
+function wp_migrate_db_init() {
 	if ( !is_admin() ) return;
 
-	require_once 'class/wpmdbpro-base.php';
-	require_once 'class/wpmdbpro-addon.php';
-	require_once 'class/wpmdbpro.php';
+	require_once 'class/wpmdb-base.php';
+	require_once 'class/wpmdb-addon.php';
+	require_once 'class/wpmdb.php';
 
-	global $wpmdbpro;
-	$wpmdbpro = new WPMDBPro( __FILE__ );
+	global $wpmdb;
+	$wpmdb = new WPMDB( __FILE__ );
 }
 
-add_action( 'init', 'wp_migrate_db_pro_init', 5 );
+add_action( 'init', 'wp_migrate_db_init', 5 );

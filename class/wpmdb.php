@@ -1,5 +1,5 @@
 <?php
-class WPMDBPro extends WPMDBPro_Base {
+class WPMDB extends WPMDB_Base {
 	protected $fp;
 	protected $absolute_root_file_path;
 	protected $form_defaults;
@@ -149,11 +149,11 @@ class WPMDBPro extends WPMDBPro_Base {
 
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
-			$this->plugin_base = 'settings.php?page=wp-migrate-db-pro';
+			$this->plugin_base = 'settings.php?page=wp-migrate-db';
 		}
 		else {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-			$this->plugin_base = 'tools.php?page=wp-migrate-db-pro';
+			$this->plugin_base = 'tools.php?page=wp-migrate-db';
 		}
 	}
 
@@ -202,7 +202,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		$upload_dir_name = apply_filters( 'wpmdb_upload_dir_name', 'wp-migrate-db' );
 
 		if( ! file_exists( $upload_dir['basedir'] . DS . $upload_dir_name ) ) {
-			$url = wp_nonce_url( $this->plugin_base, 'wp-migrate-db-pro-nonce' );
+			$url = wp_nonce_url( $this->plugin_base, 'wp-migrate-db-nonce' );
 
 			if( false === @mkdir( $upload_dir['basedir'] . DS . $upload_dir_name, 0755 ) ) {
 				return $upload_info[$type];
@@ -251,7 +251,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function plugin_action_links( $links ) {
-		$link = sprintf( '<a href="%s">%s</a>', network_admin_url( $this->plugin_base ), __( 'Settings', 'wp-migrate-db-pro' ) );
+		$link = sprintf( '<a href="%s">%s</a>', network_admin_url( $this->plugin_base ), __( 'Settings', 'wp-migrate-db' ) );
 		array_unshift( $links, $link );
 		return $links;
 	}
@@ -1121,7 +1121,7 @@ class WPMDBPro extends WPMDBPro_Base {
 
 		<div class="wrap wpmdb">
 
-			<div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB Pro</h2>
+			<div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB</h2>
 
 			<h2 class="nav-tab-wrapper"><a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">Migrate</a><a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">Settings</a><a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">Help</a></h2>
 
@@ -1354,7 +1354,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-migrate-db-pro' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 				$this->stow( "\n" );
 				$this->stow( "DROP TABLE IF EXISTS " . $this->backquote( $table ) . ";\n" );
@@ -1368,7 +1368,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-migrate-db-pro' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 				$this->stow( "\n" );
 			}
@@ -1407,7 +1407,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-migrate-db-pro' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 			}
 		}
@@ -1673,7 +1673,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 			$this->stow( "\n" );
 			$this->stow( "#\n" );
-			$this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-migrate-db-pro' ), $this->backquote( $table ) ) . "\n" );
+			$this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
 			$this->stow( "# --------------------------------------------------------\n" );
 			$this->stow( "\n" );
 
@@ -1769,11 +1769,11 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	function db_backup_header() {
 		$charset = ( defined( 'DB_CHARSET' ) ? DB_CHARSET : 'utf8' );
-		$this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-migrate-db-pro' ) . "\n", false );
+		$this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-migrate-db' ) . "\n", false );
 		$this->stow( "#\n", false );
-		$this->stow( "# " . sprintf( __( 'Generated: %s', 'wp-migrate-db-pro' ), date( "l j. F Y H:i T" ) ) . "\n", false );
-		$this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-migrate-db-pro' ), DB_HOST ) . "\n", false );
-		$this->stow( "# " . sprintf( __( 'Database: %s', 'wp-migrate-db-pro' ), $this->backquote( DB_NAME ) ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Generated: %s', 'wp-migrate-db' ), date( "l j. F Y H:i T" ) ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-migrate-db' ), DB_HOST ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Database: %s', 'wp-migrate-db' ), $this->backquote( DB_NAME ) ) . "\n", false );
 		$this->stow( "# --------------------------------------------------------\n\n", false );
 		$this->stow( "/*!40101 SET NAMES $charset */;\n\n", false );
 	}
@@ -1899,12 +1899,12 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function network_admin_menu() {
-		$hook_suffix = add_submenu_page( 'settings.php', 'Migrate DB Pro', 'Migrate DB Pro', 'manage_network_options', 'wp-migrate-db-pro', array( $this, 'options_page' ) );
+		$hook_suffix = add_submenu_page( 'settings.php', 'Migrate DB', 'Migrate DB', 'manage_network_options', 'wp-migrate-db', array( $this, 'options_page' ) );
 		$this->after_admin_menu( $hook_suffix );
 	}
 
 	function admin_menu() {
-		$hook_suffix = add_management_page( 'Migrate DB Pro', 'Migrate DB Pro', 'export', 'wp-migrate-db-pro', array( $this, 'options_page' ) );
+		$hook_suffix = add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
 		$this->after_admin_menu( $hook_suffix );
 	}
 
@@ -1940,18 +1940,18 @@ class WPMDBPro extends WPMDBPro_Base {
 		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_slug );
 
 		$src = $plugins_url . 'asset/css/styles.css';
-		wp_enqueue_style( 'wp-migrate-db-pro-styles', $src, array(), $this->get_installed_version() );
+		wp_enqueue_style( 'wp-migrate-db-styles', $src, array(), $this->get_installed_version() );
 		
 		$src = $plugins_url . 'asset/js/common.js';
-		wp_enqueue_script( 'wp-migrate-db-pro-common', $src, NULL, $this->get_installed_version(), true );
+		wp_enqueue_script( 'wp-migrate-db-common', $src, NULL, $this->get_installed_version(), true );
 
 		$src = $plugins_url . 'asset/js/hook.js';
-		wp_enqueue_script( 'wp-migrate-db-pro-hook', $src, NULL, $this->get_installed_version(), true );
+		wp_enqueue_script( 'wp-migrate-db-hook', $src, NULL, $this->get_installed_version(), true );
 
 		do_action( 'wpmdb_load_assets' );
 
 		$src = $plugins_url . 'asset/js/script.js';
-		wp_enqueue_script( 'wp-migrate-db-pro-script', $src, array( 'jquery' ), $this->get_installed_version(), true );
+		wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), $this->get_installed_version(), true );
 
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');

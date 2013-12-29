@@ -1,5 +1,5 @@
 <?php
-class WPMDBPro_Base {
+class WPMDB_Base {
 	protected $settings;
 	protected $plugin_file_path;
 	protected $plugin_dir_path;
@@ -30,10 +30,10 @@ class WPMDBPro_Base {
 		$this->plugin_title = str_ireplace( array( 'db', 'wp' ), array( 'DB', 'WP' ), $this->plugin_title );
 
 		if ( is_multisite() ) {
-			$this->plugin_base = 'settings.php?page=wp-migrate-db-pro';
+			$this->plugin_base = 'settings.php?page=wp-migrate-db';
 		}
 		else {
-			$this->plugin_base = 'tools.php?page=wp-migrate-db-pro';
+			$this->plugin_base = 'tools.php?page=wp-migrate-db';
 		}
 	}
 
