@@ -1,21 +1,32 @@
+// global functions
+var migration_complete;
+var migration_complete_events;
+
 (function($) {
 
 	var connection_established = false;
-	var connection_data = '';
 	var last_replace_switch = '';
 	var doing_ajax = false;
 	var doing_licence_registration_ajax = false;
 	var doing_reset_api_key_ajax = false;
 	var doing_save_profile = false;
-	var form_data = '';
-	var migration_completed = false;
-	var interval;
-	var currently_migrating = false;
 	var profile_name_edited = false;
 	var checked_licence = false;
 	var show_prefix_notice = false;
 	var show_ssl_notice = false;
 	var show_version_notice = false;
+	var migration_completed = false;
+	var currently_migrating = false;
+	var dump_filename = '';
+	var migration_intent;
+	var remote_site;
+	var secret_key;
+	var form_data;
+	var stage;
+	var connection_data;
+	var elapsed_interval;
+	var completed_msg;
+	var tables_to_migrate = '';
 
 	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/wpspin_light';
 
@@ -50,28 +61,6 @@
 		return typeof n === 'number' && n % 1 == 0;
 	}
 
-	function is_json( maybe_json ) {
-		try {
-			var json_object = jQuery.parseJSON( maybe_json );
-		}
-		catch(e){ 
-			return false; 
-		}
-		return true;
-	}
-
-	function add_commas( number_string ) {
-		number_string += '';
-		x = number_string.split('.');
-		x1 = x[0];
-		x2 = x.length > 1 ? '.' + x[1] : '';
-		var rgx = /(\d+)(\d{3})/;
-		while (rgx.test(x1)) {
-			x1 = x1.replace(rgx, '$1' + ',' + '$2');
-		}
-		return x1 + x2;
-	}
-
 	function setup_counter() { 
 		var c = 0,
 		counter_display = $('.timer'),
@@ -89,7 +78,7 @@
 			display_count();
 		}
 
-		interval = setInterval(count,1000);
+		elapsed_interval = setInterval(count,1000);
 	}
 
 	function get_intersect(arr1, arr2) {
@@ -105,6 +94,13 @@
 			}
 		}
 		return r;
+	}
+
+	function get_query_var( name ){
+		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
 
 	function maybe_show_ssl_warning( url, key, remote_scheme ) {
@@ -162,6 +158,7 @@
 	}
 
 	$(document).ready(function() {
+
 		if( navigator.appName.indexOf('Internet Explorer') != -1 ) {
 			$('.ie-warning').show();
 		}
@@ -173,7 +170,7 @@
 			max: 	wpmdb_bottleneck / 1024,
 			step:  512,
 			slide: function( event, ui ) {
-				$('.amount').html( add_commas( ui.value ) + ' kB' );
+				$('.amount').html( wpmdb_add_commas( ui.value ) + ' kB' );
 			},
 			change: function( event, ui ) {
 				$('.amount').after( '<img src="' + spinner_url + '" alt="" class="slider-spinner general-spinner" />' );
@@ -203,7 +200,7 @@
 				});
 			}
 		});
-		$('.amount').html( add_commas( $('.slider').slider('value') ) + ' kB' );
+		$('.amount').html( wpmdb_add_commas( $('.slider').slider('value') ) + ' kB' );
 
 		var progress_content_original = $('.progress-content').clone();
 		$('.progress-content').remove();
@@ -212,6 +209,8 @@
 		var this_prefixed_tables = $.parseJSON(wpmdb_this_prefixed_tables);
 		var push_select = $('#select-tables').clone();
 		var pull_select = $('#select-tables').clone();
+		var push_post_type_select = $('#select-post-types').clone();
+		var pull_post_type_select = $('#select-post-types').clone();
 
 		$('.help-tab .video').each(function() {
 			var $container = $(this),
@@ -253,9 +252,11 @@
 							msg += data.errors[key];
 						}
 						$('.support-content').empty().html( msg );
+						$('.addons-content').empty().html( msg );
 					}
 					else {
 						$('.support-content').empty().html(data.message);
+						$('.addons-content').empty().html(data.addon_content);
 					}
 				}
 			});
@@ -285,13 +286,13 @@
 				dataType:	'json',
 				cache: 	false,
 				data: {
-					action: 	'wpmdb_prepare_remote_connection',
+					action: 	'wpmdb_verify_connection_to_remote_site',
 					url: 		connection_info[0],
 					key: 		connection_info[1],
 					intent: 	intent,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
-					$('.connection-status').html( 'A problem occurred when attempting to connect to the remote server, please check the details and try again. (#102)' );
+					$('.connection-status').html( 'A problem occurred when attempting to connect to the local server, please check the details and try again. (#102)' );
 					$('.connection-status').addClass( 'migration-error' );
 					$('.ajax-spinner').remove();
 					doing_ajax = false;
@@ -331,7 +332,7 @@
 					}
 
 					var table_select = document.createElement('select');
-					$(table_select).attr('multiple', 'multiple').attr('name','select-tables[]').attr('id','select-tables');
+					$(table_select).attr('multiple', 'multiple').attr('name','select_tables[]').attr('id','select-tables').attr('class','multiselect');
 
 					$.each(connection_data.tables, function(index, value) {
 						var selected = $.inArray( value, loaded_tables );
@@ -341,17 +342,42 @@
 						else{
 							selected = ' ';
 						}
-						$(table_select).append('<option' + selected + 'value="' + value  + '">' +  value + '</option>');
+						$(table_select).append('<option' + selected + 'value="' + value  + '">' +  value + ' (' + connection_data.table_sizes_hr[value]  + ')</option>');
 					});
 
 					pull_select = table_select;
 
+					var loaded_post_prefixes = '';
+					if( wpmdb_default_profile == false && wpmdb_migrate_all_post_types == false ){
+						loaded_post_prefixes = $.parseJSON( wpmdb_loaded_post_types  );
+					}
+
+					var post_type_select = document.createElement('select');
+					$(post_type_select).attr('multiple', 'multiple').attr('name','select_post_types[]').attr('id','select-post-types').attr('class','multiselect');
+
+					$.each(connection_data.post_types, function(index, value) {
+						var selected = $.inArray( value, loaded_post_prefixes );
+						if( selected != -1 || ( wpmdb_convert_exclude_revisions == true && value != 'revision' ) ){
+							selected = ' selected="selected" ';
+						}
+						else{
+							selected = ' ';
+						}
+						$(post_type_select).append('<option' + selected + 'value="' + value  + '">' +  value + '</option>');
+					});
+
+					pull_post_type_select = post_type_select;
+
 					if( $('#pull').is(':checked') ){
 						$('#select-tables').remove();
 						$('.select-tables-wrap').prepend(pull_select);
+						$('#select-post-types').remove();
+						$('.select-post-types-wrap').prepend(pull_post_type_select);
 						$('.table-prefix').html(data.prefix);
 						$('.uploads-dir').html(wpmdb_this_uploads_dir);
 					}
+
+					$.wpmdb.do_action( 'verify_connection_to_remote_site', connection_data );
 					
 				}
 
@@ -360,7 +386,7 @@
 		}
 		
 		// add to <a> tags which act as JS event buttons, will not jump page to top and will deselect the button
-		$('.js-action-link').click(function(){
+		$('.js-action-link').click(function(event){
 			$(this).blur();
 			return false;
 		});
@@ -408,8 +434,9 @@
 						$('.licence-status').html( msg );
 					}
 					else {
-						$('.licence-information').html('Registered To: ' + data.email);
-						$('.licence-status').html( 'Your licence has been activated. You will now receive automatic updates and access to email support.');
+						$('.licence-input, .register-licence').remove();
+						$('.licence-not-entered').prepend( data.masked_licence );
+						$('.licence-status').html( 'Your licence has been activated. You will now receive automatic updates and access to email support.').delay(5000).fadeOut(1000);
 						$('.licence-status').addClass('success');
 						$('.support-content').empty().html('<p>Fetching licence details, please wait...<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" /></p>');
 						check_licence( licence_key );
@@ -432,7 +459,7 @@
 					action : 'wpmdb_clear_log',
 				},
 				error: function(jqXHR, textStatus, errorThrown){
-					alert('An error occurred when trying to clear the debug log. You can clear it manually by accessing the file system. (#132)');
+					alert('An error occurred when trying to clear the debug log. Please contact support. (#132)');
 				},
 				success: function(data){
 				}
@@ -459,21 +486,24 @@
 		}
 		
 		// select all tables
-		$('.tables-select-all').click(function(){
-			$('#select-tables').focus();
-			$('#select-tables option').attr('selected',1);
+		$('.multiselect-select-all').click(function(){
+			var multiselect = $(this).parents('.select-wrap').children('.multiselect');
+			$(multiselect).focus();
+			$('option', multiselect).attr('selected',1);
 		});
 		
 		// deselect all tables
-		$('.tables-deselect-all').click(function(){
-			$('#select-tables').focus();
-			$('#select-tables option').removeAttr('selected');
+		$('.multiselect-deselect-all').click(function(){
+			var multiselect = $(this).parents('.select-wrap').children('.multiselect');
+			$(multiselect).focus();
+			$('option', multiselect).removeAttr('selected');
 		});
 		
 		// invert table selection
-		$('.tables-invert-selection').click(function(){
-			$('#select-tables').focus();
-			$('#select-tables option').each(function(){
+		$('.multiselect-invert-selection').click(function(){
+			var multiselect = $(this).parents('.select-wrap').children('.multiselect');
+			$(multiselect).focus();
+			$('option', multiselect).each(function(){
 				$(this).attr('selected', ! $(this).attr('selected'));
 			});
 		});
@@ -507,26 +537,38 @@
 				$(this).next().hide();
 			}
 		});
+
+		$('.checkbox-label input[type=checkbox]').change(function() {
+			if( $(this).is(':checked') ){
+				$(this).parent().next().show();
+			}
+			else {
+				$(this).parent().next().hide();
+			}
+		});
 		
 		// special expand and collapse content on click for save migration profile
 		$('#save-migration-profile').change(function() {
 			if( $(this).is(':checked') ){
-				$(this).parent().next().show();
 				$('.save-settings-button').show();
 				$('.migrate-db .button-primary').val('Migrate DB & Save');
 			}
 			else{
-				$(this).parent().next().hide();
 				$('.save-settings-button').hide();
 				$('.migrate-db .button-primary').val('Migrate DB');
 			}
 		});
 		
 		if( $('#save-migration-profile').is(':checked') ){
-			$('#save-migration-profile').parent().next().show();
 			$('.save-settings-button').show();
 			$('.migrate-db .button-primary').val('Migrate DB & Save');
 		};
+
+		$('.checkbox-label input[type=checkbox]').each(function(){
+			if( $(this).is(':checked') ){
+				$(this).parent().next().show();
+			}
+		});
 
 		// AJAX migrate button
 		$('.migrate-db-button').click(function(event){
@@ -592,16 +634,15 @@
 				'position': 'fixed',
 				'top': 0,
 				'left': 0,
-				'background-color': 'rgba(255,255,255,0.9)',
 				'width': '100%',
 				'z-index': 99999,
 				'display': 'none',
 			});
 
 			$progress_content = progress_content_original.clone();
-			var migration_intent = $('input[name=action]:checked').val();
+			migration_intent = $('input[name=action]:checked').val();
 
-			var stage = 'backup';
+			stage = 'backup';
 
 			if( migration_intent == 'savefile' ){
 				stage = 'migrate';
@@ -613,16 +654,16 @@
 
 			var table_intent = $('input[name=table_migrate_option]:checked').val();
 			var connection_info = $.trim( $('.pull-push-connection-info').val() ).split("\n");
-			var remote_site = connection_info[0];
-			var secret_key = connection_info[1];
-			var tables_to_migrate = '';
 			var table_rows = '';
+
+			remote_site = connection_info[0];
+			secret_key = connection_info[1];
 
 			var static_migration_label = '';
 
 			$('#overlay').after($progress_content);
 
-			var completed_msg = 'Exporting complete.';
+			completed_msg = 'Exporting complete.';
 
 			if( migration_intent == 'savefile' ){
 				static_migration_label = 'Exporting, please wait...';
@@ -769,9 +810,8 @@
 					}
 
 					var dump_url = data.dump_url;
-					var dump_filename = data.dump_filename;
+					dump_filename = data.dump_filename;
 
-					var table_migration_error = false;
 					var i = 0;
 					var progress_size = 0;
 					var overall_percent = 0;
@@ -818,7 +858,10 @@
 
 							}
 							else {
-								migration_complete();
+								hooks.push( 'migration_complete' );
+								hooks = $.wpmdb.apply_filters( 'wpmdb_migration_complete_hooks', hooks );
+								hooks.push( 'migration_complete_events' );
+								wpmdb_call_next_hook();
 								return;
 							}
 						}
@@ -836,8 +879,32 @@
 						}
 
 						gzip = 0;
-						if( parseInt( connection_data.gzip ) == 1 ) {
+						if( migration_intent != 'savefile' && parseInt( connection_data.gzip ) == 1 ) {
 							gzip = 1;
+						}
+
+						var request_data =  {
+							action 			:	'wpmdb_migrate_table',
+							intent 			:	migration_intent,
+							url 			:	remote_site,
+							key				:	secret_key,
+							table			:	tables_to_migrate[i],
+							form_data		:	form_data,
+							stage			:	stage,
+							current_row		:	current_row,
+							dump_filename	:	dump_filename,
+							last_table		:	last_table,
+							primary_keys	:	primary_keys,
+							gzip			:	gzip,
+						};
+
+						if( migration_intent != 'savefile' ) {
+							request_data.bottleneck = connection_data.bottleneck;
+							request_data.prefix = connection_data.prefix;
+						}
+
+						if( connection_data && connection_data.path_current_site ) {
+							request_data.path_current_site = connection_data.path_current_site;
 						}
 						
 						$.ajax({
@@ -846,22 +913,7 @@
 							dataType:	'text',
 							cache: 		false,
 							timeout:	0,
-							data: {
-								action 			: 	'wpmdb_prepare_table_migration',
-								intent 			:  	migration_intent,
-								url 			:	remote_site,
-								key				:	secret_key,
-								table			:	tables_to_migrate[i],
-								form_data		:	form_data,
-								stage			: 	stage,
-								bottleneck		: 	connection_data.bottleneck,
-								prefix 			: 	connection_data.prefix,
-								current_row		:   current_row,
-								dump_filename	:	dump_filename,
-								last_table		:	last_table,
-								primary_keys	:	primary_keys,
-								gzip			:	gzip,
-							},
+							data:		request_data,
 							error: function(jqXHR, textStatus, errorThrown){
 								$('.progress-title').html('Migration failed');
 								$('.progress-text').html( 'A problem occurred when processing the ' + tables_to_migrate[i] + ' table. (#113)' );
@@ -869,22 +921,21 @@
 								console.log( jqXHR );
 								console.log( textStatus );
 								console.log( errorThrown );
-								table_migration_error = true;
+								migration_error = true;
 								migration_complete_events();
 								return;
 							},
 							success: function(data){
 								data = $.trim( data );
-								if( ! is_json( data ) ){
+								row_information = wpmdb_parse_json( data );
+								if( false == row_information ){
 									$('.progress-title').html('Migration failed');
 									$('.progress-text').html(data);
 									$('.progress-text').addClass('migration-error');
-									table_migration_error = true;
+									migration_error = true;
 									migration_complete_events();
 									return;
 								}
-
-								row_information = $.parseJSON( data );
 
 								if( row_information.current_row == '-1' ) {
 									progress_size -= overall_table_progress;
@@ -911,68 +962,6 @@
 					
 					}
 
-					function migration_complete(){
-						if( migration_intent == 'savefile' ){
-							currently_migrating = false;
-							var migrate_complete_text = 'Migration complete';
-							if( $('#save_computer').is(':checked') ){
-								var url = wpmdb_this_download_url + encodeURIComponent( dump_filename );
-								if( $('#gzip_file').is(':checked') ){
-									url += '&gzip=1';
-								}
-								window.location = url;
-							}
-							else{
-								migrate_complete_text = 'Migration complete, your backup is located at: <a href="' + dump_url + '">' + dump_url + '</a>.';
-							}
-
-							if( table_migration_error == false ){
-								$('.progress-text').html(migrate_complete_text);
-								migration_complete_events();
-								$('.progress-title').html(completed_msg);
-							}
-
-						}
-						else{ // rename temp tables, delete old tables
-							$('.progress-text').html('Finalizing migration');
-							$.ajax({
-								url: 		ajaxurl,
-								type: 		'POST',
-								dataType:	'text',
-								cache: 		false,
-								data: {
-									action 		: 	'wpmdb_finalize_backup',
-									intent 		:  	migration_intent,
-									url 		:	remote_site,
-									key			:	secret_key,
-									form_data	:	form_data,
-									stage		: 	stage,
-									prefix 		: 	connection_data.prefix,
-								},
-								error: function(jqXHR, textStatus, errorThrown){
-									$('.progress-title').html('Migration failed');
-									$('.progress-text').html('A problem occurred when finalizing the backup. (#132)');
-									$('.progress-text').addClass('migration-error');
-									alert( jqXHR + ' : ' + textStatus + ' : ' + errorThrown );
-									table_migration_error = true;
-								},
-								success: function(data){
-									if( $.trim( data ) != '' ){
-										$('.progress-title').html('Migration failed');
-										$('.progress-text').html(data);
-										$('.progress-text').addClass('migration-error');
-										table_migration_error = true;
-										migration_complete_events();
-										return;
-									}
-									$('.progress-text').html('Migration complete');
-									$('.progress-title').html(completed_msg);
-								}
-							});
-							migration_complete_events();
-						}
-					}
-
 					migrate_table_recursive( '-1', '' );
 
 				}
@@ -981,14 +970,91 @@
 			
 		});
 
-		function migration_complete_events(){
+		migration_complete_events = function() {
+			if( false == migration_error ) {
+				if( non_fatal_errors == '' ) {
+					$('.progress-text').html('Migration complete');
+					$('.progress-title').html(completed_msg);
+				}
+				else {
+					$('.progress-text').html(non_fatal_errors);
+					$('.progress-text').addClass('migration-error');
+					$('.progress-title').html('Migration completed with some errors');
+				}
+			}
+
 			migration_completed = true;
 			$('.progress-label').remove();
 			$('.migration-progress-ajax-spinner').remove();
 			$('.close-progress-content').show();
 			$('#overlay').css('cursor','pointer');
-			clearInterval( interval );
+			clearInterval( elapsed_interval );
 			currently_migrating = false;
+			non_fatal_errors = '';
+		}
+
+		migration_complete = function() {
+			if( migration_intent == 'savefile' ){
+				currently_migrating = false;
+				var migrate_complete_text = 'Migration complete';
+				if( $('#save_computer').is(':checked') ){
+					var url = wpmdb_this_download_url + encodeURIComponent( dump_filename );
+					if( $('#gzip_file').is(':checked') ){
+						url += '&gzip=1';
+					}
+					window.location = url;
+				}
+				else{
+					migrate_complete_text = 'Migration complete, your backup is located at: <a href="' + dump_url + '">' + dump_url + '</a>.';
+				}
+
+				if( migration_error == false ){
+					$('.progress-text').html(migrate_complete_text);
+					migration_complete_events();
+					$('.progress-title').html(completed_msg);
+				}
+
+			}
+			else{ // rename temp tables, delete old tables
+				$('.progress-text').html('Finalizing migration');
+				$.ajax({
+					url: 		ajaxurl,
+					type: 		'POST',
+					dataType:	'text',
+					cache: 		false,
+					data: {
+						action 				:	'wpmdb_finalize_migration',
+						intent 				:	migration_intent,
+						url 				:	remote_site,
+						key					:	secret_key,
+						form_data			:	form_data,
+						stage				: 	stage,
+						prefix 				: 	connection_data.prefix,
+						tables				:	tables_to_migrate.join(','),
+					},
+					error: function(jqXHR, textStatus, errorThrown){
+						$('.progress-title').html('Migration failed');
+						$('.progress-text').html('A problem occurred when finalizing the backup. (#132)');
+						$('.progress-text').addClass('migration-error');
+						alert( jqXHR + ' : ' + textStatus + ' : ' + errorThrown );
+						migration_error = true;
+						migration_complete_events();
+						return;
+					},
+					success: function(data){
+						if( $.trim( data ) != '' ){
+							$('.progress-title').html('Migration failed');
+							$('.progress-text').html(data);
+							$('.progress-text').addClass('migration-error');
+							migration_error = true;
+							migration_complete_events();
+							return;
+						}
+						wpmdb_call_next_hook();
+					}
+				});
+			}
+
 		}
 
 		// close progress pop up once migration is completed
@@ -1124,6 +1190,10 @@
 			$('.step-two').show();
 			$('.backup-options').show();
 			$('.keep-active-plugins').show();
+			$('.directory-permission-notice').hide();
+			$('#create-backup').removeAttr('disabled');
+			$('#create-backup-label').removeClass('disabled');
+			$('.backup-option-disabled').hide();
 			var connection_info = $.trim( $('.pull-push-connection-info').val() ).split("\n");
 			if( $('#pull').is(':checked') ){
 				$('.pull-list li').append( connection_info_box );
@@ -1146,6 +1216,14 @@
 					if( show_version_notice == true ) {
 						$('.different-plugin-version-notice').show();
 						$('.step-two').hide();
+					}
+					if( false == wpmdb_write_permission ) {
+						$('#create-backup').prop('checked',false);
+						$('#create-backup').attr('disabled','disabled');
+						$('#create-backup-label').addClass('disabled');
+						$('.backup-option-disabled').show();
+						$('.directory-scope').html('local');
+						$('.upload-directory-location').html(wpmdb_this_upload_dir_long);
 					}
 				}
 				else{
@@ -1175,6 +1253,14 @@
 						$('.different-plugin-version-notice').show();
 						$('.step-two').hide();
 					}
+					if( '0' == connection_data.write_permissions ) {
+						$('#create-backup').prop('checked',false);
+						$('#create-backup').attr('disabled','disabled');
+						$('#create-backup-label').addClass('disabled');
+						$('.backup-option-disabled').show();
+						$('.directory-scope').html('remote');
+						$('.upload-directory-location').html(connection_data.upload_dir_long);
+					}
 				}
 				else{
 					$('.connection-status').show();
@@ -1190,7 +1276,12 @@
 				}
 				$('.backup-options').hide();
 				$('.keep-active-plugins').hide();
+				if( false == wpmdb_write_permission ) {
+					$('.directory-permission-notice').show();
+					$('.step-two').hide();
+				}
 			}
+			$.wpmdb.do_action( 'move_connection_info_box' );
 		}
 			
 		function change_replace_values(){
@@ -1204,6 +1295,8 @@
 				}
 				$('#select-tables').remove();
 				$('.select-tables-wrap').prepend(push_select);
+				$('#select-post-types').remove();
+				$('.select-post-types-wrap').prepend(push_post_type_select);
 				last_replace_switch = 'push';
 			}
 			else if( $('#pull').is(':checked') ){
@@ -1216,18 +1309,22 @@
 				}
 				$('#select-tables').remove();
 				$('.select-tables-wrap').prepend(pull_select);
+				$('#select-post-types').remove();
+				$('.select-post-types-wrap').prepend(pull_post_type_select);
 				last_replace_switch = 'pull';
 			}
 
 		}
 
-		// keep a copy of the table select box when making changes
+		// keep a copy of select boxes when making changes
 		$('#select-tables').change(function(){
 			if( $('#push').is(':checked') || $('#savefile').is(':checked') ){
 				push_select = $('#select-tables').clone();
+				push_post_type_select = $('#select-post-types').clone();
 			}
 			else if( $('#pull').is(':checked') ){
 				pull_select = $('#select-tables').clone();
+				pull_post_type_select = $('#select-post-types').clone();
 			}
 		});
 		
@@ -1239,7 +1336,19 @@
 		
 		// show / hide GUID helper description
 		$('.general-helper').click(function(){
-			$(this).next().toggle();
+			var $icon = $(this),
+				$bubble = $(this).next();
+
+			// Close any that are already open
+			$('.helper-message').not($bubble).hide();
+
+			var position = $icon.position();
+			$bubble.css({
+				'left': (position.left + $icon.width() + 8) + 'px',
+				'top': (position.top + $icon.height()/2 - 18) + 'px'
+			});
+
+			$bubble.toggle();
 		});
 		
 		$('body').click(function(){
@@ -1265,6 +1374,14 @@
 				refresh_debug_log();
 				if( checked_licence == false && wpmdb_has_licence == '1' ) {
 					$('.support-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
+					check_licence();
+					checked_licence = true;
+				}
+			}
+
+			if( $(this).hasClass('addons') ) {
+				if( checked_licence == false && wpmdb_has_licence == '1' ) {
+					$('.addons-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
 					check_licence();
 					checked_licence = true;
 				}
@@ -1307,17 +1424,33 @@
 		// check for hash in url (settings || migrate) switch tabs accordingly
 		if(window.location.hash) {
 			var hash = window.location.hash.substring(1);
-			if( hash == 'settings' || hash == 'help' ){
-				$('.nav-tab').removeClass('nav-tab-active');
-				$('.nav-tab.' + hash).addClass('nav-tab-active');
-				$('.content-tab').hide();
-				$('.' + hash + '-tab').show();
-			}
+			switch_to_plugin_tab(hash, false);
+		}
+
+		if( get_query_var( 'install-plugin' ) != '' ) {
+			hash = 'addons';
+			checked_licence = true;
+			switch_to_plugin_tab(hash, true);
+		}
+
+		function switch_to_plugin_tab( hash, skip_addons_check ) {
+			$('.nav-tab').removeClass('nav-tab-active');
+			$('.nav-tab.' + hash).addClass('nav-tab-active');
+			$('.content-tab').hide();
+			$('.' + hash + '-tab').show();
 
 			if ( hash == 'help' ) {
 				refresh_debug_log();
 				if( wpmdb_has_licence == '1' ) {
 					$('.support-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
+					check_licence();
+					checked_licence = true;
+				}
+			}
+
+			if ( hash == 'addons' && true != skip_addons_check ) {
+				if( wpmdb_has_licence == '1' ) {
+					$('.addons-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
 					check_licence();
 					checked_licence = true;
 				}
@@ -1360,13 +1493,17 @@
 		var this_connection_info = $.parseJSON( wpmdb_connection_info );
 
 		// show / hide table select box when specific settings change
-		$('input[name=table_migrate_option]').change(function(){
-			$('.select-tables-wrap').toggle();
+		$('input.multiselect-toggle').change(function(){
+			$(this).parents('.expandable-content').children('.select-wrap').toggle();
 		});
 
-		if( $('#migrate-selected').is(':checked') ){
-			$('.select-tables-wrap').toggle();
-		}
+		$('.show-multiselect').each(function(){
+			if( $(this).is(':checked') ){
+				$(this).parents('.option-section').children('.header-expand-collapse').children('.expand-collapse-arrow').removeClass('collapsed');
+				$(this).parents('.expandable-content').show();
+				$(this).parents('.expandable-content').children('.select-wrap').toggle();
+			}
+		});
 
 		// delete a profile from the migrate form area
 		$('body').delegate('.delete-profile', 'click', function(){
@@ -1605,7 +1742,7 @@
 				dataType:	'json',
 				cache: 	false,
 				data: {
-					action: 	'wpmdb_prepare_remote_connection',
+					action: 	'wpmdb_verify_connection_to_remote_site',
 					url: 		connection_info[0],
 					key: 		connection_info[1],
 					intent: 	intent,
@@ -1649,13 +1786,22 @@
 					maybe_show_prefix_notice( data.prefix );
 
 					var table_select = document.createElement('select');
-					$(table_select).attr('multiple', 'multiple').attr('name','select-tables[]').attr('id','select-tables');
+					$(table_select).attr('multiple', 'multiple').attr('name','select_tables[]').attr('id','select-tables').attr('class','multiselect');
 
 					$.each(connection_data.tables, function(index, value) {
 						$(table_select).append('<option value="' + value  + '">' +  value + ' (' + connection_data.table_sizes_hr[value]  + ')</option>');
 					});
 
 					pull_select = table_select;
+
+					var post_type_select = document.createElement('select');
+					$(post_type_select).attr('multiple', 'multiple').attr('name','select_post_types[]').attr('id','select-post-types').attr('class','multiselect');
+
+					$.each(connection_data.post_types, function(index, value) {
+						$(post_type_select).append('<option value="' + value  + '">' +  value + '</option>');
+					});
+
+					pull_post_type_select = post_type_select;
 
 					if( $('#pull').is(':checked') ){
 						$('#new-url').val( wpmdb_this_url );
@@ -1668,6 +1814,8 @@
 						$('#old-domain').val( data.domain );
 						$('#select-tables').remove();
 						$('.select-tables-wrap').prepend(pull_select);
+						$('#select-post-types').remove();
+						$('.select-post-types-wrap').prepend(pull_post_type_select);
 						$('.table-prefix').html(data.prefix);
 						$('.uploads-dir').html(wpmdb_this_uploads_dir);
 					}
@@ -1676,7 +1824,8 @@
 						$('#new-path').val( data.path );
 						$('#new-domain').val( data.domain );
 					}
-					
+
+					$.wpmdb.do_action( 'verify_connection_to_remote_site', connection_data );
 				}
 				
 			});
