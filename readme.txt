@@ -78,3 +78,17 @@ Runs export over 4x faster and adds some nice new features often requested. Upgr
 
 = 0.2.2 =
 This version fixes a bug that breaks the WordPress core export feature. It is highly recommended that everyone upgrade.
+
+== Help Videos ==
+
+Feature Walkthrough
+http://www.youtube.com/watch?v=SlfSuuePYaQ
+A brief walkthrough of the WP Migrate DB plugin showing all of the different options and explaining them.
+
+Pulling Live Data Into Your Local Development Environment
+http://www.youtube.com/watch?v=IFdHIpf6jjc
+This screencast demonstrates how you can pull data from a remote, live WordPress install and update the data in your local development environment.
+
+Pushing Local Development Data to a Staging Environment
+http://www.youtube.com/watch?v=FjTzNqAlQE0
+This screencast demonstrates how you can push a local WordPress database you've been using for development to a staging environment.

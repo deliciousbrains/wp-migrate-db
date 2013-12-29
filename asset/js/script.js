@@ -7,11 +7,9 @@ var migration_complete_events;
 	var connection_established = false;
 	var last_replace_switch = '';
 	var doing_ajax = false;
-	var doing_licence_registration_ajax = false;
 	var doing_reset_api_key_ajax = false;
 	var doing_save_profile = false;
 	var profile_name_edited = false;
-	var checked_licence = false;
 	var show_prefix_notice = false;
 	var show_ssl_notice = false;
 	var show_version_notice = false;
@@ -232,36 +230,6 @@ var migration_complete_events;
 			$('.keep-active-plugins').hide();
 		}
 
-		function check_licence( licence ){
-			$.ajax({
-				url: 		ajaxurl,
-				type: 		'POST',
-				dataType:	'json',
-				cache: 	false,
-				data: {
-					action 	: 'wpmdb_check_licence',
-					licence	: licence,
-				},
-				error: function(jqXHR, textStatus, errorThrown){
-					alert( 'A problem occurred when trying to check the license, please try again.' );
-				},
-				success: function(data){
-					if ( typeof data.errors !== 'undefined' ) {
-						var msg = '';
-						for (var key in data.errors) {
-							msg += data.errors[key];
-						}
-						$('.support-content').empty().html( msg );
-						$('.addons-content').empty().html( msg );
-					}
-					else {
-						$('.support-content').empty().html(data.message);
-						$('.addons-content').empty().html(data.addon_content);
-					}
-				}
-			});
-		}
-
 		// automatically validate connnection info if we're loading a saved profile
 		establish_remote_connection_from_saved_profile();
 
@@ -388,62 +356,6 @@ var migration_complete_events;
 		// add to <a> tags which act as JS event buttons, will not jump page to top and will deselect the button
 		$('.js-action-link').click(function(event){
 			$(this).blur();
-			return false;
-		});
-
-		// registers your licence
-		$('.licence-form').submit(function(){
-			if( doing_licence_registration_ajax ){
-				return false;
-			}
-
-			var licence_key = $.trim( $('.licence-input').val() );
-
-			if( licence_key == '' ){
-				$('.licence-status').html( 'Please enter your license key.' );
-				return false;
-			}
-
-			$('.licence-status').empty().removeClass('success');
-			doing_licence_registration_ajax = true;
-			$('.button.register-licence').after( '<img src="' + spinner_url + '" alt="" class="register-licence-ajax-spinner general-spinner" />' );
-
-			$.ajax({
-				url: 		ajaxurl,
-				type: 		'POST',
-				dataType:	'JSON',
-				cache: 	false,
-				data: {
-					action  : 'wpmdb_activate_licence',
-					licence_key : licence_key
-				},
-				error: function(jqXHR, textStatus, errorThrown){
-					doing_licence_registration_ajax = false;
-					$('.register-licence-ajax-spinner').remove();
-					$('.licence-status').html( 'A problem occurred when trying to register the license, please try again.' );
-				},
-				success: function(data){
-					doing_licence_registration_ajax = false;
-					$('.register-licence-ajax-spinner').remove();
-
-					if ( typeof data.errors !== 'undefined' ) {
-						var msg = '';
-						for (var key in data.errors) {
-							msg += data.errors[key];
-						}
-						$('.licence-status').html( msg );
-					}
-					else {
-						$('.licence-input, .register-licence').remove();
-						$('.licence-not-entered').prepend( data.masked_licence );
-						$('.licence-status').html( 'Your licence has been activated. You will now receive automatic updates and access to email support.').delay(5000).fadeOut(1000);
-						$('.licence-status').addClass('success');
-						$('.support-content').empty().html('<p>Fetching licence details, please wait...<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" /></p>');
-						check_licence( licence_key );
-					}
-				}
-			});
-
 			return false;
 		});
 
@@ -1372,21 +1284,7 @@ var migration_complete_events;
 
 			if( $(this).hasClass('help') ) {
 				refresh_debug_log();
-				if( checked_licence == false && wpmdb_has_licence == '1' ) {
-					$('.support-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
-					check_licence();
-					checked_licence = true;
-				}
 			}
-
-			if( $(this).hasClass('addons') ) {
-				if( checked_licence == false && wpmdb_has_licence == '1' ) {
-					$('.addons-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
-					check_licence();
-					checked_licence = true;
-				}
-			}
-
 		});
 		
 		// repeatable fields		
@@ -1424,37 +1322,14 @@ var migration_complete_events;
 		// check for hash in url (settings || migrate) switch tabs accordingly
 		if(window.location.hash) {
 			var hash = window.location.hash.substring(1);
-			switch_to_plugin_tab(hash, false);
+			switch_to_plugin_tab(hash);
 		}
 
-		if( get_query_var( 'install-plugin' ) != '' ) {
-			hash = 'addons';
-			checked_licence = true;
-			switch_to_plugin_tab(hash, true);
-		}
-
-		function switch_to_plugin_tab( hash, skip_addons_check ) {
+		function switch_to_plugin_tab(hash) {
 			$('.nav-tab').removeClass('nav-tab-active');
 			$('.nav-tab.' + hash).addClass('nav-tab-active');
 			$('.content-tab').hide();
 			$('.' + hash + '-tab').show();
-
-			if ( hash == 'help' ) {
-				refresh_debug_log();
-				if( wpmdb_has_licence == '1' ) {
-					$('.support-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
-					check_licence();
-					checked_licence = true;
-				}
-			}
-
-			if ( hash == 'addons' && true != skip_addons_check ) {
-				if( wpmdb_has_licence == '1' ) {
-					$('.addons-content p').append( '<img src="' + spinner_url + '" alt="" class="ajax-spinner general-spinner" />' );
-					check_licence();
-					checked_licence = true;
-				}
-			}
 		}
 
 		// regenerates the saved secret key

@@ -30,7 +30,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			'allow_pull' => false,
 			'allow_push' => false,
 			'profiles'  => array(),
-			'licence'  => '',
 			'verify_ssl'	=> false,
 		);
 
@@ -76,8 +75,6 @@ class WPMDBPro extends WPMDBPro_Base {
 		add_action( 'wp_ajax_wpmdb_finalize_migration', array( $this, 'ajax_finalize_migration' ) );
 		add_action( 'wp_ajax_wpmdb_clear_log', array( $this, 'ajax_clear_log' ) );
 		add_action( 'wp_ajax_wpmdb_get_log', array( $this, 'ajax_get_log' ) );
-		add_action( 'wp_ajax_wpmdb_activate_licence', array( $this, 'ajax_activate_licence' ) );
-		add_action( 'wp_ajax_wpmdb_check_licence', array( $this, 'ajax_check_licence' ) );
 		add_action( 'wp_ajax_wpmdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
 		add_action( 'wp_ajax_wpmdb_update_max_request_size', array( $this, 'ajax_update_max_request_size' ) );
 
@@ -89,18 +86,6 @@ class WPMDBPro extends WPMDBPro_Base {
 		add_action( 'wp_ajax_nopriv_wpmdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_backup_remote_table', array( $this, 'respond_to_backup_remote_table' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_remote_finalize_migration', array( $this, 'respond_to_remote_finalize_migration' ) );
-
-		// Take over the update check
-		add_filter( 'site_transient_update_plugins', array( $this, 'site_transient_update_plugins' ) );
-
-		// Add some custom JS into the WP admin pages
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_plugin_update_script' ) );
-
-		// Add some custom CSS into the WP admin pages
-		add_action( 'admin_head-plugins.php', array( $this, 'add_plugin_update_styles' ) );
-
-		// Hook into the plugin install process, inject addon download url
-		add_action( 'plugins_api', array( $this, 'inject_addon_install_resource' ), 10, 3 );
 
 		$absolute_path = rtrim( ABSPATH, '\\/' );
 		$site_url = rtrim( site_url( '', 'http' ), '\\/' );
@@ -170,11 +155,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			$this->plugin_base = 'tools.php?page=wp-migrate-db-pro';
 		}
-
-		// testing only - if uncommented, will always check for plugin updates
-		//delete_site_transient( 'update_plugins' );
-		//delete_site_transient( 'wpmdb_upgrade_data' );
-		//delete_site_transient( 'wpmdb_licence_response' );
 	}
 
 	function get_alter_table_name() {
@@ -243,101 +223,6 @@ class WPMDBPro extends WPMDBPro_Base {
 	function ajax_update_max_request_size() {
 		$this->settings['max_request'] = (int) $_POST['max_request_size'] * 1024;
 		update_option( 'wpmdb_settings', $this->settings );
-		exit;
-	}
-
-	function ajax_check_licence() {
-		$licence = ( empty( $_POST['licence'] ) ? $this->get_licence_key() : $_POST['licence'] );
-		$response = $this->check_licence( $licence );
-		$decoded_response = json_decode( $response, ARRAY_A );
-
-		ob_start();
-
-		// Test out what the addons tab would look like with a full page of addons
-		/*
-		$first_addon = key( $decoded_response['addon_list'] );
-		for( $i = 0; $i < 12; $i++ ) { 
-			$list_of_addons[$first_addon . $i] = $decoded_response['addon_list'][$first_addon];
-		}
-		$decoded_response['addon_list'] = $list_of_addons;
-		*/
-
-		$addons_available = ( $decoded_response['addons_available'] == '1' );
-		if( ! $addons_available ) { ?>
-			<p class="inline-message warning"><strong>Addons Unavailable</strong> &ndash; Addons are not included with 
-			the Personal license. Visit <a href="https://deliciousbrains.com/my-account/" target="_blank">My&nbsp;Account</a>
-			to upgrade in just a few clicks.</p>
-			<?php
-		}
-
-		// Save the addons list for use when installing
-		// Don't really need to expire it ever, but let's clean it up after 60 days
-		set_site_transient( 'wpmdb_addons', $decoded_response['addon_list'], HOUR_IN_SECONDS * 24 * 60 );
-
-		foreach( $decoded_response['addon_list'] as $key => $addon ) {
-			$plugin_file = sprintf( '%1$s/%1$s.php', $key );
-			$plugin_ids = array_keys( get_plugins() );
-
-			if ( in_array( $plugin_file, $plugin_ids ) ) {
-				$actions = '<span class="status">Installed';
-				if ( is_plugin_active( $plugin_file ) ) {
-					$actions .= ' &amp; Activated</span>';
-				}				
-				else {
-					$activate_url = wp_nonce_url( network_admin_url( 'plugins.php?action=activate&amp;plugin=' . $plugin_file ), 'activate-plugin_'  . $plugin_file );
-					$actions .= sprintf( '</span> <a class="action" href="%s">Activate</a>', $activate_url );
-				}
-			}
-			else {
-				$install_url = wp_nonce_url( network_admin_url( 'update.php?action=install-plugin&plugin=' . $key ), 'install-plugin_' . $key );
-				$actions = sprintf( '<a class="action" href="%s">Install</a>', $install_url );
-
-				$download_url = $this->get_plugin_update_download_url( $key );
-				$actions .= sprintf( '<a class="action" href="%s">Download</a>', $download_url );
-			}
-			?>
-			<article class="addon <?php echo esc_attr( $key ); ?>">
-				<div class="desc">
-					<?php if ( $addons_available ) : ?>
-					<div class="actions"><?php echo $actions; ?></div>
-					<?php endif; ?>
-
-					<h1><?php echo $addon['name']; ?></h1>
-					<p><?php echo $addon['desc']; ?></p>
-				</div>
-			</article>
-		<?php
-		}
-		$addon_content = ob_get_clean();
-		$decoded_response['addon_content'] = $addon_content;
-		$response = json_encode( $decoded_response );
-
-		echo $response;
-		exit;
-	}
-
-	function ajax_activate_licence() {
-		$args = array(
-			'licence_key' => $_POST['licence_key'],
-			'site_url' => site_url( '', 'http' )
-		);
-
-		if( $this->is_licence_constant() ) {
-			$args['licence_key'] = $this->get_licence_key();
-		}
-
-		$response = $this->dbrains_api_request( 'activate_licence', $args );
-		$response = json_decode( $response, true );
-
-		if ( ! isset( $response['errors'] ) ) {
-			if ( !$this->is_licence_constant() ) {
-				$this->settings['licence'] = $_POST['licence_key'];
-			}
-			update_option( 'wpmdb_settings', $this->settings );
-			$response['masked_licence'] = $this->get_formatted_masked_licence();
-		}
-
-		echo json_encode( $response );
 		exit;
 	}
 
@@ -1238,7 +1123,7 @@ class WPMDBPro extends WPMDBPro_Base {
 
 			<div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB Pro</h2>
 
-			<h2 class="nav-tab-wrapper"><a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">Migrate</a><a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">Settings</a><a href="#" class="nav-tab js-action-link addons" data-div-name="addons-tab">Addons</a><a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">Help</a></h2>
+			<h2 class="nav-tab-wrapper"><a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">Migrate</a><a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">Settings</a><a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">Help</a></h2>
 
 			<?php do_action( 'wpmdb_notices' ); ?>
 
@@ -1313,8 +1198,6 @@ class WPMDBPro extends WPMDBPro_Base {
 				$this->template( 'settings' );
 
 				$this->template( 'help' );
-
-				$this->template( 'addons' );
 				?>
 
 			</div> <!-- end #wpmdb-main -->
@@ -1936,7 +1819,6 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	// Called in the $this->stow function once our chunk buffer is full, will transfer the SQL to the remote server for importing
 	function transfer_chunk() {
-
 		if( $_POST['intent'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 			$this->close( $this->fp );
 			echo json_encode( 
@@ -2029,12 +1911,6 @@ class WPMDBPro extends WPMDBPro_Base {
 	function after_admin_menu( $hook_suffix ) {
 		add_action( 'admin_head-' . $hook_suffix, array( $this, 'admin_head_connection_info' ) );
 		add_action( 'load-' . $hook_suffix , array( $this, 'load_assets' ) );
-
-		// Remove licence from the database if constant is set
-		if ( $this->is_licence_constant() && !empty( $this->settings['licence'] ) ) {
-			$this->settings['licence'] = '';
-			update_option( 'wpmdb_settings', $this->settings );
-		}
 	}
 
 	function admin_body_class( $classes ) {
@@ -2059,18 +1935,6 @@ class WPMDBPro extends WPMDBPro_Base {
 	function load_assets() {
 		if ( ! empty( $_GET['download'] ) ) {
 			$this->download_file();
-		}
-
-		if( isset( $_GET['wpmdb-remove-licence'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-remove-licence' ) ) {
-			$this->settings['licence'] = '';
-			update_option( 'wpmdb_settings', $this->settings );
-			// delete these transients as they contain information only valid for authenticated licence holders
-			delete_site_transient( 'update_plugins' );
-			delete_site_transient( 'wpmdb_upgrade_data' );
-			delete_site_transient( 'wpmdb_licence_response' );
-			// redirecting here because we don't want to keep the query string in the web browsers address bar
-			wp_redirect( network_admin_url( $this->plugin_base . '#settings' ) );
-			exit;
 		}
 
 		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_slug );
@@ -2144,7 +2008,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			var wpmdb_max_request = '<?php echo $this->settings['max_request'] ?>';
 			var wpmdb_bottleneck = '<?php echo $this->get_bottleneck( 'max' ); ?>';
 			var wpmdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
-			var wpmdb_has_licence = '<?php echo ( $this->get_licence_key() == '' ? '0' : '1' ); ?>';
 			<?php if( isset( $_GET['wpmdb-profile'] ) && isset( $this->settings['profiles'][$_GET['wpmdb-profile']]['select_tables'] ) ) : ?>
 			var wpmdb_loaded_tables = '<?php echo json_encode( $this->settings['profiles'][$_GET['wpmdb-profile']]['select_tables'] ); ?>';
 			<?php endif; ?>
@@ -2152,101 +2015,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			<?php do_action( 'wpmdb_js_variables' ); ?>
 		</script>
 		<?php
-	}
-
-	function site_transient_update_plugins( $trans ) {
-		if ( !is_admin() ) return $trans; // only need to run this when in the dashboard
-
-		$plugin_upgrade_data = $this->get_upgrade_data();
-		if( false === $plugin_upgrade_data || ! isset( $plugin_upgrade_data['wp-migrate-db-pro'] ) ) return $trans;
-
-		foreach( $plugin_upgrade_data as $plugin_slug => $upgrade_data ) {
-			$plugin_basename = sprintf( '%1$s/%1$s.php', $plugin_slug );
-			$latest_version = $this->get_latest_version( $plugin_slug );
-			$installed_version = $this->get_installed_version( $plugin_basename );
-
-			if( false === $installed_version  ) continue;
-
-			if ( version_compare( $installed_version, $latest_version, '<' ) ) {
-				$is_beta = $this->is_beta_version( $latest_version );
-
-				$trans->response[$plugin_basename] = new stdClass();
-				$trans->response[$plugin_basename]->url = $this->dbrains_api_base;
-				$trans->response[$plugin_basename]->slug = $plugin_slug;
-				$trans->response[$plugin_basename]->package = $this->get_plugin_update_download_url( $plugin_slug, $is_beta );
-				$trans->response[$plugin_basename]->new_version = $latest_version;
-				$trans->response[$plugin_basename]->id = '0';
-			}
-		}
-
-		return $trans;
-	}
-
-	function enqueue_plugin_update_script( $hook ) {
-		if( 'plugins.php' != $hook ) {
-			return;
-		}
-
-		$src = plugins_url( 'asset/js/plugin-update.js', dirname( __FILE__ ) );
-		wp_enqueue_script( 'wp-migrate-db-pro-plugin-update-script', $src, array( 'jquery' ), false, true );
-	}
-
-	function add_plugin_update_styles() {
-		?>
-		<style type="text/css">
-			.check-licence-spinner {
-				left: 5px;
-				position: relative;
-				top: 3px;
-				width: 16px;
-				height: 16px;
-			}
-
-			.wpmdb-original-update-row {
-				display: none;
-			}
-		</style>
-		<?php
-	}
-
-	function inject_addon_install_resource( $res, $action, $args ) {
-		if ( 'plugin_information' != $action || empty( $args->slug ) ) {
-			return $res;
-		}
-
-		$addons = get_site_transient( 'wpmdb_addons' );
-		if ( !isset( $addons[$args->slug] ) ) {
-			return $res;
-		}
-
-		$addon = $addons[$args->slug];
-
-		$res = new stdClass();
-		$res->name = 'WP Migrate DB ' . $addon['name'];
-		$res->version = $addon['version'];
-		$res->download_link = $this->get_plugin_update_download_url( $args->slug );
-
-		return $res;
-	}
-
-	function mask_licence( $licence ) {
-		$licence_parts = explode( '-', $licence );
-		$i = count( $licence_parts ) - 1;
-		$masked_licence = '';
-		foreach( $licence_parts as $licence_part ) {
-			if( $i == 0 ){ 
-				$masked_licence .= $licence_part;
-				continue;
-			}
-			$masked_licence .= '<span class="bull">';
-			$masked_licence .= str_repeat( '&bull;', strlen( $licence_part ) ) . '</span>&ndash;';
-			--$i;
-		}
-		return $masked_licence;
-	}
-
-	function get_formatted_masked_licence() {
-		return sprintf( '<p class="masked-licence">%s <a href="%s">Remove</a></p>', $this->mask_licence( $this->settings['licence'] ), network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-remove-licence' ) . '&wpmdb-remove-licence=1#settings' ) );
 	}
 
 	function maybe_update_profile( $profile, $profile_id ) {

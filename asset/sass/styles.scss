@@ -131,41 +131,6 @@
 		margin: 15px 0 0;
 	}
 
-	.licence-wrap h3 {
-		margin: 0 0 10px 0;
-	}
-	
-	.licence-input {
-		clear: both;
-		display: block;
-		font-family: Consolas, Monaco, monospace;
-		font-size: 14px;
-		margin-bottom: 7px;
-		padding: 10px;
-		width: 418px;
-	}
-
-	.register-licence {
-		float: left;
-		outline: none;
-	}
-
-	.licence-status {
-    	color: #A21B1B;
-    	font-weight: bold;
-    	clear: both;
-    	padding-top: 0.5em;
-    	margin: 0;
-	}
-
-	.licence-status.success {
-		color: #333;
-	}
-
-	.register-licence-ajax-spinner {
-		margin: 4px 0 0 8px;
-	}
-
 	/* =============================================================================
 	   Migrate Tab
 	   ========================================================================== */
@@ -842,16 +807,6 @@
 		margin: 4px 7px;
 	}
 
-	.masked-licence {
-		margin-top: 0px;
-	}
-
-	.bull {
-		font-size: 22px;
-		position: relative;
-		top: 4px;
-	}
-
 	/* =============================================================================
 	   Help Tab
 	   ========================================================================== */
@@ -989,81 +944,6 @@
 		}
 
 	}
-
-	/* =============================================================================
-	   Addons Tab
-	   ========================================================================== */
-
-	.addons-tab {
-		display: none;
-
-		.addon {
-			position: relative;
-			width: 100%;
-			min-height: 138px;
-			padding: 25px 30px 30px 165px;
-			-webkit-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			box-sizing: border-box;
-			color: #fff;
-
-			.actions {
-				float: right;
-				font-size: 14px;
-
-				> * {
-					margin-right: 10px;
-				}
-
-				*:last-child {
-					margin-right: 0;
-				}
-
-				.action {
-					background-color: #fff;
-					font-weight: bold;
-					display: inline-block;
-					padding: 0.2em 0.4em;
-
-					&:hover {
-						background-color: rgba(255,255,255,0.92);
-					}
-				}
-
-				.status {
-					border-bottom: 2px solid #fff;
-					padding-bottom: 0.1em;
-				}
-			}
-
-			h1 {
-				font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
-				font-weight: normal;
-				float: left;
-				margin: 0;
-				margin-top: 5px;
-			}
-
-			p {
-				font-size: 16px;
-				line-height: 1.2em;
-				clear: both;
-				padding-top: 15px;
-				margin: 0;
-			}
-
-			&.wp-migrate-db-pro-media-files {
-				$bgcolor: #3fab3f;
-				background: $bgcolor url(../img/icon-media-files.svg) no-repeat 30px 30px;
-				background-size: 110px 85px;
-
-				.action {
-					color: $bgcolor;
-				}
-			}
-		}
-	}
-
 }
 
 /* Progress Information */

@@ -5,8 +5,6 @@
 		$pull_checked = ( $this->settings['allow_pull'] ? ' checked="checked"' : '' );
 		$push_checked = ( $this->settings['allow_push'] ? ' checked="checked"' : '' );
 		$verify_ssl_checked = ( $this->settings['verify_ssl'] ? ' checked="checked"' : '' );
-
-		$licence = $this->get_licence_key();
 	?>
 
 	<form method="post" id="settings-form" action="#settings">
@@ -57,24 +55,4 @@
 		</div>
 
 	</form>
-
-	<form class="licence-form option-section clearfix licence-wrap" method="post" action="#settings">
-		<h3>Your License</h3>
-		<?php if ( $this->is_licence_constant() ) : ?>
-		<p>
-			<?php _e( 'The license key is currently defined in wp-config.php.', 'wp-migrate-db-pro' ); ?>
-		</p>
-		<?php else : ?>
-			<?php if( ! empty( $licence ) ) :
-				echo $this->get_formatted_masked_licence();
-			else : ?>
-			<div class="licence-not-entered">
-				<input type="text" class="licence-input" autocomplete="off" />
-				<button class="button register-licence" type="submit">Activate License</button>
-				<p class="licence-status"></p>
-			</div>
-			<?php endif; ?>
-		<?php endif; ?>
-	</form>
-
 </div> <!-- end .settings-tab -->
