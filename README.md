@@ -50,3 +50,11 @@ This screencast demonstrates how you can pull data from a remote, live WordPress
 http://www.youtube.com/watch?v=FjTzNqAlQE0
 
 This screencast demonstrates how you can push a local WordPress database you've been using for development to a staging environment.
+
+##Isn't this the same as WP Migrate DB Pro?
+No, of course not, don't be silly. I took out the license verification code, a really shady looking PressTrends reporter, and tab for installing the Media Files addon before I published it. Release 1.3 was the same as [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro), but I've made several improvements since then.
+
+Also, because this plugin is free I'm not _obligated_ to help you like [bradt](https://github.com/bradt) is if you purchased WP Migrate DB Pro. Any help that I give is just because I'm a nice person and I enjoy helping people. Also, I only offer support through the public [issues manager](https://github.com/slang800/wp-migrate-db/issues). If you're an agency and need support at the drop of a hat, buy the plugin from bradt.
+
+##Is this Illegal?
+**No.** Just because this is based on the paid-for WP Migrate DB Pro, it doesn't mean I can't release it. WP Migrate DB Pro is released under GPLv2, a copyleft license that guarantees my freedom (and the freedom of all users) to copy, distribute, and/or modify this software.
