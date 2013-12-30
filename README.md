@@ -29,10 +29,14 @@ Have a huge database? No problem. We've tested migration of tables with over 100
 ###Intelligently Detects Environment Limitations
 WP Migrate DB analyses both the remote and local environments to detect limitations and optimize performance. For example, we detect MySQL's `max_allowed_packet_size` setting and adjust how much SQL we execute at a time. Not only does this avoid failure, but allows us to increase performance.
 
+###Sync Media Libraries Between Installations
+Using the optional [WP Migrate DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
+
 ##Installation
 1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Migrate DB directly from this git repo.
 2. Install WP Migrate DB by downloading the latest zip [here](https://github.com/slang800/wp-migrate-db/releases). Both github-updater and WP Migrate DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
-3. Access the WP Migrate DB menu option under Tools
+3. Access the WP Migrate DB menu option under Tools.
+4. Install the optional [WP Migrate DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon.
 
 ##Help Videos
 
@@ -52,7 +56,7 @@ http://www.youtube.com/watch?v=FjTzNqAlQE0
 This screencast demonstrates how you can push a local WordPress database you've been using for development to a staging environment.
 
 ##Isn't this the same as WP Migrate DB Pro?
-No, of course not, don't be silly. I took out the license verification code, a really shady looking PressTrends reporter, and tab for installing the Media Files addon before I published it. Release 1.3 was the same as [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro), but I've made several improvements since then.
+No, of course not, don't be silly. I took out the license verification code, a really shady looking PressTrends reporter, and the tab for installing the Media Files addon before I published 1.4. Release 1.3 was the same as [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro), but I've made several improvements since then.
 
 Also, because this plugin is free I'm not _obligated_ to help you like [bradt](https://github.com/bradt) is if you purchased WP Migrate DB Pro. Any help that I give is just because I'm a nice person and I enjoy helping people. Also, I only offer support through the public [issues manager](https://github.com/slang800/wp-migrate-db/issues). If you're an agency and need support at the drop of a hat, buy the plugin from bradt.
 
