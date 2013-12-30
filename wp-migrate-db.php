@@ -6,6 +6,7 @@ Description: Export, push, and pull to migrate your WordPress databases.
 Author: Delicious Brains
 Version: 1.3
 Author URI: http://deliciousbrains.com
+GitHub Plugin URI: slang800/wp-migrate-db
 */
 
 if ( version_compare( PHP_VERSION, '5.2', '<' ) ) {

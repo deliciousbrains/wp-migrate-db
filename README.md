@@ -1,20 +1,38 @@
 #WP Migrate DB
-Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
+WP Migrate DB eliminates the manual work of migrating a WP database. Copy your db from one WP install to another with a single-click in your dashboard. Especially handy for syncing a local development database with a live site.
 
 Donate [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC) to support [bradt](https://github.com/bradt), the original author of [WP Migrate DB](https://github.com/bradt/wp-migrate-db). And check out [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/) for a variant of the plugin that has dedicated customer support.
 
 <img align="center" src="https://raw.github.com/slang800/psychic-ninja/master/wp-migrate-db.png"/>
 
 ##Description
-WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who develop locally and need to move their Wordpress site to a staging or production server.
+WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer, or send it directly to another WordPress instance. It is perfect for developers who develop locally and need to move their WordPress site to a staging or production server.
 
-It even takes into account serialized data and updates the string length values.
+###Pull: Quickly Replace a Local DB with a Remote DB
+Let's say you're developing locally but need the latest data from the live database. With WP Migrate DB installed on both sites, you can quickly and easily pull the live database down and replace your local database with a few clicks.
 
-Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
+###Push: Easily Replace a Remote DB with a Local DB
+Let's say you have a new feature to add to a site that's been live for a while. You pull down a fresh copy of the live database and start hacking. When the feature is complete, you push your local database to the staging site with your changes so the client can review before making the feature live. How's that for a workflow?
+
+###Save Time with Automatic Find & Replace
+When migrating a WordPress site, URLs in the content, widgets, menus, etc need to be updated to the new site's URL. Doing this manually is annoying, time consuming, and can be very frustrating when dealing with serialized data (like widgets). WP Migrate DB does all of this for you.
+
+###Convenient Database Export
+In addition to pulling & pushing, in just a couple of clicks you can save an SQL file of your database to your computer. No need to drop into ssh or phpMyAdmin.
+
+###Select the Tables You Want to Migrate
+WP Migrate DB gives you control over which database tables are migrated. Have a huge stats table you'd rather not migrate? Deselect it. Easy.
+
+###Stress Tested on Massive Databases
+Have a huge database? No problem. We've tested migration of tables with over 100MB of data.
+
+###Intelligently Detects Environment Limitations
+WP Migrate DB analyses both the remote and local environments to detect limitations and optimize performance. For example, we detect MySQL's `max_allowed_packet_size` setting and adjust how much SQL we execute at a time. Not only does this avoid failure, but allows us to increase performance.
 
 ##Installation
-1. Use WordPress' built-in installer
-2. Access the WP Migrate DB menu option under Tools
+1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Migrate DB directly from this git repo.
+2. Install WP Migrate DB by downloading the latest zip [here](https://github.com/slang800/wp-migrate-db/releases). Both github-updater and WP Migrate DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
+3. Access the WP Migrate DB menu option under Tools
 
 ##Help Videos
 
