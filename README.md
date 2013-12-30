@@ -3,7 +3,7 @@ WP Migrate DB eliminates the manual work of migrating a WP database. Copy your d
 
 Donate [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC) to support [bradt](https://github.com/bradt), the original author of [WP Migrate DB](https://github.com/bradt/wp-migrate-db). And check out [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/) for a variant of the plugin that has dedicated customer support.
 
-<img align="center" src="https://raw.github.com/slang800/psychic-ninja/master/wp-migrate-db.png"/>
+<p align="center"><a><img src="https://raw.github.com/slang800/psychic-ninja/master/wp-migrate-db.png"/></a></p>
 
 ##Description
 WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer, or send it directly to another WordPress instance. It is perfect for developers who develop locally and need to move their WordPress site to a staging or production server.
