@@ -1,11 +1,10 @@
 <?php
 /*
 Plugin Name: WP Migrate DB
-Plugin URI: http://deliciousbrains.com/wp-migrate-db/
 Description: Export, push, and pull to migrate your WordPress databases.
-Author: Delicious Brains
-Version: 1.3
-Author URI: http://deliciousbrains.com
+Author: Sean Lang
+Version: 1.4
+Author URI: http://slang.cx
 GitHub Plugin URI: slang800/wp-migrate-db
 */
 
