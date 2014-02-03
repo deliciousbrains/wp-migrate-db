@@ -91,7 +91,7 @@ msgid ""
 msgstr ""
 "WP Migrate DB exporta sua base de dados como um MySQL dump (bem parecido com "
 "o phpMyAdmin), faz um Localizar e Substituir nas URLs e Caminhos dos "
-"Arquivos, então permite que você a salve sem seu computador. Ele ainda "
+"Arquivos, então permite que você a salve em seu computador. Ele ainda "
 "considera os dados serializados e atualiza os valores de comprimento da "
 "string."
 
