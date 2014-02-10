@@ -636,14 +636,9 @@ class WP_Migrate_DB {
             }
             // Submitted by Tina Matter
             elseif ( is_object( $data ) ) {
-                $dataClass = get_class( $data );
-                $_tmp = new $dataClass( );
                 foreach ( $data as $key => $value ) {
-                    $_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+                    $data->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
                 }
-
-                $data = $_tmp;
-                unset( $_tmp );
             }
             elseif ( is_string( $data ) ) {
                 $data = $this->apply_replaces( $data, $parent_serialized );
