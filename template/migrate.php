@@ -43,7 +43,7 @@ if( false == $is_default_profile ) {
 		<?php if( count( $this->settings['profiles'] ) > 0 ){ ?>
 			<a href="<?php echo $this->plugin_base; ?>" class="return-to-profile-selection clearfix">&larr; Back to select a saved profile</a>
 		<?php } ?>
-	
+
 		<div class="option-section">
 
 			<ul class="option-group migrate-selection">
@@ -88,7 +88,7 @@ if( false == $is_default_profile ) {
 					</ul>
 				</li>
 			</ul>
-			
+
 			<div class="connection-info-wrapper clearfix">
 				<textarea class="pull-push-connection-info" name="connection_info" placeholder="Connection Info - Site URL &amp; Secret Key"><?php echo ( isset( $loaded_profile['connection_info'] ) ? $loaded_profile['connection_info'] : '' ); ?></textarea>
 				<br />
@@ -102,9 +102,9 @@ if( false == $is_default_profile ) {
 			<div class="notification-message warning-notice ssl-notice">
 				<p><strong>SSL Disabled</strong> &mdash; We couldn't connect over SSL but regular http (no SSL) appears to be working so we've switched to that. If you run a push or pull, your data will be transmitted unencrypted. Most people are fine with this, but just a heads up.</p>
 			</div>
-		
+
 		</div>
-	
+
 		<div class="import-button">
 			<input class="button-primary import-db-button" type="submit" value="Import DB" name="import-db" autocomplete="off" />
 		</div>
@@ -124,7 +124,7 @@ if( false == $is_default_profile ) {
 				We require write permissions to the standard WordPress uploads directory. Without this permission exports are unavailable. Please grant 755 permissions on the following directory: <?php echo $this->get_upload_info( 'path' ); ?>
 			</p>
 		</div>
-		
+
 		<div class="step-two">
 
 			<div class="option-section">
@@ -132,9 +132,9 @@ if( false == $is_default_profile ) {
 					<div class="option-heading find-heading">Find</div>
 					<div class="option-heading replace-heading">Replace</div>
 				</div>
-				
+
 				<p class="no-replaces-message">Doesn't look we have any replaces yet, <a href="#" class="js-action-link add-replace">add one?</a></p>
-				
+
 				<table class="clearfix replace-fields">
 					<tr class="replace-row original-repeatable-field">
 						<td class="old-replace-col">
@@ -305,15 +305,15 @@ if( false == $is_default_profile ) {
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="option-section">
 				<div class="header-expand-collapse clearfix">
 					<div class="expand-collapse-arrow collapsed">&#x25BC;</div>
 					<div class="option-heading tables-header">Advanced Options</div>
 				</div>
-				
+
 				<div class="indent-wrap expandable-content">
-					
+
 					<ul>
 						<li>
 							<label for="replace-guids">
@@ -327,7 +327,7 @@ if( false == $is_default_profile ) {
 								Although the <a href="http://codex.wordpress.org/Changing_The_Site_URL#Important_GUID_Note" target="_blank">WordPress Codex emphasizes</a>
 								that GUIDs should not be changed, this is limited to sites that are already live.
 								If the site has never been live, I recommend replacing the GUIDs. For example, you may be
-								developing a new site locally at dev.somedomain.com and want to 
+								developing a new site locally at dev.somedomain.com and want to
 								migrate the site live to&nbsp;somedomain.com.
 							</div>
 						</li>
@@ -356,13 +356,13 @@ if( false == $is_default_profile ) {
 			</div>
 
 			<?php do_action( 'wpmdb_after_advanced_options' ); ?>
-			
+
 			<div class="option-section save-migration-profile-wrap">
 				<label for="save-migration-profile" class="save-migration-profile checkbox-label">
 				<input id="save-migration-profile" type="checkbox" value="1" name="save_migration_profile"<?php echo ( ! $is_default_profile ? ' checked="checked"' : '' ); ?> />
 				Save Migration Profile<span class="option-description">Save the above settings for the next time you do a similiar migration</span>
 				</label>
-				
+
 				<div class="indent-wrap expandable-content">
 					<ul class="option-group">
 						<?php
@@ -412,7 +412,7 @@ if( false == $is_default_profile ) {
 				<input class="button-primary migrate-db-button" type="submit" value="Migrate DB" name="Submit" autocomplete="off" />
 				<input class="button save-settings-button" type="submit" value="Save Profile" name="submit_save_profile" autocomplete="off" />
 			</p>
-			
+
 		</div>
 
 		<?php

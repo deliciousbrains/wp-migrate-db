@@ -62,7 +62,7 @@ class WPMDB_Base {
 	function open_ssl_enabled() {
 		if ( defined( 'OPENSSL_VERSION_TEXT' ) ) {
 			return true;
-		} 
+		}
 		else {
 			return false;
 		}
@@ -152,7 +152,7 @@ class WPMDB_Base {
 			else if( $response['response']['code'] == '401' ) {
 				$this->error = 'The remote site is protected with Basic Authentication. Please enter the username and password above to continue. (401 Unauthorized)';
 				$this->log_error( $this->error, $response );
-				return false;	
+				return false;
 			}
 			else {
 				$this->error = 'Unable to connect to the remote server, please check the connection details - ' . $response['response']['code'] . ' ' . $response['response']['message'] . ' (#129 - scope: ' . $scope . ')';
@@ -209,8 +209,8 @@ class WPMDB_Base {
 		$error_header = "********************************************\n******  Log date: " . date( 'Y/m/d H:i:s' ) . " ******\n********************************************\n\n";
 		$error = $error_header . "WPMDB Error: " . $wpmdb_error . "\n\n";
 		if( ! empty( $this->attempting_to_connect_to ) ) {
-			$error .= "Attempted to connect to: " . $this->attempting_to_connect_to . "\n\n"; 
-		}		
+			$error .= "Attempted to connect to: " . $this->attempting_to_connect_to . "\n\n";
+		}
 		if( $additional_error_var !== false ){
 			$error .= print_r( $additional_error_var, true ) . "\n\n";
 		}

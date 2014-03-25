@@ -48,14 +48,14 @@ class WPMDB extends WPMDB_Base {
 		// array index errors in debug mode
 		else {
 			$update_settings = false;
-			
+
 			foreach ( $default_settings as $key => $value ) {
 				if ( !isset( $this->settings[$key] ) ) {
 					$this->settings[$key] = $value;
 					$update_settings = true;
 				}
 			}
-			
+
 			if ( $update_settings ) {
 				update_option( 'wpmdb_settings', $this->settings );
 			}
@@ -81,7 +81,7 @@ class WPMDB extends WPMDB_Base {
 		// external AJAX handlers
 		add_action( 'wp_ajax_nopriv_wpmdb_verify_connection_to_remote_site', array( $this, 'respond_to_verify_connection_to_remote_site' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_remote_initiate_migration', array( $this, 'respond_to_remote_initiate_migration' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_process_chunk', array( $this, 'ajax_process_chunk' ) ); 
+		add_action( 'wp_ajax_nopriv_wpmdb_process_chunk', array( $this, 'ajax_process_chunk' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_process_pull_request', array( $this, 'respond_to_process_pull_request' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_backup_remote_table', array( $this, 'respond_to_backup_remote_table' ) );
@@ -276,7 +276,7 @@ class WPMDB extends WPMDB_Base {
 
 	function output_diagnostic_info() {
 		global $table_prefix;
-		
+
 		_e( 'site_url()', 'wp-app-store' ); echo ': ';
 		echo site_url();
 		echo "\r\n";
@@ -304,7 +304,7 @@ class WPMDB extends WPMDB_Base {
 		_e( 'MySQL', 'wp-app-store' ); echo ': ';
 		if ( function_exists( 'mysql_get_server_info' ) ) echo esc_html( mysql_get_server_info() );
 		echo "\r\n";
-		
+
 		_e( 'WP Memory Limit', 'wp-app-store' ); echo ': ';
 		echo WP_MEMORY_LIMIT;
 		echo "\r\n";
@@ -312,7 +312,7 @@ class WPMDB extends WPMDB_Base {
 		_e( 'WPMDB Bottleneck', 'wp-app-store' ); echo ': ';
 		echo size_format( $this->get_bottleneck() );
 		echo "\r\n";
-		
+
 		if ( function_exists( 'ini_get' ) && $suhosin_limit = ini_get( 'suhosin.post.max_value_length' ) ) {
 			_e( 'Suhosin Post Max Value Length', 'wp-app-store' ); echo ': ';
 			echo is_numeric( $suhosin_limit ) ? size_format( $suhosin_limit ) : $suhosin_limit;
@@ -324,19 +324,19 @@ class WPMDB extends WPMDB_Base {
 			echo is_numeric( $suhosin_limit ) ? size_format( $suhosin_limit ) : $suhosin_limit;
 			echo "\r\n";
 		}
-		
+
 		_e( 'Debug Mode', 'wp-app-store' ); echo ': ';
 		if ( defined('WP_DEBUG') && WP_DEBUG ) { echo 'Yes'; } else { echo 'No'; }
 		echo "\r\n";
-		
+
 		_e( 'WP Max Upload Size', 'wp-app-store' ); echo ': ';
 		echo size_format( wp_max_upload_size() );
 		echo "\r\n";
-		
+
 		_e( 'PHP Post Max Size', 'wp-app-store' ); echo ': ';
 		echo size_format( $this->get_post_max_size() );
 		echo "\r\n";
-		
+
 		_e( 'PHP Time Limit', 'wp-app-store' ); echo ': ';
 		if ( function_exists( 'ini_get' ) ) echo ini_get('max_execution_time');
 		echo "\r\n";
@@ -426,7 +426,7 @@ class WPMDB extends WPMDB_Base {
 		}
 		return $sql;
 	}
-	
+
 	// After table migration, delete old tables and rename new tables removing the temporarily prefix
 	function ajax_finalize_migration() {
 		global $wpdb;
@@ -662,7 +662,7 @@ class WPMDB extends WPMDB_Base {
 				$this->process_chunk( $chunk );
 			}
 
-			echo json_encode( 
+			echo json_encode(
 				array(
 					'current_row' 		=> $row_information[0],
 					'primary_keys'		=> $row_information[1]
@@ -703,12 +703,12 @@ class WPMDB extends WPMDB_Base {
 
 	function respond_to_process_pull_request() {
 		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent', 'url', 'key', 'table', 'form_data', 'stage', 'bottleneck', 'prefix', 'current_row', 'dump_filename', 'pull_limit', 'last_table', 'gzip', 'primary_keys', 'path_current_site' ) );
-		
+
 		// verification will fail unless we strip slashes on primary_keys and form_data
 		$filtered_post['primary_keys'] = stripslashes( $filtered_post['primary_keys'] );
 		$filtered_post['form_data'] = stripslashes( $filtered_post['form_data'] );
 		if( isset( $filtered_post['path_current_site'] ) ) {
-			$filtered_post['path_current_site'] = stripslashes( $filtered_post['path_current_site'] );	
+			$filtered_post['path_current_site'] = stripslashes( $filtered_post['path_current_site'] );
 		}
 
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
@@ -920,9 +920,9 @@ class WPMDB extends WPMDB_Base {
 	// End point for the above remote_post call, returns table information, absolute file path, table prefix, etc
 	function respond_to_verify_connection_to_remote_site() {
 		global $wpdb;
-		
+
 		$return = array();
-		
+
 		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent' ) );
 		if ( !$this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			$return['error'] = 1;
@@ -1008,7 +1008,7 @@ class WPMDB extends WPMDB_Base {
 				"SELECT DISTINCT `post_type`
 				FROM `{$wpdb->prefix}posts`
 				WHERE 1;", ARRAY_A
-			);		
+			);
 		}
 
 		$return = array( 'revision' );
@@ -1154,7 +1154,7 @@ class WPMDB extends WPMDB_Base {
 
 			<div class="updated warning ie-warning" style="display: none;">
 				<p>
-					<strong>Internet Explorer Not Supported</strong> &mdash; 
+					<strong>Internet Explorer Not Supported</strong> &mdash;
 					Less than 2% of our customers use IE, so we've decided not to spend time supporting it.
 					We ask that you use Firefox or a Webkit-based browser like Chrome or Safari instead.
 					If this is a problem for you, please let us know.
@@ -1169,7 +1169,7 @@ class WPMDB extends WPMDB_Base {
 					<p>
 						<strong>PHP Function Disabled</strong> &mdash;
 						The <code>set_time_limit()</code> function is currently disabled on your server.
-						We use this function to ensure that the migration doesn't time out. We haven't 
+						We use this function to ensure that the migration doesn't time out. We haven't
 						disabled the plugin however, so you're free to cross your
 						fingers and hope for the best. You may want to contact your web host to enable this function.
 						<?php if ( function_exists( 'ini_get' ) ) : ?>
@@ -1223,10 +1223,10 @@ class WPMDB extends WPMDB_Base {
 			$nl_mac = "\r";
 			if( strpos( $create_query, $nl_win ) !== false ) {
 				$crlf = $nl_win;
-			} 
+			}
 			elseif( strpos( $create_query, $nl_mac ) !== false ) {
 				$crlf = $nl_mac;
-			} 
+			}
 			elseif( strpos( $create_query, $nl_nix ) !== false ) {
 				$crlf = $nl_nix;
 			}
@@ -1289,7 +1289,7 @@ class WPMDB extends WPMDB_Base {
 							);
 						}
 						$first = false;
-					} 
+					}
 					else {
 						break;
 					}
@@ -1479,7 +1479,7 @@ class WPMDB extends WPMDB_Base {
 			$where = 'WHERE 1=1';
 			$order_by = '';
 			// We need ORDER BY here because with LIMIT, sometimes it will return
-			// the same results from the previous query and we'll have duplicate insert statements 
+			// the same results from the previous query and we'll have duplicate insert statements
 			if ( isset( $this->form_data['exclude_spam'] ) ) {
 				if ( $wpdb->comments == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_comments/', $table ) ) {
 					$where .= ' AND comment_approved != "spam"';
@@ -1543,8 +1543,8 @@ class WPMDB extends WPMDB_Base {
 				$temp_primary_keys = $this->primary_keys;
 
 				$primary_key_count = count( $temp_primary_keys );
-				for( $j = 0; $j < $primary_key_count; $j++ ) { 
-					$where .= ( $j == 0 ? '( ' : ' OR ( ' ); 
+				for( $j = 0; $j < $primary_key_count; $j++ ) {
+					$where .= ( $j == 0 ? '( ' : ' OR ( ' );
 					$i = 0;
 					foreach( $temp_primary_keys as $primary_key => $value ) {
 						$where .= ( $i == 0 ? '' : ' AND ' );
@@ -1596,7 +1596,7 @@ class WPMDB extends WPMDB_Base {
 									else {
 										$new_path_current_site = $this->get_path_from_url( $this->form_data['replace_new'][1] );
 									}
-									
+
 									if( $old_path_current_site != $new_path_current_site ) {
 										$pos = strpos( $value, $old_path_current_site );
 										$value = substr_replace( $value, $new_path_current_site, $pos, strlen( $old_path_current_site ) );
@@ -1608,7 +1608,7 @@ class WPMDB extends WPMDB_Base {
 										$value = $this->recursive_unserialize_replace( $value );
 									}
 								}
-								
+
 								$values[] = "'" . str_replace( $search, $replace, $this->sql_addslashes( $value ) ) . "'";
 							}
 						}
@@ -1747,7 +1747,7 @@ class WPMDB extends WPMDB_Base {
 				}
 
 				$data = $_tmp;
-				unset( $_tmp );	
+				unset( $_tmp );
 				$is_json = true;
 			}
 			elseif ( is_string( $data ) ) {
@@ -1821,7 +1821,7 @@ class WPMDB extends WPMDB_Base {
 	function transfer_chunk() {
 		if( $_POST['intent'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 			$this->close( $this->fp );
-			echo json_encode( 
+			echo json_encode(
 				array(
 					'current_row' 	=> $this->row_tracker,
 					'primary_keys'	=> serialize( $this->primary_keys )
@@ -1847,7 +1847,7 @@ class WPMDB extends WPMDB_Base {
 			'chunk_gzipped'	=> $chunk_gzipped,
 			'chunk'  =>  $this->current_chunk // NEEDS TO BE the last element in this array because of adding it back into the array in ajax_process_chunk()
 		);
-		
+
 		$data['sig'] = $this->create_signature( $data, $_POST['key'] );
 
 		$ajax_url = trailingslashit( $this->remote_url ) . 'wp-admin/admin-ajax.php';
@@ -1859,7 +1859,7 @@ class WPMDB extends WPMDB_Base {
 			exit;
 		}
 
-		echo json_encode( 
+		echo json_encode(
 			array(
 				'current_row' 		=> $this->row_tracker,
 				'primary_keys'		=> serialize( $this->primary_keys )
@@ -1941,7 +1941,7 @@ class WPMDB extends WPMDB_Base {
 
 		$src = $plugins_url . 'asset/css/styles.css';
 		wp_enqueue_style( 'wp-migrate-db-styles', $src, array(), $this->get_installed_version() );
-		
+
 		$src = $plugins_url . 'asset/js/common.js';
 		wp_enqueue_script( 'wp-migrate-db-common', $src, NULL, $this->get_installed_version(), true );
 

@@ -23,16 +23,16 @@
 	a {
 		text-decoration: none;
 	}
-	
+
 	li {
 		margin-bottom: 5px;
 		position: relative;
 	}
-	
+
 	ul {
 		margin: 0;
 	}
-	
+
 	input[type=checkbox],
 	input[type=radio]{
 		margin-right: 5px;
@@ -63,15 +63,15 @@
 
 	p.migrate-db {
 		overflow: hidden;
-		
+
 		input {
-			float: left; 
+			float: left;
 		}
 
 		img {
 			float: left;
-			margin: 3px 0 0 5px; 
-		} 
+			margin: 3px 0 0 5px;
+		}
 
 		.save-settings-button{
 			margin-left: 10px;
@@ -95,32 +95,32 @@
 	.header-wrapper {
 		margin-bottom: 10px;
 	}
-	
+
 	.header-expand-collapse{
 		cursor: pointer;
 		display: inline-block;
 	}
-	
+
 	.option-description{
 		font-size: 12px;
 		color: #999;
 		margin-left: 8px;
 		font-weight: normal;
 	}
-	
+
 	.option-group li:last-child{
 		margin-bottom: 0;
 	}
-	
+
 	.connection-status{
 		display: none;
 		overflow: auto;
 	}
-	
+
 	.connection-status.error{
 		color: #9D1818;
 	}
-	
+
 	.ajax-spinner{
 		left: 6px;
 		position: relative;
@@ -136,7 +136,7 @@
 	   ========================================================================== */
 
 	/* Misc */
-	
+
 	.return-to-profile-selection{
 		margin-bottom: 15px;
 		display: inline-block;
@@ -156,7 +156,7 @@
 		a {
 			margin-right: 4px;
 		}
-		
+
 		a.nav-tab-active {
 			color: #464646;
 			cursor: default;
@@ -211,7 +211,7 @@
 		li {
 			margin-bottom: 5px;
 		}
-		
+
 		> li {
 			margin-bottom: 8px;
 		}
@@ -224,13 +224,13 @@
 		ul {
 			display: none;
 			margin: 10px 0px 10px 25px;
-			
+
 			label {
 				font-size: 12px;
 				font-weight: normal;
 			}
 		}
-		
+
 	}
 
 	.import-file {
@@ -265,12 +265,12 @@
 	.expand-collapse-arrow {
 		margin-right: 9px;
 	}
-	
+
 	.migrate-connection-info{
 		min-width: 675px;
 		margin: 0;
 	}
-	
+
 	.migrate-tab .pull-push-connection-info {
 		width: 418px;
 		height: 65px;
@@ -310,7 +310,7 @@
 		font-family: Consolas, Monaco, monospace;
 		text-shadow: 0 1px 0 #FFFFFF;
 	}
-	
+
 	.push-list ul{
 		margin-bottom: 0px;
 	}
@@ -324,20 +324,20 @@
 	.find-heading {
 		width: 400px;
 	}
-	
+
 	.replace-fields {
 		border-collapse: collapse;
 		border-spacing: 0px;
 	}
-	
+
 	.replace-fields input {
 		width: 295px;
 	}
-	
+
 	.replace-fields tr td{
 		padding-bottom: 7px;
 	}
-	
+
 	.replace-fields tr:last-child td{
 		padding-bottom: 0px;
 	}
@@ -406,11 +406,11 @@
 		top: 5px;
 		width: 2px;
 	}
-	
+
 	.original-repeatable-field{
 		display: none;
 	}
-	
+
 	.no-replaces-message{
 		display: none;
 		margin-bottom: 0px;
@@ -427,7 +427,7 @@
 		position: relative;
 		top: -2px;
 		font-size: 11px;
-		
+
 	}
 
 	.collapsed {
@@ -461,9 +461,9 @@
 	.table-migrate-options li{
 		margin-bottom: 5px;
 	}
-	
+
 	/* Advanced Options */
-	
+
 	.general-helper {
 		border-radius: 50%;
 		border: 1px solid #ccc;
@@ -477,11 +477,11 @@
 		cursor: pointer;
 		margin-left: 2px;
 	}
-	
+
 	.general-helper:hover {
 		border-color: #aaa;
 	}
-	
+
 	.general-helper:after {
 	    content: "?";
 		color: #999999;
@@ -491,7 +491,7 @@
 		position: absolute;
 		top: -1px;
 	}
-	
+
 	.helper-message {
 		padding: 10px;
 		border: 1px solid #ccc;
@@ -512,14 +512,14 @@
 
 	.inline-message.error {
 		border: 1px solid #CC0000;
-		background-color: #FFEBE8;		
+		background-color: #FFEBE8;
 	}
 
 	.inline-message.warning {
 		background-color: #FFFFE0;
 		border: 1px solid #E6DB55;
 	}
-	
+
 	.helper-message:after {
 		content: '';
 		border-bottom: 7px solid transparent;
@@ -532,7 +532,7 @@
 		top: 11px;
 		width: 0;
 	}
-	
+
 	.helper-message:before {
 		content: '';
 		border-bottom: 7px solid transparent;
@@ -578,36 +578,36 @@
 		margin-bottom: 0;
 		margin-top: 15px;
 	}
-	
+
 	/* Save migration profile */
-	
+
 	.save-migration-profile-wrap {
 
 		li label{
 			font-size: 12px;
 			font-weight: normal;
 		}
-		
+
 		li{
 			margin-bottom: 5px;
 			padding-left: 25px;
 		}
 
 	}
-	
+
 	.save-migration-profile-wrap .indent-wrap {
 		margin-left: 0px;
 	}
-	
+
 	.create-new-label {
 		margin-right: 8px;
 	}
-	
+
 	.create-new-profile {
 		position: absolute;
 		top: -5px;
 	}
-	
+
 	.delete-profile {
 		background-color: #eee;
 		border: 1px solid #ccc;
@@ -634,7 +634,7 @@
     	color: #aaa;
     	font-size: 12px;
 	}
-	
+
 	.delete-profile:hover {
 		border-color: #aaa;
 	}
@@ -769,18 +769,18 @@
 
 		}
 	}
-	
+
 	.allow-remote-reqeusts {
 		font-size: 14px;
 		font-weight: bold;
 	}
-	
+
 	.connection-info-label{
 		margin-top: 15px;
 		margin-bottom: 5px;
 		display: block;
 	}
-	
+
 	.connection-info{
 		clear: both;
 		font-size: 15px;
@@ -948,7 +948,7 @@
 
 /* Progress Information */
 
-/* Contain floats: h5bp.com/q */ 
+/* Contain floats: h5bp.com/q */
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
@@ -1101,8 +1101,8 @@
 
 	.progress-label:before {
 		content: "";
-		width: 0; 
-		height: 0; 
+		width: 0;
+		height: 0;
 		border-left: 4px solid transparent;
 		border-right: 4px solid transparent;
 		border-top: 4px solid #ccc;
@@ -1115,8 +1115,8 @@
 
 	.progress-label:after {
 		content: "";
-		width: 0; 
-		height: 0; 
+		width: 0;
+		height: 0;
 		border-left: 4px solid transparent;
 		border-right: 4px solid transparent;
 		border-top: 4px solid #fff;

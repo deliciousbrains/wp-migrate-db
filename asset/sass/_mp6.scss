@@ -13,13 +13,13 @@ body.mp6 {
 	p {
 		font-size: 14px;
 	}
-	
+
 	.wrap h2 {
 		float: left;
 	}
 
 	.wpmdb {
-	
+
 		input[type=checkbox],
 		input[type=radio]{
 			vertical-align: middle;
@@ -197,7 +197,7 @@ body.mp6 {
 		.option-description{
 			font-size: 13px;
 		}
-		
+
 		.save-migration-profile-wrap {
 			li {
 				position: relative;
@@ -221,7 +221,7 @@ body.mp6 {
 				vertical-align: middle;
 				color: #999;
 			}
-			
+
 			&:hover:after {
 				color: #666;
 			}
@@ -297,7 +297,7 @@ body.mp6 {
 		.different-plugin-version-notice, .directory-permission-notice {
 			margin-bottom: 10px;
 		}
-		
+
 	}
 
 	.progress-content {
@@ -305,7 +305,7 @@ body.mp6 {
 		box-shadow: 0 0 10px rgba(0,0,0,0.5);
 		background-color: #eee;
 
-		.progress-title {		
+		.progress-title {
 			font-family: 'Open Sans', sans-serif;
 			font-weight: normal;
 			font-size: 22px;
