@@ -6,9 +6,14 @@ class WPMDB_Addon extends WPMDB_Base {
 		parent::__construct( $plugin_file_path );
 	}
 
+	function get_wpmdb_basename() {
+		global $wpmdb;
+		return plugin_basename( $wpmdb->get_plugin_file_path() );
+	}
+
 	function meets_version_requirements( $version_required ) {
-		$wpmdb_pro_version = $this->get_installed_version( 'wp-migrate-db/wp-migrate-db.php' );
-		$result = version_compare( $wpmdb_pro_version, $version_required, '>=' );
+		$wpmdb_version = $this->get_installed_version( $this->get_wpmdb_basename() );
+		$result = version_compare( $wpmdb_version, $version_required, '>=' );
 		$this->version_required = $version_required;
 		if( false == $result ) $this->hook_version_requirement_actions();
 		return $result;
@@ -35,11 +40,11 @@ class WPMDB_Addon extends WPMDB_Base {
 			<p>
 				<strong>Update Required</strong> &mdash;
 				<?php
-					$wpmdb_basename = 'wp-migrate-db/wp-migrate-db.php';
+					$wpmdb_basename = $this->get_wpmdb_basename();
 					$addon_name = $this->get_plugin_name();
 					$required = $this->version_required;
 					$installed = $this->get_installed_version( $wpmdb_basename );
-					$update = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=wp-migrate-db%2Fwp-migrate-db.php' ), 'upgrade-plugin_' . $wpmdb_basename );
+					$update = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $wpmdb_basename ) ), 'upgrade-plugin_' . $wpmdb_basename );
 					echo sprintf( 'The version of %s you have installed, requires version %s of WP Migrate DB. You currently have %s installed. <strong><a href="%s">Update Now</a></strong>', $addon_name, $required, $installed, $update );
 				?>
 			</p>
