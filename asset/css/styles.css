@@ -562,8 +562,10 @@
         .wpmdb .help-tab .videos ul > li a:before {
           width: 64px;
           height: 64px;
-          -moz-border-radius: 64px;
           -webkit-border-radius: 64px;
+          -moz-border-radius: 64px;
+          -ms-border-radius: 64px;
+          -o-border-radius: 64px;
           border-radius: 64px;
           filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
           opacity: 0.8;
@@ -653,10 +655,11 @@
     height: 10px;
     background-color: #8cc1e9;
     margin-bottom: 5px;
+    background-image: -webkit-gradient(linear, 50% 100%, 50% 0%, color-stop(0%, #72a7cf), color-stop(100%, #8cc1e9));
+    background-image: -webkit-linear-gradient(bottom, #72a7cf, #8cc1e9);
     background-image: -moz-linear-gradient(bottom, #72a7cf, #8cc1e9);
     background-image: -o-linear-gradient(bottom, #72a7cf, #8cc1e9);
-    background-image: -webkit-linear-gradient(bottom, #72a7cf, #8cc1e9);
-    background-image: linear-gradient(to top, #72a7cf, #8cc1e9); }
+    background-image: linear-gradient(bottom, #72a7cf, #8cc1e9); }
   .progress-content .progress-title {
     font-size: 18px;
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
