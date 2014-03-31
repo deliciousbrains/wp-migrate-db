@@ -3,6 +3,7 @@ var hooks = [];
 var call_stack = [];
 var non_fatal_errors = '';
 var migration_error = false;
+var connection_data;
 
 function wpmdb_call_next_hook() {
 	if( ! call_stack.length ) {
@@ -36,7 +37,3 @@ function wpmdb_parse_json( maybe_json ) {
 	}
 	return json_object;
 }
-
-(function($) {
-	// jQuery code here
-})(jQuery);

@@ -13,10 +13,19 @@ class WPMDB_Base {
 	protected $multipart_boundary = 'bWH4JVmYCnf6GfXacrcc';
 	protected $attempting_to_connect_to;
 	protected $error;
+	protected $temp_prefix = '_mig_';
 	protected $invalid_content_verification_error = 'Invalid content verification signature, please verify the connection information on the remote site and try again.';
+	protected $addons;
 
 	function __construct( $plugin_file_path ) {
 		$this->settings = get_option( 'wpmdb_settings' );
+
+		$this->addons = array(
+			'wp-migrate-db-media-files/wp-migrate-db-media-files.php' => array(
+				'name'				=> 'Media Files',
+				'required_version'	=> '1.0.1',
+			)
+		);
 
 		$this->transient_timeout = 60 * 60 * 12;
 		$this->transient_retry_timeout = 60 * 60 * 2;
@@ -35,6 +44,9 @@ class WPMDB_Base {
 		else {
 			$this->plugin_base = 'tools.php?page=wp-migrate-db';
 		}
+
+		// allow devs to change the temporary prefix applied to the tables
+		$this->temp_prefix = apply_filters( 'wpmdb_temporary_prefix', $this->temp_prefix );
 	}
 
 	function printer( $debug ) {
@@ -101,7 +113,9 @@ class WPMDB_Base {
 		) );
 
 		$args['method'] = 'POST';
-		$args['body'] = $this->array_to_multipart( $data );
+		if( ! isset( $args['body'] ) ) {
+			$args['body'] = $this->array_to_multipart( $data );
+		}
 		$args['headers']['Content-Type'] = 'multipart/form-data; boundary=' . $this->multipart_boundary;
 		$args['headers']['Referer'] = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 
@@ -115,13 +129,7 @@ class WPMDB_Base {
 
 		if ( is_wp_error( $response ) ) {
 			if( strpos( $url, 'https://' ) === 0 && $scope == 'ajax_verify_connection_to_remote_site' ) {
-				$url = substr_replace( $url, 'http', 0, 5 );
-				if( $response = $this->remote_post( $url, $data, $scope, $args, $expecting_serial ) ) {
-					return $response;
-				}
-				else {
-					return false;
-				}
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			}
 			else if( isset( $response->errors['http_request_failed'][0] ) && strstr( $response->errors['http_request_failed'][0], 'timed out' ) ) {
 				$this->error = 'The connection to the remote server has timed out, no changes have been committed. (#134 - scope: ' . $scope . ')';
@@ -141,13 +149,7 @@ class WPMDB_Base {
 		}
 		elseif ( (int) $response['response']['code'] < 200 || (int) $response['response']['code'] > 399 ) {
 			if( strpos( $url, 'https://' ) === 0 && $scope == 'ajax_verify_connection_to_remote_site' ) {
-				$url = substr_replace( $url, 'http', 0, 5 );
-				if( $response = $this->remote_post( $url, $data, $scope, $args, $expecting_serial ) ) {
-					return $response;
-				}
-				else {
-					return false;
-				}
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			}
 			else if( $response['response']['code'] == '401' ) {
 				$this->error = 'The remote site is protected with Basic Authentication. Please enter the username and password above to continue. (401 Unauthorized)';
@@ -161,17 +163,31 @@ class WPMDB_Base {
 			}
 		}
 		elseif ( $expecting_serial && is_serialized( $response['body'] ) == false ) {
+			if( strpos( $url, 'https://' ) === 0 && $scope == 'ajax_verify_connection_to_remote_site' ) {
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
+			}
 			$this->error = 'There was a problem with the AJAX request, we were expecting a serialized response, instead we received:<br />' . htmlentities( $response['body'] );
 			$this->log_error( $this->error, $response );
 			return false;
 		}
 		elseif ( $response['body'] === '0' ) {
+			if( strpos( $url, 'https://' ) === 0 && $scope == 'ajax_verify_connection_to_remote_site' ) {
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
+			}
 			$this->error = 'WP Migrate DB does not seem to be installed or active on the remote site. (#131 - scope: ' . $scope . ')';
 			$this->log_error( $this->error, $response );
 			return false;
 		}
 
 		return $response['body'];
+	}
+
+	function retry_remote_post( $url, $data, $scope, $args = array(), $expecting_serial = false ) {
+		$url = substr_replace( $url, 'http', 0, 5 );
+		if( $response = $this->remote_post( $url, $data, $scope, $args, $expecting_serial ) ) {
+			return $response;
+		}
+		return false;
 	}
 
 	function array_to_multipart( $data ) {
@@ -199,6 +215,26 @@ class WPMDB_Base {
 
 			$result .= "\r\n\r\n" . $value . "\r\n";
 		}
+
+		$result .= "--" . $this->multipart_boundary . "--\r\n";
+
+		return $result;
+	}
+
+	function file_to_multipart( $file ) {
+		$result = '';
+
+		if( false == file_exists( $file ) ) return false;
+
+		$filetype = wp_check_filetype( $file );
+		$contents = file_get_contents( $file );
+
+		$result .= '--' . $this->multipart_boundary . "\r\n" .
+			sprintf( 'Content-Disposition: form-data; name="media[]"; filename="%s"', basename( $file ) );
+
+		$result .= sprintf( "\r\nContent-Type: %s", $filetype['type'] );
+
+		$result .= "\r\n\r\n" . $contents . "\r\n";
 
 		$result .= "--" . $this->multipart_boundary . "--\r\n";
 
@@ -276,6 +312,35 @@ class WPMDB_Base {
 		}
 
 		return $plugins[$plugin_basename]['Name'];
+	}
+
+	// Get only the table beginning with our DB prefix or temporary prefix, also skip views
+	function get_tables( $scope = 'regular' ) {
+		global $wpdb;
+		$prefix = ( $scope == 'temp' ? $this->temp_prefix : $wpdb->prefix );
+		$tables = $wpdb->get_results( 'SHOW FULL TABLES', ARRAY_N );
+		foreach ( $tables as $table ) {
+			if ( ( ( $scope == 'temp' || $scope == 'prefix' ) && 0 !== strpos( $table[0], $prefix ) ) || $table[1] == 'VIEW' ) {
+				continue;
+			}
+			$clean_tables[] = $table[0];
+		}
+		return apply_filters( 'wpmdb_tables', $clean_tables, $scope );
+	}
+
+	function plugins_dir() {
+		$path = untrailingslashit( $this->plugin_dir_path );
+		return substr( $path, 0, strrpos( $path, DS ) ) . DS;
+	}
+
+	function is_addon_outdated( $addon_basename ) {
+		$installed_version = $this->get_installed_version( $addon_basename );
+		$required_version = $this->addons[$addon_basename]['required_version'];
+		return version_compare( $installed_version, $required_version, '<' );
+	}
+
+	function get_plugin_file_path() {
+		return $this->plugin_file_path;
 	}
 
 }
