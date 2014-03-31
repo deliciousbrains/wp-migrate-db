@@ -55,6 +55,11 @@ http://www.youtube.com/watch?v=FjTzNqAlQE0
 
 This screencast demonstrates how you can push a local WordPress database you've been using for development to a staging environment.
 
+###Media Files Addon Demo
+http://www.youtube.com/watch?v=0aR8-jC2XXM
+
+A short demo of how the [Media Files addon](https://github.com/slang800/wp-migrate-db-media-files) allows you to sync up your WordPress Media Libraries.
+
 ##Isn't this the same as WP Migrate DB Pro?
 No, of course not, don't be silly. I took out the license verification code, a really shady looking PressTrends reporter, and the tab for installing the Media Files addon before I published 1.4. Release 1.3 was the same as [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro), but I've made several improvements since then.
 
