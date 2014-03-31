@@ -19,7 +19,6 @@ body.mp6 {
 	}
 
 	.wpmdb {
-
 		input[type=checkbox],
 		input[type=radio]{
 			vertical-align: middle;
@@ -286,7 +285,7 @@ body.mp6 {
 			border-left: 4px solid #ffba00;
 		}
 
-		.inline-message.success, .notication-message.success-notice {
+		.inline-message.success, .notification-message.success-notice {
 			border-left: 4px solid #7ad03a;
 		}
 
@@ -309,6 +308,11 @@ body.mp6 {
 			font-family: 'Open Sans', sans-serif;
 			font-weight: normal;
 			font-size: 22px;
+		}
+
+		.dashicons-yes {
+			font-size: 42px;
+			line-height: 0.5em;
 		}
 
 		.progress-bar {
