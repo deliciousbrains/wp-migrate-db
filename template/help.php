@@ -22,7 +22,7 @@ $videos = array(
 <div class="help-tab content-tab">
 	<div class="support">
 		<h3>Support</h3>
-		<p>Please report bugs or ask questions in the <a href="https://github.com/slang800/wp-migrate-db/issues">GitHub Issue Tracker</a>.</p>
+		<p>Please report bugs or ask questions in the <a href="https://github.com/slang800/wp-sync-db/issues">GitHub Issue Tracker</a>.</p>
 	</div>
 	<div class="debug">
 		<h3>Diagnostic Info &amp; Error Log</h3>

@@ -2,8 +2,8 @@
 global $wpdb;
 global $loaded_profile;
 
-if( isset( $_GET['wpmdb-profile'] ) ){
-	$loaded_profile = $this->get_profile( $_GET['wpmdb-profile'] );
+if( isset( $_GET['wpsdb-profile'] ) ){
+	$loaded_profile = $this->get_profile( $_GET['wpsdb-profile'] );
 }
 else{
 	$loaded_profile = $this->default_profile;
@@ -16,7 +16,7 @@ if( ! $is_default_profile ) {
 	if( isset( $loaded_profile['exclude_revisions'] ) ) {
 		$convert_exclude_revisions = true;
 	}
-	$loaded_profile = $this->maybe_update_profile( $loaded_profile, $_GET['wpmdb-profile'] );
+	$loaded_profile = $this->maybe_update_profile( $loaded_profile, $_GET['wpsdb-profile'] );
 }
 
 if( false == $is_default_profile ) {
@@ -24,16 +24,16 @@ if( false == $is_default_profile ) {
 }
 ?>
 <script type='text/javascript'>
-	var wpmdb_default_profile = <?php echo ( $is_default_profile ? 'true' : 'false' ); ?>;
-	var wpmdb_export_with_prefix = <?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? 'true' : 'false' ); ?>;
+	var wpsdb_default_profile = <?php echo ( $is_default_profile ? 'true' : 'false' ); ?>;
+	var wpsdb_export_with_prefix = <?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? 'true' : 'false' ); ?>;
 	<?php if( isset( $loaded_profile['select_tables'] ) && ! empty( $loaded_profile['select_tables'] ) ) : ?>
-		var wpmdb_loaded_tables = '<?php echo json_encode( $loaded_profile['select_tables'] ); ?>';
+		var wpsdb_loaded_tables = '<?php echo json_encode( $loaded_profile['select_tables'] ); ?>';
 	<?php endif; ?>
-	var wpmdb_migrate_all_post_types = <?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_all_post_types' ? 'true' : 'false' ); ?>;
+	var wpsdb_migrate_all_post_types = <?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_all_post_types' ? 'true' : 'false' ); ?>;
 	<?php if( isset( $loaded_profile['select_post_types'] ) ) : ?>
-		var wpmdb_loaded_post_types = '<?php echo json_encode( $loaded_profile['select_post_types'] ); ?>';
+		var wpsdb_loaded_post_types = '<?php echo json_encode( $loaded_profile['select_post_types'] ); ?>';
 	<?php endif; ?>
-	var wpmdb_convert_exclude_revisions = <?php echo ( $convert_exclude_revisions ? 'true' : 'false' ); ?>;
+	var wpsdb_convert_exclude_revisions = <?php echo ( $convert_exclude_revisions ? 'true' : 'false' ); ?>;
 </script>
 
 <div class="migrate-tab content-tab">
@@ -355,7 +355,7 @@ if( false == $is_default_profile ) {
 				</div>
 			</div>
 
-			<?php do_action( 'wpmdb_after_advanced_options' ); ?>
+			<?php do_action( 'wpsdb_after_advanced_options' ); ?>
 
 			<div class="option-section save-migration-profile-wrap">
 				<label for="save-migration-profile" class="save-migration-profile checkbox-label">

@@ -5,7 +5,7 @@ var non_fatal_errors = '';
 var migration_error = false;
 var connection_data;
 
-function wpmdb_call_next_hook() {
+function wpsdb_call_next_hook() {
 	if( ! call_stack.length ) {
 		call_stack = hooks;
 	}
@@ -15,7 +15,7 @@ function wpmdb_call_next_hook() {
 	window[func](); // Uses the string from the array to call the function of the same name
 }
 
-function wpmdb_add_commas( number_string ) {
+function wpsdb_add_commas( number_string ) {
 	number_string += '';
 	x = number_string.split('.');
 	x1 = x[0];
@@ -27,7 +27,7 @@ function wpmdb_add_commas( number_string ) {
 	return x1 + x2;
 }
 
-function wpmdb_parse_json( maybe_json ) {
+function wpsdb_parse_json( maybe_json ) {
 	try {
 		var json_object = jQuery.parseJSON( maybe_json );
 	}

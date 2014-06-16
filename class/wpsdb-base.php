@@ -1,5 +1,5 @@
 <?php
-class WPMDB_Base {
+class WPSDB_Base {
 	protected $settings;
 	protected $plugin_file_path;
 	protected $plugin_dir_path;
@@ -18,10 +18,10 @@ class WPMDB_Base {
 	protected $addons;
 
 	function __construct( $plugin_file_path ) {
-		$this->settings = get_option( 'wpmdb_settings' );
+		$this->settings = get_option( 'wpsdb_settings' );
 
 		$this->addons = array(
-			'wp-migrate-db-media-files/wp-migrate-db-media-files.php' => array(
+			'wp-sync-db-media-files/wp-sync-db-media-files.php' => array(
 				'name'				=> 'Media Files',
 				'required_version'	=> '1.0.1',
 			)
@@ -39,14 +39,14 @@ class WPMDB_Base {
 		$this->plugin_title = str_ireplace( array( 'db', 'wp' ), array( 'DB', 'WP' ), $this->plugin_title );
 
 		if ( is_multisite() ) {
-			$this->plugin_base = 'settings.php?page=wp-migrate-db';
+			$this->plugin_base = 'settings.php?page=wp-sync-db';
 		}
 		else {
-			$this->plugin_base = 'tools.php?page=wp-migrate-db';
+			$this->plugin_base = 'tools.php?page=wp-sync-db';
 		}
 
 		// allow devs to change the temporary prefix applied to the tables
-		$this->temp_prefix = apply_filters( 'wpmdb_temporary_prefix', $this->temp_prefix );
+		$this->temp_prefix = apply_filters( 'wpsdb_temporary_prefix', $this->temp_prefix );
 	}
 
 	function printer( $debug ) {
@@ -104,7 +104,7 @@ class WPMDB_Base {
 
 		$sslverify = ( $this->settings['verify_ssl'] == 1 ? true : false );
 
-		$default_remote_post_timeout = apply_filters( 'wpmdb_default_remote_post_timeout', 60 * 20 );
+		$default_remote_post_timeout = apply_filters( 'wpsdb_default_remote_post_timeout', 60 * 20 );
 
 		$args = wp_parse_args( $args, array(
 			'timeout'  => $default_remote_post_timeout,
@@ -241,23 +241,23 @@ class WPMDB_Base {
 		return $result;
 	}
 
-	function log_error( $wpmdb_error, $additional_error_var = false ){
+	function log_error( $wpsdb_error, $additional_error_var = false ){
 		$error_header = "********************************************\n******  Log date: " . date( 'Y/m/d H:i:s' ) . " ******\n********************************************\n\n";
-		$error = $error_header . "WPMDB Error: " . $wpmdb_error . "\n\n";
+		$error = $error_header . "WPSDB Error: " . $wpsdb_error . "\n\n";
 		if( ! empty( $this->attempting_to_connect_to ) ) {
 			$error .= "Attempted to connect to: " . $this->attempting_to_connect_to . "\n\n";
 		}
 		if( $additional_error_var !== false ){
 			$error .= print_r( $additional_error_var, true ) . "\n\n";
 		}
-		$log = get_option( 'wpmdb_error_log' );
+		$log = get_option( 'wpsdb_error_log' );
 		if( $log ) {
 			$log = $log . $error;
 		}
 		else {
 			$log = $error;
 		}
-		update_option( 'wpmdb_error_log', $log );
+		update_option( 'wpsdb_error_log', $log );
 	}
 
 	function display_errors() {
@@ -325,7 +325,7 @@ class WPMDB_Base {
 			}
 			$clean_tables[] = $table[0];
 		}
-		return apply_filters( 'wpmdb_tables', $clean_tables, $scope );
+		return apply_filters( 'wpsdb_tables', $clean_tables, $scope );
 	}
 
 	function plugins_dir() {

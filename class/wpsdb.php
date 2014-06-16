@@ -1,5 +1,5 @@
 <?php
-class WPMDB extends WPMDB_Base {
+class WPSDB extends WPSDB_Base {
 	protected $fp;
 	protected $absolute_root_file_path;
 	protected $form_defaults;
@@ -34,13 +34,13 @@ class WPMDB extends WPMDB_Base {
 
 		if( empty( $this->settings['max_request'] ) ) {
 			$this->settings['max_request'] = min( 1024 * 1024, $this->get_bottleneck( 'max' ) );
-			update_option( 'wpmdb_settings', $this->settings );
+			update_option( 'wpsdb_settings', $this->settings );
 		}
 
 		// if no settings exist then this is a fresh install, set up some default settings
 		if ( empty( $this->settings ) ) {
 			$this->settings = $default_settings;
-			update_option( 'wpmdb_settings', $this->settings );
+			update_option( 'wpsdb_settings', $this->settings );
 		}
 		// When we add a new setting, an existing customer's db won't have this
 		// new setting, so we need to add it. Otherwise, they'll see
@@ -56,7 +56,7 @@ class WPMDB extends WPMDB_Base {
 			}
 
 			if ( $update_settings ) {
-				update_option( 'wpmdb_settings', $this->settings );
+				update_option( 'wpsdb_settings', $this->settings );
 			}
 		}
 
@@ -64,27 +64,27 @@ class WPMDB extends WPMDB_Base {
 		add_filter( 'network_admin_plugin_action_links_' . $this->plugin_basename, array( $this, 'plugin_action_links' ) );
 
 		// internal AJAX handlers
-		add_action( 'wp_ajax_wpmdb_verify_connection_to_remote_site', array( $this, 'ajax_verify_connection_to_remote_site' ) );
-		add_action( 'wp_ajax_wpmdb_reset_api_key', array( $this, 'ajax_reset_api_key' ) );
-		add_action( 'wp_ajax_wpmdb_delete_migration_profile', array( $this, 'ajax_delete_migration_profile' ) );
-		add_action( 'wp_ajax_wpmdb_save_setting', array( $this, 'ajax_save_setting' ) );
-		add_action( 'wp_ajax_wpmdb_save_profile', array( $this, 'ajax_save_profile' ) );
-		add_action( 'wp_ajax_wpmdb_initiate_migration', array( $this, 'ajax_initiate_migration' ) );
-		add_action( 'wp_ajax_wpmdb_migrate_table', array( $this, 'ajax_migrate_table' ) );
-		add_action( 'wp_ajax_wpmdb_finalize_migration', array( $this, 'ajax_finalize_migration' ) );
-		add_action( 'wp_ajax_wpmdb_clear_log', array( $this, 'ajax_clear_log' ) );
-		add_action( 'wp_ajax_wpmdb_get_log', array( $this, 'ajax_get_log' ) );
-		add_action( 'wp_ajax_wpmdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
-		add_action( 'wp_ajax_wpmdb_update_max_request_size', array( $this, 'ajax_update_max_request_size' ) );
+		add_action( 'wp_ajax_wpsdb_verify_connection_to_remote_site', array( $this, 'ajax_verify_connection_to_remote_site' ) );
+		add_action( 'wp_ajax_wpsdb_reset_api_key', array( $this, 'ajax_reset_api_key' ) );
+		add_action( 'wp_ajax_wpsdb_delete_migration_profile', array( $this, 'ajax_delete_migration_profile' ) );
+		add_action( 'wp_ajax_wpsdb_save_setting', array( $this, 'ajax_save_setting' ) );
+		add_action( 'wp_ajax_wpsdb_save_profile', array( $this, 'ajax_save_profile' ) );
+		add_action( 'wp_ajax_wpsdb_initiate_migration', array( $this, 'ajax_initiate_migration' ) );
+		add_action( 'wp_ajax_wpsdb_migrate_table', array( $this, 'ajax_migrate_table' ) );
+		add_action( 'wp_ajax_wpsdb_finalize_migration', array( $this, 'ajax_finalize_migration' ) );
+		add_action( 'wp_ajax_wpsdb_clear_log', array( $this, 'ajax_clear_log' ) );
+		add_action( 'wp_ajax_wpsdb_get_log', array( $this, 'ajax_get_log' ) );
+		add_action( 'wp_ajax_wpsdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
+		add_action( 'wp_ajax_wpsdb_update_max_request_size', array( $this, 'ajax_update_max_request_size' ) );
 
 		// external AJAX handlers
-		add_action( 'wp_ajax_nopriv_wpmdb_verify_connection_to_remote_site', array( $this, 'respond_to_verify_connection_to_remote_site' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_remote_initiate_migration', array( $this, 'respond_to_remote_initiate_migration' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_process_chunk', array( $this, 'ajax_process_chunk' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_process_pull_request', array( $this, 'respond_to_process_pull_request' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_backup_remote_table', array( $this, 'respond_to_backup_remote_table' ) );
-		add_action( 'wp_ajax_nopriv_wpmdb_remote_finalize_migration', array( $this, 'respond_to_remote_finalize_migration' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_verify_connection_to_remote_site', array( $this, 'respond_to_verify_connection_to_remote_site' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_remote_initiate_migration', array( $this, 'respond_to_remote_initiate_migration' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_process_chunk', array( $this, 'ajax_process_chunk' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_process_pull_request', array( $this, 'respond_to_process_pull_request' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_fire_migration_complete', array( $this, 'fire_migration_complete' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_backup_remote_table', array( $this, 'respond_to_backup_remote_table' ) );
+		add_action( 'wp_ajax_nopriv_wpsdb_remote_finalize_migration', array( $this, 'respond_to_remote_finalize_migration' ) );
 
 		$absolute_path = rtrim( ABSPATH, '\\/' );
 		$site_url = rtrim( site_url( '', 'http' ), '\\/' );
@@ -153,21 +153,21 @@ class WPMDB extends WPMDB_Base {
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 
 		// this is how many DB rows are processed at a time, allow devs to change this value
-		$this->rows_per_segment = apply_filters( 'wpmdb_rows_per_segment', $this->rows_per_segment );
+		$this->rows_per_segment = apply_filters( 'wpsdb_rows_per_segment', $this->rows_per_segment );
 
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
-			$this->plugin_base = 'settings.php?page=wp-migrate-db';
+			$this->plugin_base = 'settings.php?page=wp-sync-db';
 		}
 		else {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-			$this->plugin_base = 'tools.php?page=wp-migrate-db';
+			$this->plugin_base = 'tools.php?page=wp-sync-db';
 		}
 	}
 
 	function check_again_clear_transients( $current_screen ) {
 		if( ! isset( $current_screen->id ) || strpos( $current_screen->id, 'update-core' ) === false || ! isset( $_GET['force-check'] ) ) return;
-		delete_site_transient( 'wpmdb_upgrade_data' );
+		delete_site_transient( 'wpsdb_upgrade_data' );
 		delete_site_transient( 'update_plugins' );
 	}
 
@@ -176,7 +176,7 @@ class WPMDB extends WPMDB_Base {
 			return $this->alter_table_name;
 		}
 		global $wpdb;
-		$this->alter_table_name = apply_filters( 'wpmdb_alter_table_name', $wpdb->prefix . 'wpmdb_alter_statements' );
+		$this->alter_table_name = apply_filters( 'wpsdb_alter_table_name', $wpdb->prefix . 'wpsdb_alter_statements' );
 		return $this->alter_table_name;
 	}
 
@@ -187,7 +187,7 @@ class WPMDB extends WPMDB_Base {
 		$alter_table_name = $this->get_alter_table_name();
 		$this->create_alter_table_query = sprintf( "DROP TABLE IF EXISTS `%s`;\n", $alter_table_name );
 		$this->create_alter_table_query .= sprintf( "CREATE TABLE `%s` ( `query` longtext NOT NULL );\n", $alter_table_name );
-		$this->create_alter_table_query = apply_filters( 'wpmdb_create_alter_table_query', $this->create_alter_table_query );
+		$this->create_alter_table_query = apply_filters( 'wpsdb_create_alter_table_query', $this->create_alter_table_query );
 		return $this->create_alter_table_query;
 	}
 
@@ -203,7 +203,7 @@ class WPMDB extends WPMDB_Base {
 		//			'path' 	=> '/path/to/custom/uploads/directory', <- note missing end trailing slash
 		//			'url'	=> 'http://yourwebsite.com/custom/uploads/directory' <- note missing end trailing slash
 		// );
-		$upload_info = apply_filters( 'wpmdb_upload_info', array() );
+		$upload_info = apply_filters( 'wpsdb_upload_info', array() );
 		if ( !empty( $upload_info ) ) {
 			return $upload_info[$type];
 		}
@@ -213,10 +213,10 @@ class WPMDB extends WPMDB_Base {
 		$upload_info['path'] = $upload_dir['basedir'];
 		$upload_info['url'] = $upload_dir['baseurl'];
 
-		$upload_dir_name = apply_filters( 'wpmdb_upload_dir_name', 'wp-migrate-db' );
+		$upload_dir_name = apply_filters( 'wpsdb_upload_dir_name', 'wp-sync-db' );
 
 		if( ! file_exists( $upload_dir['basedir'] . DS . $upload_dir_name ) ) {
-			$url = wp_nonce_url( $this->plugin_base, 'wp-migrate-db-nonce' );
+			$url = wp_nonce_url( $this->plugin_base, 'wp-sync-db-nonce' );
 
 			if( false === @mkdir( $upload_dir['basedir'] . DS . $upload_dir_name, 0755 ) ) {
 				return $upload_info[$type];
@@ -236,7 +236,7 @@ class WPMDB extends WPMDB_Base {
 
 	function ajax_update_max_request_size() {
 		$this->settings['max_request'] = (int) $_POST['max_request_size'] * 1024;
-		update_option( 'wpmdb_settings', $this->settings );
+		update_option( 'wpsdb_settings', $this->settings );
 		$result = $this->end_ajax();
 		return $result;
 	}
@@ -258,7 +258,7 @@ class WPMDB extends WPMDB_Base {
 
 	function parse_migration_form_data( $data ) {
 		parse_str( $data, $form_data );
-		$this->accepted_fields = apply_filters( 'wpmdb_accepted_profile_fields', $this->accepted_fields );
+		$this->accepted_fields = apply_filters( 'wpsdb_accepted_profile_fields', $this->accepted_fields );
 		$form_data = array_intersect_key( $form_data, array_flip( $this->accepted_fields ) );
 		unset( $form_data['replace_old'][0] );
 		unset( $form_data['replace_new'][0] );
@@ -266,13 +266,13 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	function plugin_action_links( $links ) {
-		$link = sprintf( '<a href="%s">%s</a>', network_admin_url( $this->plugin_base ), __( 'Settings', 'wp-migrate-db' ) );
+		$link = sprintf( '<a href="%s">%s</a>', network_admin_url( $this->plugin_base ), __( 'Settings', 'wp-sync-db' ) );
 		array_unshift( $links, $link );
 		return $links;
 	}
 
 	function ajax_clear_log() {
-		delete_option( 'wpmdb_error_log' );
+		delete_option( 'wpsdb_error_log' );
 		$result = $this->end_ajax();
 		return $result;
 	}
@@ -287,7 +287,7 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	function output_log_file() {
-		$log = get_option( 'wpmdb_error_log' );
+		$log = get_option( 'wpsdb_error_log' );
 		if( $log ) {
 			echo $log;
 		}
@@ -328,7 +328,7 @@ class WPMDB extends WPMDB_Base {
 		echo WP_MEMORY_LIMIT;
 		echo "\r\n";
 
-		_e( 'WPMDB Bottleneck', 'wp-app-store' ); echo ': ';
+		_e( 'WPSDB Bottleneck', 'wp-app-store' ); echo ': ';
 		echo size_format( $this->get_bottleneck() );
 		echo "\r\n";
 
@@ -420,7 +420,7 @@ class WPMDB extends WPMDB_Base {
 			return $result;
 		}
 
-		do_action( 'wpmdb_migration_complete', 'pull', $_POST['url'] );
+		do_action( 'wpsdb_migration_complete', 'pull', $_POST['url'] );
 		$result = $this->end_ajax();
 		return $result;
 	}
@@ -446,9 +446,9 @@ class WPMDB extends WPMDB_Base {
 			$return = $this->finalize_migration();
 		}
 		else {
-			do_action( 'wpmdb_migration_complete', 'push', $_POST['url'] );
+			do_action( 'wpsdb_migration_complete', 'push', $_POST['url'] );
 			$data = $_POST;
-			$data['action'] = 'wpmdb_remote_finalize_migration';
+			$data['action'] = 'wpsdb_remote_finalize_migration';
 			$data['intent'] = 'pull';
 			$data['prefix'] = $wpdb->prefix;
 			$data['type'] = 'push';
@@ -489,14 +489,14 @@ class WPMDB extends WPMDB_Base {
 
 		$sql = "SET FOREIGN_KEY_CHECKS=0;\n";
 
-		$preserved_options = array( 'wpmdb_settings', 'wpmdb_error_log' );
+		$preserved_options = array( 'wpsdb_settings', 'wpsdb_error_log' );
 
 		$this->form_data = $this->parse_migration_form_data( $_POST['form_data'] );
 		if( isset( $this->form_data['keep_active_plugins'] ) ) {
 			$preserved_options[] = 'active_plugins';
 		}
 
-		$preserved_options = apply_filters( 'wpmdb_preserved_options', $preserved_options );
+		$preserved_options = apply_filters( 'wpsdb_preserved_options', $preserved_options );
 
 		foreach ( $temp_tables as $table ) {
 			$sql .= 'DROP TABLE IF EXISTS ' . $this->backquote( substr( $table, strlen( $temp_prefix ) ) ) . ';';
@@ -527,7 +527,7 @@ class WPMDB extends WPMDB_Base {
 
 		if( ! isset( $_POST['location'] ) ) {
 			$data = array();
-			$data['action'] = 'wpmdb_fire_migration_complete';
+			$data['action'] = 'wpsdb_fire_migration_complete';
 			$data['url'] = home_url();
 			$data['sig'] = $this->create_signature( $data, $_POST['key'] );
 			$ajax_url = trailingslashit( $_POST['url'] ) . 'wp-admin/admin-ajax.php';
@@ -545,7 +545,7 @@ class WPMDB extends WPMDB_Base {
 		// flush rewrite rules to prevent 404s and other oddities
 		flush_rewrite_rules( true ); // true = hard refresh, recreates the .htaccess file
 
-		do_action( 'wpmdb_migration_complete', $type, $location );
+		do_action( 'wpsdb_migration_complete', $type, $location );
 	}
 
 	function ajax_process_chunk() {
@@ -627,7 +627,7 @@ class WPMDB extends WPMDB_Base {
 			// if performing a push we need to backup the REMOTE machine's DB
 			if ( $_POST['intent'] == 'push' ) {
 				$data = $_POST;
-				$data['action'] = 'wpmdb_backup_remote_table';
+				$data['action'] = 'wpsdb_backup_remote_table';
 				$data['intent'] = 'pull';
 				$ajax_url = trailingslashit( $_POST['url'] ) . 'wp-admin/admin-ajax.php';
 				$data['primary_keys'] = stripslashes( $data['primary_keys'] );
@@ -676,7 +676,7 @@ class WPMDB extends WPMDB_Base {
 		}
 		else {
 			$data = $_POST;
-			$data['action'] = 'wpmdb_process_pull_request';
+			$data['action'] = 'wpsdb_process_pull_request';
 			$data['pull_limit'] = $this->get_sensible_pull_limit();
 			if( is_multisite() ) {
 				$data['path_current_site'] = $this->get_path_current_site();
@@ -834,7 +834,7 @@ class WPMDB extends WPMDB_Base {
 		else { // does one last check that our verification string is valid
 
 			$data = array(
-				'action'  => 'wpmdb_remote_initiate_migration',
+				'action'  => 'wpsdb_remote_initiate_migration',
 				'intent' => $_POST['intent'],
 				'form_data' => $_POST['form_data'],
 			);
@@ -844,7 +844,7 @@ class WPMDB extends WPMDB_Base {
 			$response = $this->remote_post( $ajax_url, $data, __FUNCTION__ );
 
 			if ( false === $response ) {
-				$return = array( 'wpmdb_error' => 1, 'body' => $this->error );
+				$return = array( 'wpsdb_error' => 1, 'body' => $this->error );
 				$result = $this->end_ajax( json_encode( $return ) );
 				return $result;
 			}
@@ -928,14 +928,14 @@ class WPMDB extends WPMDB_Base {
 			$this->settings['profiles'][$key] = $profile;
 			$this->settings['profiles'][$key]['name'] = $name;
 		}
-		update_option( 'wpmdb_settings', $this->settings );
+		update_option( 'wpsdb_settings', $this->settings );
 		$result = $this->end_ajax( count( $this->settings['profiles'] ) - 1 );
 		return $result;
 	}
 
 	function ajax_save_setting() {
 		$this->settings[$_POST['setting']] = ( $_POST['checked'] == 'false' ? false : true );
-		update_option( 'wpmdb_settings', $this->settings );
+		update_option( 'wpsdb_settings', $this->settings );
 		$result = $this->end_ajax();
 		return $result;
 	}
@@ -945,7 +945,7 @@ class WPMDB extends WPMDB_Base {
 		$return = '';
 		if ( isset( $this->settings['profiles'][$key] ) ) {
 			unset( $this->settings['profiles'][$key] );
-			update_option( 'wpmdb_settings', $this->settings );
+			update_option( 'wpsdb_settings', $this->settings );
 		}
 		else {
 			$return = '-1';
@@ -956,7 +956,7 @@ class WPMDB extends WPMDB_Base {
 
 	function ajax_reset_api_key() {
 		$this->settings['key'] = $this->generate_key();
-		update_option( 'wpmdb_settings', $this->settings );
+		update_option( 'wpsdb_settings', $this->settings );
 		$result = $this->end_ajax( sprintf( "%s\n%s", site_url( '', 'https' ), $this->settings['key'] ) );
 		return $result;
 	}
@@ -965,13 +965,13 @@ class WPMDB extends WPMDB_Base {
 	// Responsible for contacting the remote website and retrieving info and testing the verification string
 	function ajax_verify_connection_to_remote_site() {
 		$data = array(
-			'action'  => 'wpmdb_verify_connection_to_remote_site',
+			'action'  => 'wpsdb_verify_connection_to_remote_site',
 			'intent' => $_POST['intent']
 		);
 
 		$data['sig'] = $this->create_signature( $data, $_POST['key'] );
 		$ajax_url = trailingslashit( $_POST['url'] ) . 'wp-admin/admin-ajax.php';
-		$timeout = apply_filters( 'wpmdb_prepare_remote_connection_timeout', 10 );
+		$timeout = apply_filters( 'wpsdb_prepare_remote_connection_timeout', 10 );
 		$response = $this->remote_post( $ajax_url, $data, __FUNCTION__, compact( 'timeout' ), true );
 		$url_bits = parse_url( $this->attempting_to_connect_to );
 		$return = $response;
@@ -979,7 +979,7 @@ class WPMDB extends WPMDB_Base {
 		$alt_action = '';
 
 		if ( false === $response ) {
-			$return = array( 'wpmdb_error' => 1, 'body' => $this->error );
+			$return = array( 'wpsdb_error' => 1, 'body' => $this->error );
 			$result = $this->end_ajax( json_encode( $return ) );
 			return $result;
 		}
@@ -987,7 +987,7 @@ class WPMDB extends WPMDB_Base {
 		$response = unserialize( trim( $response ) );
 
 		if ( isset( $response['error'] ) && $response['error'] == 1 ) {
-			$return = array( 'wpmdb_error' => 1, 'body' => $response['message'] );
+			$return = array( 'wpsdb_error' => 1, 'body' => $response['message'] );
 			$result = $this->end_ajax( json_encode( $return ) );
 			return $result;
 		}
@@ -1039,7 +1039,7 @@ class WPMDB extends WPMDB_Base {
 		$return['write_permissions'] = ( is_writeable( $this->get_upload_info( 'path' ) ) ? '1' : '0' );
 		$return['upload_dir_long'] = $this->get_upload_info( 'path' );
 		$return['temp_prefix'] = $this->temp_prefix;
-		$return = apply_filters( 'wpmdb_establish_remote_connection_data', $return );
+		$return = apply_filters( 'wpsdb_establish_remote_connection_data', $return );
 		$result = $this->end_ajax( serialize( $return ) );
 		return $result;
 	}
@@ -1084,7 +1084,7 @@ class WPMDB extends WPMDB_Base {
 		foreach( $post_types as $post_type ) {
 			$return[] = $post_type['post_type'];
 		}
-		return apply_filters( 'wpmdb_post_types', array_unique( $return ) );
+		return apply_filters( 'wpsdb_post_types', array_unique( $return ) );
 	}
 
 	// Retrieves the specified profile, if -1, returns the default profile
@@ -1126,7 +1126,7 @@ class WPMDB extends WPMDB_Base {
 			$return[$result['table']] = $result['size'];
 		}
 
-		return apply_filters( 'wpmdb_table_sizes', $return, $scope );
+		return apply_filters( 'wpsdb_table_sizes', $return, $scope );
 	}
 
 	function get_post_max_size() {
@@ -1144,7 +1144,7 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	function get_sensible_pull_limit() {
-		return apply_filters( 'wpmdb_sensible_pull_limit', min( 26214400, $this->settings['max_request'] ) );
+		return apply_filters( 'wpsdb_sensible_pull_limit', min( 26214400, $this->settings['max_request'] ) );
 	}
 
 	function get_bottleneck( $type = 'regular' ) {
@@ -1162,7 +1162,7 @@ class WPMDB extends WPMDB_Base {
 		}
 
 		// we have to account for HTTP headers and other bloating, here we minus 1kb for bloat
-		$post_max_upper_size = apply_filters( 'wpmdb_post_max_upper_size', 26214400 );
+		$post_max_upper_size = apply_filters( 'wpsdb_post_max_upper_size', 26214400 );
 		$calculated_bottleneck = min( ( $this->get_post_max_size() - 1024 ), $post_max_upper_size );
 
 		if ( $suhosin_limit ) {
@@ -1173,7 +1173,7 @@ class WPMDB extends WPMDB_Base {
 			$calculated_bottleneck = min( $calculated_bottleneck, $this->settings['max_request'] );
 		}
 
-		return apply_filters( 'wpmdb_bottleneck', $calculated_bottleneck );
+		return apply_filters( 'wpsdb_bottleneck', $calculated_bottleneck );
 	}
 
 	function format_dump_name( $dump_name ) {
@@ -1188,16 +1188,16 @@ class WPMDB extends WPMDB_Base {
 	function options_page() {
 		?>
 
-		<div class="wrap wpmdb">
+		<div class="wrap wpsdb">
 
 			<div id="icon-tools" class="icon32"><br /></div><h2>Migrate DB</h2>
 
 			<h2 class="nav-tab-wrapper"><a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">Migrate</a><a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">Settings</a><a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">Help</a></h2>
 
-			<?php do_action( 'wpmdb_notices' ); ?>
+			<?php do_action( 'wpsdb_notices' ); ?>
 
 			<?php
-			$hide_warning = apply_filters( 'wpmdb_hide_outdated_addons_warning', false );
+			$hide_warning = apply_filters( 'wpsdb_hide_outdated_addons_warning', false );
 
 			foreach( $this->addons as $addon_basename => $addon ) {
 				if( false == $this->is_addon_outdated( $addon_basename ) || false == is_plugin_active( $addon_basename ) ) continue;
@@ -1212,7 +1212,7 @@ class WPMDB extends WPMDB_Base {
 			<?php
 			}
 
-			$hide_warning = apply_filters( 'wpmdb_hide_safe_mode_warning', false );
+			$hide_warning = apply_filters( 'wpsdb_hide_safe_mode_warning', false );
 			if ( function_exists( 'ini_get' ) && ini_get( 'safe_mode' ) && !$hide_warning ) {
 				?>
 				<div class="updated warning">
@@ -1244,7 +1244,7 @@ class WPMDB extends WPMDB_Base {
 			</div>
 
 			<?php
-			$hide_warning = apply_filters( 'wpmdb_hide_set_time_limit_warning', false );
+			$hide_warning = apply_filters( 'wpsdb_hide_set_time_limit_warning', false );
 			if ( false == $this->set_time_limit_available() && !$hide_warning && !$safe_mode ) {
 				?>
 				<div class="updated warning">
@@ -1263,11 +1263,11 @@ class WPMDB extends WPMDB_Base {
 			}
 			?>
 
-			<div id="wpmdb-main">
+			<div id="wpsdb-main">
 
 				<?php
 				// select profile if more than > 1 profile saved
-				if ( ! empty( $this->settings['profiles'] ) && ! isset( $_GET['wpmdb-profile'] ) ) {
+				if ( ! empty( $this->settings['profiles'] ) && ! isset( $_GET['wpsdb-profile'] ) ) {
 					$this->template( 'profile' );
 				}
 				else {
@@ -1282,7 +1282,7 @@ class WPMDB extends WPMDB_Base {
 				$this->template( 'help' );
 				?>
 
-			</div> <!-- end #wpmdb-main -->
+			</div> <!-- end #wpsdb-main -->
 
 		</div> <!-- end .wrap -->
 		<?php
@@ -1436,7 +1436,7 @@ class WPMDB extends WPMDB_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( "# " . sprintf( __( 'Delete any existing table %s', 'wp-sync-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 				$this->stow( "\n" );
 				$this->stow( "DROP TABLE IF EXISTS " . $this->backquote( $table ) . ";\n" );
@@ -1450,7 +1450,7 @@ class WPMDB extends WPMDB_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( "# " . sprintf( __( 'Table structure of table %s', 'wp-sync-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 				$this->stow( "\n" );
 			}
@@ -1470,7 +1470,7 @@ class WPMDB extends WPMDB_Base {
 			$alter_table_query = '';
 			$create_table[0][1] = $this->process_sql_constraint( $create_table[0][1], $table, $alter_table_query );
 
-			$create_table[0][1] = apply_filters( 'wpmdb_create_table_query', $create_table[0][1], $table );
+			$create_table[0][1] = apply_filters( 'wpsdb_create_table_query', $create_table[0][1], $table );
 
 			$this->stow( $create_table[0][1] . ";\n" );
 
@@ -1493,7 +1493,7 @@ class WPMDB extends WPMDB_Base {
 			if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 				$this->stow( "\n\n" );
 				$this->stow( "#\n" );
-				$this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+				$this->stow( '# ' . sprintf( __( 'Data contents of table %s', 'wp-sync-db' ), $this->backquote( $table ) ) . "\n" );
 				$this->stow( "#\n" );
 			}
 		}
@@ -1602,7 +1602,7 @@ class WPMDB extends WPMDB_Base {
 				}
 			}
 
-			if ( true === apply_filters( 'wpmdb_exclude_transients', true ) && ( $this->table_is( 'options', $table ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
+			if ( true === apply_filters( 'wpsdb_exclude_transients', true ) && ( $this->table_is( 'options', $table ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
 				$col_name = 'option_name';
 
 				if( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) {
@@ -1655,13 +1655,13 @@ class WPMDB extends WPMDB_Base {
 			}
 
 			$join = implode( ' ', array_unique( $join ) );
-			$join = apply_filters( 'wpmdb_rows_join', $join, $table );
-			$where = apply_filters( 'wpmdb_rows_where', $where, $table );
-			$order_by = apply_filters( 'wpmdb_rows_order_by', $order_by, $table );
-			$limit = apply_filters( 'wpmdb_rows_limit', $limit, $table );
+			$join = apply_filters( 'wpsdb_rows_join', $join, $table );
+			$where = apply_filters( 'wpsdb_rows_where', $where, $table );
+			$order_by = apply_filters( 'wpsdb_rows_order_by', $order_by, $table );
+			$limit = apply_filters( 'wpsdb_rows_limit', $limit, $table );
 
 			$sql = "SELECT " . $this->backquote( $table ) . ".* FROM " . $this->backquote( $table ) . " $join $where $order_by $limit";
-			$sql = apply_filters( 'wpmdb_rows_sql', $sql, $table );
+			$sql = apply_filters( 'wpsdb_rows_sql', $sql, $table );
 
 			$table_data = $wpdb->get_results( $sql );
 
@@ -1706,7 +1706,7 @@ class WPMDB extends WPMDB_Base {
 
 									$main_domain_find = sprintf( "/%s/", $this->get_domain_current_site() );
 									$domain_replaces[$main_domain_find] = $main_domain_replace;
-									$domain_replaces = apply_filters( 'wpmdb_domain_replaces', $domain_replaces );
+									$domain_replaces = apply_filters( 'wpsdb_domain_replaces', $domain_replaces );
 
 									$value = preg_replace( array_keys( $domain_replaces ), array_values( $domain_replaces ), $value );
 								}
@@ -1781,7 +1781,7 @@ class WPMDB extends WPMDB_Base {
 		if ( $this->form_data['action'] == 'savefile' || $_POST['stage'] == 'backup' ) {
 			$this->stow( "\n" );
 			$this->stow( "#\n" );
-			$this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-migrate-db' ), $this->backquote( $table ) ) . "\n" );
+			$this->stow( "# " . sprintf( __( 'End of data contents of table %s', 'wp-sync-db' ), $this->backquote( $table ) ) . "\n" );
 			$this->stow( "# --------------------------------------------------------\n" );
 			$this->stow( "\n" );
 
@@ -1895,11 +1895,11 @@ class WPMDB extends WPMDB_Base {
 
 	function db_backup_header() {
 		$charset = ( defined( 'DB_CHARSET' ) ? DB_CHARSET : 'utf8' );
-		$this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-migrate-db' ) . "\n", false );
+		$this->stow( "# " . __( 'WordPress MySQL database migration', 'wp-sync-db' ) . "\n", false );
 		$this->stow( "#\n", false );
-		$this->stow( "# " . sprintf( __( 'Generated: %s', 'wp-migrate-db' ), date( "l j. F Y H:i T" ) ) . "\n", false );
-		$this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-migrate-db' ), DB_HOST ) . "\n", false );
-		$this->stow( "# " . sprintf( __( 'Database: %s', 'wp-migrate-db' ), $this->backquote( DB_NAME ) ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Generated: %s', 'wp-sync-db' ), date( "l j. F Y H:i T" ) ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Hostname: %s', 'wp-sync-db' ), DB_HOST ) . "\n", false );
+		$this->stow( "# " . sprintf( __( 'Database: %s', 'wp-sync-db' ), $this->backquote( DB_NAME ) ) . "\n", false );
 		$this->stow( "# --------------------------------------------------------\n\n", false );
 		$this->stow( "/*!40101 SET NAMES $charset */;\n\n", false );
 		$this->stow( "SET sql_mode='NO_AUTO_VALUE_ON_ZERO';\n\n", false );
@@ -1970,7 +1970,7 @@ class WPMDB extends WPMDB_Base {
 		}
 
 		$data = array(
-			'action'  => 'wpmdb_process_chunk',
+			'action'  => 'wpsdb_process_chunk',
 			'table' => $_POST['table'],
 			'chunk_gzipped'	=> $chunk_gzipped,
 			'chunk'  =>  $this->current_chunk // NEEDS TO BE the last element in this array because of adding it back into the array in ajax_process_chunk()
@@ -2029,12 +2029,12 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	function network_admin_menu() {
-		$hook_suffix = add_submenu_page( 'settings.php', 'Migrate DB', 'Migrate DB', 'manage_network_options', 'wp-migrate-db', array( $this, 'options_page' ) );
+		$hook_suffix = add_submenu_page( 'settings.php', 'Migrate DB', 'Migrate DB', 'manage_network_options', 'wp-sync-db', array( $this, 'options_page' ) );
 		$this->after_admin_menu( $hook_suffix );
 	}
 
 	function admin_menu() {
-		$hook_suffix = add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-migrate-db', array( $this, 'options_page' ) );
+		$hook_suffix = add_management_page( 'Migrate DB', 'Migrate DB', 'export', 'wp-sync-db', array( $this, 'options_page' ) );
 		$this->after_admin_menu( $hook_suffix );
 	}
 
@@ -2072,18 +2072,18 @@ class WPMDB extends WPMDB_Base {
 		$version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? time() : $this->get_installed_version();
 
 		$src = $plugins_url . 'asset/css/styles.css';
-		wp_enqueue_style( 'wp-migrate-db-styles', $src, array(), $version );
+		wp_enqueue_style( 'wp-sync-db-styles', $src, array(), $version );
 
 		$src = $plugins_url . 'asset/js/common.js';
-		wp_enqueue_script( 'wp-migrate-db-common', $src, NULL, $version, true );
+		wp_enqueue_script( 'wp-sync-db-common', $src, NULL, $version, true );
 
 		$src = $plugins_url . 'asset/js/hook.js';
-		wp_enqueue_script( 'wp-migrate-db-hook', $src, NULL, $version, true );
+		wp_enqueue_script( 'wp-sync-db-hook', $src, NULL, $version, true );
 
-		do_action( 'wpmdb_load_assets' );
+		do_action( 'wpsdb_load_assets' );
 
 		$src = $plugins_url . 'asset/js/script.js';
-		wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), $version, true );
+		wp_enqueue_script( 'wp-sync-db-script', $src, array( 'jquery' ), $version, true );
 
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
@@ -2121,27 +2121,27 @@ class WPMDB extends WPMDB_Base {
 	function admin_head_connection_info() {
 		global $table_prefix; ?>
 		<script type='text/javascript'>
-			var wpmdb_connection_info = '<?php echo json_encode( array( site_url( '', 'https' ), $this->settings['key'] ) ); ?>';
-			var wpmdb_this_url = '<?php echo addslashes( home_url() ) ?>';
-			var wpmdb_this_path = '<?php echo addslashes( $this->absolute_root_file_path ); ?>';
-			var wpmdb_this_domain = '<?php echo $this->get_domain_current_site(); ?>';
-			var wpmdb_this_tables = '<?php echo json_encode( $this->get_tables() ); ?>';
-			var wpmdb_this_prefixed_tables = '<?php echo json_encode( $this->get_tables( 'prefix' ) ); ?>';
-			var wpmdb_this_table_sizes = '<?php echo json_encode( $this->get_table_sizes() ); ?>';
-			var wpmdb_this_table_rows = '<?php echo json_encode( $this->get_table_row_count() ); ?>';
-			var wpmdb_this_upload_url = '<?php echo addslashes( trailingslashit( $this->get_upload_info( 'url' ) ) ); ?>';
-			var wpmdb_this_upload_dir_long = '<?php echo addslashes( trailingslashit( $this->get_upload_info( 'path' ) ) ); ?>';
-			var wpmdb_this_website_name = '<?php echo sanitize_title_with_dashes( DB_NAME ); ?>';
-			var wpmdb_this_download_url = '<?php echo network_admin_url( $this->plugin_base . '&download=' ); ?>';
-			var wpmdb_this_prefix = '<?php echo $table_prefix; ?>';
-			var wpmdb_is_multisite = <?php echo ( is_multisite() ? 'true' : 'false' ); ?>;
-			var wpmdb_openssl_available = <?php echo ( $this->open_ssl_enabled() ? 'true' : 'false' ); ?>;
-			var wpmdb_plugin_version = '<?php echo $this->get_installed_version(); ?>';
-			var wpmdb_max_request = '<?php echo $this->settings['max_request'] ?>';
-			var wpmdb_bottleneck = '<?php echo $this->get_bottleneck( 'max' ); ?>';
-			var wpmdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
-			var wpmdb_write_permission = <?php echo ( is_writeable( $this->get_upload_info( 'path' ) ) ? 'true' : 'false' ); ?>;
-			<?php do_action( 'wpmdb_js_variables' ); ?>
+			var wpsdb_connection_info = '<?php echo json_encode( array( site_url( '', 'https' ), $this->settings['key'] ) ); ?>';
+			var wpsdb_this_url = '<?php echo addslashes( home_url() ) ?>';
+			var wpsdb_this_path = '<?php echo addslashes( $this->absolute_root_file_path ); ?>';
+			var wpsdb_this_domain = '<?php echo $this->get_domain_current_site(); ?>';
+			var wpsdb_this_tables = '<?php echo json_encode( $this->get_tables() ); ?>';
+			var wpsdb_this_prefixed_tables = '<?php echo json_encode( $this->get_tables( 'prefix' ) ); ?>';
+			var wpsdb_this_table_sizes = '<?php echo json_encode( $this->get_table_sizes() ); ?>';
+			var wpsdb_this_table_rows = '<?php echo json_encode( $this->get_table_row_count() ); ?>';
+			var wpsdb_this_upload_url = '<?php echo addslashes( trailingslashit( $this->get_upload_info( 'url' ) ) ); ?>';
+			var wpsdb_this_upload_dir_long = '<?php echo addslashes( trailingslashit( $this->get_upload_info( 'path' ) ) ); ?>';
+			var wpsdb_this_website_name = '<?php echo sanitize_title_with_dashes( DB_NAME ); ?>';
+			var wpsdb_this_download_url = '<?php echo network_admin_url( $this->plugin_base . '&download=' ); ?>';
+			var wpsdb_this_prefix = '<?php echo $table_prefix; ?>';
+			var wpsdb_is_multisite = <?php echo ( is_multisite() ? 'true' : 'false' ); ?>;
+			var wpsdb_openssl_available = <?php echo ( $this->open_ssl_enabled() ? 'true' : 'false' ); ?>;
+			var wpsdb_plugin_version = '<?php echo $this->get_installed_version(); ?>';
+			var wpsdb_max_request = '<?php echo $this->settings['max_request'] ?>';
+			var wpsdb_bottleneck = '<?php echo $this->get_bottleneck( 'max' ); ?>';
+			var wpsdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
+			var wpsdb_write_permission = <?php echo ( is_writeable( $this->get_upload_info( 'path' ) ) ? 'true' : 'false' ); ?>;
+			<?php do_action( 'wpsdb_js_variables' ); ?>
 		</script>
 		<?php
 	}
@@ -2159,7 +2159,7 @@ class WPMDB extends WPMDB_Base {
 			$profile['select_post_types'] = $local_post_types;
 		}
 		$this->settings['profiles'][$profile_id] = $profile;
-		update_option( 'wpmdb_settings', $this->settings );
+		update_option( 'wpsdb_settings', $this->settings );
 		return $profile;
 	}
 
@@ -2203,7 +2203,7 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	function end_ajax( $return = false ) {
-		if( defined( 'DOING_WPMDB_TESTS' ) ) {
+		if( defined( 'DOING_WPSDB_TESTS' ) ) {
 			return ( false === $return ) ? NULL : $return;
 		}
 

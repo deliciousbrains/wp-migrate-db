@@ -1,69 +1,75 @@
-#WP Migrate DB
-WP Migrate DB eliminates the manual work of migrating a WP database. Copy your db from one WP install to another with a single-click in your dashboard. Especially handy for syncing a local development database with a live site.
-
-Donate [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC) to support [bradt](https://github.com/bradt), the original author of [WP Migrate DB](https://github.com/bradt/wp-migrate-db). And check out [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/) for a variant of the plugin that has dedicated customer support.
+# WP Sync DB
+WP Sync DB eliminates the manual work of migrating a WP database. Copy your db from one WP install to another with a single-click in your dashboard. Especially handy for syncing a local development database with a live site.
 
 <p align="center"><a><img src="https://raw.github.com/slang800/psychic-ninja/master/wp-migrate-db.png"/></a></p>
 
-##Description
-WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer, or send it directly to another WordPress instance. It is perfect for developers who develop locally and need to move their WordPress site to a staging or production server.
+## Description
+WP Sync DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer, or send it directly to another WordPress instance. It is perfect for developers who develop locally and need to move their WordPress site to a staging or production server.
 
-###Pull: Quickly Replace a Local DB with a Remote DB
-Let's say you're developing locally but need the latest data from the live database. With WP Migrate DB installed on both sites, you can quickly and easily pull the live database down and replace your local database with a few clicks.
+### Selective Sync
+WP Sync DB lets you choose which DB tables are migrated. Have a huge analytics table you'd rather not send? Simply deselect it and it won't be synced.
 
-###Push: Easily Replace a Remote DB with a Local DB
-Let's say you have a new feature to add to a site that's been live for a while. You pull down a fresh copy of the live database and start hacking. When the feature is complete, you push your local database to the staging site with your changes so the client can review before making the feature live. How's that for a workflow?
+### Bi-directional Sync
 
-###Save Time with Automatic Find & Replace
-When migrating a WordPress site, URLs in the content, widgets, menus, etc need to be updated to the new site's URL. Doing this manually is annoying, time consuming, and can be very frustrating when dealing with serialized data (like widgets). WP Migrate DB does all of this for you.
+#### Pull: Replace a Local DB with a Remote DB
+If you have a test site setup locally but you need the latest data from the production server, just install WP Sync DB on both sites and you can pull the live database down, replacing your local database in just a few clicks.
 
-###Convenient Database Export
-In addition to pulling & pushing, in just a couple of clicks you can save an SQL file of your database to your computer. No need to drop into ssh or phpMyAdmin.
+#### Push: Replace a Remote DB with a Local DB
+If you're developing a new feature for a site that's already live, you likely need to tweak your settings locally before deploying. Once you've perfected your configuration on your development machine, it's easy to send the settings to your production server. Just push to the server, replacing your remote database with your local one.
 
-###Select the Tables You Want to Migrate
-WP Migrate DB gives you control over which database tables are migrated. Have a huge stats table you'd rather not migrate? Deselect it. Easy.
+### Database Export & Backup
+Not only can WP Sync DB pull and push your DB: it can export your DB to an SQL file that you can save and backup wherever you want. No need to ssh into your machine or open up phpMyAdmin.
 
-###Stress Tested on Massive Databases
-Have a huge database? No problem. We've tested migration of tables with over 100MB of data.
+### Encrypted Transfers
+All data is sent over SSL to prevent your database from being read during the transfer. WP Sync DB also uses HMAC encryption to sign and verify every request. This ensures that all requests are coming from an authorized server and haven't been tampered with en route.
 
-###Intelligently Detects Environment Limitations
-WP Migrate DB analyses both the remote and local environments to detect limitations and optimize performance. For example, we detect MySQL's `max_allowed_packet_size` setting and adjust how much SQL we execute at a time. Not only does this avoid failure, but allows us to increase performance.
+### Automatic Find & Replace
+When migrating a WordPress site, URLs in the content, widgets, menus, etc need to be updated to the new site's URL. Doing this manually is annoying, time consuming, and very error-prone. WP Sync DB does all of this for you.
 
-###Sync Media Libraries Between Installations
-Using the optional [WP Migrate DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
+### Stress Tested on Massive Sites
+Huge database? No prob. WP Sync DB has been tested with tables several GBs in size.
 
-##Installation
-1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Migrate DB directly from this git repo.
-2. Install WP Migrate DB by downloading the latest zip [here](https://github.com/slang800/wp-migrate-db/releases). Both github-updater and WP Migrate DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
-3. Access the WP Migrate DB menu option under Tools.
-4. Install the optional [WP Migrate DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon.
+### Detect Limitations Automatically
+WP Sync DB checks both the remote and local servers to determine limitations and optimize for performance. For example, we detect the MySQL `max_allowed_packet_size` and adjust how much SQL we execute at a time.
 
-##Help Videos
+### Sync Media Libraries Between Installations
+Using the optional [WP Sync DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
 
-###Feature Walkthrough
+## Installation
+1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Sync DB directly from this git repo.
+2. Install WP Sync DB by downloading the latest zip [here](https://github.com/slang800/wp-sync-db/releases). Both github-updater and WP Sync DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
+3. Access the WP Sync DB menu option under Tools.
+4. Install the optional [WP Sync DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon.
+
+## Help Videos
+
+### Feature Walkthrough
 http://www.youtube.com/watch?v=SlfSuuePYaQ
 
-A brief walkthrough of the WP Migrate DB plugin showing all of the different options and explaining them.
+A brief walkthrough of the WP Sync DB plugin showing all of the different options and explaining them.
 
-###Pulling Live Data Into Your Local Development Environment
+### Pulling Live Data Into Your Local Development Environment
 http://www.youtube.com/watch?v=IFdHIpf6jjc
 
 This screencast demonstrates how you can pull data from a remote, live WordPress install and update the data in your local development environment.
 
-###Pushing Local Development Data to a Staging Environment
+### Pushing Local Development Data to a Staging Environment
 http://www.youtube.com/watch?v=FjTzNqAlQE0
 
 This screencast demonstrates how you can push a local WordPress database you've been using for development to a staging environment.
 
-###Media Files Addon Demo
+### Media Files Addon Demo
 http://www.youtube.com/watch?v=0aR8-jC2XXM
 
 A short demo of how the [Media Files addon](https://github.com/slang800/wp-migrate-db-media-files) allows you to sync up your WordPress Media Libraries.
 
-##Isn't this the same as WP Migrate DB Pro?
+## Similar Tools
+ - [Interconnect IT's Search & Replace](https://github.com/interconnectit/Search-Replace-DB)
+
+## Isn't this the same as WP Migrate DB Pro?
 No, of course not, don't be silly. I took out the license verification code, a really shady looking PressTrends reporter, and the tab for installing the Media Files addon before I published 1.4. Release 1.3 was the same as [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro), but I've made several improvements since then.
 
-Also, because this plugin is free I'm not _obligated_ to help you like [bradt](https://github.com/bradt) is if you purchased WP Migrate DB Pro. Any help that I give is just because I'm a nice person and I enjoy helping people. Also, I only offer support through the public [issues manager](https://github.com/slang800/wp-migrate-db/issues). If you're an agency and need support at the drop of a hat, buy the plugin from bradt.
-
-##Is this Illegal?
+## Is this Illegal?
 **No.** Just because this is based on the paid-for WP Migrate DB Pro, it doesn't mean I can't release it. WP Migrate DB Pro is released under GPLv2, a copyleft license that guarantees my freedom (and the freedom of all users) to copy, distribute, and/or modify this software.
+
+I _was_ forced to rename it from "WP Migrate DB" to "WP Sync DB" after Delicious Brains decided to trademark the name "WP Migrate DB", [filed a DMCA takedown](http://wptavern.com/dmca-takedown-notice-issued-against-fork-of-wp-migrate-db-pro) against the repo, and threatened to take me to court. But they should be OK with it now.
