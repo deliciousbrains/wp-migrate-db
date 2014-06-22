@@ -33,13 +33,13 @@ Huge database? No prob. WP Sync DB has been tested with tables several GBs in si
 WP Sync DB checks both the remote and local servers to determine limitations and optimize for performance. For example, we detect the MySQL `max_allowed_packet_size` and adjust how much SQL we execute at a time.
 
 ### Sync Media Libraries Between Installations
-Using the optional [WP Sync DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
+Using the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
 
 ## Installation
 1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Sync DB directly from this git repo.
-2. Install WP Sync DB by downloading the latest zip [here](https://github.com/slang800/wp-sync-db/releases). Both github-updater and WP Sync DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
+2. Install WP Sync DB by downloading the latest zip [here](https://github.com/wp-sync-db/wp-sync-db/releases). Both github-updater and WP Sync DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
 3. Access the WP Sync DB menu option under Tools.
-4. Install the optional [WP Sync DB Media Files](https://github.com/slang800/wp-migrate-db-media-files) addon.
+4. Install the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-migrate-db-media-files) addon.
 
 ## Help Videos
 
@@ -61,7 +61,7 @@ This screencast demonstrates how you can push a local WordPress database you've 
 ### Media Files Addon Demo
 http://www.youtube.com/watch?v=0aR8-jC2XXM
 
-A short demo of how the [Media Files addon](https://github.com/slang800/wp-migrate-db-media-files) allows you to sync up your WordPress Media Libraries.
+A short demo of how the [Media Files addon](https://github.com/wp-sync-db/wp-migrate-db-media-files) allows you to sync up your WordPress Media Libraries.
 
 ## Similar Tools
  - [Interconnect IT's Search & Replace](https://github.com/interconnectit/Search-Replace-DB)
