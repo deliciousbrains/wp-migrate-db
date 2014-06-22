@@ -6,16 +6,11 @@ Author: Sean Lang
 Version: 1.4
 Author URI: http://slang.cx
 GitHub Plugin URI: wp-sync-db/wp-sync-db
+Network: True
 */
 
-if ( version_compare( PHP_VERSION, '5.2', '<' ) ) {
-	// Thanks for this Yoast!
-	if ( is_admin() && ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
-		require_once ABSPATH.'/wp-admin/includes/plugin.php';
-		deactivate_plugins( __FILE__ );
-		wp_die( __('WP Sync DB requires PHP 5.2 or higher, as does WordPress 3.2 and higher. The plugin has now disabled itself.', 'wp-sync-db' ) );
-	}
-}
+$GLOBALS['wpsdb_meta']['wp-sync-db']['version'] = '1.4b1';
+$GLOBALS['wpsdb_meta']['wp-sync-db']['folder'] = basename( plugin_dir_path( __FILE__ ) );
 
 // Define the directory seperator if it isn't already
 if( !defined( 'DS' ) ) {
@@ -27,8 +22,9 @@ if( !defined( 'DS' ) ) {
 	}
 }
 
-function wp_sync_db_init() {
-	if ( !is_admin() ) return;
+function wp_sync_db_loaded() {
+	// if neither WordPress admin nor running from wp-cli, exit quickly to prevent performance impact
+	if ( !is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) return;
 
 	require_once 'class/wpsdb-base.php';
 	require_once 'class/wpsdb-addon.php';
@@ -38,4 +34,13 @@ function wp_sync_db_init() {
 	$wpsdb = new WPSDB( __FILE__ );
 }
 
-add_action( 'init', 'wp_sync_db_init', 5 );
+add_action( 'plugins_loaded', 'wp_sync_db_loaded' );
+
+function wp_sync_db_init() {
+	// if neither WordPress admin nor running from wp-cli, exit quickly to prevent performance impact
+	if ( !is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) return;
+
+	load_plugin_textdomain( 'wp-sync-db', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+
+add_action( 'init', 'wp_sync_db_init' );
