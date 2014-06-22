@@ -300,6 +300,14 @@ class WPSDB_Base {
 		return $computed_signature === $data['sig'];
 	}
 
+	function diverse_array( $vector ) {
+		$result = array();
+		foreach( $vector as $key1 => $value1 )
+			foreach( $value1 as $key2 => $value2 )
+				$result[$key2][$key1] = $value2;
+		return $result;
+	}
+
 	function set_time_limit_available() {
 		if ( ! function_exists( 'set_time_limit' ) || ! function_exists( 'ini_get' ) ) return false;
 		$current_max_execution_time = ini_get( 'max_execution_time' );
