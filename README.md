@@ -39,7 +39,7 @@ Using the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-mig
 1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Sync DB directly from this git repo.
 2. Install WP Sync DB by downloading the latest zip [here](https://github.com/wp-sync-db/wp-sync-db/releases). Both github-updater and WP Sync DB will now download their own updates automatically, so you will never need to go through that tedious zip downloading again.
 3. Access the WP Sync DB menu option under Tools.
-4. Install the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-migrate-db-media-files) addon.
+4. Install the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-sync-db-media-files) addon.
 
 ## Help Videos
 
