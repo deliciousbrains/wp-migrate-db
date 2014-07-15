@@ -33,7 +33,7 @@ Huge database? No prob. WP Sync DB has been tested with tables several GBs in si
 WP Sync DB checks both the remote and local servers to determine limitations and optimize for performance. For example, we detect the MySQL `max_allowed_packet_size` and adjust how much SQL we execute at a time.
 
 ### Sync Media Libraries Between Installations
-Using the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-migrate-db-media-files) addon, you can have media files synced between installs too.
+Using the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-sync-db-media-files) addon, you can have media files synced between installs too.
 
 ## Installation
 1. Install [github-updater](https://github.com/afragen/github-updater) by downloading the latest zip [here](https://github.com/afragen/github-updater/releases). We rely on this plugin for updating WP Sync DB directly from this git repo.
