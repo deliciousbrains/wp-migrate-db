@@ -61,7 +61,7 @@ This screencast demonstrates how you can push a local WordPress database you've 
 ### Media Files Addon Demo
 http://www.youtube.com/watch?v=0aR8-jC2XXM
 
-A short demo of how the [Media Files addon](https://github.com/wp-sync-db/wp-migrate-db-media-files) allows you to sync up your WordPress Media Libraries.
+A short demo of how the [Media Files addon](https://github.com/wp-sync-db/wp-sync-db-media-files) allows you to sync up your WordPress Media Libraries.
 
 ## Similar Tools
  - [Interconnect IT's Search & Replace](https://github.com/interconnectit/Search-Replace-DB)
