@@ -2206,7 +2206,7 @@ class WPSDB extends WPSDB_Base {
 			$this->download_file();
 		}
 
-		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_folder_name );
+		$plugins_url = trailingslashit( plugins_url( '', $this->plugin_file_path ) );
 
 		$version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? time() : $this->plugin_version;
 
