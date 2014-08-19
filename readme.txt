@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 3.0
-Tested up to: 3.6
-Stable tag: 0.5
+Tested up to: 3.9.1
+Stable tag: 0.6
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -17,16 +17,15 @@ It even takes into account serialized data (both arrays and objects) and updates
 
 Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
-Looking to contribute some code? The project is [on Github](https://github.com/bradt/wp-migrate-db) and I'm more than happy to accept pull requests.
-
 **\*NEW\* Pro Version with Email Support and More Features**
 
 * Select the tables you want to migrate
 * Pull production db down and replace local db
 * Push local db up and replace production/staging db
-* Unlimited find & replaces (free is limited to 2)
 * Multisite support
 * Video walkthroughs and howtos
+* Media files migration
+* Fire migrations from the command line or via a function call
 * More frequent bug fixes and improvements
 * And more features on the way!
 
@@ -37,13 +36,13 @@ http://www.youtube.com/watch?v=IFdHIpf6jjc
 == Installation ==
 
 1. Use WordPress' built-in installer
-2. Access the "Migrate DB" menu option under Tools
+2. Access the "Migrate DB" menu option under Tools (or under Settings on multsite intallations)
 
 == Frequently Asked Questions ==
 
 = Does this plugin support multisite? =
 
-Not at this time. The Developer license of the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) does support multisite.
+Yes, in a limited capacity. The Developer license of the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) fully supports multisite.
 
 = Does the plugin migrate files as well? =
 
@@ -56,9 +55,17 @@ It is likely you have a download manager plugin or extension installed in your w
 == Screenshots ==
 
 1. Main screen
-2. Saving the exported database
+2. Settings tab
+3. Saving the exported database
 
 == Changelog ==
+
+= 0.6 =
+* New: Updated the migration UI to include a detailed progress bar, time elapsed, pause and cancel buttons and more!
+* New: Option to exclude transients (temporary cached data)
+* New: Migration profiles
+* New: Setting to configure the maximum request size (how much data is exported in a given HTTP request)
+* Improvement: Unlimited find & replace fields with drag & drop reordering
 
 = 0.5 - 2013-07-26 =
 * Language support! Thanks to an awesome [pull request](https://github.com/bradt/wp-migrate-db/pull/19) from [Rafael Funchal](https://github.com/rafaelfunchal).
