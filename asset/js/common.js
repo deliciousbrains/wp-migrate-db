@@ -27,13 +27,3 @@ function wpsdb_add_commas(number_string) {
   }
   return x1 + x2;
 }
-
-function wpsdb_parse_json(maybe_json) {
-  try {
-    var json_object = jQuery.parseJSON(maybe_json);
-  } catch (e) {
-    // we simply return false here because the json data itself will never just contain a value of "false"
-    return false;
-  }
-  return json_object;
-}

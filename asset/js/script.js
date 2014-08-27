@@ -1123,10 +1123,10 @@ var execute_next_step;
               },
               success: function(data) {
                 doing_ajax = false;
-                data = $.trim(data);
-                row_information = wpsdb_parse_json(data);
-                if (false == row_information || null ==
-                  row_information) {
+                data = data.trim();
+                try {
+                  row_information = JSON.parse(data);
+                } catch (variable) {
                   $('.progress-title').html('Migration failed');
                   if ('' == data || null == data) {
                     $('.progress-text').html(wpsdb_i10n.table_process_problem_empty_response +
