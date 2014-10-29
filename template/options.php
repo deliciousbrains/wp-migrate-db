@@ -1,6 +1,7 @@
 <div class="wrap wpmdb">
 
-	<div id="icon-tools" class="icon32"><br /></div><h2><?php echo $this->get_plugin_title(); ?></h2>
+	<div id="icon-tools" class="icon32"><br/></div>
+	<h2><?php echo $this->get_plugin_title(); ?></h2>
 
 	<h2 class="nav-tab-wrapper">
 		<?php $this->plugin_tabs(); ?>
@@ -10,7 +11,9 @@
 
 	<?php
 	$hide_warning = apply_filters( 'wpmdb_hide_safe_mode_warning', false );
-	if ( function_exists( 'ini_get' ) && ini_get( 'safe_mode' ) && !$hide_warning ) { ?>
+	$safe_mode    = ( function_exists( 'ini_get' ) && ini_get( 'safe_mode' ) );
+	if ( $safe_mode && ! $hide_warning ) {
+		?>
 		<div class="updated warning inline-message">
 			<?php
 			_e( "<strong>PHP Safe Mode Enabled</strong> &mdash; We do not officially support running this plugin in safe mode because <code>set_time_limit()</code> has no effect. Therefore we can't extend the run time of the script and ensure it doesn't time out before the migration completes. We haven't disabled the plugin however, so you're free to cross your fingers and hope for the best. However, if you have trouble, we can't help you until you turn off safe mode.", 'wp-migrate-db' );
@@ -18,7 +21,7 @@
 				printf( __( 'Your current PHP run time limit is set to %s seconds.', 'wp-migrate-db' ), ini_get( 'max_execution_time' ) );
 			} ?>
 		</div>
-		<?php
+	<?php
 	}
 	?>
 
@@ -28,7 +31,7 @@
 
 	<?php
 	$hide_warning = apply_filters( 'wpmdb_hide_set_time_limit_warning', false );
-	if ( false == $this->set_time_limit_available() && !$hide_warning && !$safe_mode ) {
+	if ( false == $this->set_time_limit_available() && ! $hide_warning && ! $safe_mode ) {
 		?>
 		<div class="updated warning inline-message">
 			<?php
@@ -37,7 +40,7 @@
 				printf( __( 'Your current PHP run time limit is set to %s seconds.', 'wp-migrate-db' ), ini_get( 'max_execution_time' ) );
 			} ?>
 		</div>
-		<?php
+	<?php
 	}
 	?>
 
@@ -57,6 +60,7 @@
 		$this->template_part( array( 'sidebar' ) );
 		?>
 
-	</div> <!-- end #wpmdb-main -->
+	</div>
+	<!-- end #wpmdb-main -->
 
 </div> <!-- end .wrap -->

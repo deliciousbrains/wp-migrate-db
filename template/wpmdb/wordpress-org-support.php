@@ -1,5 +1,5 @@
 <div class="support">
-	<h3><?php _e( 'Support', 'wp-migrate-db' ); ?></h3>
+	<h3><?php _ex( 'Support', 'Get help from the community', 'wp-migrate-db' ); ?></h3>
 
 	<p><?php _e( 'As this is a free plugin, we do not provide support.', 'wp-migrate-db' ); ?></p>
 

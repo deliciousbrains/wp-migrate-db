@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 3.0
-Tested up to: 3.9.1
-Stable tag: 0.6
+Tested up to: 4.0
+Stable tag: 0.6.1
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -17,7 +17,7 @@ It even takes into account serialized data (both arrays and objects) and updates
 
 Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
-**\*NEW\* Pro Version with Email Support and More Features**
+**PRO Version with Email Support and More Features**
 
 * Select the tables you want to migrate
 * Pull production db down and replace local db
@@ -60,7 +60,42 @@ It is likely you have a download manager plugin or extension installed in your w
 
 == Changelog ==
 
-= 0.6 =
+= 0.6.1 - 2014-10-29 =
+* New: breadcrumb-style UI for saved profiles
+* New: Brazilian Portugese translation
+* Security: Added .htaccess to backup folder to help prevent direct downloads
+* Security: False values not included in signature
+* Improvement: Compatibility with TGM Plugin Activation
+* Improvement: Fixed hundreds of PHP Code Sniffer warnings
+* Improvement: Switch to `update_site_option()` and `get_site_option()`
+* Improvement: Cleaner and more instructive error message on JSON decoding failure
+* Improvement: New hooks to massage data before and after find & replace
+* Improvement: Common server security rules better accommodated
+* Improvement: Better compatibility with SSL on WP Engine
+* Improvement: Minify all the Javascripts
+* Improvement: Use PHP's DIRECTORY_SEPARATOR instead of our own constant
+* Improvement: Updated tons of translation strings to be translator-friendly
+* Improvement: Find &amp; replace field error messages could suggest removing the fields
+* Improvement: Download button for Diagnostic Info &amp; Error Log
+* Bug fix: 404 errors after successful migrations due to caching
+* Bug fix: Multisite exports broken on PHP < 5.4.7
+* Bug fix: Using relative paths for file includes
+* Bug fix: Typing new profile name does not select "Create new profile" option
+* Bug fix: Find &amp; replace field errors stick around even after removing fields
+* Bug fix: `wpmdb_error_log` option is auto loading
+* Bug fix: Inconsistent stripping of slashes
+* Bug fix: Spinner is inconsistent with WP 3.8+ spinner
+* Bug fix: Apostrophe in path not being handled
+* Bug fix: Inappropriate use of `htmlentities()`
+* Bug fix: The table tooltip still shows during the media files migration
+* Bug fix: Import/Export issues between MySQL 5.1 and 5.5+
+* Bug fix: Notice error on Updates dashboard page
+* Bug fix: Signature verification error when local and remote plugins are different versions
+* Bug fix: Find &amp; replace handle icon is rendering poorly
+* Bug fix: PHP Notice: Undefined variable: safe_mode
+* Bug fix: Fatal error: Cannot use object of type WP_Error as array in `verify_download()`
+
+= 0.6 - 2014-08-19 =
 * New: Updated the migration UI to include a detailed progress bar, time elapsed, pause and cancel buttons and more!
 * New: Option to exclude transients (temporary cached data)
 * New: Migration profiles
