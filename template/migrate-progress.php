@@ -5,7 +5,7 @@
 	</div>
 	<div class="progress-info-wrapper clearfix">
 		<div class="progress-text"><?php _e( 'Establishing Connection', 'wp-sync-db' ); ?></div>
-		<span class="timer"><?php echo __( 'Time Elapsed:', 'wp-sync-db' ) . ' 00:00:00'; ?></span>
+		<span class="timer"><?php echo __( 'Time Elapsed:', 'wp-sync-db' ) , ' 00:00:00'; ?></span>
 	</div>
 	<div class="clearfix"></div>
 	<div class="progress-bar-wrapper">
