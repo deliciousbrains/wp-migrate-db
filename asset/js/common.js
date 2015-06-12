@@ -6,8 +6,33 @@ var migration_error = false;
 var connection_data;
 var next_step_in_migration;
 
+/**
+ * Toggle proper translated strings based on migration type selected.
+ *
+ * To show the properly translated strings for the selected push or pull
+ * migration type, we need to hide all strings then show the right
+ * translated strings based on the migration type selected.
+ *
+ * @see https://github.com/deliciousbrains/wp-migrate-db-pro/issues/764
+ *
+ * @return void
+ */
+function wpmdb_toggle_migration_action_text() {
+	jQuery( '.action-text' ).hide();
+	jQuery( '.action-text.' + jQuery( 'input[name=action]:checked' ).val() ).show();
+}
+
+/**
+ * Return the currently selected migration type selected.
+ *
+ * @return string Will return `push`, `pull`, or `savefile` for exporting as a file.
+ */
+function wpmdb_migration_type() {
+	return jQuery( 'input[name=action]:checked' ).val();
+}
+
 function wpmdb_call_next_hook() {
-	if( ! call_stack.length ) {
+	if ( !call_stack.length ) {
 		call_stack = hooks;
 	}
 
@@ -18,21 +43,22 @@ function wpmdb_call_next_hook() {
 
 function wpmdb_add_commas( number_string ) {
 	number_string += '';
-	x = number_string.split('.');
-	x1 = x[0];
-	x2 = x.length > 1 ? '.' + x[1] : '';
+	var x = number_string.split( '.' );
+	var x1 = x[0];
+	var x2 = x.length > 1 ? '.' + x[1] : '';
 	var rgx = /(\d+)(\d{3})/;
-	while (rgx.test(x1)) {
-		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	while ( rgx.test( x1 ) ) {
+		x1 = x1.replace( rgx, '$1' + ',' + '$2' );
 	}
 	return x1 + x2;
 }
 
 function wpmdb_parse_json( maybe_json ) {
+	var json_object = {};
 	try {
-		var json_object = jQuery.parseJSON( maybe_json );
+		json_object = jQuery.parseJSON( maybe_json );
 	}
-	catch(e){
+	catch ( e ) {
 		// we simply return false here because the json data itself will never just contain a value of "false"
 		return false;
 	}
@@ -70,13 +96,13 @@ function wpmdbGetAjaxErrors( title, code, text, jqXHR ) {
 	}
 
 	// Only add extra error details if not php errors (#144) and jqXHR has been provided
-	if ( ! jsonErrors && jqXHR !== undefined ) {
+	if ( !jsonErrors && jqXHR !== undefined ) {
 		html += wpmdb_strings.status + ': ' + jqXHR.status + ' ' + jqXHR.statusText;
 		html += '<br /><br />' + wpmdb_strings.response + ':<br />';
 	}
 
 	// Add code to the end of the error text if not json errors
-	if ( ! jsonErrors ) {
+	if ( !jsonErrors ) {
 		text += ' ' + code;
 	}
 
@@ -86,6 +112,6 @@ function wpmdbGetAjaxErrors( title, code, text, jqXHR ) {
 	return html;
 }
 
-(function($) {
+(function( $ ) {
 	// jQuery code here
-})(jQuery);
+})( jQuery );

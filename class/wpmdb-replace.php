@@ -5,16 +5,34 @@ final class WPMDB_Replace {
 	protected $replace;
 	protected $subdomain_replaces_on;
 	protected $wpmdb;
+	protected $intent;
+	protected $base_domain;
+	protected $site_domain;
 
 	private $table;
 	private $column;
 	private $row;
 
-	function __construct( $table, $search, $replace, $wpmdb ) {
-		$this->table   = $table;
-		$this->search  = $search;
-		$this->replace = $replace;
-		$this->wpmdb   = $wpmdb;
+	function __construct( $args ) {
+		$keys = array( 'table', 'search', 'replace', 'intent', 'base_domain', 'site_domain', 'wpmdb' );
+
+		if ( ! is_array( $args ) ) {
+			throw new InvalidArgumentException( 'WPMDB_Replace constructor expects the argument to be an array' );
+		}
+
+		foreach ( $keys as $key ) {
+			if ( ! isset( $args[ $key ] ) ) {
+				throw new InvalidArgumentException( "WPMDB_Replace constructor expects '$key' key to be present in the array argument" );
+			}
+		}
+
+		$this->table       = $args['table'];
+		$this->search      = $args['search'];
+		$this->replace     = $args['replace'];
+		$this->intent      = $args['intent'];
+		$this->base_domain = $args['base_domain'];
+		$this->site_domain = $args['site_domain'];
+		$this->wpmdb       = $args['wpmdb'];
 	}
 
 	/**
@@ -24,7 +42,7 @@ final class WPMDB_Replace {
 	 */
 	function is_subdomain_replaces_on() {
 		if ( ! isset( $this->subdomain_replaces_on ) ) {
-			$this->subdomain_replaces_on = ( is_multisite() && defined( 'SUBDOMAIN_INSTALL' ) && SUBDOMAIN_INSTALL && apply_filters( 'wpmdb_subdomain_replace', true ) );
+			$this->subdomain_replaces_on = ( is_multisite() && is_subdomain_install() && apply_filters( 'wpmdb_subdomain_replace', true ) );
 		}
 
 		return $this->subdomain_replaces_on;
@@ -40,14 +58,12 @@ final class WPMDB_Replace {
 	 * @return mixed
 	 */
 	function subdomain_replaces( $new ) {
-		$domain_replace = $this->wpmdb->get_domain_replace();
-
-		if ( empty( $domain_replace ) ) {
+		if ( empty( $this->base_domain ) ) {
 			return $new;
 		}
 
-		$pattern     = '|//(.*?)\\.' . preg_quote( $this->wpmdb->get_domain_current_site(), '|' ) . '|';
-		$replacement = '//$1.' . trim( $domain_replace );
+		$pattern     = '|//(.*?)\\.' . preg_quote( $this->site_domain, '|' ) . '|';
+		$replacement = '//$1.' . trim( $this->base_domain );
 		$new         = preg_replace( $pattern, $replacement, $new );
 
 		return $new;
@@ -75,19 +91,27 @@ final class WPMDB_Replace {
 	 *
 	 * Mostly from https://github.com/interconnectit/Search-Replace-DB
 	 *
-	 * @param array $data              Used to pass any subordinate arrays back to in.
-	 * @param bool  $serialized        Does the array passed via $data need serialising.
-	 * @param bool  $parent_serialized Passes whether the original data passed in was serialized
+	 * @param mixed $data Used to pass any subordinate arrays back to in.
+	 * @param bool $serialized Does the array passed via $data need serialising.
+	 * @param bool $parent_serialized Passes whether the original data passed in was serialized
+	 * @param bool $filtered Should we apply before and after filters successively
 	 *
-	 * @return array    The original array with all elements replaced as needed.
+	 * @return mixed    The original array with all elements replaced as needed.
 	 */
-	function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false ) {
+	function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false, $filtered = true ) {
 		$pre = apply_filters( 'wpmdb_pre_recursive_unserialize_replace', false, $data, $this );
 		if ( false !== $pre ) {
 			return $pre;
 		}
 
-		$is_json = false;
+		$is_json           = false;
+		$before_fired      = false;
+		$successive_filter = $filtered;
+
+		if ( true === $filtered ) {
+			list( $data, $before_fired, $successive_filter ) = apply_filters( 'wpmdb_before_replace_custom_data', array( $data, $before_fired, $successive_filter ), $this );
+		}
+
 		// some unserialized data cannot be re-serialized eg. SimpleXMLElements
 		try {
 			if ( is_string( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
@@ -98,11 +122,11 @@ final class WPMDB_Replace {
 						return $data;
 					}
 				}
-				$data = $this->recursive_unserialize_replace( $unserialized, true, true );
+				$data = $this->recursive_unserialize_replace( $unserialized, true, true, $successive_filter );
 			} elseif ( is_array( $data ) ) {
 				$_tmp = array();
 				foreach ( $data as $key => $value ) {
-					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -110,7 +134,12 @@ final class WPMDB_Replace {
 			} elseif ( is_object( $data ) ) { // Submitted by Tina Matter
 				$_tmp = clone $data;
 				foreach ( $data as $key => $value ) {
-					$_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					// Integer properties are crazy and the best thing we can do is to just ignore them.
+					// see http://stackoverflow.com/a/10333200 and https://github.com/deliciousbrains/wp-migrate-db-pro/issues/853
+					if ( is_int( $key ) ) {
+						continue;
+					}
+					$_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -120,7 +149,7 @@ final class WPMDB_Replace {
 				$data = json_decode( $data, true );
 
 				foreach ( $data as $key => $value ) {
-					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -134,18 +163,22 @@ final class WPMDB_Replace {
 				}
 			}
 
-			if ( $serialized ) {
-				return serialize( $data );
+			if ( $is_json ) {
+				$data = json_encode( $data );
 			}
 
-			if ( $is_json ) {
-				return json_encode( $data );
+			if ( $serialized ) {
+				$data = serialize( $data );
 			}
 		} catch ( Exception $error ) {
 			$error_msg     = __( 'Failed attempting to do the recursive unserialize replace. Please contact support.', 'wp-migrate-db' );
 			$error_details = $error->getMessage() . "\n\n";
 			$error_details .= var_export( $data, true );
 			$this->wpmdb->log_error( $error_msg, $error_details );
+		}
+
+		if ( true === $filtered ) {
+			$data = apply_filters( 'wpmdb_after_replace_custom_data', $data, $before_fired, $this );
 		}
 
 		return $data;
@@ -203,11 +236,22 @@ final class WPMDB_Replace {
 	 *
 	 * $is_posts = $this->table_is( 'posts' );
 	 *
-	 * @param  string  $desired_table Name of the desired table, table prefix omitted.
+	 * @param  string $desired_table Name of the desired table, table prefix omitted.
+	 *
 	 * @return boolean                Whether or not the desired table is the table currently being processed.
 	 */
 	public function table_is( $desired_table ) {
 		return $this->wpmdb->table_is( $desired_table, $this->table );
 	}
 
+	/**
+	 * Intent of the current replace migration.
+	 *
+	 * Helpful for hookers who need to know what intent they are working on.
+	 *
+	 * @return string Intent of the current migration
+	 */
+	public function get_intent() {
+		return $this->intent;
+	}
 }

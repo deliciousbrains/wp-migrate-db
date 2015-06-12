@@ -4,7 +4,7 @@ Plugin Name: WP Migrate DB Pro Compatibility
 Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
 Description: Prevents 3rd party plugins from being loaded during WP Migrate DB Pro specific operations
 Author: Delicious Brains
-Version: 1.0
+Version: 1.1
 Author URI: http://deliciousbrains.com
 */
 
@@ -53,18 +53,23 @@ add_action( 'admin_init', 'wpmdbc_tgmpa_compatibility', 1 );
  * @return array
  */
 function wpmdbc_exclude_plugins( $plugins ) {
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX || ! isset( $_POST['action'] ) || false === strpos( $_POST['action'], 'wpmdb' ) ) {
+	if ( ! is_array( $plugins ) || empty( $plugins ) ) {
 		return $plugins;
 	}
-	$wpmdb_settings = get_site_option( 'wpmdb_settings' );
-	if ( ! empty( $wpmdb_settings['blacklist_plugins'] ) ) {
-		$blacklist_plugins = array_flip( $wpmdb_settings['blacklist_plugins'] );
+
+	if ( ! wpmdbc_is_compatibility_mode_request() ) {
+		return $plugins;
 	}
-	foreach ( $plugins as $key => $plugin ) {
-		if ( false !== strpos( $plugin, 'wp-migrate-db-pro' ) || ! isset( $blacklist_plugins[ $plugin ] ) ) {
-			continue;
+
+	$blacklist_plugins = wpmdbc_get_blacklist_plugins();
+
+	if ( ! empty( $blacklist_plugins ) ) {
+		foreach ( $plugins as $key => $plugin ) {
+			if ( false !== strpos( $plugin, 'wp-migrate-db-pro' ) || ! isset( $blacklist_plugins[ $plugin ] ) ) {
+				continue;
+			}
+			unset( $plugins[ $key ] );
 		}
-		unset( $plugins[ $key ] );
 	}
 
 	return $plugins;
@@ -80,21 +85,61 @@ add_filter( 'option_active_plugins', 'wpmdbc_exclude_plugins' );
  * @return array
  */
 function wpmdbc_exclude_site_plugins( $plugins ) {
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX || ! isset( $_POST['action'] ) || false === strpos( $_POST['action'], 'wpmdb' ) ) {
+	if ( ! is_array( $plugins ) || empty( $plugins ) ) {
 		return $plugins;
 	}
-	$wpmdb_settings = get_site_option( 'wpmdb_settings' );
-	if ( ! empty( $wpmdb_settings['blacklist_plugins'] ) ) {
-		$blacklist_plugins = array_flip( $wpmdb_settings['blacklist_plugins'] );
+
+	if ( ! wpmdbc_is_compatibility_mode_request() ) {
+		return $plugins;
 	}
-	foreach ( array_keys( $plugins ) as $plugin ) {
-		if ( false !== strpos( $plugin, 'wp-migrate-db-pro' ) || ! isset( $blacklist_plugins[ $plugin ] ) ) {
-			continue;
+
+	$blacklist_plugins = wpmdbc_get_blacklist_plugins();
+
+	if ( ! empty( $blacklist_plugins ) ) {
+		foreach ( array_keys( $plugins ) as $plugin ) {
+			if ( false !== strpos( $plugin, 'wp-migrate-db-pro' ) || ! isset( $blacklist_plugins[ $plugin ] ) ) {
+				continue;
+			}
+			unset( $plugins[ $plugin ] );
 		}
-		unset( $plugins[ $plugin ] );
 	}
 
 	return $plugins;
 }
 
 add_filter( 'site_option_active_sitewide_plugins', 'wpmdbc_exclude_site_plugins' );
+
+/**
+ * Should the current request be processed by Compatibility Mode?
+ *
+ * @return bool
+ */
+function wpmdbc_is_compatibility_mode_request() {
+	if ( ! defined( 'DOING_AJAX' ) ||
+	     ! DOING_AJAX ||
+	     ! isset( $_POST['action'] ) ||
+	     false === strpos( $_POST['action'], 'wpmdb' ) ||
+	     in_array( $_POST['action'], array( 'wpmdb_flush', 'wpmdb_remote_flush' ) )
+	) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Returns an array of plugin slugs to be blacklisted.
+ *
+ * @return array
+ */
+function wpmdbc_get_blacklist_plugins() {
+	$blacklist_plugins = array();
+
+	$wpmdb_settings = get_site_option( 'wpmdb_settings' );
+
+	if ( ! empty( $wpmdb_settings['blacklist_plugins'] ) ) {
+		$blacklist_plugins = array_flip( $wpmdb_settings['blacklist_plugins'] );
+	}
+
+	return $blacklist_plugins;
+}

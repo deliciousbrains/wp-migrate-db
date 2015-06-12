@@ -17,5 +17,5 @@
 		<a class="button" href="https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_content=progress-bar&utm_campaign=freeplugin" target="_blank"><?php _e( 'More About The Pro Version', 'wp-migrate-db' ); ?> &rarr;</a>
 	</div>
 
-	<iframe width="419" height="265" src="//www.youtube.com/embed/IFdHIpf6jjc?rel=0&showinfo=0&autoplay=0&wmode=transparent&theme=light" frameborder="0" allowfullscreen></iframe>
+	<iframe width="419" height="265" src="//www.youtube.com/embed/fHFcH4bCzmU?rel=0&showinfo=0&autoplay=0&wmode=transparent&theme=light" frameborder="0" allowfullscreen></iframe>
 </div>

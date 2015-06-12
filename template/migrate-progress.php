@@ -15,6 +15,7 @@
 		<div class="progress-bar"></div>
 		<div class="progress-tables"></div>
 	</div>
+	<?php do_action( 'wpmdb_template_progress_after_bar' ); ?>
 
 	<div class="migration-controls">
 		<span class="pause-resume button"><?php _ex( 'Pause', 'Temporarily stop migrating', 'wp-migrate-db' ); ?></span>

@@ -3,8 +3,8 @@ Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
 Requires at least: 3.0
-Tested up to: 4.0
-Stable tag: 0.6.1
+Tested up to: 4.2.2
+Stable tag: 0.7
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
@@ -59,6 +59,31 @@ It is likely you have a download manager plugin or extension installed in your w
 3. Saving the exported database
 
 == Changelog ==
+
+= 0.7 - 2015-06-12 =
+
+* New: [WP-CLI export subcommand](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-export-subcommand/)
+* New: Quick copy find textbox value to replace textbox by clicking arrow icon in between (hat tip Jonathan Perlman)
+* New: Added filters to hook into find & replace routine and deal with encoded data ([example](https://github.com/deliciousbrains/wp-migrate-db-pro-tweaks/blob/master/wp-migrate-db-pro-tweaks.php#L316-L413))
+* Improvement: Greatly reduced data passed through each HTTP request for better security and reliability
+* Improvement: Massive overhaul of input sanitization for better security
+* Improvement: Add `_mig_` prefix to wpmdb_alter_statements table
+* Improvement: Cleanup wpmdb_alter_statements tables from failed migrations
+* Improvement: Show dimmed remove icons in find & replace rows to indicate they can be removed
+* Improvement: Dim remove icons next to saved profiles
+* Improvement: Better error message when empty response received from remote server
+* Improvement: Added diagnostic info to facilitate debugging and decrease time to resolution for support requests
+* Improvement: Warning notice when `WP_HTTP_BLOCK_EXTERNAL` constant is set to true
+* Improvement: Leave it to WordPress core to convert tables to utf8mb4
+* Improvement: Workaround to fix issues with Siteground's staging environments
+* Bug fix: Connection URL with space(s) in beginning failing
+* Bug fix: Cancelling a gzipped Export does not remove file
+* Bug fix: Unusual table names causing regular expressions to fail
+* Bug fix: Preserving options not working when default subsite is not 1
+* Bug fix: NAN% shown at beginning of a migration
+* Bug fix: Migration progress bar is overflowing the scale, passing 100%
+* Bug fix: Custom post type links broken after migration with Compatibility Mode enabled
+* Bug fix: Saving a new profile does not change the URL to that saved profile URL
 
 = 0.6.1 - 2014-10-29 =
 * New: breadcrumb-style UI for saved profiles
