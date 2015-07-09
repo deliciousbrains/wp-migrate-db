@@ -110,10 +110,10 @@ class WPMDB_Command extends WP_CLI_Command {
 		$replace_old = array();
 		$replace_new = array();
 		if ( ! empty( $assoc_args['find'] ) ) {
-			$replace_old = explode( ',', $assoc_args['find'] );
+			$replace_old = str_getcsv( $assoc_args['find'] );
 		}
 		if ( ! empty( $assoc_args['replace'] ) ) {
-			$replace_new = explode( ',', $assoc_args['replace'] );
+			$replace_new = str_getcsv( $assoc_args['replace'] );
 		}
 		if ( count( $replace_old ) !== count( $replace_new ) ) {
 			return $wpmdb_cli->cli_error( sprintf( __( '%1$s and %2$s must contain the same number of values', 'wp-migrate-db-cli' ), '--find', '--replace' ) );

@@ -128,15 +128,15 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.3.2',
+				'required_version' => '1.3.3',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2',
+				'required_version' => '1.2.1',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.0',
+				'required_version' => '1.0.1',
 			)
 		);
 
@@ -370,16 +370,16 @@ class WPMDB_Base {
 
 				return false;
 			}
-		} elseif ( '0' === $response['body'] ) {
-			if ( 0 === strpos( $url, 'https://' ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
-				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
-			}
-			$this->error = sprintf( __( 'WP Migrate DB Pro does not seem to be installed or active on the remote site. (#131 - scope: %s)', 'wp-migrate-db' ), $scope );
-			$this->log_error( $this->error, $response );
-
-			return false;
 		} elseif ( empty( $response['body'] ) ) {
-			$this->error = sprintf( __( 'A response was expected from the remote, instead we got nothing. (#146 - scope: %1$s) Please review %2$s for possible solutions.', 'wp-migrate-db' ), $scope, sprintf( '<a href="https://deliciousbrains.com/wp-migrate-db-pro/doc/a-response-was-expected-from-the-remote/" target="_blank">%1$s</a>', __( 'our documentation', 'wp-migrate-db' ) ) );
+			if ( '0' === $response['body'] && 'ajax_verify_connection_to_remote_site' == $scope ) {
+				if ( 0 === strpos( $url, 'https://' ) ) {
+					return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
+				} else {
+					$this->error = sprintf( __( 'WP Migrate DB Pro does not seem to be installed or active on the remote site. (#131 - scope: %s)', 'wp-migrate-db' ), $scope );
+				}
+			} else {
+				$this->error = sprintf( __( 'A response was expected from the remote, instead we got nothing. (#146 - scope: %1$s) Please review %2$s for possible solutions.', 'wp-migrate-db' ), $scope, sprintf( '<a href="https://deliciousbrains.com/wp-migrate-db-pro/doc/a-response-was-expected-from-the-remote/" target="_blank">%1$s</a>', __( 'our documentation', 'wp-migrate-db' ) ) );
+			}
 			$this->log_error( $this->error, $response );
 
 			return false;
@@ -1254,6 +1254,13 @@ class WPMDB_Base {
 		return $key;
 	}
 
+	/**
+	 * Returns the wpmdb_bottleneck value in bytes
+	 *
+	 * @param string $type
+	 *
+	 * @return int
+	 */
 	function get_bottleneck( $type = 'regular' ) {
 		$suhosin_limit         = false;
 		$suhosin_request_limit = false;
@@ -1270,7 +1277,12 @@ class WPMDB_Base {
 
 		// we have to account for HTTP headers and other bloating, here we minus 1kb for bloat
 		$post_max_upper_size   = apply_filters( 'wpmdb_post_max_upper_size', 26214400 );
+
 		$calculated_bottleneck = min( ( $this->get_post_max_size() - 1024 ), $post_max_upper_size );
+
+		if( 0 >= $calculated_bottleneck ) {
+			$calculated_bottleneck = $post_max_upper_size;
+		}
 
 		if ( $suhosin_limit ) {
 			$calculated_bottleneck = min( $calculated_bottleneck, $suhosin_limit - 1024 );
@@ -1312,20 +1324,13 @@ class WPMDB_Base {
 		return $val;
 	}
 
+	/**
+	 * Returns the php ini value for post_max_size in bytes
+	 *
+	 * @return int
+	 */
 	function get_post_max_size() {
-		$val  = trim( ini_get( 'post_max_size' ) );
-		$last = strtolower( $val[ strlen( $val ) - 1 ] );
-
-		switch ( $last ) {
-			case 'g':
-				$val *= 1024;
-			case 'm':
-				$val *= 1024;
-			case 'k':
-				$val *= 1024;
-		}
-
-		return $val;
+		return $this->return_bytes( trim( ini_get( 'post_max_size' ) ) );
 	}
 
 	/**
