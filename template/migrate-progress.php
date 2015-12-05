@@ -4,17 +4,21 @@
 	<div>
 		<h2 class="progress-title"><?php _e( 'Please wait while migration is running...', 'wp-migrate-db' ); ?></h2>
 	</div>
-	<div class="progress-info-wrapper clearfix">
-		<div class="progress-text"><?php _e( 'Establishing Connection', 'wp-migrate-db' ); ?></div>
-		<span class="timer"><?php echo __( 'Time Elapsed:', 'wp-migrate-db' ) . ' 00:00:00'; ?></span>
+
+	<div class="progress-wrapper-primary">
+		<div class="progress-info-wrapper clearfix">
+			<div class="progress-text"><?php _e( 'Establishing Connection', 'wp-migrate-db' ); ?></div>
+			<span class="timer"><?php echo __( 'Time Elapsed:', 'wp-migrate-db' ) . ' 00:00:00'; ?></span>
+		</div>
+		<div class="clearfix"></div>
+		<div class="progress-bar-wrapper">
+			<div class="progress-tables-hover-boxes"></div>
+			<div class="progress-label">wp_options</div>
+			<div class="progress-bar"></div>
+			<div class="progress-tables"></div>
+		</div>
 	</div>
-	<div class="clearfix"></div>
-	<div class="progress-bar-wrapper">
-		<div class="progress-tables-hover-boxes"></div>
-		<div class="progress-label">wp_options</div>
-		<div class="progress-bar"></div>
-		<div class="progress-tables"></div>
-	</div>
+
 	<?php do_action( 'wpmdb_template_progress_after_bar' ); ?>
 
 	<div class="migration-controls">

@@ -1,21 +1,21 @@
 === WP Migrate DB ===
 Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
-Tags: database, migrate, backup, mysql
+Tags: migrate, migration, export, data dump, backup, database, mysql
 Requires at least: 3.0
-Tested up to: 4.2.2
-Stable tag: 0.7.1
+Tested up to: 4.4
+Stable tag: 0.7.2
 License: GPLv2
 
-Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
+Migrates your database by running find & replace on URLs and file paths, handling serialized data, and saving an SQL file.
 
 == Description ==
 
 https://www.youtube.com/watch?v=m8oScnEK5y0
 
-WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who need to update their local install with fresh data from the production site, or copy their locally developed site to a staging or production server.
+WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, handles serialized data, then allows you to save it to your computer as an SQL file. To complete the migration, you need to use a database management tool (e.g. phpMyAdmin) to import the SQL file to your database, replacing your existing database. It is perfect for developers who need to migrate fresh data from the production site to their local install, or migrate their locally developed site to a staging or production server.
 
-It even takes into account serialized data (both arrays and objects) and updates the string length values.
+WP Migrate DB handles serialized data (both arrays and objects) by unserializing the data and going through it, identifying strings and running a find & replace on them. Once it has gone through all the data, it serializes it again and sticks it back in the database.
 
 Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
@@ -47,9 +47,17 @@ https://www.youtube.com/watch?v=fHFcH4bCzmU
 
 == Frequently Asked Questions ==
 
-= Does this plugin support multisite? =
+= Why wouldn't I just use WordPress' built-in XML export/import to migrate my site? =
 
-Yes, in a limited capacity. The Developer license of the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) fully supports multisite.
+WP Migrate DB will migrate your entire WordPress database, WordPress' built-in tools will not. For more details, please see our blog post, [WordPress XML Export/Import vs. WP Migrate DB Pro](https://deliciousbrains.com/wordpress-xml-export-import-vs-wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin).
+
+= Will you migrate my site for me? =
+
+Sorry, but we do not offer site migration services at the moment.
+
+= Does the plugin support multisite? =
+
+Yes, but the [Multisite Tools addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/multisite-tools-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) for the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) does a lot more with multisite like migrating a subsite as a single-site install.
 
 = Does the plugin migrate files as well? =
 
@@ -59,6 +67,18 @@ No, it only operates on the database. The pro version's [Media Files addon](http
 
 It is likely you have a download manager plugin or extension installed in your web browser. You will need to disable it for the SQL download to work properly.
 
+= Does the plugin handle serialized data? =
+
+Yep, it will run a find &amp; replace on your serialized data and migrate it without corrupting it. See [our documentation](https://deliciousbrains.com/wp-migrate-db-pro/doc/serialized-data/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) for details.
+
+= What are the requirements? =
+
+They are the same as the [requirements for WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin#requirements).
+
+= Do you offer email support? =
+
+If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin), we will gladly provide you with email support. We take pride in delivering exceptional customer support. We do not provide email support for the free version.
+
 == Screenshots ==
 
 1. Main screen
@@ -67,7 +87,14 @@ It is likely you have a download manager plugin or extension installed in your w
 
 == Changelog ==
 
-= 0.7.1 - 2015-07-09 =
+= WP Migrate DB 0.7.2 - 2015-12-03 =
+
+* Improvement: "Migrate" button renamed to "Export"
+* Improvement: Uses WP_Filesystem instead of direct PHP filesystem functionality where possible
+* Improvement: Remove Find & Replace row icon is now a little dimmer to reduce UI clutter
+* Improvement: Compatibility with WordPress 4.4
+
+= WP Migrate DB 0.7.1 - 2015-07-09 =
 
 * Improvement: Added more diagnostic info to facilitate debugging
 * Improvement: Global JS variables moved to single global object to avoid conflicts
@@ -77,7 +104,7 @@ It is likely you have a download manager plugin or extension installed in your w
 * Bug Fix: When `post_max_size` is set to 0 (unlimited), `wpmdb_bottleneck` is broken
 * Bug Fix: Saved Profiles link is broken in certain situations
 
-= 0.7 - 2015-06-12 =
+= WP Migrate DB 0.7 - 2015-06-12 =
 
 * New: [WP-CLI export subcommand](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-export-subcommand/)
 * New: Quick copy find textbox value to replace textbox by clicking arrow icon in between (hat tip Jonathan Perlman)
@@ -102,7 +129,7 @@ It is likely you have a download manager plugin or extension installed in your w
 * Bug fix: Custom post type links broken after migration with Compatibility Mode enabled
 * Bug fix: Saving a new profile does not change the URL to that saved profile URL
 
-= 0.6.1 - 2014-10-29 =
+= WP Migrate DB 0.6.1 - 2014-10-29 =
 * New: breadcrumb-style UI for saved profiles
 * New: Brazilian Portugese translation
 * Security: Added .htaccess to backup folder to help prevent direct downloads
@@ -137,14 +164,14 @@ It is likely you have a download manager plugin or extension installed in your w
 * Bug fix: PHP Notice: Undefined variable: safe_mode
 * Bug fix: Fatal error: Cannot use object of type WP_Error as array in `verify_download()`
 
-= 0.6 - 2014-08-19 =
+= WP Migrate DB 0.6 - 2014-08-19 =
 * New: Updated the migration UI to include a detailed progress bar, time elapsed, pause and cancel buttons and more!
 * New: Option to exclude transients (temporary cached data)
 * New: Migration profiles
 * New: Setting to configure the maximum request size (how much data is exported in a given HTTP request)
 * Improvement: Unlimited find & replace fields with drag & drop reordering
 
-= 0.5 - 2013-07-26 =
+= WP Migrate DB 0.5 - 2013-07-26 =
 * Language support! Thanks to an awesome [pull request](https://github.com/bradt/wp-migrate-db/pull/19) from [Rafael Funchal](https://github.com/rafaelfunchal).
 * New Language: Brazilian Portugese
 * [Added filter for the filename of the exported file](https://github.com/bradt/wp-migrate-db/issues/16)
@@ -153,7 +180,7 @@ It is likely you have a download manager plugin or extension installed in your w
 * Bug fix: [Table names with dashes not exporting](https://github.com/bradt/wp-migrate-db/issues/15)
 * Bug fix: [Find & replace is case-sensitive but shouldn't](https://github.com/bradt/wp-migrate-db/issues/13)
 
-= 0.4.4 - 2013-05-19 =
+= WP Migrate DB 0.4.4 - 2013-05-19 =
 * [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=changelog&utm_campaign=freeplugin) Added some info to the sidebar.
 * Updated required version to WordPress 3.0+
 * Bug fix: [Does not handle serialized objects](https://github.com/bradt/wp-migrate-db/issues/11)
@@ -161,19 +188,19 @@ It is likely you have a download manager plugin or extension installed in your w
 * Bug fix: [Duplicate records on export](https://github.com/bradt/wp-migrate-db/issues/5)
 * Bug fix: Updated spinner image for HiDPI displays
 
-= 0.4.3 - 2012-12-18 =
+= WP Migrate DB 0.4.3 - 2012-12-18 =
 * Fixed deprecated error notices when debug mode is on
 * Bug fix: [Exports views as tables](https://github.com/bradt/wp-migrate-db/issues/3)
 * Compatibility tested with WordPress 3.5
 
-= 0.4.2 - 2012-09-13 =
+= WP Migrate DB 0.4.2 - 2012-09-13 =
 * Moved screenshots to /assets folder and updated them to support retina
 * Added sidebar including author profile and survey to gauge interest for a pro version
 
-= 0.4.1 - 2012-08-15 =
+= WP Migrate DB 0.4.1 - 2012-08-15 =
 * Removed WP App Store installer - not allowed in WP.org repo
 
-= 0.4 - 2012-08-07 =
+= WP Migrate DB 0.4 - 2012-08-07 =
 * New: More than 4x faster than version 0.3 due to find & replace improvements
 * New: Option to turn off replacing GUIDs
 * New: Option to exclude spam comments and post revisions from the export
@@ -183,22 +210,22 @@ It is likely you have a download manager plugin or extension installed in your w
 * New: WP App Store installer integration
 * Bug fix: Notices and warnings displayed when WP_DEBUG is on
 
-= 0.3 - 2011-12-16 =
+= WP Migrate DB 0.3 - 2011-12-16 =
 * Bug fix: [Null formatting error](http://plugins.trac.wordpress.org/ticket/1430)
 * Bug fix: [Deprecated capability](http://plugins.trac.wordpress.org/ticket/1431)
 * Bug fix: Serialized string lengths incorrect when string contains double quotes
 
-= 0.2.2 - 2011-09-23 =
+= WP Migrate DB 0.2.2 - 2011-09-23 =
 * Bug fix: [Breaks Export](http://wordpress.org/support/topic/plugin-wp-migrate-db-breaks-export?replies=1)
 
-= 0.2.1 - 2009-12-13 =
+= WP Migrate DB 0.2.1 - 2009-12-13 =
 * Moved to WordPress.org hosting
 
-= 0.2 - 2009-04-03 =
+= WP Migrate DB 0.2 - 2009-04-03 =
 * Moved menu link from "Settings" to "Tools"
 * The random string of characters no longer appears in the filename on save.
 
-= 0.1 - 2009-03-20 =
+= WP Migrate DB 0.1 - 2009-03-20 =
 * First release
 
 == Upgrade Notice ==
