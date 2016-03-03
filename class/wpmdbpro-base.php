@@ -28,11 +28,11 @@ class WPMDBPro_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php' => array(
 				'name'				=> 'Media Files',
-				'required_version'	=> '1.1.4b1',
+				'required_version'	=> '1.1.4',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php' => array(
 				'name'				=> 'CLI',
-				'required_version'	=> '1.0b1',
+				'required_version'	=> '1.0',
 			)
 		);
 
