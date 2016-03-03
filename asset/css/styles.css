@@ -561,6 +561,13 @@
 .wpmdb p img.save-profile-ajax-spinner {
   margin-left: 10px;
 }
+.wpmdb .backup-description {
+  left: 20px;
+  position: relative;
+}
+.wpmdb .backup-option-disabled {
+  margin-bottom: 0px;
+}
 .wpmdb .import-button {
   display: none;
 }
@@ -1273,7 +1280,7 @@ body.mp6 .wpmdb .inline-message.warning, body.mp6 .wpmdb .notification-message.w
   background-color: #fff;
   border-left: 4px solid #ffba00;
 }
-body.mp6 .wpmdb .inline-message.success, body.mp6 .wpmdb .notication-message.success-notice {
+body.mp6 .wpmdb .inline-message.success, body.mp6 .wpmdb .notification-message.success-notice {
   border-left: 4px solid #7ad03a;
 }
 body.mp6 .wpmdb .ssl-notice {
@@ -1281,6 +1288,12 @@ body.mp6 .wpmdb .ssl-notice {
 }
 body.mp6 .wpmdb .different-plugin-version-notice, body.mp6 .wpmdb .directory-permission-notice {
   margin-bottom: 10px;
+}
+body.mp6 .wpmdb .licence-status {
+  color: #444;
+  margin-top: 15px;
+  float: left;
+  font-weight: normal;
 }
 body.mp6 .progress-content {
   font-size: 14px;
@@ -1291,6 +1304,10 @@ body.mp6 .progress-content .progress-title {
   font-family: 'Open Sans', sans-serif;
   font-weight: normal;
   font-size: 22px;
+}
+body.mp6 .progress-content .dashicons-yes {
+  font-size: 42px;
+  line-height: 0.5em;
 }
 body.mp6 .progress-content .progress-bar {
   background-image: none;

@@ -22,16 +22,18 @@ if( ! $is_default_profile ) {
 if( false == $is_default_profile ) {
 	$loaded_profile = wp_parse_args( $loaded_profile, $this->default_profile );
 }
+$loaded_profile = wp_parse_args( $loaded_profile, $this->checkbox_options );
 ?>
 <script type='text/javascript'>
 	var wpmdb_default_profile = <?php echo ( $is_default_profile ? 'true' : 'false' ); ?>;
-	var wpmdb_export_with_prefix = <?php echo ( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? 'true' : 'false' ); ?>;
 	<?php if( isset( $loaded_profile['select_tables'] ) && ! empty( $loaded_profile['select_tables'] ) ) : ?>
 		var wpmdb_loaded_tables = '<?php echo json_encode( $loaded_profile['select_tables'] ); ?>';
 	<?php endif; ?>
-	var wpmdb_migrate_all_post_types = <?php echo ( $loaded_profile['post_type_migrate_option'] == 'migrate_all_post_types' ? 'true' : 'false' ); ?>;
 	<?php if( isset( $loaded_profile['select_post_types'] ) ) : ?>
 		var wpmdb_loaded_post_types = '<?php echo json_encode( $loaded_profile['select_post_types'] ); ?>';
+	<?php endif; ?>
+	<?php if( isset( $loaded_profile['select_backup'] ) && ! empty( $loaded_profile['select_backup'] ) ) : ?>
+		var wpmdb_loaded_tables_backup = '<?php echo json_encode( $loaded_profile['select_backup'] ); ?>';
 	<?php endif; ?>
 	var wpmdb_convert_exclude_revisions = <?php echo ( $convert_exclude_revisions ? 'true' : 'false' ); ?>;
 </script>
@@ -55,14 +57,14 @@ if( false == $is_default_profile ) {
 					<ul>
 						<li>
 							<label for="save_computer">
-							<input id="save_computer" type="checkbox" value="1" name="save_computer"<?php echo ( isset( $loaded_profile['save_computer'] ) ? ' checked="checked"' : ''  ); ?> />
+							<input id="save_computer" type="checkbox" value="1" name="save_computer"<?php $this->maybe_checked( $loaded_profile['save_computer'] ); ?> />
 							Save as file to your computer
 							</label>
 						</li>
 						<?php if ( $this->gzip() ) : ?>
 							<li>
 								<label for="gzip_file">
-									<input id="gzip_file" type="checkbox" value="1" name="gzip_file"<?php echo ( isset( $loaded_profile['gzip_file'] ) ? ' checked="checked"' : ''  ); ?> />
+									<input id="gzip_file" type="checkbox" value="1" name="gzip_file"<?php $this->maybe_checked( $loaded_profile['gzip_file'] ); ?> />
 									Compress file with gzip
 								</label>
 							</li>
@@ -112,10 +114,7 @@ if( false == $is_default_profile ) {
 		<p class="connection-status">Please enter the connection information above to continue.</p>
 
 		<div class="notification-message error-notice different-plugin-version-notice" style="display: none;">
-			<?php
-			$plugin_info = get_plugin_data( $this->plugin_file_path );
-			?>
-			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $plugin_info['Version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
+			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $this->get_installed_version(); ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
 		</div>
 
 		<div class="notification-message error-notice directory-permission-notice" style="display: none;">
@@ -152,7 +151,7 @@ if( false == $is_default_profile ) {
 					<?php if( $is_default_profile ) : ?>
 						<tr class="replace-row">
 							<td class="old-replace-col">
-								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" placeholder="Old URL" value="<?php echo htmlentities( home_url() ); ?>" autocomplete="off" />
+								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" placeholder="Old URL" value="<?php echo preg_replace( '#^https?:#', '', htmlentities( home_url() ) ); ?>" autocomplete="off" />
 							</td>
 							<td class="arrow-col">
 								<span class="right-arrow">&rarr;</span>
@@ -176,21 +175,6 @@ if( false == $is_default_profile ) {
 								<span class="replace-add-row"></span>
 							</td>
 						</tr>
-						<?php if( is_multisite() ) : ?>
-						<tr class="replace-row">
-							<td class="old-replace-col">
-								<input type="text" size="40" name="replace_old[]" class="code" id="old-domain" placeholder="Old domain" value="<?php echo htmlentities( $this->get_domain_current_site() ); ?>" autocomplete="off" />
-							</td>
-							<td class="arrow-col">
-								<span class="right-arrow">&rarr;</span>
-							</td>
-							<td class="replace-right-col">
-								<input type="text" size="40" name="replace_new[]" class="code" id="new-domain" placeholder="New domain" autocomplete="off" />
-								<span class="replace-remove-row"></span>
-								<span class="replace-add-row"></span>
-							</td>
-						</tr>
-						<?php endif; ?>
 					<?php else :
 						$i = 1;
 						foreach( $loaded_profile['replace_old'] as $replace_old ) : ?>
@@ -317,7 +301,7 @@ if( false == $is_default_profile ) {
 					<ul>
 						<li>
 							<label for="replace-guids">
-							<input id="replace-guids" type="checkbox" value="1" name="replace_guids"<?php echo ( isset( $loaded_profile['replace_guids'] ) ? ' checked="checked"' : '' ); ?> />
+							<input id="replace-guids" type="checkbox" value="1" name="replace_guids"<?php $this->maybe_checked( $loaded_profile['replace_guids'] ); ?> />
 							Replace GUIDs
 							</label>
 
@@ -333,26 +317,71 @@ if( false == $is_default_profile ) {
 						</li>
 						<li>
 							<label for="exclude-spam">
-							<input id="exclude-spam" type="checkbox" autocomplete="off" value="1" name="exclude_spam"<?php echo ( isset( $loaded_profile['exclude_spam'] ) ? ' checked="checked"' : '' ); ?> />
+							<input id="exclude-spam" type="checkbox" autocomplete="off" value="1" name="exclude_spam"<?php $this->maybe_checked( $loaded_profile['exclude_spam'] ); ?> />
 							Exclude spam comments
 							</label>
 						</li>
-						<li class="backup-options">
-							<label id="create-backup-label" for="create-backup">
-							<input id="create-backup" type="checkbox" value="1" autocomplete="off" name="create_backup"<?php echo ( isset( $loaded_profile['create_backup'] ) ? ' checked="checked"' : '' ); ?> />
-							Backup the database that will be overwritten and save to: <span class="uploads-dir"><?php echo $this->get_short_uploads_dir(); ?></span>
-							</label>
-							<p class="backup-option-disabled inline-message error" style="display: none;">The backup option has been disabled as your <span class="directory-scope">local</span> uploads directory is currently not writeable. The following directory should have 755 permissions: <span class="upload-directory-location"><?php echo $this->get_upload_info( 'path' ); ?></span></p>
-						</li>
 						<li class="keep-active-plugins">
 							<label for="keep-active-plugins">
-							<input id="keep-active-plugins" type="checkbox" value="1" autocomplete="off" name="keep_active_plugins"<?php echo ( isset( $loaded_profile['keep_active_plugins'] ) ? ' checked="checked"' : '' ); ?> />
+							<input id="keep-active-plugins" type="checkbox" value="1" autocomplete="off" name="keep_active_plugins"<?php $this->maybe_checked( $loaded_profile['keep_active_plugins'] ); ?> />
 							Do not migrate the 'active_plugins' setting (i.e. which plugins are activated/deactivated)
 							</label>
 						</li>
 					</ul>
 
 				</div>
+			</div>
+
+			<div class="option-section backup-options" style="display: block;">
+				<label for="create-backup" class="backup-checkbox checkbox-label">
+					<input type="checkbox" id="create-backup" value="1" autocomplete="off" name="create_backup"<?php $this->maybe_checked( $loaded_profile['create_backup'] ); ?> />
+					Backup the <span class="directory-scope">local</span> database before replacing it<br />
+					<span class="option-description backup-description">An SQL file will be saved to <span class="uploads-dir"><?php echo $this->get_short_uploads_dir(); ?></span></span>
+				</label>
+				
+				<div class="indent-wrap expandable-content">
+					<ul>
+						<li>
+							<label for="backup-only-with-prefix">
+							<input type="radio" id="backup-only-with-prefix" value="backup_only_with_prefix" name="backup_option"<?php echo ( $loaded_profile['backup_option'] == 'backup_only_with_prefix' ? ' checked="checked"' : '' ); ?> >
+							Backup all tables with prefix "<span class="table-prefix"><?php echo $wpdb->prefix; ?></span>"
+							</label>
+						</li>
+						<li>
+							<label for="backup-selected">
+							<input type="radio" id="backup-selected" value="backup_selected" name="backup_option"<?php echo ( $loaded_profile['backup_option'] == 'backup_selected' ? ' checked="checked"' : '' ); ?> >
+							Backup only tables selected for migration
+							</label>
+						</li>
+						<li>
+							<label for="backup-manual-select">
+							<input type="radio" id="backup-manual-select" value="backup_manual_select" name="backup_option"<?php echo ( $loaded_profile['backup_option'] == 'backup_manual_select' ? ' checked="checked"' : '' ); ?> >
+							Backup only selected tables below
+							</label>
+						</li>
+					</ul>
+
+					<div class="backup-tables-wrap select-wrap">
+						<select multiple="multiple" name="select_backup[]" id="select-backup" class="multiselect">
+						<?php foreach( $tables as $table => $size ) :
+							$size = (int) $size * 1024;
+							if( ! empty( $loaded_profile['select_backup'] ) && in_array( $table, $loaded_profile['select_backup'] ) ){
+								printf( '<option value="%1$s" selected="selected">%1$s (%2$s)</option>', $table, size_format( $size ) );
+							}
+							else{
+								printf( '<option value="%1$s">%1$s (%2$s)</option>', $table, size_format( $size ) );
+							}
+						endforeach; ?>
+						</select>
+						<br />
+						<a href="#" class="multiselect-select-all js-action-link">Select All</a>
+						<span class="select-deselect-divider">/</span>
+						<a href="#" class="multiselect-deselect-all js-action-link">Deselect All</a>
+						<span class="select-deselect-divider">/</span>
+						<a href="#" class="multiselect-invert-selection js-action-link">Invert Selection</a>
+					</div>
+				</div>
+				<p class="backup-option-disabled inline-message error" style="display: none;">The backup option has been disabled as your <span class="directory-scope">local</span> uploads directory is currently not writeable. The following directory should have 755 permissions: <span class="upload-directory-location"><?php echo $this->get_upload_info( 'path' ); ?></span></p>
 			</div>
 
 			<?php do_action( 'wpmdb_after_advanced_options' ); ?>

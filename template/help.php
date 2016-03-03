@@ -15,6 +15,10 @@ $videos = array(
 		'title' => 'Pushing Local Development Data to a Staging&nbsp;Environment',
 		'desc' => 'This screencast demonstrates how you can push a local WordPress database
 			you\'ve been using for development to a staging environment.'
+	),
+	'0aR8-jC2XXM' => array(
+		'title' => 'Media Files Addon Demo',
+		'desc' => 'A short demo of how the Media Files addon allows you to sync up your WordPress Media Libraries.'
 	)
 );
 $licence = $this->get_licence_key();

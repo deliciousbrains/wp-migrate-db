@@ -686,6 +686,15 @@
 		margin-left: 10px;
 	}
 
+	.backup-description {
+		left: 20px;
+		position: relative;
+	}
+
+	.backup-option-disabled {
+		margin-bottom: 0px;
+	}
+
 	/* Import DB */
 	.import-button {
 		display: none;

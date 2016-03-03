@@ -302,7 +302,7 @@ body.mp6 {
 			border-left: 4px solid #ffba00;
 		}
 
-		.inline-message.success, .notication-message.success-notice {
+		.inline-message.success, .notification-message.success-notice {
 			border-left: 4px solid #7ad03a;
 		}
 
@@ -312,6 +312,13 @@ body.mp6 {
 
 		.different-plugin-version-notice, .directory-permission-notice {
 			margin-bottom: 10px;
+		}
+
+		.licence-status {
+			color: #444;
+			margin-top: 15px;
+			float: left;
+			font-weight: normal;
 		}
 		
 	}
@@ -325,6 +332,11 @@ body.mp6 {
 			font-family: 'Open Sans', sans-serif;
 			font-weight: normal;
 			font-size: 22px;
+		}
+
+		.dashicons-yes {
+			font-size: 42px;
+			line-height: 0.5em;
 		}
 
 		.progress-bar {

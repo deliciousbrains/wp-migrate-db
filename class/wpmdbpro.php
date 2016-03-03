@@ -12,7 +12,6 @@ class WPMDBPro extends WPMDBPro_Base {
 	protected $remote_key;
 	protected $form_data;
 	protected $max_insert_string_len;
-	protected $temp_prefix = '_mig_';
 	protected $row_tracker;
 	protected $rows_per_segment = 100;
 	protected $create_alter_table_query;
@@ -102,6 +101,9 @@ class WPMDBPro extends WPMDBPro_Base {
 		// Hook into the plugin install process, inject addon download url
 		add_action( 'plugins_api', array( $this, 'inject_addon_install_resource' ), 10, 3 );
 
+		// Clear update transients when the user clicks the "Check Again" button from the update screen
+		add_action( 'current_screen', array( $this, 'check_again_clear_transients' ) );
+
 		$absolute_path = rtrim( ABSPATH, '\\/' );
 		$site_url = rtrim( site_url( '', 'http' ), '\\/' );
 		$home_url = rtrim( home_url( '', 'http' ), '\\/' );
@@ -132,6 +134,8 @@ class WPMDBPro extends WPMDBPro_Base {
 			'keep_active_plugins',
 			'post_type_migrate_option',
 			'select_post_types',
+			'backup_option',
+			'select_backup',
 		);
 
 		$this->default_profile = array(
@@ -145,6 +149,16 @@ class WPMDBPro extends WPMDBPro_Base {
 			'select_tables' => array(),
 			'post_type_migrate_option' => 'migrate_all_post_types',
 			'select_post_types' => array(),
+			'backup_option' => 'backup_only_with_prefix'
+		);
+
+		$this->checkbox_options = array(
+			'save_computer' => '0',
+			'gzip_file' => '0',
+			'replace_guids' => '0',
+			'exclude_spam' => '0',
+			'keep_active_plugins' => '0',
+			'create_backup' => '0'
 		);
 
 		if ( is_multisite() ) {
@@ -159,9 +173,6 @@ class WPMDBPro extends WPMDBPro_Base {
 		// this is how many DB rows are processed at a time, allow devs to change this value
 		$this->rows_per_segment = apply_filters( 'wpmdb_rows_per_segment', $this->rows_per_segment );
 
-		// allow devs to change the temporary prefix applied to the tables
-		$this->temp_prefix = apply_filters( 'wpmdb_temporary_prefix', $this->temp_prefix );
-
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
 			$this->plugin_base = 'settings.php?page=wp-migrate-db-pro';
@@ -175,6 +186,12 @@ class WPMDBPro extends WPMDBPro_Base {
 		//delete_site_transient( 'update_plugins' );
 		//delete_site_transient( 'wpmdb_upgrade_data' );
 		//delete_site_transient( 'wpmdb_licence_response' );
+	}
+
+	function check_again_clear_transients( $current_screen ) {
+		if( ! isset( $current_screen->id ) || strpos( $current_screen->id, 'update-core' ) === false || ! isset( $_GET['force-check'] ) ) return;
+		delete_site_transient( 'wpmdb_upgrade_data' );
+		delete_site_transient( 'update_plugins' );
 	}
 
 	function get_alter_table_name() {
@@ -484,15 +501,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			_e( 'Disabled', 'wp-app-store' );
 		}
 		echo "\r\n";
-
-		_e( 'set_time_limit()', 'wp-app-store' ); echo ': ';
-		if ( $this->set_time_limit_available() ) {
-			_e('Enabled', 'wp-app-store' );
-		} else {
-			_e( 'Disabled', 'wp-app-store' );
-		}
-
-		echo "\r\n";
 		echo "\r\n";
 
 		_e( 'Active Plugins', 'wp-app-store' ); echo ":\r\n";
@@ -683,6 +691,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		$this->set_time_limit();
 
 		$queries = array_filter( explode( ";\n", $chunk ) );
+		array_unshift( $queries, "SET sql_mode='NO_AUTO_VALUE_ON_ZERO';" );
 
 		$wpdb->show_errors();
 		if( empty( $wpdb->charset ) ) {
@@ -750,6 +759,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			$data['pull_limit'] = $this->get_sensible_pull_limit();
 			if( is_multisite() ) {
 				$data['path_current_site'] = $this->get_path_current_site();
+				$data['domain_current_site'] = $this->get_domain_current_site();
 			}
 			$data['prefix'] = $wpdb->prefix;
 			if ( isset( $data['sig'] ) ) {
@@ -788,7 +798,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function respond_to_backup_remote_table() {
-		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent', 'url', 'key', 'table', 'form_data', 'stage', 'bottleneck', 'prefix', 'current_row', 'dump_filename', 'last_table', 'gzip', 'primary_keys' ) );
+		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent', 'url', 'key', 'table', 'form_data', 'stage', 'bottleneck', 'prefix', 'current_row', 'dump_filename', 'last_table', 'gzip', 'primary_keys', 'path_current_site', 'domain_current_site' ) );
 		$filtered_post['primary_keys'] = stripslashes( $filtered_post['primary_keys'] );
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			echo $this->invalid_content_verification_error . ' (#137)';
@@ -817,7 +827,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function respond_to_process_pull_request() {
-		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent', 'url', 'key', 'table', 'form_data', 'stage', 'bottleneck', 'prefix', 'current_row', 'dump_filename', 'pull_limit', 'last_table', 'gzip', 'primary_keys', 'path_current_site' ) );
+		$filtered_post = $this->filter_post_elements( $_POST, array( 'action', 'intent', 'url', 'key', 'table', 'form_data', 'stage', 'bottleneck', 'prefix', 'current_row', 'dump_filename', 'pull_limit', 'last_table', 'gzip', 'primary_keys', 'path_current_site', 'domain_current_site' ) );
 		
 		// verification will fail unless we strip slashes on primary_keys and form_data
 		$filtered_post['primary_keys'] = stripslashes( $filtered_post['primary_keys'] );
@@ -954,6 +964,7 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	function ajax_save_profile() {
 		$profile = $this->parse_migration_form_data( $_POST['profile'] );
+		$profile = wp_parse_args( $profile, $this->checkbox_options );
 		if ( isset( $profile['save_migration_profile_option'] ) && $profile['save_migration_profile_option'] == 'new' ) {
 			$profile['name'] = $profile['create_new_profile'];
 			$this->settings['profiles'][] = $profile;
@@ -1088,20 +1099,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			$key .= substr( $keyset, rand( 0, strlen( $keyset ) -1 ), 1 );
 		}
 		return $key;
-	}
-
-	// Get only the table beginning with our DB prefix or temporary prefix, also skip views
-	function get_tables( $scope = 'regular' ) {
-		global $wpdb;
-		$prefix = ( $scope == 'temp' ? $this->temp_prefix : $wpdb->prefix );
-		$tables = $wpdb->get_results( 'SHOW FULL TABLES', ARRAY_N );
-		foreach ( $tables as $table ) {
-			if ( ( ( $scope == 'temp' || $scope == 'prefix' ) && 0 !== strpos( $table[0], $prefix ) ) || $table[1] == 'VIEW' ) {
-				continue;
-			}
-			$clean_tables[] = $table[0];
-		}
-		return apply_filters( 'wpmdb_tables', $clean_tables, $scope );
 	}
 
 	function get_post_types() {
@@ -1243,10 +1240,8 @@ class WPMDBPro extends WPMDBPro_Base {
 			<?php do_action( 'wpmdb_notices' ); ?>
 
 			<?php
-			$safe_mode = false;
 			$hide_warning = apply_filters( 'wpmdb_hide_safe_mode_warning', false );
 			if ( function_exists( 'ini_get' ) && ini_get( 'safe_mode' ) && !$hide_warning ) {
-				$safe_mode = true;
 				?>
 				<div class="updated warning">
 					<p>
@@ -1592,53 +1587,46 @@ class WPMDBPro extends WPMDBPro_Base {
 		$insert_buffer = $insert_query_template = "INSERT INTO " . $this->backquote( $table_name ) . " ( " . $fields . ") VALUES\n";
 
 		do {
-			$join = '';
+			$join = array();
 			$where = 'WHERE 1=1';
 			$order_by = '';
 			// We need ORDER BY here because with LIMIT, sometimes it will return
 			// the same results from the previous query and we'll have duplicate insert statements 
 			if ( isset( $this->form_data['exclude_spam'] ) ) {
-				if ( $wpdb->comments == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_comments/', $table ) ) {
+				if ( $this->table_is( 'comments', $table ) ) {
 					$where .= ' AND comment_approved != "spam"';
 				}
-				elseif ( $wpdb->commentmeta == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_commentmeta/', $table ) ) {
-					$comment_table = $wpdb->comments;
-					$commentmeta_table = $wpdb->commentmeta;
-					$blog_id = str_replace( array( $wpdb->prefix, '_commentmeta' ) , array( '', '' ), $table );
-					if( is_multisite() && ! empty( $blog_id ) ) {
-						$comment_table = $wpdb->prefix . $blog_id . '_comments';
-						$commentmeta_table = $wpdb->prefix . $blog_id . '_commentmeta';
-					}
-					$join .= sprintf( 'INNER JOIN %1$s
-						ON %1$s.comment_ID = %2$s.comment_id AND %1$s.comment_approved != \'spam\'',
-						$this->backquote( $comment_table ), $this->backquote( $commentmeta_table ) );
+				elseif ( $this->table_is( 'commentmeta', $table ) ) {
+					extract( $this->get_ms_compat_table_names( array( 'commentmeta', 'comments' ), $table ) );
+					$join[] = sprintf( 'INNER JOIN %1$s ON %1$s.comment_ID = %2$s.comment_id', $this->backquote( $comments_table ), $this->backquote( $commentmeta_table ) );
+					$where .= sprintf( ' AND %1$s.comment_approved != \'spam\'', $this->backquote( $comments_table ) );
 				}
 			}
-
+			
 			if ( isset( $this->form_data['post_type_migrate_option'] ) && $this->form_data['post_type_migrate_option'] == 'migrate_select_post_types' && ! empty( $this->form_data['select_post_types'] ) ) {
-				$post_types = array();
-				foreach( $this->form_data['select_post_types'] as $post_type ) {
-					$post_types[] = '\'' . $post_type . '\'';
+				$post_types = '\'' . implode( '\', \'', $this->form_data['select_post_types'] ) . '\'';
+				if( $this->table_is( 'posts', $table ) ) {
+					$where .= ' AND `post_type` IN ( ' . $post_types . ' )';
 				}
-				if( $wpdb->posts == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_posts/', $table ) ) {
-					$where .= ' AND `post_type` IN ( ';
-					$where .= implode( ', ', $post_types ) . ' )';
+				elseif( $this->table_is( 'postmeta', $table ) ) {
+					extract( $this->get_ms_compat_table_names( array( 'postmeta', 'posts' ), $table ) );
+					$join[] = sprintf( 'INNER JOIN %1$s ON %1$s.ID = %2$s.post_id', $this->backquote( $posts_table ), $this->backquote( $postmeta_table ) );
+					$where .= sprintf( ' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->backquote( $posts_table ) );
 				}
-				elseif( $wpdb->postmeta == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_postmeta/', $table ) ) {
-					$post_table = $wpdb->posts;
-					$postmeta_table = $wpdb->postmeta;
-					$blog_id = str_replace( array( $wpdb->prefix, '_postmeta' ) , array( '', '' ), $table );
-					if( is_multisite() && ! empty( $blog_id ) ) {
-						$post_table = $wpdb->prefix . $blog_id . '_posts';
-						$postmeta_table = $wpdb->prefix . $blog_id . '_postmeta';
-					}
-					$join .= sprintf( 'INNER JOIN %1$s
-						ON %1$s.ID = %2$s.post_id AND %1$s.post_type IN ( ' . implode( ', ', $post_types ) . ' )' ,
-						$this->backquote( $post_table ), $this->backquote( $postmeta_table ) );
+				elseif ( $this->table_is( 'comments', $table ) ) {
+					extract( $this->get_ms_compat_table_names( array( 'comments', 'posts' ), $table ) );
+					$join[] = sprintf( 'INNER JOIN %1$s ON %1$s.ID = %2$s.comment_post_ID', $this->backquote( $posts_table ), $this->backquote( $comments_table ) );
+					$where .= sprintf( ' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->backquote( $posts_table ) );
+				}
+				elseif( $this->table_is( 'commentmeta', $table ) ) {
+					extract( $this->get_ms_compat_table_names( array( 'commentmeta', 'posts', 'comments' ), $table ) );
+					$join[] = sprintf( 'INNER JOIN %1$s ON %1$s.comment_ID = %2$s.comment_id', $this->backquote( $comments_table ), $this->backquote( $commentmeta_table ) );
+					$join[] = sprintf( 'INNER JOIN %2$s ON %2$s.ID = %1$s.comment_post_ID', $this->backquote( $comments_table ), $this->backquote( $posts_table ) );
+					$where .= sprintf( ' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->backquote( $posts_table ) );
 				}
 			}
 
-			if ( true === apply_filters( 'wpmdb_exclude_transients', true ) && ( $wpdb->options == $table || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) || preg_match( '/' . $wpdb->prefix . '[0-9]+_options/', $table ) ) ) {
+			if ( true === apply_filters( 'wpmdb_exclude_transients', true ) && ( $this->table_is( 'options', $table ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
 				$col_name = 'option_name';
 
 				if( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) {
@@ -1680,6 +1668,7 @@ class WPMDBPro extends WPMDBPro_Base {
 				$limit = "LIMIT $row_inc";
 			}
 
+			$join = implode( ' ', array_unique( $join ) );
 			$join = apply_filters( 'wpmdb_rows_join', $join, $table );
 			$where = apply_filters( 'wpmdb_rows_where', $where, $table );
 			$order_by = apply_filters( 'wpmdb_rows_order_by', $order_by, $table );
@@ -1720,7 +1709,23 @@ class WPMDBPro extends WPMDBPro_Base {
 									}
 								}
 
-								if ( 'guid' != $key || ( isset( $this->form_data['replace_guids'] ) && ( $wpdb->posts == $table || preg_match( '/' . $wpdb->prefix . '[0-9]+_posts/', $table ) ) ) ) {
+								if( is_multisite() && 'domain' == $key && $_POST['stage'] != 'backup' && ( $wpdb->site == $table || $wpdb->blogs == $table ) ) {
+									if( ! empty( $_POST['domain_current_site'] ) ) {
+										$main_domain_replace = $_POST['domain_current_site'];
+									}
+									else {
+										$url = parse_url( $this->form_data['replace_new'][1] );
+										$main_domain_replace = $url['host'];
+									}
+
+									$main_domain_find = sprintf( "/%s/", $this->get_domain_current_site() );
+									$domain_replaces[$main_domain_find] = $main_domain_replace;
+									$domain_replaces = apply_filters( 'wpmdb_domain_replaces', $domain_replaces );
+
+									$value = preg_replace( array_keys( $domain_replaces ), array_values( $domain_replaces ), $value );
+								}
+
+								if ( 'guid' != $key || ( isset( $this->form_data['replace_guids'] ) && $this->table_is( 'posts', $table ) ) ) {
 									if ( $_POST['stage'] != 'backup' ) {
 										$value = $this->recursive_unserialize_replace( $value );
 									}
@@ -1811,6 +1816,24 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	} // end backup_table()
 
+	function table_is( $desired_table, $given_table ) {
+		global $wpdb;
+		return ( $wpdb->{$desired_table} == $given_table || preg_match( '/' . $wpdb->prefix . '[0-9]+_' . $desired_table . '/', $given_table ) );
+	}
+
+	function get_ms_compat_table_names( $tables, $queried_table ) {
+		global $wpdb;
+		$blog_id = str_replace( array( $wpdb->prefix, '_' . $tables[0] ) , array( '', '' ), $queried_table );
+		$ms_compat_table_names = array();
+		foreach( $tables as $table ) {
+			$ms_compat_table_names[$table . '_table'] = $wpdb->{$table};
+			if( is_multisite() && ! empty( $blog_id ) ) {
+				$ms_compat_table_names[$table . '_table'] = sprintf( '%s%s_%s', $wpdb->prefix, $blog_id, $table );
+			}
+		}
+		return $ms_compat_table_names;
+	}
+
 	/**
 	 * Take a serialized array and unserialize it replacing elements as needed and
 	 * unserialising any subordinate arrays and performing the replace on those too.
@@ -1893,6 +1916,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		$this->stow( "# " . sprintf( __( 'Database: %s', 'wp-migrate-db-pro' ), $this->backquote( DB_NAME ) ) . "\n", false );
 		$this->stow( "# --------------------------------------------------------\n\n", false );
 		$this->stow( "/*!40101 SET NAMES $charset */;\n\n", false );
+		$this->stow( "SET sql_mode='NO_AUTO_VALUE_ON_ZERO';\n\n", false );
 	}
 
 	function gzip() {
@@ -2148,9 +2172,6 @@ class WPMDBPro extends WPMDBPro_Base {
 			var wpmdb_bottleneck = '<?php echo $this->get_bottleneck( 'max' ); ?>';
 			var wpmdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
 			var wpmdb_has_licence = '<?php echo ( $this->get_licence_key() == '' ? '0' : '1' ); ?>';
-			<?php if( isset( $_GET['wpmdb-profile'] ) && isset( $this->settings['profiles'][$_GET['wpmdb-profile']]['select_tables'] ) ) : ?>
-			var wpmdb_loaded_tables = '<?php echo json_encode( $this->settings['profiles'][$_GET['wpmdb-profile']]['select_tables'] ); ?>';
-			<?php endif; ?>
 			var wpmdb_write_permission = <?php echo ( is_writeable( $this->get_upload_info( 'path' ) ) ? 'true' : 'false' ); ?>;
 			<?php do_action( 'wpmdb_js_variables' ); ?>
 		</script>
@@ -2328,7 +2349,7 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	function get_path_from_url( $url ) {
 		$parts = parse_url( $url );
-		return trailingslashit( $parts['path'] );
+		return ( ! empty( $parts['path'] ) ) ? trailingslashit( $parts['path'] ) : '/';
 	}
 
 	function get_path_current_site() {
@@ -2356,11 +2377,17 @@ class WPMDBPro extends WPMDBPro_Base {
 				$val *= 1024;
 			case 'k':
 				$val *= 1024;
+				break;
 			default :
 				$val = false;
+				break;
 		}
 
 		return $val;
+	}
+
+	function maybe_checked( $option ) {
+		echo ( isset( $option ) && $option == '1' ) ? ' checked="checked"' : '';
 	}
 
 }
