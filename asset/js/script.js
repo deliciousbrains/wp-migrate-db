@@ -188,8 +188,9 @@ var migration_complete_events;
 					dataType:	'json',
 					cache: 	false,
 					data: {
-						action 				: 'wpmdb_update_max_request_size',
-						max_request_size 	: parseInt( ui.value ),
+						action				:	'wpmdb_update_max_request_size',
+						max_request_size	: 	parseInt( ui.value ),
+						nonce				:	wpmdb_nonces.update_max_request_size,
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						$('.slider').slider('enable');
@@ -248,8 +249,9 @@ var migration_complete_events;
 				dataType:	'json',
 				cache: 	false,
 				data: {
-					action 	: 'wpmdb_check_licence',
-					licence	: licence,
+					action	:	'wpmdb_check_licence',
+					licence	:	licence,
+					nonce	:	wpmdb_nonces.check_licence,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert( 'A problem occurred when trying to check the license, please try again.' );
@@ -312,10 +314,11 @@ var migration_complete_events;
 				dataType:	'json',
 				cache: 	false,
 				data: {
-					action: 	'wpmdb_verify_connection_to_remote_site',
-					url: 		connection_info[0],
-					key: 		connection_info[1],
-					intent: 	intent,
+					action	:	'wpmdb_verify_connection_to_remote_site',
+					url		:	connection_info[0],
+					key		:	connection_info[1],
+					intent	:	intent,
+					nonce	:	wpmdb_nonces.verify_connection_to_remote_site,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$('.connection-status').html( 'A problem occurred when attempting to connect to the local server, please check the details and try again. (#102)' );
@@ -487,8 +490,9 @@ var migration_complete_events;
 				dataType:	'JSON',
 				cache: 	false,
 				data: {
-					action  : 'wpmdb_activate_licence',
-					licence_key : licence_key
+					action 		:	'wpmdb_activate_licence',
+					licence_key	:	licence_key,
+					nonce		:	wpmdb_nonces.activate_licence,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					doing_licence_registration_ajax = false;
@@ -505,6 +509,9 @@ var migration_complete_events;
 							msg += data.errors[key];
 						}
 						$('.licence-status').html( msg );
+					}
+					else if ( typeof data.wpmdb_error !== 'undefined' && typeof data.body !== 'undefined' ) {
+						$('.licence-status').html( data.body );
 					}
 					else {
 						$('.licence-input, .register-licence').remove();
@@ -529,7 +536,8 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action : 'wpmdb_clear_log',
+					action	:	'wpmdb_clear_log',
+					nonce	:	wpmdb_nonces.clear_log,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to clear the debug log. Please contact support. (#132)');
@@ -547,7 +555,8 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action : 'wpmdb_get_log',
+					action	:	'wpmdb_get_log',
+					nonce	:	wpmdb_nonces.get_log,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to update the debug log. Please contact support. (#133)');
@@ -678,8 +687,9 @@ var migration_complete_events;
 					dataType:	'text',
 					cache: 		false,
 					data: {
-						action: 	'wpmdb_save_profile',
-						profile: 	profile, 
+						action	:	'wpmdb_save_profile',
+						profile	:	profile,
+						nonce	:	wpmdb_nonces.save_profile,
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert('An error occurred when attempting to save the migration profile. Please see the Help tab for details on how to request support. (#118)');
@@ -879,12 +889,13 @@ var migration_complete_events;
 				dataType:	'json',
 				cache: 		false,
 				data: {
-					action 		: 	'wpmdb_initiate_migration',
-					intent 		:  	migration_intent,
-					url 		:	remote_site,
+					action		:	'wpmdb_initiate_migration',
+					intent		:	migration_intent,
+					url			:	remote_site,
 					key			:	secret_key,
 					form_data	:	form_data,
-					stage		: 	stage,
+					stage		:	stage,
+					nonce		:	wpmdb_nonces.initiate_migration,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$('.progress-title').html('Migration failed');
@@ -994,6 +1005,7 @@ var migration_complete_events;
 							last_table		:	last_table,
 							primary_keys	:	primary_keys,
 							gzip			:	gzip,
+							nonce			:	wpmdb_nonces.migrate_table,
 						};
 
 						if( migration_intent != 'savefile' ) {
@@ -1037,6 +1049,15 @@ var migration_complete_events;
 										$('.progress-text').html(data);
 									}
 									$('.progress-text').addClass('migration-error');
+									migration_error = true;
+									migration_complete_events();
+									return;
+								}
+
+								if( typeof row_information.wpmdb_error != 'undefined' && row_information.wpmdb_error == 1 ){
+									$('.progress-title').html('Migration failed');
+									$('.progress-text').addClass( 'migration-error' );
+									$('.progress-text').html( row_information.body );
 									migration_error = true;
 									migration_complete_events();
 									return;
@@ -1142,9 +1163,10 @@ var migration_complete_events;
 						url 				:	remote_site,
 						key					:	secret_key,
 						form_data			:	form_data,
-						prefix 				: 	connection_data.prefix,
+						prefix 				:	connection_data.prefix,
 						temp_prefix			:	connection_data.temp_prefix,
 						tables				:	tables_to_migrate.join(','),
+						nonce				:	wpmdb_nonces.finalize_migration,
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						$('.progress-title').html('Migration failed');
@@ -1229,8 +1251,9 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 		false,
 				data: {
-					action: 	'wpmdb_save_profile',
-					profile: 	profile,
+					action	:	'wpmdb_save_profile',
+					profile	:	profile,
+					nonce	:	wpmdb_nonces.save_profile,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when attempting to save the migration profile. Please see the Help tab for details on how to request support. (#104)');
@@ -1580,7 +1603,8 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action: 	'wpmdb_reset_api_key',
+					action	:	'wpmdb_reset_api_key',
+					nonce	:	wpmdb_nonces.reset_api_key,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to generate the API key. Please see the Help tab for details on how to request support. (#105)');
@@ -1641,8 +1665,9 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action 		: 	'wpmdb_delete_migration_profile',
-					profile_id 	: 	$(this).attr('data-profile-id')
+					action		:	'wpmdb_delete_migration_profile',
+					profile_id	:	$(this).attr('data-profile-id'),
+					nonce		:	wpmdb_nonces.delete_migration_profile,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to delete the profile. Please see the Help tab for details on how to request support. (#106)');
@@ -1673,8 +1698,9 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action 		: 	'wpmdb_delete_migration_profile',
-					profile_id 	: 	$(this).attr('data-profile-id')
+					action		:	'wpmdb_delete_migration_profile',
+					profile_id	:	$(this).attr('data-profile-id'),
+					nonce		:	wpmdb_nonces.delete_migration_profile,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to delete the profile. Please see the Help tab for details on how to request support. (#107)');
@@ -1717,9 +1743,10 @@ var migration_complete_events;
 				dataType:	'text',
 				cache: 	false,
 				data: {
-					action 		: 'wpmdb_save_setting',
-					checked 	: checked,
-					setting 	: setting
+					action		:	'wpmdb_save_setting',
+					checked		:	checked,
+					setting		:	setting,
+					nonce		:	wpmdb_nonces.save_setting,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert('An error occurred when trying to save the settings. Please try again. If the problem persists, please see the Help tab for details on how to request support. (#108)');
@@ -1867,10 +1894,11 @@ var migration_complete_events;
 				dataType:	'json',
 				cache: 	false,
 				data: {
-					action: 	'wpmdb_verify_connection_to_remote_site',
-					url: 		connection_info[0],
-					key: 		connection_info[1],
-					intent: 	intent,
+					action	:	'wpmdb_verify_connection_to_remote_site',
+					url		:	connection_info[0],
+					key		:	connection_info[1],
+					intent	:	intent,
+					nonce	:	wpmdb_nonces.verify_connection_to_remote_site,
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$('.connection-status').html( 'A problem occurred when attempting to connect to the local server, please check the details and try again. (#100)' );

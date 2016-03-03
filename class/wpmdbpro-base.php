@@ -27,7 +27,7 @@ class WPMDBPro_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php' => array(
 				'name'				=> 'Media Files',
-				'required_version'	=> '1.1.2',
+				'required_version'	=> '1.1.3',
 			) 
 		);
 
@@ -301,6 +301,9 @@ class WPMDBPro_Base {
 	function verify_signature( $data, $key ) {
 		if( empty( $data['sig'] ) ) {
 			return false;
+		}
+		if ( isset( $data['nonce'] ) ) {
+			unset( $data['nonce'] );
 		}
 		$temp = $data;
 		$computed_signature = $this->create_signature( $temp, $key );
@@ -700,6 +703,23 @@ class WPMDBPro_Base {
 
 	function get_plugin_file_path() {
 		return $this->plugin_file_path;
+	}
+
+	function check_ajax_referer( $action ) {
+		$result = check_ajax_referer( $action, 'nonce', false );
+		if ( false === $result ) {
+			$return = array( 'wpmdb_error' => 1, 'body' => sprintf( __( 'Invalid nonce for: %s', 'wp-migrate-db-pro' ), $action ) );
+			$result = $this->end_ajax( json_encode( $return ) );
+			return $result;
+		}
+
+		$cap = ( is_multisite() ) ? 'manage_network_options' : 'export';
+		$cap = apply_filters( 'wpmdb_ajax_cap', $cap );
+		if ( !current_user_can( $cap ) ) {
+			$return = array( 'wpmdb_error' => 1, 'body' => sprintf( __( 'Access denied for: %s', 'wp-migrate-db-pro' ), $action ) );
+			$result = $this->end_ajax( json_encode( $return ) );
+			return $result;
+		}
 	}
 
 }

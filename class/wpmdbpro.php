@@ -261,6 +261,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_update_max_request_size() {
+		$this->check_ajax_referer( 'update-max-request-size' );
 		$this->settings['max_request'] = (int) $_POST['max_request_size'] * 1024;
 		update_option( 'wpmdb_settings', $this->settings );
 		$result = $this->end_ajax();
@@ -268,6 +269,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_check_licence() {
+		$this->check_ajax_referer( 'check-licence' );
 		$licence = ( empty( $_POST['licence'] ) ? $this->get_licence_key() : $_POST['licence'] );
 		$response = $this->check_licence( $licence );
 		$decoded_response = json_decode( $response, ARRAY_A );
@@ -337,6 +339,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_activate_licence() {
+		$this->check_ajax_referer( 'activate-licence' );
 		$args = array(
 			'licence_key' => $_POST['licence_key'],
 			'site_url' => site_url( '', 'http' )
@@ -392,12 +395,14 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_clear_log() {
+		$this->check_ajax_referer( 'clear-log' );
 		delete_option( 'wpmdb_error_log' );
 		$result = $this->end_ajax();
 		return $result;
 	}
 
 	function ajax_get_log() {
+		$this->check_ajax_referer( 'get-log' );
 		ob_start();
 		$this->output_diagnostic_info();
 		$this->output_log_file();
@@ -565,6 +570,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	
 	// After table migration, delete old tables and rename new tables removing the temporarily prefix
 	function ajax_finalize_migration() {
+		$this->check_ajax_referer( 'finalize-migration' );
 		global $wpdb;
 		$return = '';
 		if ( $_POST['intent'] == 'pull' ) {
@@ -573,6 +579,9 @@ class WPMDBPro extends WPMDBPro_Base {
 		else {
 			do_action( 'wpmdb_migration_complete', 'push', $_POST['url'] );
 			$data = $_POST;
+			if ( isset( $data['nonce'] ) ) {
+				unset( $data['nonce'] );
+			}
 			$data['action'] = 'wpmdb_remote_finalize_migration';
 			$data['intent'] = 'pull';
 			$data['prefix'] = $wpdb->prefix;
@@ -742,6 +751,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_migrate_table() {
+		$this->check_ajax_referer( 'migrate-table' );
 		global $wpdb;
 
 		$this->form_data = $this->parse_migration_form_data( $_POST['form_data'] );
@@ -752,6 +762,9 @@ class WPMDBPro extends WPMDBPro_Base {
 			// if performing a push we need to backup the REMOTE machine's DB
 			if ( $_POST['intent'] == 'push' ) {
 				$data = $_POST;
+				if ( isset( $data['nonce'] ) ) {
+					unset( $data['nonce'] );
+				}
 				$data['action'] = 'wpmdb_backup_remote_table';
 				$data['intent'] = 'pull';
 				$ajax_url = trailingslashit( $_POST['url'] ) . 'wp-admin/admin-ajax.php';
@@ -801,6 +814,9 @@ class WPMDBPro extends WPMDBPro_Base {
 		}
 		else {
 			$data = $_POST;
+			if ( isset( $data['nonce'] ) ) {
+				unset( $data['nonce'] );
+			}
 			$data['action'] = 'wpmdb_process_pull_request';
 			$data['pull_limit'] = $this->get_sensible_pull_limit();
 			if( is_multisite() ) {
@@ -925,6 +941,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	// Occurs right before the first table is migrated / backed up during the migration process
 	// Does a quick check to make sure the verification string is valid and also opens / creates files for writing to (if required)
 	function ajax_initiate_migration() {
+		$this->check_ajax_referer( 'initiate-migration' );
 		$this->form_data = $this->parse_migration_form_data( $_POST['form_data'] );
 		if ( $_POST['intent'] == 'savefile' ) {
 
@@ -1041,6 +1058,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_save_profile() {
+		$this->check_ajax_referer( 'save-profile' );
 		$profile = $this->parse_migration_form_data( $_POST['profile'] );
 		$profile = wp_parse_args( $profile, $this->checkbox_options );
 		if ( isset( $profile['save_migration_profile_option'] ) && $profile['save_migration_profile_option'] == 'new' ) {
@@ -1059,6 +1077,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_save_setting() {
+		$this->check_ajax_referer( 'save-setting' );
 		$this->settings[$_POST['setting']] = ( $_POST['checked'] == 'false' ? false : true );
 		update_option( 'wpmdb_settings', $this->settings );
 		$result = $this->end_ajax();
@@ -1066,6 +1085,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_delete_migration_profile() {
+		$this->check_ajax_referer( 'delete-migration-profile' );
 		$key = $_POST['profile_id'];
 		$return = '';
 		if ( isset( $this->settings['profiles'][$key] ) ) {
@@ -1080,6 +1100,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function ajax_reset_api_key() {
+		$this->check_ajax_referer( 'reset-api-key' );
 		$this->settings['key'] = $this->generate_key();
 		update_option( 'wpmdb_settings', $this->settings );
 		$result = $this->end_ajax( sprintf( "%s\n%s", site_url( '', 'https' ), $this->settings['key'] ) );
@@ -1089,6 +1110,7 @@ class WPMDBPro extends WPMDBPro_Base {
 	// AJAX endpoint for when the user pastes into the connection info box (or when they click "connect")
 	// Responsible for contacting the remote website and retrieving info and testing the verification string
 	function ajax_verify_connection_to_remote_site() {
+		$this->check_ajax_referer( 'verify-connection-to-remote-site' );
 		$data = array(
 			'action'  => 'wpmdb_verify_connection_to_remote_site',
 			'intent' => $_POST['intent']
@@ -2289,7 +2311,27 @@ class WPMDBPro extends WPMDBPro_Base {
 	}
 
 	function admin_head_connection_info() {
-		global $table_prefix; ?>
+		global $table_prefix;
+
+		$nonces = array(
+			'update_max_request_size' 			=> wp_create_nonce( 'update-max-request-size' ),
+			'check_licence'						=> wp_create_nonce( 'check-licence' ),
+			'verify_connection_to_remote_site'	=> wp_create_nonce( 'verify-connection-to-remote-site' ),
+			'activate_licence'					=> wp_create_nonce( 'activate-licence' ),
+			'clear_log'							=> wp_create_nonce( 'clear-log' ),
+			'get_log'							=> wp_create_nonce( 'get-log' ),
+			'save_profile'						=> wp_create_nonce( 'save-profile' ),
+			'initiate_migration'				=> wp_create_nonce( 'initiate-migration' ),
+			'migrate_table'						=> wp_create_nonce( 'migrate-table' ),
+			'finalize_migration'				=> wp_create_nonce( 'finalize-migration' ),
+			'reset_api_key'						=> wp_create_nonce( 'reset-api-key' ),
+			'delete_migration_profile'			=> wp_create_nonce( 'delete-migration-profile' ),
+			'save_setting'						=> wp_create_nonce( 'save-setting' ),
+		);
+
+		$nonces = apply_filters( 'wpmdb_nonces', $nonces );
+
+		?>
 		<script type='text/javascript'>
 			var wpmdb_connection_info = '<?php echo json_encode( array( site_url( '', 'https' ), $this->settings['key'] ) ); ?>';
 			var wpmdb_this_url = '<?php echo addslashes( home_url() ) ?>';
@@ -2312,6 +2354,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			var wpmdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
 			var wpmdb_has_licence = '<?php echo ( $this->get_licence_key() == '' ? '0' : '1' ); ?>';
 			var wpmdb_write_permission = <?php echo ( is_writeable( $this->get_upload_info( 'path' ) ) ? 'true' : 'false' ); ?>;
+			var wpmdb_nonces = <?php echo json_encode( $nonces ); ?>;
 			<?php do_action( 'wpmdb_js_variables' ); ?>
 		</script>
 		<?php
