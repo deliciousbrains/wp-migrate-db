@@ -52,7 +52,7 @@ $licence = $this->get_licence_key();
 		<ul>
 		<?php foreach ( $videos as $id => $video ) : ?>
 			<li class="video" data-video-id="<?php echo $id; ?>">
-				<a href="http://www.youtube.com/watch?v=<?php echo $id; ?>" target="_blank"><img src="http://img.youtube.com/vi/<?php echo $id; ?>/0.jpg" alt="" /></a>
+				<a href="//www.youtube.com/watch?v=<?php echo $id; ?>" target="_blank"><img src="//img.youtube.com/vi/<?php echo $id; ?>/0.jpg" alt="" /></a>
 
 				<h4><?php echo $video['title']; ?></h4>
 

@@ -17,9 +17,17 @@ class WPMDBPro_Base {
 	protected $error;
 	protected $temp_prefix = '_mig_';
 	protected $invalid_content_verification_error = 'Invalid content verification signature, please verify the connection information on the remote site and try again.';
+	protected $addons;
 
 	function __construct( $plugin_file_path ) {
 		$this->settings = get_option( 'wpmdb_settings' );
+
+		$this->addons = array(
+			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php' => array(
+				'name'				=> 'Media Files',
+				'required_version'	=> '1.0.1',
+			) 
+		);
 
 		$this->transient_timeout = 60 * 60 * 12;
 		$this->transient_retry_timeout = 60 * 60 * 2;
@@ -60,6 +68,8 @@ class WPMDBPro_Base {
 
 		// Adds a custom error message to the plugin install page if required (licence expired / invalid)
 		add_filter( 'http_response', array( $this, 'verify_download' ), 10, 3 );
+
+		add_action( 'wpmdb_notices', array( $this, 'version_update_notice' ) );
 	}
 
 	function printer( $debug ) {
@@ -607,6 +617,10 @@ class WPMDBPro_Base {
 		return $plugins[$plugin_basename]['Name'];
 	}
 
+	function get_class_props() {
+		return get_object_vars( $this );
+	}
+
 	// Get only the table beginning with our DB prefix or temporary prefix, also skip views
 	function get_tables( $scope = 'regular' ) {
 		global $wpdb;
@@ -619,6 +633,49 @@ class WPMDBPro_Base {
 			$clean_tables[] = $table[0];
 		}
 		return apply_filters( 'wpmdb_tables', $clean_tables, $scope );
+	}
+
+	function version_update_notice() {
+		// We don't want to show both the "Update Required" and "Update Available" messages at the same time
+		if( isset( $this->addons[$this->plugin_basename] ) && true == $this->is_addon_outdated( $this->plugin_basename ) ) return;
+		// To reduce UI clutter we hide addon update notices if the core plugin has updates available
+		if( isset( $this->addons[$this->plugin_basename] ) ) {
+			$core_slug = 'wp-migrate-db-pro';
+			$core_basename = sprintf( '%1$s/%1$s.php', $core_slug );
+			$core_installed_version = $this->get_installed_version( $core_basename );
+			$core_latest_version = $this->get_latest_version( $core_slug );
+			// Core update is available, don't show update notices for addons until core is updated
+			if ( version_compare( $core_installed_version, $core_latest_version, '<' ) ) return;
+		}
+
+		$installed_version = $this->get_installed_version( $this->plugin_basename );
+		$latest_version = $this->get_latest_version( $this->plugin_slug );
+		$update_url = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $this->plugin_basename ) ), 'upgrade-plugin_' . $this->plugin_basename );
+
+		if ( version_compare( $installed_version, $latest_version, '<' ) ) { ?>
+			<div style="display: block;" class="updated warning">
+				<p>
+					<strong>Update Available</strong> &mdash; 
+					<?php printf( '%s %s', $this->plugin_title, $latest_version ); ?> is now available. You currently have <?php echo $installed_version; ?> installed. <a href="<?php echo $update_url; ?>">Update Now</a>
+				</p>
+			</div>
+			<?php
+		}
+	}
+
+	function plugins_dir() {
+		$path = untrailingslashit( $this->plugin_dir_path );
+		return substr( $path, 0, strrpos( $path, DS ) ) . DS;
+	}
+
+	function is_addon_outdated( $addon_basename ) { 
+		$installed_version = $this->get_installed_version( $addon_basename );
+		$required_version = $this->addons[$addon_basename]['required_version'];
+		return version_compare( $installed_version, $required_version, '<' );
+	}
+
+	function get_plugin_file_path() {
+		return $this->plugin_file_path;
 	}
 
 }

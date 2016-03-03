@@ -40,6 +40,9 @@
   box-sizing: border-box;
   margin: 10px 0;
 }
+.wpmdb > div.updated.warning p {
+  font-size: 13px;
+}
 .wpmdb a {
   text-decoration: none;
 }

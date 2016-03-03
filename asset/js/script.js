@@ -18,12 +18,12 @@ var migration_complete_events;
 	var migration_completed = false;
 	var currently_migrating = false;
 	var dump_filename = '';
+	var dump_url = '';
 	var migration_intent;
 	var remote_site;
 	var secret_key;
 	var form_data;
 	var stage;
-	var connection_data;
 	var elapsed_interval;
 	var completed_msg;
 	var tables_to_migrate = '';
@@ -166,7 +166,7 @@ var migration_complete_events;
 
 	$(document).ready(function() {
 
-		if( navigator.appName.indexOf('Internet Explorer') != -1 ) {
+		if ( navigator.userAgent.indexOf('MSIE') > 0 || navigator.userAgent.indexOf('Trident') > 0 ) {
 			$('.ie-warning').show();
 		}
 
@@ -226,7 +226,7 @@ var migration_complete_events;
 				$viewer = $('.video-viewer');
 
 			$('a', this).click(function() {
-				$viewer.attr('src', 'http://www.youtube.com/embed/' + $container.data('video-id') + '?autoplay=1');
+				$viewer.attr('src', '//www.youtube.com/embed/' + $container.data('video-id') + '?autoplay=1');
 				$viewer.show();
 				var offset = $viewer.offset();
 				$(window).scrollTop(offset.top - 50);
@@ -294,6 +294,8 @@ var migration_complete_events;
 			if( typeof wpmdb_default_profile == 'undefined' || wpmdb_default_profile == true || action == 'savefile' || doing_ajax ){
 				return;
 			}
+
+			last_replace_switch = action;
 
 			doing_ajax = true;
 			disable_export_type_controls();
@@ -905,7 +907,7 @@ var migration_complete_events;
 						return;
 					}
 
-					var dump_url = data.dump_url;
+					dump_url = data.dump_url;
 					dump_filename = data.dump_filename;
 
 					var i = 0;
@@ -1015,6 +1017,7 @@ var migration_complete_events;
 							error: function(jqXHR, textStatus, errorThrown){
 								$('.progress-title').html('Migration failed');
 								$('.progress-text').html( 'A problem occurred when processing the ' + tables_to_migrate[i] + ' table. (#113)' );
+								$('.progress-text').append( '<br /><br />Status: ' + jqXHR.status + ' ' + jqXHR.statusText + '<br /><br />Response:<br />' + jqXHR.responseText );
 								$('.progress-text').addClass( 'migration-error' );
 								console.log( jqXHR );
 								console.log( textStatus );
@@ -1026,9 +1029,14 @@ var migration_complete_events;
 							success: function(data){
 								data = $.trim( data );
 								row_information = wpmdb_parse_json( data );
-								if( false == row_information ){
+								if( false == row_information || null == row_information ){
 									$('.progress-title').html('Migration failed');
-									$('.progress-text').html(data);
+									if( '' == data || null == data ) {
+										$('.progress-text').html( 'A problem occurred when processing the ' + tables_to_migrate[i] + ' table. We were expecting a response in JSON format but instead received an empty response.' );
+									}
+									else {
+										$('.progress-text').html(data);
+									}
 									$('.progress-text').addClass('migration-error');
 									migration_error = true;
 									migration_complete_events();
@@ -1071,7 +1079,9 @@ var migration_complete_events;
 		migration_complete_events = function() {
 			if( false == migration_error ) {
 				if( non_fatal_errors == '' ) {
-					$('.progress-text').css('visibility','hidden');
+					if( 'savefile' != migration_intent && true == $('#save_computer').is(':checked') ) {
+						$('.progress-text').css('visibility','hidden');
+					}
 					$('.progress-title').html(completed_msg).append('<div class="dashicons dashicons-yes"></div>');
 				}
 				else {
@@ -1083,14 +1093,19 @@ var migration_complete_events;
 				$('.progress-bar-wrapper').hide();
 			}
 
+			// reset migration variables so consecutive migrations work correctly
+			hooks = [];
+			call_stack = [];
+			migration_error = false;
+			currently_migrating = false;
 			migration_completed = true;
+			non_fatal_errors = '';
+
 			$('.progress-label').remove();
 			$('.migration-progress-ajax-spinner').remove();
 			$('.close-progress-content').show();
 			$('#overlay').css('cursor','pointer');
 			clearInterval( elapsed_interval );
-			currently_migrating = false;
-			non_fatal_errors = '';
 		}
 
 		migration_complete = function() {
@@ -1128,8 +1143,8 @@ var migration_complete_events;
 						url 				:	remote_site,
 						key					:	secret_key,
 						form_data			:	form_data,
-						stage				: 	stage,
 						prefix 				: 	connection_data.prefix,
+						temp_prefix			:	connection_data.temp_prefix,
 						tables				:	tables_to_migrate.join(','),
 					},
 					error: function(jqXHR, textStatus, errorThrown){
