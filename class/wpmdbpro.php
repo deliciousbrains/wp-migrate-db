@@ -1034,6 +1034,20 @@ class WPMDBPro extends WPMDB {
 			$temp_tables[] = $temp_prefix . $table;
 		}
 
+		// Update tables to utf8mb4 if MySQL version > 5.5.3
+		global $wpdb;
+
+		if ( version_compare( $wpdb->db_version(), '5.5.3', '>=' ) ) {
+			require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+
+			// WordPress versions 4.2 or greater
+			if ( function_exists( 'maybe_convert_table_to_utf8mb4' ) ) {
+				foreach ( $temp_tables as $table ) {
+					maybe_convert_table_to_utf8mb4( $table );
+				}
+			}
+		}
+
 		$sql = "SET FOREIGN_KEY_CHECKS=0;\n";
 
 		$sql .= $this->get_preserved_options_queries( $temp_tables );

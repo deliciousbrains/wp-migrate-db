@@ -2389,6 +2389,12 @@ class WPMDB extends WPMDB_Base {
 			// Following regex matches any PRIMARY KEY or KEY statement on a table definition that has a COMMENT statement attached.
 			// The regex is then reset (\K) to return just the COMMENT, its string and any leading whitespace for replacing with nothing.
 			$create_table = preg_replace( '/(?-i)KEY\s.*`.*`\).*\K\sCOMMENT\s\'.*\'/', '', $create_table );
+
+			// Replace utf8mb4 introduced in MySQL 5.5.3 with utf8. As of WordPress 4.2 utf8mb4 is used by default on supported MySQL versions
+			// but causes migrations to fail when the remote site uses MySQL < 5.5.3.
+			$create_table = preg_replace( '/(COLLATE\s)utf8mb4/', '$1utf8', $create_table ); // Column collation
+			$create_table = preg_replace( '/(COLLATE=)utf8mb4/', '$1utf8', $create_table ); // Table collation
+			$create_table = preg_replace( '/(CHARSET\s?=\s?)utf8mb4/', '$1utf8', $create_table ); // Table charset
 		}
 
 		return $create_table;
