@@ -22,6 +22,9 @@ class WPMDBPro extends WPMDBPro_Base {
 	function __construct( $plugin_file_path ) {
 		parent::__construct( $plugin_file_path );
 
+		$this->plugin_slug = 'wp-migrate-db-pro';
+		$this->plugin_version = $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'];
+
 		$this->max_insert_string_len = 50000; // 50000 is the default as defined by phphmyadmin
 
 		$default_settings = array(
@@ -282,9 +285,9 @@ class WPMDBPro extends WPMDBPro_Base {
 
 		$addons_available = ( $decoded_response['addons_available'] == '1' );
 		if( ! $addons_available ) { ?>
-			<p class="inline-message warning"><strong>Addons Unavailable</strong> &ndash; Addons are not included with 
+			<div class="inline-message warning"><strong>Addons Unavailable</strong> &ndash; Addons are not included with 
 			the Personal license. Visit <a href="https://deliciousbrains.com/my-account/" target="_blank">My&nbsp;Account</a>
-			to upgrade in just a few clicks.</p>
+			to upgrade in just a few clicks.</div>
 			<?php
 		}
 
@@ -309,10 +312,9 @@ class WPMDBPro extends WPMDBPro_Base {
 			else {
 				$install_url = wp_nonce_url( network_admin_url( 'update.php?action=install-plugin&plugin=' . $key ), 'install-plugin_' . $key );
 				$actions = sprintf( '<a class="action" href="%s">Install</a>', $install_url );
-
-				$download_url = $this->get_plugin_update_download_url( $key );
-				$actions .= sprintf( '<a class="action" href="%s">Download</a>', $download_url );
 			}
+			$download_url = $this->get_plugin_update_download_url( $key );
+			$actions .= sprintf( '<a class="action" href="%s">Download</a>', $download_url );
 			?>
 			<article class="addon <?php echo esc_attr( $key ); ?>">
 				<div class="desc">
@@ -413,6 +415,7 @@ class WPMDBPro extends WPMDBPro_Base {
 
 	function output_diagnostic_info() {
 		global $table_prefix;
+		global $wpdb;
 		
 		_e( 'site_url()', 'wp-app-store' ); echo ': ';
 		echo site_url();
@@ -439,7 +442,11 @@ class WPMDBPro extends WPMDBPro_Base {
 		echo "\r\n";
 
 		_e( 'MySQL', 'wp-app-store' ); echo ': ';
-		if ( function_exists( 'mysql_get_server_info' ) ) echo esc_html( mysql_get_server_info() );
+		echo esc_html( empty( $wpdb->use_mysqli ) ? mysql_get_server_info() : mysqli_get_server_info( $wpdb->dbh ) );
+		echo "\r\n";
+		
+		_e( 'ext/mysqli', 'wp-app-store' ); echo ': ';
+		echo empty( $wpdb->use_mysqli ) ? 'no' : 'yes';
 		echo "\r\n";
 		
 		_e( 'WP Memory Limit', 'wp-app-store' ); echo ': ';
@@ -1148,7 +1155,7 @@ class WPMDBPro extends WPMDBPro_Base {
 		$return['prefix'] = $wpdb->prefix;
 		$return['bottleneck'] = $this->get_bottleneck();
 		$return['error'] = 0;
-		$return['plugin_version'] = $this->get_installed_version();
+		$return['plugin_version'] = $this->plugin_version;
 		$return['domain'] = $this->get_domain_current_site();
 		$return['path_current_site'] = $this->get_path_current_site();
 		$return['uploads_dir'] = $this->get_short_uploads_dir();
@@ -1320,12 +1327,17 @@ class WPMDBPro extends WPMDBPro_Base {
 			foreach( $this->addons as $addon_basename => $addon ) {
 				if( false == $this->is_addon_outdated( $addon_basename ) || false == is_plugin_active( $addon_basename ) ) continue;
 				$update_url = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $addon_basename ) ), 'upgrade-plugin_' . $addon_basename );			
+				$addon_slug = current( explode( '/', $addon_basename ) );
+				if ( isset( $GLOBALS['wpmdb_meta'][$addon_slug]['version'] ) ) {
+					$version = ' (' . $GLOBALS['wpmdb_meta'][$addon_slug]['version'] . ')';
+				}
+				else {
+					$version = '';
+				}
 				?>
-				<div class="updated warning">
-					<p>
-						<strong>Update Required</strong> &mdash; 
-						<?php printf( 'The version of the %s addon you have installed (%s) is out-of-date and will not work with this version WP Migrate DB Pro. <a href="%s">Update Now</a>', $addon['name'], $this->get_installed_version( $addon_basename ), $update_url ); ?>
-					</p>
+				<div class="updated warning inline-message">
+					<strong>Update Required</strong> &mdash; 
+					<?php printf( 'The version of the %s addon you have installed%s is out-of-date and will not work with this version WP Migrate DB Pro. <a href="%s">Update Now</a>', $addon['name'], $version, $update_url ); ?>
 				</div>
 			<?php
 			}
@@ -1333,49 +1345,43 @@ class WPMDBPro extends WPMDBPro_Base {
 			$hide_warning = apply_filters( 'wpmdb_hide_safe_mode_warning', false );
 			if ( function_exists( 'ini_get' ) && ini_get( 'safe_mode' ) && !$hide_warning ) {
 				?>
-				<div class="updated warning">
-					<p>
-						<strong>PHP Safe Mode Enabled</strong> &mdash;
-						We do not officially support running this plugin in
-						safe mode because <code>set_time_limit()</code>
-						has no effect. Therefore we can't extend the run time of the
-						script and ensure it doesn't time out before the migration completes.
-						We haven't disabled the plugin however, so you're free to cross your
-						fingers and hope for the best. However, if you have trouble,
-						we can't help you until you turn off safe mode.
-						<?php if ( function_exists( 'ini_get' ) ) : ?>
-						Your current PHP run time limit is set to <?php echo ini_get( 'max_execution_time' ); ?> seconds.
-						<?php endif; ?>
-					</p>
+				<div class="updated warning inline-message">
+					<strong>PHP Safe Mode Enabled</strong> &mdash;
+					We do not officially support running this plugin in
+					safe mode because <code>set_time_limit()</code>
+					has no effect. Therefore we can't extend the run time of the
+					script and ensure it doesn't time out before the migration completes.
+					We haven't disabled the plugin however, so you're free to cross your
+					fingers and hope for the best. However, if you have trouble,
+					we can't help you until you turn off safe mode.
+					<?php if ( function_exists( 'ini_get' ) ) : ?>
+					Your current PHP run time limit is set to <?php echo ini_get( 'max_execution_time' ); ?> seconds.
+					<?php endif; ?>
 				</div>
 				<?php
 			}
 			?>
 
-			<div class="updated warning ie-warning" style="display: none;">
-				<p>
-					<strong>Internet Explorer Not Supported</strong> &mdash; 
-					Less than 2% of our customers use IE, so we've decided not to spend time supporting it.
-					We ask that you use Firefox or a Webkit-based browser like Chrome or Safari instead.
-					If this is a problem for you, please let us know.
-				</p>
+			<div class="updated warning ie-warning inline-message" style="display: none;">
+				<strong>Internet Explorer Not Supported</strong> &mdash; 
+				Less than 2% of our customers use IE, so we've decided not to spend time supporting it.
+				We ask that you use Firefox or a Webkit-based browser like Chrome or Safari instead.
+				If this is a problem for you, please let us know.
 			</div>
 
 			<?php
 			$hide_warning = apply_filters( 'wpmdb_hide_set_time_limit_warning', false );
 			if ( false == $this->set_time_limit_available() && !$hide_warning && !$safe_mode ) {
 				?>
-				<div class="updated warning">
-					<p>
-						<strong>PHP Function Disabled</strong> &mdash;
-						The <code>set_time_limit()</code> function is currently disabled on your server.
-						We use this function to ensure that the migration doesn't time out. We haven't 
-						disabled the plugin however, so you're free to cross your
-						fingers and hope for the best. You may want to contact your web host to enable this function.
-						<?php if ( function_exists( 'ini_get' ) ) : ?>
-						Your current PHP run time limit is set to <?php echo ini_get( 'max_execution_time' ); ?> seconds.
-						<?php endif; ?>
-					</p>
+				<div class="updated warning inline-message">
+					<strong>PHP Function Disabled</strong> &mdash;
+					The <code>set_time_limit()</code> function is currently disabled on your server.
+					We use this function to ensure that the migration doesn't time out. We haven't 
+					disabled the plugin however, so you're free to cross your
+					fingers and hope for the best. You may want to contact your web host to enable this function.
+					<?php if ( function_exists( 'ini_get' ) ) : ?>
+					Your current PHP run time limit is set to <?php echo ini_get( 'max_execution_time' ); ?> seconds.
+					<?php endif; ?>
 				</div>
 				<?php
 			}
@@ -1688,7 +1694,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			$order_by = '';
 			// We need ORDER BY here because with LIMIT, sometimes it will return
 			// the same results from the previous query and we'll have duplicate insert statements 
-			if ( isset( $this->form_data['exclude_spam'] ) ) {
+			if ( 'backup' != $_POST['stage'] && isset( $this->form_data['exclude_spam'] ) ) {
 				if ( $this->table_is( 'comments', $table ) ) {
 					$where .= ' AND comment_approved != "spam"';
 				}
@@ -1699,7 +1705,7 @@ class WPMDBPro extends WPMDBPro_Base {
 				}
 			}
 			
-			if ( isset( $this->form_data['post_type_migrate_option'] ) && $this->form_data['post_type_migrate_option'] == 'migrate_select_post_types' && ! empty( $this->form_data['select_post_types'] ) ) {
+			if ( 'backup' != $_POST['stage'] && isset( $this->form_data['post_type_migrate_option'] ) && $this->form_data['post_type_migrate_option'] == 'migrate_select_post_types' && ! empty( $this->form_data['select_post_types'] ) ) {
 				$post_types = '\'' . implode( '\', \'', $this->form_data['select_post_types'] ) . '\'';
 				if( $this->table_is( 'posts', $table ) ) {
 					$where .= ' AND `post_type` IN ( ' . $post_types . ' )';
@@ -1722,7 +1728,7 @@ class WPMDBPro extends WPMDBPro_Base {
 				}
 			}
 
-			if ( true === apply_filters( 'wpmdb_exclude_transients', true ) && ( $this->table_is( 'options', $table ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
+			if ( 'backup' != $_POST['stage'] && true === apply_filters( 'wpmdb_exclude_transients', true ) && ( $this->table_is( 'options', $table ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
 				$col_name = 'option_name';
 
 				if( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) {
@@ -1927,19 +1933,36 @@ class WPMDBPro extends WPMDBPro_Base {
 		return ( $wpdb->{$desired_table} == $given_table || preg_match( '/' . $wpdb->prefix . '[0-9]+_' . $desired_table . '/', $given_table ) );
 	}
 
+	/**
+	 * return multisite-compatible names for requested tables, based on queried table name
+	 *
+	 * @param array  $tables          list of table names required
+	 * @param string $queried_table   name of table from which to derive the blog ID
+	 *
+	 * @return array                  list of table names altered for multisite compatibility
+	 */
 	function get_ms_compat_table_names( $tables, $queried_table ) {
 		global $wpdb;
-		$blog_id = str_replace( array( $wpdb->prefix, '_' . $tables[0] ) , array( '', '' ), $queried_table );
+
+		// default table prefix
+		$prefix = $wpdb->prefix;
+
+		// if multisite, extract blog ID from queried table name and add to prefix
+		// won't match for primary blog because it uses standard table names, i.e. blog_id will never be 1
+		if ( is_multisite() && preg_match( '/^' . preg_quote( $wpdb->prefix, '/' ) . '([0-9]+)_/', $queried_table, $matches ) ) {
+			$blog_id = $matches[1];
+			$prefix .= $blog_id . '_';
+		}
+
+		// build table names
 		$ms_compat_table_names = array();
 		foreach( $tables as $table ) {
-			$ms_compat_table_names[$table . '_table'] = $wpdb->{$table};
-			if( is_multisite() && ! empty( $blog_id ) ) {
-				$ms_compat_table_names[$table . '_table'] = sprintf( '%s%s_%s', $wpdb->prefix, $blog_id, $table );
-			}
+			$ms_compat_table_names[$table . '_table'] = $prefix . $table;
 		}
+
 		return $ms_compat_table_names;
 	}
-
+	
 	/**
 	 * Take a serialized array and unserialize it replacing elements as needed and
 	 * unserialising any subordinate arrays and performing the replace on those too.
@@ -2206,9 +2229,17 @@ class WPMDBPro extends WPMDBPro_Base {
 			exit;
 		}
 
-		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_slug );
+		if( isset( $_GET['wpmdb-disable-ssl'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-disable-ssl' ) ) {
+			set_site_transient( 'wpmdb_temporarily_disable_ssl', '1', 60 * 60 * 24 * 30 ); // 30 days
+			$hash = ( isset( $_GET['hash'] ) ) ? $_GET['hash'] : '';
+			// redirecting here because we don't want to keep the query string in the web browsers address bar
+			wp_redirect( network_admin_url( $this->plugin_base . '#' . $hash ) );
+			exit;
+		}
 
-		$version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? time() : $this->get_installed_version();
+		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_folder_name );
+
+		$version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? time() : $this->plugin_version;
 
 		$src = $plugins_url . 'asset/css/styles.css';
 		wp_enqueue_style( 'wp-migrate-db-pro-styles', $src, array(), $version );
@@ -2227,9 +2258,6 @@ class WPMDBPro extends WPMDBPro_Base {
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-slider');
-
-		// PressTrends
-		$this->presstrends();
 	}
 
 	function download_file() {
@@ -2278,7 +2306,7 @@ class WPMDBPro extends WPMDBPro_Base {
 			var wpmdb_this_prefix = '<?php echo $table_prefix; ?>';
 			var wpmdb_is_multisite = <?php echo ( is_multisite() ? 'true' : 'false' ); ?>;
 			var wpmdb_openssl_available = <?php echo ( $this->open_ssl_enabled() ? 'true' : 'false' ); ?>;
-			var wpmdb_plugin_version = '<?php echo $this->get_installed_version(); ?>';
+			var wpmdb_plugin_version = '<?php echo $this->plugin_version; ?>';
 			var wpmdb_max_request = '<?php echo $this->settings['max_request'] ?>';
 			var wpmdb_bottleneck = '<?php echo $this->get_bottleneck( 'max' ); ?>';
 			var wpmdb_this_uploads_dir = '<?php echo addslashes( $this->get_short_uploads_dir() ); ?>';
@@ -2289,63 +2317,6 @@ class WPMDBPro extends WPMDBPro_Base {
 		<?php
 	}
 
-	function presstrends() {
-		// PressTrends Account API Key
-		$api_key = 'mr3j649a7lisvnwszscydb9ebujzsf2q9a3j';
-		$auth	= 'qkpuarenbf2v0qtnvv37h6zlap52xrdcr';
-
-		// Start of Metrics
-		global $wpdb;
-		$data = get_transient( 'presstrends_cache_data' );
-		if ( !$data || $data == '' ) {
-			$api_base = 'http://api.presstrends.io/index.php/api/pluginsites/update/auth/';
-			$url	  = $api_base . $auth . '/api/' . $api_key . '/';
-
-			$count_posts	= wp_count_posts();
-			$count_pages	= wp_count_posts( 'page' );
-			$comments_count = wp_count_comments();
-
-			// wp_get_theme was introduced in 3.4, for compatibility with older versions, let's do a workaround for now.
-			if ( function_exists( 'wp_get_theme' ) ) {
-				$theme_data = wp_get_theme();
-				$theme_name = urlencode( $theme_data->Name );
-			} else {
-				$theme_data = get_theme_data( get_stylesheet_directory() . '/style.css' );
-				$theme_name = $theme_data['Name'];
-			}
-
-			$plugin_name = '&';
-			foreach ( get_plugins() as $plugin_info ) {
-				$plugin_name .= $plugin_info['Name'] . '&';
-			}
-			// CHANGE __FILE__ PATH IF LOCATED OUTSIDE MAIN PLUGIN FILE
-			$plugin_data		 = get_plugin_data( $this->plugin_file_path );
-			$posts_with_comments = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type='post' AND comment_count > 0" );
-			$data				= array(
-				'url'			 => stripslashes( str_replace( array( 'http://', '/', ':' ), '', site_url() ) ),
-				'posts'		   => $count_posts->publish,
-				'pages'		   => $count_pages->publish,
-				'comments'		=> $comments_count->total_comments,
-				'approved'		=> $comments_count->approved,
-				'spam'			=> $comments_count->spam,
-				'pingbacks'	   => $wpdb->get_var( "SELECT COUNT(comment_ID) FROM $wpdb->comments WHERE comment_type = 'pingback'" ),
-				'post_conversion' => ( $count_posts->publish > 0 && $posts_with_comments > 0 ) ? number_format( ( $posts_with_comments / $count_posts->publish ) * 100, 0, '.', '' ) : 0,
-				'theme_version'   => $plugin_data['Version'],
-				'theme_name'	  => $theme_name,
-				'site_name'	   => str_replace( ' ', '', get_bloginfo( 'name' ) ),
-				'plugins'		 => count( get_option( 'active_plugins' ) ),
-				'plugin'		  => urlencode( $plugin_name ),
-				'wpversion'	   => get_bloginfo( 'version' ),
-			);
-
-			foreach ( $data as $k => $v ) {
-				$url .= $k . '/' . $v . '/';
-			}
-			wp_remote_get( $url );
-			set_transient( 'presstrends_cache_data', $data, $this->transient_timeout );
-		}
-	}
-
 	function site_transient_update_plugins( $trans ) {
 		if ( !is_admin() ) return $trans; // only need to run this when in the dashboard
 
@@ -2353,13 +2324,30 @@ class WPMDBPro extends WPMDBPro_Base {
 		if( false === $plugin_upgrade_data || ! isset( $plugin_upgrade_data['wp-migrate-db-pro'] ) ) return $trans;
 
 		foreach( $plugin_upgrade_data as $plugin_slug => $upgrade_data ) {
-			$plugin_basename = sprintf( '%1$s/%1$s.php', $plugin_slug );
+			// If pre-1.1.2 version of Media Files addon, use the slug as folder name
+			if ( !isset( $GLOBALS['wpmdb_meta'][$plugin_slug]['folder'] ) ) {
+				$plugin_folder = $plugin_slug;
+			}
+			else {
+				$plugin_folder = $GLOBALS['wpmdb_meta'][$plugin_slug]['folder'];
+			}
+
+			$plugin_basename = sprintf( '%s/%s.php', $plugin_folder, $plugin_slug );
 			$latest_version = $this->get_latest_version( $plugin_slug );
-			$installed_version = $this->get_installed_version( $plugin_basename );
 
-			if( false === $installed_version  ) continue;
+			if ( !isset( $GLOBALS['wpmdb_meta'][$plugin_slug]['version'] ) ) {
+				// If pre-1.1.2 version of Media Files addon and it is active
+				// assume version 1.1.1 so they can at least upgrade
+				global $wpmdbpro_media_files;
+				if ( !empty( $wpmdbpro_media_files ) ) {
+					$installed_version = '1.1.1';
+				}
+			}
+			else {
+				$installed_version = $GLOBALS['wpmdb_meta'][$plugin_slug]['version'];
+			}
 
-			if ( version_compare( $installed_version, $latest_version, '<' ) ) {
+			if ( isset( $installed_version ) && version_compare( $installed_version, $latest_version, '<' ) ) {
 				$is_beta = $this->is_beta_version( $latest_version );
 
 				$trans->response[$plugin_basename] = new stdClass();

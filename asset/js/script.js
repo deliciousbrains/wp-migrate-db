@@ -504,7 +504,6 @@ var migration_complete_events;
 						for (var key in data.errors) {
 							msg += data.errors[key];
 						}
-						$('.licence-status').addClass( 'notification-message error-notice' );
 						$('.licence-status').html( msg );
 					}
 					else {
@@ -1772,6 +1771,13 @@ var migration_complete_events;
 
 		$('.create-new-profile').change(function(){
 			profile_name_edited = true;
+		});
+
+		$('body').delegate('.temporarily-disable-ssl','click',function(){
+			if(window.location.hash) {
+				var hash = window.location.hash.substring(1);
+			}
+			$(this).attr('href', $(this).attr('href') + '&hash=' + hash );
 		});
 		
 		// fired when the connection info box changes (e.g. gets pasted into)

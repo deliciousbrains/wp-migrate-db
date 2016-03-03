@@ -101,7 +101,7 @@ $loaded_profile = wp_parse_args( $loaded_profile, $this->checkbox_options );
 				<input class="button connect-button" type="submit" value="Connect" name="Connect" autocomplete="off" />
 			</div>
 
-			<div class="notification-message warning-notice ssl-notice">
+			<div class="notification-message warning-notice ssl-notice inline-message">
 				<p><strong>SSL Disabled</strong> &mdash; We couldn't connect over SSL but regular http (no SSL) appears to be working so we've switched to that. If you run a push or pull, your data will be transmitted unencrypted. Most people are fine with this, but just a heads up.</p>
 			</div>
 		
@@ -113,15 +113,13 @@ $loaded_profile = wp_parse_args( $loaded_profile, $this->checkbox_options );
 
 		<p class="connection-status">Please enter the connection information above to continue.</p>
 
-		<div class="notification-message error-notice different-plugin-version-notice" style="display: none;">
-			<p><b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $this->get_installed_version(); ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.</p>
+		<div class="notification-message error-notice different-plugin-version-notice inline-message" style="display: none;">
+			<b>Version Mismatch</b> &mdash; We've detected you have version <span class="remote-version"></span> of WP Migrate DB Pro at <span class="remote-location"></span> but are using <?php echo $GLOBALS['wpmdb_meta'][$this->plugin_slug]['version']; ?> here. Please go to the <a href="<?php echo network_admin_url( 'plugins.php' ); ?>">Plugins page</a> on both installs and check for updates.
 		</div>
 
-		<div class="notification-message error-notice directory-permission-notice" style="display: none;">
-			<p>
-				<strong>Cannot Access Uploads Directory</strong> &mdash;
-				We require write permissions to the standard WordPress uploads directory. Without this permission exports are unavailable. Please grant 755 permissions on the following directory: <?php echo $this->get_upload_info( 'path' ); ?>
-			</p>
+		<div class="notification-message error-notice directory-permission-notice inline-message" style="display: none;">
+			<strong>Cannot Access Uploads Directory</strong> &mdash;
+			We require write permissions to the standard WordPress uploads directory. Without this permission exports are unavailable. Please grant 755 permissions on the following directory: <?php echo $this->get_upload_info( 'path' ); ?>
 		</div>
 		
 		<div class="step-two">
@@ -381,7 +379,7 @@ $loaded_profile = wp_parse_args( $loaded_profile, $this->checkbox_options );
 						<a href="#" class="multiselect-invert-selection js-action-link">Invert Selection</a>
 					</div>
 				</div>
-				<p class="backup-option-disabled inline-message error" style="display: none;">The backup option has been disabled as your <span class="directory-scope">local</span> uploads directory is currently not writeable. The following directory should have 755 permissions: <span class="upload-directory-location"><?php echo $this->get_upload_info( 'path' ); ?></span></p>
+				<div class="backup-option-disabled inline-message error-notice notification-message" style="display: none;">The backup option has been disabled as your <span class="directory-scope">local</span> uploads directory is currently not writeable. The following directory should have 755 permissions: <span class="upload-directory-location"><?php echo $this->get_upload_info( 'path' ); ?></span></div>
 			</div>
 
 			<?php do_action( 'wpmdb_after_advanced_options' ); ?>

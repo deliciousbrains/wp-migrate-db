@@ -33,15 +33,16 @@
      Addons Tab
      ========================================================================== */
 }
-.wpmdb > div.updated.warning {
+.wpmdb div.updated.warning {
   max-width: 742px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 10px 0;
 }
-.wpmdb > div.updated.warning p {
+.wpmdb div.updated.warning p {
   font-size: 13px;
+  margin: 0.5em 0;
 }
 .wpmdb a {
   text-decoration: none;
@@ -569,7 +570,7 @@
   position: relative;
 }
 .wpmdb .backup-option-disabled {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 .wpmdb .import-button {
   display: none;
@@ -1243,6 +1244,9 @@ body.mp6 .wpmdb .addons-tab .addon p {
 }
 body.mp6 .wpmdb .help-tab .support p, body.mp6 .wpmdb .help-tab .support .email a {
   font-size: 14px;
+}
+body.mp6 .wpmdb .help-tab div.warning p {
+  font-size: 13px;
 }
 body.mp6 .wpmdb .help-tab .videos h4, body.mp6 .wpmdb .help-tab .videos p {
   font-size: 14px;
