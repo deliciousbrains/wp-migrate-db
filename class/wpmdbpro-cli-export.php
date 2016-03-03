@@ -19,7 +19,7 @@ class WPMDBPro_CLI_Export extends WPMDB_CLI {
 		$this->wpmdbpro = $wpmdbpro;
 
 		// add support for extra args
-		add_filter( 'wpmdb_cli_filter_get_extra_args', array( $this, 'filter_extra_args' ), 10, 1 );
+		add_filter( 'wpmdb_cli_filter_get_extra_args', array( $this, 'filter_extra_args_cli_export' ), 10, 1 );
 		add_filter( 'wpmdb_cli_filter_get_profile_data_from_args', array( $this, 'add_extra_args_for_pro_export' ), 10, 3 );
 
 		// extend get_tables_to_migrate with migrate_select
@@ -33,7 +33,7 @@ class WPMDBPro_CLI_Export extends WPMDB_CLI {
 	 *
 	 * @return array
 	 */
-	public function filter_extra_args( $args = array() ) {
+	public function filter_extra_args_cli_export( $args = array() ) {
 		$args[] = 'include-tables';
 		$args[] = 'exclude-post-types';
 

@@ -96,6 +96,7 @@ class WPMDB extends WPMDB_Base {
 			'keep_active_plugins'       => '0',
 			'create_backup'             => '0',
 			'exclude_post_types'        => '0',
+			'exclude_transients'        => '0',
 			'compatibility_older_mysql' => '0',
 			'pause_before_finalize'     => '0',
 		);

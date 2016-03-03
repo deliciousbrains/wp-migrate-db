@@ -1368,7 +1368,9 @@ class WPMDB_Base {
 	 * @return int
 	 */
 	function get_post_max_size() {
-		return $this->return_bytes( trim( ini_get( 'post_max_size' ) ) );
+		$bytes = max( wp_convert_hr_to_bytes( trim( ini_get( 'post_max_size' ) ) ), wp_convert_hr_to_bytes( trim( ini_get( 'hhvm.server.max_post_size' ) ) ) );
+
+		return $bytes;
 	}
 
 	/**
@@ -1948,5 +1950,42 @@ class WPMDB_Base {
 		$short_path = str_replace( $this->get_absolute_root_file_path(), '', $this->get_upload_info( 'path' ) );
 
 		return trailingslashit( substr( str_replace( '\\', '/', $short_path ), 1 ) );
+	}
+
+	/**
+	 * Returns max upload size in bytes, defaults to 25M if no limits set.
+	 *
+	 * @return int
+	 */
+	public function get_max_upload_size() {
+		$bytes = wp_max_upload_size();
+
+		if ( 1 > (int) $bytes ) {
+			$p_bytes = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
+			$u_bytes = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
+
+			// If HHVM bug not returning either value, try its own settings.
+			// If HHVM not involved, will drop through to default value.
+			if ( empty( $p_bytes ) && empty( $u_bytes ) ) {
+				$p_bytes = wp_convert_hr_to_bytes( ini_get( 'hhvm.server.max_post_size' ) );
+				$u_bytes = wp_convert_hr_to_bytes( ini_get( 'hhvm.server.upload.upload_max_file_size' ) );
+
+				$bytes = min( $p_bytes, $u_bytes );
+
+				if ( 0 < (int) $bytes ) {
+					return $bytes;
+				}
+			}
+
+			if ( 0 < (int) $p_bytes ) {
+				$bytes = $p_bytes;
+			} elseif ( 0 < (int) $u_bytes ) {
+				$bytes = $u_bytes;
+			} else {
+				$bytes = wp_convert_hr_to_bytes( '25M' );
+			}
+		}
+
+		return $bytes;
 	}
 }

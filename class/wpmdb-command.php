@@ -103,7 +103,7 @@ class WPMDB_Command extends WP_CLI_Command {
 
 		$known_args = apply_filters( 'wpmdb_cli_filter_get_extra_args', $known_args );
 
-		$unknown_args = array_diff( array_flip( $assoc_args ), $known_args );
+		$unknown_args = array_diff( array_keys( $assoc_args ), $known_args );
 
 		return $unknown_args;
 	}
