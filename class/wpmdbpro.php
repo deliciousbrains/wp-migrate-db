@@ -2549,10 +2549,11 @@ class WPMDBPro extends WPMDBPro_Base {
 
 			if ( !isset( $GLOBALS['wpmdb_meta'][$plugin_slug]['version'] ) ) {
 				$version_file = sprintf( '%s%s/version.php', $this->plugins_dir(), $plugin_folder );
-				// Attempt to include the addon's version.php file
-				@include_once $version_file;
-				// We check again to see if see if the addon's version number is accessible
-				if ( !isset( $GLOBALS['wpmdb_meta'][$plugin_slug]['version'] ) ) {
+
+				if ( file_exists( $version_file ) ) {
+					include_once( $version_file );
+					$installed_version = $GLOBALS['wpmdb_meta'][$plugin_slug]['version'];
+				} else {
 					$addon_file = sprintf( '%s%s/%s.php', $this->plugins_dir(), $plugin_folder, $plugin_slug );
 					// No addon plugin file or version.php file, bail and move on to the next addon
 					if ( !file_exists( $addon_file ) ) continue;
@@ -2563,7 +2564,7 @@ class WPMDBPro extends WPMDBPro_Base {
 					 */
 					$installed_version = $GLOBALS['wpmdb_meta'][$plugin_slug]['version'] = '0.1';
 				}
-				$installed_version = $GLOBALS['wpmdb_meta'][$plugin_slug]['version'];
+
 			} else {
 				$installed_version = $GLOBALS['wpmdb_meta'][$plugin_slug]['version'];
 			}
