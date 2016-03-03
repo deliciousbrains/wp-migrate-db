@@ -23,7 +23,7 @@
 
 			$(this).after( '<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />' );
 
-			var check_again_link = ' <a class="check-my-licence-again" href="#">Check my license again</a>';
+			var check_again_link = ' <a class="check-my-licence-again" href="#">' + wpmdb_l10n.check_license_again + '</a>';
 
 			$.ajax({
 				url: 		ajaxurl,
@@ -35,8 +35,7 @@
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					doing_check_licence = false;
-					var msg = 'A problem occured when trying to check the license, please try again.';
-					$('.wpmdb-licence-error-notice').empty().html( msg + check_again_link );
+					$('.wpmdb-licence-error-notice').empty().html( wpmdb_l10n.license_check_problem + check_again_link );
 					$('.wpmdb-licence-error-notice').fadeOut(fade_duration).fadeIn(fade_duration);
 				},
 				success: function(data){

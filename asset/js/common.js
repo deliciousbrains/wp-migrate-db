@@ -4,6 +4,7 @@ var call_stack = [];
 var non_fatal_errors = '';
 var migration_error = false;
 var connection_data;
+var next_step_in_migration;
 
 function wpmdb_call_next_hook() {
 	if( ! call_stack.length ) {

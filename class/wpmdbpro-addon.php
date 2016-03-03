@@ -20,7 +20,8 @@ class WPMDBPro_Addon extends WPMDBPro_Base {
 			}
 			// Check that this version of core supports the addon version
 			else {
-				$required_addon_version = $this->addons[$this->plugin_basename]['required_version'];
+				$plugin_basename = sprintf( '%1$s/%1$s.php', $this->plugin_slug );
+				$required_addon_version = $this->addons[$plugin_basename]['required_version'];
 				$result = version_compare( $this->plugin_version, $required_addon_version, '>=' );
 			}
 		}
@@ -46,15 +47,15 @@ class WPMDBPro_Addon extends WPMDBPro_Base {
 
 	function version_requirement_warning() { ?>
 		<div class="updated warning inline-message below-h2">
-				<strong>Update Required</strong> &mdash;
-				<?php
-					$addon_name = $this->get_plugin_name();
-					$required = $this->version_required;
-					$installed = $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'];
-					$wpmdb_basename = sprintf( '%s/%s.php', $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['folder'], 'wp-migrate-db-pro' );
-					$update = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $wpmdb_basename ) ), 'upgrade-plugin_' . $wpmdb_basename );
-					echo sprintf( 'The version of %s you have installed, requires version %s of WP Migrate DB Pro. You currently have %s installed. <a href="%s">Update Now</a>', $addon_name, $required, $installed, $update );
-				?>
+			<strong>Update Required</strong> &mdash;
+			<?php
+				$addon_name = $this->get_plugin_name();
+				$required = $this->version_required;
+				$installed = $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'];
+				$wpmdb_basename = sprintf( '%s/%s.php', $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['folder'], 'wp-migrate-db-pro' );
+				$update = wp_nonce_url( network_admin_url( 'update.php?action=upgrade-plugin&plugin=' . urlencode( $wpmdb_basename ) ), 'upgrade-plugin_' . $wpmdb_basename );
+				printf( __( 'The version of %1$s you have installed, requires version %2$s of WP Migrate DB Pro. You currently have %3$s installed. <strong><a href="%4$s">Update Now</a></strong>', 'wp-migrate-db-pro' ), $addon_name, $required, $installed, $update );
+			?>
 		</div>
 		<?php
 	}
