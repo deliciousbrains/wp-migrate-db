@@ -1,5 +1,7 @@
 #wpmdb-main {
   width: 742px;
+  position: relative;
+  min-height: 950px;
 }
 
 #overlay {
@@ -178,9 +180,6 @@
   margin-bottom: 20px;
   padding-left: 5px;
 }
-.wpmdb h2.nav-tab-wrapper a {
-  margin-right: 4px;
-}
 .wpmdb h2.nav-tab-wrapper a.nav-tab-active {
   color: #464646;
   cursor: default;
@@ -330,6 +329,13 @@
 }
 .wpmdb .replace-right-col span:hover {
   border-color: #aaa;
+}
+.wpmdb .pin .sort-handle-col {
+  opacity: 0.5;
+  cursor: default;
+}
+.wpmdb .pin .sort-handle {
+  cursor: default !important;
 }
 .wpmdb .sort-handle-col {
   width: 20px;
@@ -988,6 +994,8 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  max-height: 100%;
+  overflow-y: auto;
 }
 .progress-content .progress-bar {
   height: 10px;
@@ -1142,6 +1150,7 @@
 .progress-content .migration-controls {
   display: block;
   margin-top: 45px;
+  overflow: hidden;
 }
 .progress-content .migration-controls span {
   float: left;
@@ -1152,13 +1161,197 @@
   margin-right: 10px;
   width: 71px;
 }
+.progress-content .pro-version {
+  margin-top: 45px;
+  padding-top: 40px;
+  position: relative;
+  border-top: 1px solid #ccc;
+}
+.progress-content .pro-version iframe {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  display: block;
+}
+.progress-content .pro-version-content {
+  padding-right: 460px;
+  min-height: 255px;
+}
+.progress-content .pro-version-content h1 {
+  line-height: 1em;
+  margin-top: 0;
+  font-size: 20px;
+}
+.progress-content .pro-version-content ul {
+  margin-left: 24px;
+}
+.progress-content .pro-version-content li {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.4em;
+  margin-bottom: 15px;
+  max-width: 580px;
+}
+.progress-content .pro-version-content li:before {
+  content: "\f147";
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  font: normal 30px/1 'dashicons';
+  position: absolute;
+  top: -3px;
+  left: -32px;
+  vertical-align: top;
+  font-family: 'dashicons';
+}
+.progress-content .pro-version-content .pro-quote {
+  margin: 0 0 20px 0;
+  max-width: 570px;
+}
+.progress-content .pro-version-content .pro-quote .dashicons-star-filled {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  top: 2px;
+}
+.progress-content .pro-version-content .pro-quote-author {
+  font-style: italic;
+  white-space: nowrap;
+}
+@media screen and (max-width: 1096px) {
+  .progress-content .pro-version iframe {
+    position: relative;
+    top: auto;
+    right: auto;
+  }
+  .progress-content .pro-version-content {
+    min-height: 0;
+    padding: 0 0 20px 0;
+  }
+}
+
+.wpmdb-not-pro .wpmdb .wpmdb-main {
+  margin-top: 15px;
+}
+.wpmdb-not-pro .wpmdb .migrate-selection ul {
+  margin: 0px;
+}
+.wpmdb-not-pro .wpmdb .help-tab .support p {
+  width: auto;
+}
+
+#wpmdb-sidebar {
+  position: absolute;
+  top: -21px;
+  right: -312px;
+  width: 292px;
+}
+#wpmdb-sidebar .block {
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+#wpmdb-sidebar .subscribe {
+  border-top: none;
+}
+#wpmdb-sidebar .subscribe h2 {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 0.5em;
+  color: #666;
+  font-size: 20px;
+  line-height: 1.2em;
+  float: none;
+}
+#wpmdb-sidebar .subscribe h3 {
+  font-size: 16px;
+  margin: 0;
+}
+#wpmdb-sidebar .subscribe p {
+  margin: 0;
+}
+#wpmdb-sidebar .subscribe p.interesting {
+  margin-bottom: 1em;
+  line-height: 1.4;
+}
+#wpmdb-sidebar .subscribe .links {
+  margin-bottom: 2em;
+}
+#wpmdb-sidebar .subscribe .links a {
+  text-decoration: none;
+}
+#wpmdb-sidebar .subscribe .promise {
+  color: #999;
+  font-size: 12px;
+  line-height: 1.4em;
+}
+#wpmdb-sidebar .subscribe .field {
+  margin-bottom: 0.5em;
+}
+#wpmdb-sidebar .subscribe .field p {
+  margin-bottom: 0.3em;
+}
+#wpmdb-sidebar .subscribe .field.submit-button {
+  margin-bottom: 1em;
+}
+#wpmdb-sidebar .testimonial {
+  border-top: none;
+}
+#wpmdb-sidebar .testimonial p {
+  margin: 0;
+}
+#wpmdb-sidebar .testimonial .quote {
+  font-size: 20px;
+}
+#wpmdb-sidebar .testimonial .author {
+  white-space: nowrap;
+  text-align: right;
+}
+#wpmdb-sidebar .testimonial .stars {
+  white-space: nowrap;
+  margin-bottom: 5px;
+}
+#wpmdb-sidebar .testimonial .via {
+  text-align: right;
+  font-size: 12px;
+}
+#wpmdb-sidebar .testimonial .via a {
+  color: #666;
+}
+#wpmdb-sidebar .testimonial .via a:before {
+  content: "\f301";
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  font: normal 18px/1 'dashicons';
+  vertical-align: top;
+  margin-right: 3px;
+}
+@media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+  #wpmdb-sidebar .wpmdb-banner {
+    background-image: url(../img/wp-migrate-db-pro@2x.jpg);
+    background-size: 292px 292px;
+    width: 292px;
+    height: 292px;
+    display: block;
+  }
+  #wpmdb-sidebar .wpmdb-banner img {
+    display: none;
+  }
+}
+@media screen and (max-width: 1252px) {
+  #wpmdb-sidebar {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-top: 50px;
+  }
+}
 
 body.mp6 input[type=checkbox]:disabled {
   opacity: 1;
   border-color: #ccc;
 }
 body.mp6 #wpmdb-main {
-  margin-top: 15px;
+  margin-top: 20px;
   font-size: 14px;
 }
 body.mp6 p {

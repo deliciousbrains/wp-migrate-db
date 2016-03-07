@@ -34,7 +34,7 @@ function wpmdb_parse_json( maybe_json ) {
 	}
 	catch(e){
 		// we simply return false here because the json data itself will never just contain a value of "false"
-		return false; 
+		return false;
 	}
 	return json_object;
 }
