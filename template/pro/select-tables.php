@@ -23,14 +23,20 @@
 
 		<div class="select-tables-wrap select-wrap">
 			<select multiple="multiple" name="select_tables[]" id="select-tables" class="multiselect" autocomplete="off">
-				<?php foreach ( $this->get_table_sizes() as $table => $size ) :
-					$size = (int) $size * 1024;
+				<?php
+				$table_sizes = $this->get_table_sizes();
+				foreach ( $this->get_tables() as $table ) :
+					if( ! isset( $table_sizes[ $table ] ) ) {
+						continue;
+					}
+					$size = (int) $table_sizes[ $table ] * 1024;
 					if ( ! empty( $loaded_profile['select_tables'] ) && in_array( $table, $loaded_profile['select_tables'] ) ) {
 						printf( '<option value="%1$s" selected="selected">%1$s (%2$s)</option>', esc_html( $table ), size_format( $size ) );
 					} else {
 						printf( '<option value="%1$s">%1$s (%2$s)</option>', esc_html( $table ), size_format( $size ) );
 					}
-				endforeach; ?>
+				endforeach;
+				?>
 			</select>
 			<br/>
 			<a href="#" class="multiselect-select-all js-action-link"><?php _e( 'Select All', 'wp-migrate-db' ); ?></a>

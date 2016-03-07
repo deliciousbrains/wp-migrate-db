@@ -332,13 +332,11 @@ class WPMDB_Filesystem {
 				foreach ( $dirs as $dir ) {
 					$current_dir .= '/' . $dir;
 					if ( ! $this->is_dir( $current_dir ) ) {
-						if ( ! $this->wp_filesystem->mkdir( $current_dir, $perms ) ) {
-							return false;
-						}
+						$this->wp_filesystem->mkdir( $current_dir, $perms );
 					}
 				}
 
-				return true;
+				return $this->is_dir( $abs_path );
 			} else {
 				return @mkdir( $abs_path, $perms, true );
 			}

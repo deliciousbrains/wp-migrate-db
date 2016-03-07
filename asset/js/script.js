@@ -36,6 +36,8 @@
 	var flag_skip_delay = false;
 	var delay_between_requests = 0;
 	var fade_duration = 400;
+	var pause_before_finalize = false;
+	var is_auto_pause_before_finalize = false;
 
 	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/spinner';
 
@@ -990,23 +992,21 @@
 
 		// special expand and collapse content on click for save migration profile
 		$( '#save-migration-profile' ).change( function() {
+			wpmdb.functions.update_migrate_button_text();
 			if ( $( this ).is( ':checked' ) ) {
 				$( '.save-settings-button' ).show();
-				$( '.migrate-db .button-primary' ).val( wpmdb_strings.migrate_db_save );
 			} else {
 				$( '.save-settings-button' ).hide();
-				$( '.migrate-db .button-primary' ).val( wpmdb_strings.migrate_db );
 			}
-		} );
-
-		$( '.create-new-profile' ).focus( function() {
-			$( '#create_new' ).prop( 'checked', true );
 		} );
 
 		if ( $( '#save-migration-profile' ).is( ':checked' ) ) {
 			$( '.save-settings-button' ).show();
-			$( '.migrate-db .button-primary' ).val( wpmdb_strings.migrate_db_save );
 		}
+
+		$( '.create-new-profile' ).focus( function() {
+			$( '#create_new' ).prop( 'checked', true );
+		} );
 
 		$( '.checkbox-label input[type=checkbox]' ).each( function() {
 			if ( $( this ).is( ':checked' ) ) {
@@ -1509,7 +1509,9 @@
 		};
 
 		wpmdb.functions.migration_complete = function() {
+
 			$( '.migration-controls' ).fadeOut();
+
 			if ( 'savefile' === migration_intent ) {
 				currently_migrating = false;
 				var migrate_complete_text = wpmdb_strings.migration_complete;
@@ -1611,6 +1613,15 @@
 				} );
 			}
 		};
+
+		wpmdb.functions.update_migrate_button_text = function() {
+			var migration_intent = wpmdb_migration_type();
+			var save_string = ( $( '#save-migration-profile' ).is( ':checked' ) ) ? '_save' : '';
+			var migrate_string = 'migrate_button_' + ( ( 'savefile' === migration_intent ) ? 'export' : migration_intent ) + save_string;
+			$( '.migrate-db .button-primary' ).val( wpmdb_strings[ migrate_string ] );
+		};
+
+		wpmdb.functions.update_migrate_button_text();
 
 		// close progress pop up once migration is completed
 		$( 'body' ).on( 'click', '.close-progress-content-button', function( e ) {
@@ -1774,6 +1785,7 @@
 			$( '#create-backup-label' ).removeClass( 'disabled' );
 			$( '.backup-option-disabled' ).hide();
 			$( '.compatibility-older-mysql' ).hide();
+			$( '.pause-before-finalize' ).show();
 			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
 			var profile_name;
 			wpmdb_toggle_migration_action_text();
@@ -1865,6 +1877,7 @@
 				}
 				$( '.backup-options' ).hide();
 				$( '.keep-active-plugins' ).hide();
+				$( '.pause-before-finalize' ).hide();
 				if ( false === wpmdb_data.write_permission ) {
 					$( '.directory-permission-notice' ).show();
 					$( '.step-two' ).hide();
@@ -1886,6 +1899,7 @@
 			if ( connection_established ) {
 				change_replace_values();
 			}
+			wpmdb.functions.update_migrate_button_text();
 		} );
 
 		function change_replace_values() {
@@ -2672,7 +2686,13 @@
 
 				// Pause the timer
 				clearInterval( elapsed_interval );
-				$( '.progress-text' ).html( wpmdb_strings.paused );
+
+				if ( true === is_auto_pause_before_finalize ) {
+					$( '.progress-text' ).html( wpmdb_strings.paused_before_finalize );
+					is_auto_pause_before_finalize = false;
+				} else {
+					$( '.progress-text' ).html( wpmdb_strings.paused );
+				}
 
 				// Re-bind Pause/Resume button to Resume when we are finally Paused
 				$( 'body' ).on( 'click', '.pause-resume', function( event ) {
@@ -2855,6 +2875,15 @@
 
 		$.wpmdb.add_filter( 'wpmdb_get_table_prefix', get_table_prefix );
 		$.wpmdb.add_filter( 'wpmdb_get_tables_to_migrate', get_tables_to_migrate );
+
+		$.wpmdb.add_filter( 'wpmdb_before_migration_complete_hooks', function( hooks ) {
+			pause_before_finalize = $( 'input[name=pause_before_finalize]:checked' ).length ? true : false;
+			if ( true === pause_before_finalize && 'savefile' !== migration_intent ) {
+				set_pause_resume_button( null ); // don't just set migration_paused to true, since `set_pause_resume_button` will get double bound to clicking resume
+				is_auto_pause_before_finalize = true;
+			}
+			return hooks;
+		} );
 	} );
 
 })( jQuery, wpmdb );

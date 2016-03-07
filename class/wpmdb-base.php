@@ -66,8 +66,11 @@ class WPMDB_Base {
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		// in case admin_init isn't run (tests/cli), we'll just instantiate the fs class without wpfs and allow it to be overwritten when/if admin_init is run
-		$this->filesystem = new WPMDB_Filesystem( true );
-		add_action( 'admin_init', array( $this, 'init_wpmdb_filesystem' ) );
+		if ( class_exists( 'WPMDB_Filesystem' ) ) {
+			$this->filesystem = new WPMDB_Filesystem( true );
+			add_action( 'admin_init', array( $this, 'init_wpmdb_filesystem' ) );
+		}
+
 	}
 
 	/**
@@ -132,10 +135,8 @@ class WPMDB_Base {
 	}
 
 	function init_wpmdb_filesystem() {
-		if ( class_exists( 'WPMDB_Filesystem' ) ) {
-			if ( ! is_a( $this->filesystem, 'WPMDB_Filesystem' ) || ( is_a( $this->filesystem, 'WPMDB_Filesystem' ) && ! $this->filesystem->using_wp_filesystem() ) ) {
-				$this->filesystem = new WPMDB_Filesystem();
-			}
+		if ( ! is_a( $this->filesystem, 'WPMDB_Filesystem' ) || ( is_a( $this->filesystem, 'WPMDB_Filesystem' ) && ! $this->filesystem->using_wp_filesystem() ) ) {
+			$this->filesystem = new WPMDB_Filesystem();
 		}
 	}
 

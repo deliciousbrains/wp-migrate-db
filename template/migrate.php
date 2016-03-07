@@ -271,6 +271,12 @@ $breadcrumbs_params = array(
 							<?php _e( 'Compatible with older versions of MySQL (pre-5.5)', 'wp-migrate-db' ); ?>
 						</label>
 					</li>
+					<li class="pause-before-finalize">
+						<label for="pause-before-finalize">
+							<input id="pause-before-finalize" type="checkbox" value="1" autocomplete="off" name="pause_before_finalize"<?php $this->maybe_checked( $loaded_profile['pause_before_finalize'] ); ?> />
+							<?php _e( 'Pause before replacing migrated tables', 'wp-migrate-db' ); ?>
+						</label>
+					</li>
 					<?php $this->template_part( array( 'exclude_post_revisions' ), $loaded_profile ); ?>
 				</ul>
 
@@ -344,8 +350,8 @@ $breadcrumbs_params = array(
 
 		<p class="migrate-db">
 			<input type="hidden" class="remote-json-data" name="remote_json_data" autocomplete="off"/>
-			<input class="button-primary migrate-db-button" type="submit" value="Migrate" name="Submit" autocomplete="off"/>
-			<input class="button save-settings-button" type="submit" value="Save Profile" name="submit_save_profile" autocomplete="off"/>
+			<input class="button-primary migrate-db-button" type="submit" value="<?php echo esc_attr_x( 'Export', 'Download a copy of the database', 'wp-migrate-db' ); ?>" name="Submit" autocomplete="off"/>
+			<input class="button save-settings-button" type="submit" value="<?php echo esc_attr_x( 'Save Profile', 'Save current migration settings', 'wp-migrate-db' ); ?>" name="submit_save_profile" autocomplete="off"/>
 		</p>
 
 	</div>

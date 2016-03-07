@@ -77,6 +77,7 @@ class WPMDB extends WPMDB_Base {
 			'exclude_post_revisions',
 			'compatibility_older_mysql',
 			'export_dest',
+			'pause_before_finalize',
 		);
 
 		$this->default_profile = array(
@@ -103,6 +104,7 @@ class WPMDB extends WPMDB_Base {
 			'create_backup'             => '0',
 			'exclude_post_types'        => '0',
 			'compatibility_older_mysql' => '0',
+			'pause_before_finalize'     => '0',
 		);
 
 		$this->plugin_tabs = array(
@@ -1353,7 +1355,8 @@ class WPMDB extends WPMDB_Base {
 		}
 
 		$table_name = $table;
-		$table_name = apply_filters( 'wpmdb_target_table_name', $table_name, $this->form_data['action'], $this->state_data['stage'] );
+		$target_table_name = apply_filters( 'wpmdb_target_table_name', $table_name, $this->form_data['action'], $this->state_data['stage'] );
+		$table_name = $target_table_name;
 
 		if ( 'savefile' !== $this->form_data['action'] && 'backup' !== $this->state_data['stage'] ) {
 			$table_name = $temp_prefix . $table;
@@ -1404,7 +1407,7 @@ class WPMDB extends WPMDB_Base {
 			$create_table[0][1] = str_replace( 'TYPE=', 'ENGINE=', $create_table[0][1] );
 
 			$alter_table_query  = '';
-			$create_table[0][1] = $this->process_sql_constraint( $create_table[0][1], $table_name, $alter_table_query );
+			$create_table[0][1] = $this->process_sql_constraint( $create_table[0][1], $target_table_name, $alter_table_query );
 
 			$create_table[0][1] = apply_filters( 'wpmdb_create_table_query', $create_table[0][1], $table_name, $db_version, $this->form_data['action'], $this->state_data['stage'] );
 			$stow .= ( $create_table[0][1] . ";\n" );
@@ -2359,8 +2362,6 @@ class WPMDB extends WPMDB_Base {
 				'fetching_license'                      => __( 'Fetching license details, please wait...', 'wp-migrate-db' ),
 				'clear_log_problem'                     => __( 'An error occurred when trying to clear the debug log. Please contact support. (#132)', 'wp-migrate-db' ),
 				'update_log_problem'                    => __( 'An error occurred when trying to update the debug log. Please contact support. (#133)', 'wp-migrate-db' ),
-				'migrate_db_save'                       => _x( 'Migrate & Save Profile', 'Copy data between servers and save migration profile', 'wp-migrate-db' ),
-				'migrate_db'                            => _x( 'Migrate', 'Copy data between servers', 'wp-migrate-db' ),
 				'please_select_one_table'               => __( 'Please select at least one table to migrate.', 'wp-migrate-db' ),
 				'please_select_one_table_backup'        => __( 'Please select at least one table for backup.', 'wp-migrate-db' ),
 				'enter_name_for_profile'                => __( 'Please enter a name for your migration profile.', 'wp-migrate-db' ),
@@ -2401,6 +2402,7 @@ class WPMDB extends WPMDB_Base {
 				'completing_current_request'            => __( 'Completing current request', 'wp-migrate-db' ),
 				'cancelling_migration'                  => _x( 'Cancelling migration', 'The migration is being cancelled', 'wp-migrate-db' ),
 				'paused'                                => _x( 'Paused', 'The migration has been temporarily stopped', 'wp-migrate-db' ),
+				'paused_before_finalize'                => __( 'Automatically paused before migrated tables are replaced. Click "Resume" or "Cancel" when ready.', 'wp-migrate-db' ),
 				'removing_local_sql'                    => __( 'Removing the local MySQL export file', 'wp-migrate-db' ),
 				'removing_local_backup'                 => __( 'Removing the local backup MySQL export file', 'wp-migrate-db' ),
 				'removing_local_temp_tables'            => __( 'Removing the local temporary tables', 'wp-migrate-db' ),
@@ -2431,6 +2433,12 @@ class WPMDB extends WPMDB_Base {
 				'delaying_next_request'                 => __( 'Waiting %s seconds before executing next step', 'wp-migrate-db' ),
 				'delay_between_requests_problem'        => __( 'A problem occurred when trying to change the delay between requests, please try again.', 'wp-migrate-db' ),
 				'flush_problem'                         => __( 'A problem occurred when flushing caches and rewrite rules. (#145)', 'wp-migrate-db' ),
+				'migrate_button_push'                   => _x( 'Push', 'Transfer this database to the remote site', 'wp-migrate-db' ),
+				'migrate_button_push_save'              => _x( 'Push &amp; Save', 'Transfer this database to the remote site and save migration profile', 'wp-migrate-db' ),
+				'migrate_button_pull'                   => _x( 'Pull', 'Transfer the remote database to this site', 'wp-migrate-db' ),
+				'migrate_button_pull_save'              => _x( 'Pull &amp; Save', 'Transfer the remote database to this site and save migration profile', 'wp-migrate-db' ),
+				'migrate_button_export'                 => _x( 'Export', 'Download a copy of the database', 'wp-migrate-db' ),
+				'migrate_button_export_save'            => _x( 'Export &amp; Save', 'Download a copy of the database and save migration profile', 'wp-migrate-db' ),
 			)
 		);
 
