@@ -4,7 +4,7 @@ Plugin Name: WP Migrate DB Pro
 Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
 Description: Export, push, and pull to migrate your WordPress databases.
 Author: Delicious Brains
-Version: 1.4.3
+Version: 1.4.4
 Author URI: http://deliciousbrains.com
 Network: True
 Text Domain: wp-migrate-db
@@ -22,42 +22,30 @@ Domain Path: /languages/
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // **********************************************************************
 
-$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] = '1.4.3';
+$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] = '1.4.4';
 $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['folder'] = basename( plugin_dir_path( __FILE__ ) );
 
 if ( ! class_exists( 'WPMDB_Utils' ) ) {
 	require dirname( __FILE__ ) . '/class/wpmdb-utils.php';
 }
 
-// Define the directory seperator if it isn't already
-if( !defined( 'DS' ) ) {
-	if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-		define('DS', '\\');
-	}
-	else {
-		define('DS', '/');
-	}
-}
-
 /**
  * once all plugins are loaded, load up the rest of this plugin
+ *
+ * @return boolean
  */
 function wp_migrate_db_pro_loaded() {
 	// exit quickly unless: standalone admin; multisite network admin; one of our AJAX calls
 	if ( ! is_admin() || ( is_multisite() && ! is_network_admin() && ! WPMDB_Utils::is_ajax() ) ) {
-		return;
+		return false;
 	}
+
 	wp_migrate_db_pro();
+
+	return true;
 }
+
 add_action( 'plugins_loaded', 'wp_migrate_db_pro_loaded' );
-
-function wp_migrate_db_pro_init() {
-	// if neither WordPress admin nor running from wp-cli, exit quickly to prevent performance impact
-	if ( !is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) return;
-
-	load_plugin_textdomain( 'wp-migrate-db', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-}
-add_action( 'init', 'wp_migrate_db_pro_init' );
 
 /**
  * Populate the $wpmdbpro global with an instance of the WPMDBPro class and return it.
@@ -76,6 +64,7 @@ function wp_migrate_db_pro() {
 	require_once $abspath . '/class/wpmdb-base.php';
 	require_once $abspath . '/class/wpmdbpro-addon.php';
 	require_once $abspath . '/class/wpmdb.php';
+	require_once $abspath . '/class/wpmdb-replace.php';
 	require_once $abspath . '/class/wpmdbpro.php';
 
 	$wpmdbpro = new WPMDBPro( __FILE__ );

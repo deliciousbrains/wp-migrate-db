@@ -3,7 +3,7 @@
 	var doing_check_licence = false;
 	var fade_duration = 650;
 
-	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/wpspin_light';
+	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/spinner';
 	if( window.devicePixelRatio >= 2 ){
 		spinner_url += '-2x';
 	}
@@ -11,7 +11,7 @@
 
 	$(document).ready(function() {
 
-		$('body').delegate('.check-my-licence-again', 'click', function(e){
+		$('body').on('click', '.check-my-licence-again', function(e){
 			e.preventDefault();
 			$(this).blur();
 
@@ -23,7 +23,7 @@
 
 			$(this).after( '<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />' );
 
-			var check_again_link = ' <a class="check-my-licence-again" href="#">' + wpmdb_l10n.check_license_again + '</a>';
+			var check_again_link = ' <a class="check-my-licence-again" href="#">' + wpmdb_update_strings.check_license_again + '</a>';
 
 			$.ajax({
 				url: 		ajaxurl,
@@ -32,10 +32,11 @@
 				cache: 	false,
 				data: {
 					action  	: 'wpmdb_check_licence',
+					nonce		: wpmdb_nonces.check_licence
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					doing_check_licence = false;
-					$('.wpmdb-licence-error-notice').empty().html( wpmdb_l10n.license_check_problem + check_again_link );
+					$('.wpmdb-licence-error-notice').empty().html( wpmdb_update_strings.license_check_problem + check_again_link );
 					$('.wpmdb-licence-error-notice').fadeOut(fade_duration).fadeIn(fade_duration);
 				},
 				success: function(data){

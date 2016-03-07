@@ -23,7 +23,7 @@ class WPMDBPro_Addon extends WPMDB_Base {
 				$result = false;
 			} else { // Check that this version of core supports the addon version
 				$plugin_basename = sprintf( '%1$s/%1$s.php', $this->plugin_slug );
-				$required_addon_version = $this->addons[$plugin_basename]['required_version'];
+				$required_addon_version = $this->addons[ $plugin_basename ]['required_version'];
 				$result = version_compare( $this->plugin_version, $required_addon_version, '>=' );
 			}
 		}
@@ -36,14 +36,14 @@ class WPMDBPro_Addon extends WPMDB_Base {
 	}
 
 	function version_requirement_actions() {
-		$addon_requirement_check = get_option( 'wpmdb_addon_requirement_check', array() );
+		$addon_requirement_check = get_site_option( 'wpmdb_addon_requirement_check', array() );
 
 		// we only want to delete the transients once, here we keep track of which versions we've checked
-		if ( ! isset( $addon_requirement_check[$this->plugin_slug] ) || $addon_requirement_check[$this->plugin_slug] != $GLOBALS['wpmdb_meta'][$this->plugin_slug]['version'] ) {
+		if ( ! isset( $addon_requirement_check[ $this->plugin_slug ] ) || $addon_requirement_check[ $this->plugin_slug ] != $GLOBALS['wpmdb_meta'][ $this->plugin_slug ]['version'] ) {
 			delete_site_transient( 'wpmdb_upgrade_data' );
 			delete_site_transient( 'update_plugins' );
-			$addon_requirement_check[$this->plugin_slug] = $GLOBALS['wpmdb_meta'][$this->plugin_slug]['version'];
-			update_option( 'wpmdb_addon_requirement_check', $addon_requirement_check );
+			$addon_requirement_check[ $this->plugin_slug ] = $GLOBALS['wpmdb_meta'][ $this->plugin_slug ]['version'];
+			update_site_option( 'wpmdb_addon_requirement_check', $addon_requirement_check );
 		}
 
 		$this->version_requirement_warning();

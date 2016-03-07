@@ -1,4 +1,5 @@
 <?php
+
 class WPMDB_Utils {
 
 	/**
@@ -24,5 +25,4 @@ class WPMDB_Utils {
 
 		return true;
 	}
-
 }

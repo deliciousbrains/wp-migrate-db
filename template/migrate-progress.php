@@ -1,5 +1,6 @@
 <div class="progress-content">
 	<span class="close-progress-content close-progress-content-button">&times;</span>
+
 	<div>
 		<h2 class="progress-title"><?php _e( 'Please wait while migration is running...', 'wp-migrate-db' ); ?></h2>
 	</div>
@@ -16,8 +17,8 @@
 	</div>
 
 	<div class="migration-controls">
-		<span class="pause-resume button"><?php _e( 'Pause', 'wp-migrate-db' ); ?></span>
-		<span class="cancel button"><?php _e( 'Cancel', 'wp-migrate-db' ); ?></span>
+		<span class="pause-resume button"><?php _ex( 'Pause', 'Temporarily stop migrating', 'wp-migrate-db' ); ?></span>
+		<span class="cancel button"><?php _ex( 'Cancel', 'Stop the migration', 'wp-migrate-db' ); ?></span>
 	</div>
 
 	<?php $this->template_part( array( 'progress_upgrade' ) ); ?>
