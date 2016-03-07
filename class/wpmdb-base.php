@@ -504,6 +504,12 @@ class WPMDB_Base {
 
 	function is_valid_licence( $skip_transient_check = false ) {
 		$response = $this->is_licence_expired( $skip_transient_check );
+
+		// Don't cripple the plugin's functionality if the user's licence is expired
+		if ( isset( $response['errors']['subscription_expired'] ) && 1 === count( $response['errors'] ) ) {
+			return true;
+		}
+
 		return ( isset( $response['errors'] ) ) ? false : true;
 	}
 
