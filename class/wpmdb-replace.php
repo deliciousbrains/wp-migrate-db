@@ -42,7 +42,7 @@ final class WPMDB_Replace {
 	 */
 	function is_subdomain_replaces_on() {
 		if ( ! isset( $this->subdomain_replaces_on ) ) {
-			$this->subdomain_replaces_on = ( is_multisite() && defined( 'SUBDOMAIN_INSTALL' ) && SUBDOMAIN_INSTALL && apply_filters( 'wpmdb_subdomain_replace', true ) );
+			$this->subdomain_replaces_on = ( is_multisite() && is_subdomain_install() && apply_filters( 'wpmdb_subdomain_replace', true ) );
 		}
 
 		return $this->subdomain_replaces_on;

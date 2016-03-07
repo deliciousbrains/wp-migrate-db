@@ -1047,12 +1047,17 @@ class WPMDB extends WPMDB_Base {
 		$this->set_post_data();
 
 		if ( ! isset( $this->domain_replace ) ) {
-			if ( ! empty( $this->post_data['domain_current_site'] ) ) {
+			if ( is_multisite() && ! empty( $this->post_data['domain_current_site'] ) ) {
 				$this->domain_replace = $this->post_data['domain_current_site'];
-			} elseif ( ! empty ( $this->form_data['replace_new'][1] ) ) { // occurs when performing an export migration
+			} elseif ( is_multisite() && ! empty( $this->form_data['replace_new'][1] ) ) {
 				$url = $this->form_data['replace_new'][1];
-				$url = $this->parse_url( $url );
-				$this->domain_replace = $url['host'];
+				$url = parse_url( $url );
+				
+				if ( isset( $url['host'] ) ) {	
+					$this->domain_replace = $url['host'];
+				} else {
+					$this->domain_replace = false;
+				}
 			} else {
 				$this->domain_replace = false;
 			}
