@@ -1,4 +1,4 @@
-(function($) {
+(function( $ ) {
 
 	$.wpmdb = {
 		/**
@@ -25,39 +25,40 @@
 			jQuery.wpmdb.remove_hook( 'filter', action, tag );
 		},
 		add_hook: function( hook_type, action, callable, tag ) {
-			if ( undefined == jQuery.wpmdb.hooks[hook_type][action] ) {
+			if ( undefined === jQuery.wpmdb.hooks[hook_type][action] ) {
 				jQuery.wpmdb.hooks[hook_type][action] = [];
 			}
 			var hooks = jQuery.wpmdb.hooks[hook_type][action];
-			if ( undefined == tag ) {
+			if ( undefined === tag ) {
 				tag = action + '_' + hooks.length;
 			}
-			jQuery.wpmdb.hooks[hook_type][action].push( { tag:tag, callable:callable } );
+			jQuery.wpmdb.hooks[hook_type][action].push( { tag: tag, callable: callable } );
 		},
 		do_hook: function( hook_type, action, value, args ) {
-			if ( undefined != jQuery.wpmdb.hooks[hook_type][action] ) {
+			if ( undefined !== jQuery.wpmdb.hooks[hook_type][action] ) {
 				var hooks = jQuery.wpmdb.hooks[hook_type][action];
-				for( var i=0; i<hooks.length; i++) {
-					if ( 'action'==hook_type ) {
-						hooks[i].callable(args);
+				for ( var i = 0; i < hooks.length; i++ ) {
+					if ( 'action' === hook_type ) {
+						hooks[i].callable( args );
 					} else {
-						value = hooks[i].callable(value, args);
+						value = hooks[i].callable( value, args );
 					}
 				}
 			}
-			if ( 'filter'==hook_type ) {
+			if ( 'filter' === hook_type ) {
 				return value;
 			}
 		},
 		remove_hook: function( hook_type, action, tag ) {
-			if ( undefined != jQuery.wpmdb.hooks[hook_type][action] ) {
+			if ( undefined !== jQuery.wpmdb.hooks[hook_type][action] ) {
 				var hooks = jQuery.wpmdb.hooks[hook_type][action];
-				for( var i=hooks.length-1; i>=0; i--) {
-					if (undefined==tag||tag==hooks[i].tag)
-						hooks.splice(i,1);
+				for ( var i = hooks.length - 1; i >= 0; i-- ) {
+					if ( undefined === tag || tag === hooks[i].tag ) {
+						hooks.splice( i, 1 );
 					}
+				}
 			}
 		}
-	}
+	};
 
-})(jQuery);
+})( jQuery );

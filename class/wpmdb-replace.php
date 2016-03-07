@@ -91,19 +91,27 @@ final class WPMDB_Replace {
 	 *
 	 * Mostly from https://github.com/interconnectit/Search-Replace-DB
 	 *
-	 * @param mixed $data              Used to pass any subordinate arrays back to in.
-	 * @param bool  $serialized        Does the array passed via $data need serialising.
-	 * @param bool  $parent_serialized Passes whether the original data passed in was serialized
+	 * @param mixed $data Used to pass any subordinate arrays back to in.
+	 * @param bool $serialized Does the array passed via $data need serialising.
+	 * @param bool $parent_serialized Passes whether the original data passed in was serialized
+	 * @param bool $filtered Should we apply before and after filters successively
 	 *
 	 * @return mixed    The original array with all elements replaced as needed.
 	 */
-	function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false ) {
+	function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false, $filtered = true ) {
 		$pre = apply_filters( 'wpmdb_pre_recursive_unserialize_replace', false, $data, $this );
 		if ( false !== $pre ) {
 			return $pre;
 		}
 
-		$is_json = false;
+		$is_json           = false;
+		$before_fired      = false;
+		$successive_filter = $filtered;
+
+		if ( true === $filtered ) {
+			list( $data, $before_fired, $successive_filter ) = apply_filters( 'wpmdb_before_replace_custom_data', array( $data, $before_fired, $successive_filter ), $this );
+		}
+
 		// some unserialized data cannot be re-serialized eg. SimpleXMLElements
 		try {
 			if ( is_string( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
@@ -114,11 +122,11 @@ final class WPMDB_Replace {
 						return $data;
 					}
 				}
-				$data = $this->recursive_unserialize_replace( $unserialized, true, true );
+				$data = $this->recursive_unserialize_replace( $unserialized, true, true, $successive_filter );
 			} elseif ( is_array( $data ) ) {
 				$_tmp = array();
 				foreach ( $data as $key => $value ) {
-					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -131,7 +139,7 @@ final class WPMDB_Replace {
 					if ( is_int( $key ) ) {
 						continue;
 					}
-					$_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					$_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -141,7 +149,7 @@ final class WPMDB_Replace {
 				$data = json_decode( $data, true );
 
 				foreach ( $data as $key => $value ) {
-					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
+					$_tmp[ $key ] = $this->recursive_unserialize_replace( $value, false, $parent_serialized, $successive_filter );
 				}
 
 				$data = $_tmp;
@@ -155,22 +163,22 @@ final class WPMDB_Replace {
 				}
 			}
 
-			if ( $serialized ) {
-				if ( $is_json ) {
-					return serialize( json_encode( $data ) );
-				} else {
-					return serialize( $data );
-				}
+			if ( $is_json ) {
+				$data = json_encode( $data );
 			}
 
-			if ( $is_json ) {
-				return json_encode( $data );
+			if ( $serialized ) {
+				$data = serialize( $data );
 			}
 		} catch ( Exception $error ) {
 			$error_msg     = __( 'Failed attempting to do the recursive unserialize replace. Please contact support.', 'wp-migrate-db' );
 			$error_details = $error->getMessage() . "\n\n";
 			$error_details .= var_export( $data, true );
 			$this->wpmdb->log_error( $error_msg, $error_details );
+		}
+
+		if ( true === $filtered ) {
+			$data = apply_filters( 'wpmdb_after_replace_custom_data', $data, $before_fired, $this );
 		}
 
 		return $data;
@@ -228,7 +236,8 @@ final class WPMDB_Replace {
 	 *
 	 * $is_posts = $this->table_is( 'posts' );
 	 *
-	 * @param  string  $desired_table Name of the desired table, table prefix omitted.
+	 * @param  string $desired_table Name of the desired table, table prefix omitted.
+	 *
 	 * @return boolean                Whether or not the desired table is the table currently being processed.
 	 */
 	public function table_is( $desired_table ) {

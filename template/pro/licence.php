@@ -7,7 +7,9 @@
 	<?php else : ?>
 		<?php if ( ! empty( $licence ) ) :
 			echo $this->get_formatted_masked_licence();
-		else : ?>
+			?>
+			<p class="licence-status"></p>
+		<?php else : ?>
 			<div class="licence-not-entered">
 				<input type="text" class="licence-input" autocomplete="off"/>
 				<button class="button register-licence" type="submit"><?php _e( 'Activate License', 'wp-migrate-db' ); ?></button>

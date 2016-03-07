@@ -12,7 +12,7 @@
 	<div class="indent-wrap expandable-content plugin-compatibility-wrap select-wrap">
 		<select autocomplete="off" class="multiselect" id="selected-plugins" name="selected_plugins[]" multiple="multiple">
 			<?php
-			$blacklist = array_flip( $this->settings['blacklist_plugins'] );
+			$blacklist = array_flip( (array) $this->settings['blacklist_plugins'] );
 			foreach ( get_plugins() as $key => $plugin ) {
 				if ( 0 === strpos( $key, 'wp-migrate-db' ) ) {
 					continue;
