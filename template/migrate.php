@@ -170,7 +170,7 @@ $breadcrumbs_params = array(
 							<span class="sort-handle"></span>
 						</td>
 						<td class="old-replace-col">
-							<input type="text" size="40" name="replace_old[]" class="code" id="old-path" placeholder="Old file path" value="<?php echo esc_attr( $this->absolute_root_file_path ); ?>" autocomplete="off" />
+							<input type="text" size="40" name="replace_old[]" class="code" id="old-path" placeholder="Old file path" value="<?php echo esc_attr( $this->get_absolute_root_file_path() ); ?>" autocomplete="off" />
 						</td>
 						<td class="arrow-col" title="Copy Find to Replace">
 							<span class="right-arrow">&rarr;</span>

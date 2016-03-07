@@ -57,7 +57,7 @@ class WPMDBPro_Command extends WPMDB_Command {
 	 * : Include transients (temporary cached data).
 	 *
 	 * [--subsite=<blog-id|subsite-url>]
-	 * : Export the given subsite as a single site install.
+	 * : Export the given subsite as a single site install. Requires the Multisite Tools addon.
 	 *
 	 * [--prefix=<new-table-prefix>]
 	 * : A new table prefix to be used for a subsite export.

@@ -117,6 +117,9 @@ class WPMDB_CLI extends WPMDB_Base {
 			}
 		}
 
+		// Ensure local site_details available.
+		$this->post_data['site_details']['local'] = $this->site_details();
+
 		// Check for tables specified in migration profile that do not exist in the source database
 		if ( ! empty( $this->profile['select_tables'] ) ) {
 			$source_tables = apply_filters( 'wpmdb_cli_filter_source_tables', $this->get_tables() );
@@ -238,10 +241,14 @@ class WPMDB_CLI extends WPMDB_Base {
 
 		WP_CLI::log( __( 'Initiating migration...', 'wp-migrate-db-cli' ) );
 
-		$migration_args              = $this->post_data;
-		$migration_args['form_data'] = http_build_query( $this->profile );
-		$migration_args['stage']     = 'migrate';
-		$this->post_data             = apply_filters( 'wpmdb_cli_initiate_migration_args', $migration_args, $this->profile );
+		$migration_args                          = $this->post_data;
+		$migration_args['form_data']             = http_build_query( $this->profile );
+		$migration_args['stage']                 = 'migrate';
+		$migration_args['site_details']['local'] = $this->site_details();
+
+		$this->post_data = apply_filters( 'wpmdb_cli_initiate_migration_args', $migration_args, $this->profile );
+
+		$this->post_data['site_details'] = json_encode( $this->post_data['site_details'] );
 
 		$response = $this->initiate_migration( $this->post_data );
 

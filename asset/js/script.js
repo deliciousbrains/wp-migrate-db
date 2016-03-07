@@ -311,9 +311,10 @@
 		if ( 'migrate_select' === table_intent ) {
 			tables = $( '#select-tables' ).val();
 		} else {
-			if ( 'push' === mig_type || 'savefile' === mig_type ) {
+			if ( 'pull' !== mig_type && 'undefined' !== typeof wpmdb_data.this_prefixed_tables ) {
 				tables = wpmdb_data.this_prefixed_tables;
-			} else {
+			}
+			if ( 'pull' === mig_type && 'undefined' !== typeof wpmdb.common.connection_data && 'undefined' !== typeof wpmdb.common.connection_data.prefixed_tables ) {
 				tables = wpmdb.common.connection_data.prefixed_tables;
 			}
 		}
@@ -323,6 +324,22 @@
 
 	function get_table_prefix( value, args ) {
 		return $( '.table-select-wrap .table-prefix' ).text();
+	}
+
+	function lock_replace_url( lock ) {
+		if ( true === lock ) {
+			$( '.replace-row.pin .replace-right-col input[type="text"]' ).attr( 'readonly', 'readonly' );
+			$( '.replace-row.pin .arrow-col' ).addClass( 'disabled' );
+		} else {
+			$( '.replace-row.pin .replace-right-col input[type="text"]' ).removeAttr( 'readonly' );
+			$( '.replace-row.pin .arrow-col' ).removeClass( 'disabled' );
+		}
+	}
+
+	function set_connection_data( data ) {
+		wpmdb.common.previous_connection_data = wpmdb.common.connection_data;
+		wpmdb.common.connection_data = data;
+		$.wpmdb.do_action( 'wpmdb_connection_data_updated', data );
 	}
 
 	$( document ).ready( function() {
@@ -614,6 +631,7 @@
 		function update_push_table_select() {
 			$( '#select-tables' ).remove();
 			$( '.select-tables-wrap' ).prepend( $push_select );
+			$( '#select-tables' ).change();
 		}
 
 		$.wpmdb.add_action( 'wpmdb_update_push_table_select', update_push_table_select );
@@ -621,6 +639,7 @@
 		function update_pull_table_select() {
 			$( '#select-tables' ).remove();
 			$( '.select-tables-wrap' ).prepend( $pull_select );
+			$( '#select-tables' ).change();
 		}
 
 		$.wpmdb.add_action( 'wpmdb_update_pull_table_select', update_pull_table_select );
@@ -644,6 +663,7 @@
 
 		function select_all_tables() {
 			$( '#select-tables' ).children( 'option' ).prop( 'selected', true );
+			$( '#select-tables' ).change();
 		}
 
 		$.wpmdb.add_action( 'wpmdb_select_all_tables', select_all_tables );
@@ -717,7 +737,7 @@
 					$( '.connection-status' ).hide();
 					$( '.step-two' ).show();
 					connection_established = true;
-					wpmdb.common.connection_data = data;
+					set_connection_data( data );
 					move_connection_info_box();
 
 					maybe_show_mixed_cased_table_name_warning();
@@ -1130,6 +1150,7 @@
 						tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
 					} else if ( 'backup_selected' === backup_option ) {
 						selected_tables = $( '#select-tables' ).val();
+						selected_tables = $.wpmdb.apply_filters( 'wpmdb_backup_selected_tables', selected_tables );
 						tables_to_migrate = get_intersect( selected_tables, wpmdb.common.connection_data.tables );
 					} else if ( 'backup_manual_select' === backup_option ) {
 						tables_to_migrate = $( '#select-backup' ).val();
@@ -1140,6 +1161,7 @@
 						tables_to_migrate = wpmdb_data.this_prefixed_tables;
 					} else if ( 'backup_selected' === backup_option ) {
 						selected_tables = $( '#select-tables' ).val();
+						selected_tables = $.wpmdb.apply_filters( 'wpmdb_backup_selected_tables', selected_tables );
 						tables_to_migrate = get_intersect( selected_tables, wpmdb_data.this_tables );
 					} else if ( 'backup_manual_select' === backup_option ) {
 						tables_to_migrate = $( '#select-backup' ).val();
@@ -1244,9 +1266,18 @@
 				nonce: wpmdb_data.nonces.initiate_migration
 			};
 
+			request_data.site_details = {
+				local: wpmdb_data.site_details
+			};
+
 			if ( 'savefile' !== migration_intent ) {
 				request_data.temp_prefix = wpmdb.common.connection_data.temp_prefix;
+				request_data.site_details.remote = wpmdb.common.connection_data.site_details;
 			}
+
+			// site_details can have a very large number of elements that blows out PHP's max_input_vars
+			// so we reduce it down to one variable for this one POST.
+			request_data.site_details = JSON.stringify( request_data.site_details );
 
 			doing_ajax = true;
 
@@ -2069,6 +2100,11 @@
 		// Copy Find field to associated Replace field on arrow click.
 		$( 'body' ).on( 'click', '.arrow-col', function() {
 			var replace_row_arrow = this;
+
+			if ( $( replace_row_arrow ).hasClass( 'disabled' ) ) {
+				return;
+			}
+
 			var original_value = $( replace_row_arrow ).prev( 'td' ).find( 'input' ).val();
 			var new_value_input = $( replace_row_arrow ).next( 'td' ).find( 'input' );
 			new_value_input.val( original_value );
@@ -2574,8 +2610,7 @@
 					maybe_show_prefix_notice( data.prefix );
 
 					connection_established = true;
-					wpmdb.common.previous_connection_data = wpmdb.common.connection_data;
-					wpmdb.common.connection_data = data;
+					set_connection_data( data );
 					move_connection_info_box();
 					change_replace_values();
 
@@ -2875,6 +2910,7 @@
 
 		$.wpmdb.add_filter( 'wpmdb_get_table_prefix', get_table_prefix );
 		$.wpmdb.add_filter( 'wpmdb_get_tables_to_migrate', get_tables_to_migrate );
+		$.wpmdb.add_action( 'wpmdb_lock_replace_url', lock_replace_url );
 
 		$.wpmdb.add_filter( 'wpmdb_before_migration_complete_hooks', function( hooks ) {
 			pause_before_finalize = $( 'input[name=pause_before_finalize]:checked' ).length ? true : false;
