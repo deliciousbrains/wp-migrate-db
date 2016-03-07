@@ -4,7 +4,7 @@ Plugin Name: WP Migrate DB Pro
 Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
 Description: Export, push, and pull to migrate your WordPress databases.
 Author: Delicious Brains
-Version: 1.5
+Version: 1.5.1
 Author URI: http://deliciousbrains.com
 Network: True
 Text Domain: wp-migrate-db
@@ -22,7 +22,7 @@ Domain Path: /languages/
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // **********************************************************************
 
-$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] = '1.5';
+$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] = '1.5.1';
 $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['folder']  = basename( plugin_dir_path( __FILE__ ) );
 $GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['abspath'] = dirname( __FILE__ );
 
@@ -112,3 +112,5 @@ function wpmdb_pro_cli() {
 
 	return $wpmdbpro_cli;
 }
+
+add_action( 'activated_plugin', array( 'WPMDB_Utils', 'deactivate_other_instances' ) );

@@ -4,7 +4,7 @@
 			<a class="general-helper slider-helper js-action-link" href="#"></a>
 
 			<div class="slider-message helper-message">
-				<?php printf( __( 'Some servers have rate limits which WP Migrate DB can hit when performing migrations. If you\'re experiencing migration failures due to server rate limits, you should set this to one or more seconds to alleviate the problem.', 'wp-migrate-db' ) ); ?>
+				<?php printf( __( 'Some servers have rate limits which the plugin can hit when performing migrations. If you\'re experiencing migration failures due to server rate limits, you should set this to one or more seconds to alleviate the problem.', 'wp-migrate-db' ) ); ?>
 			</div>
 		</div>
 		<div class="amount"></div>

@@ -187,9 +187,9 @@ class WPMDBPro extends WPMDB {
 					'title' => __( 'Pushing Local Development Data to a Staging&nbsp;Environment', 'wp-migrate-db' ),
 					'desc'  => __( 'This screencast demonstrates how you can push a local WordPress database you\'ve been using for development to a staging environment.', 'wp-migrate-db' ),
 				),
-				'0aR8-jC2XXM' => array(
-					'title' => __( 'Media Files Addon Demo', 'wp-migrate-db' ),
-					'desc'  => __( 'A short demo of how the Media Files addon allows you to sync up your WordPress Media Libraries.', 'wp-migrate-db' ),
+				'jjqc5dBX9DY' => array(
+					'title' => __( 'WP Migrate DB Pro Media Files Addon 1.3 and CLI Addon 1.1', 'wp-migrate-db' ),
+					'desc'  => __( 'A demonstration of what\'s new in WP Migrate DB Pro Media Files Addon 1.3 and CLI Addon 1.1.', 'wp-migrate-db' ),
 				),
 			),
 		);
@@ -607,7 +607,7 @@ class WPMDBPro extends WPMDB {
 		$db_version = '';
 		if ( ! empty( $filtered_post['db_version'] ) ) {
 			$db_version = $filtered_post['db_version'];
-			add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 3 );
+			add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 5 );
 		}
 
 		$this->find_replace_pairs = unserialize( $filtered_post['find_replace_pairs'] );
@@ -702,7 +702,7 @@ class WPMDBPro extends WPMDB {
 		$key_rules = array(
 			'action'  => 'key',
 			'intent'  => 'key',
-			'referer' => 'text',
+			'referer' => 'string',
 			'version' => 'string',
 			'sig'     => 'string',
 		);
@@ -1291,20 +1291,6 @@ class WPMDBPro extends WPMDB {
 
 		foreach ( $tables as $table ) {
 			$temp_tables[] = $temp_prefix . $table;
-		}
-
-		// Update tables to utf8mb4 if MySQL version > 5.5.3
-		global $wpdb;
-
-		if ( version_compare( $wpdb->db_version(), '5.5.3', '>=' ) ) {
-			require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
-
-			// WordPress versions 4.2 or greater
-			if ( function_exists( 'maybe_convert_table_to_utf8mb4' ) ) {
-				foreach ( $temp_tables as $table ) {
-					maybe_convert_table_to_utf8mb4( $table );
-				}
-			}
 		}
 
 		$sql = "SET FOREIGN_KEY_CHECKS=0;\n";

@@ -112,9 +112,6 @@ class WPMDB extends WPMDB_Base {
 			'<a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">' . esc_html( _x( 'Help', 'Get help or contact support', 'wp-migrate-db' ) ) . '</a>',
 		);
 
-		// automatically deactivate WPMDB Pro / Free if the other is already active
-		add_action( 'activated_plugin', array( $this, 'deactivate_other_instances' ) );
-
 		// display a notice when either WP Migrate DB or WP Migrate DB Pro is automatically deactivated
 		add_action( 'pre_current_active_plugins', array( $this, 'plugin_deactivated_notice' ) );
 
@@ -531,6 +528,12 @@ class WPMDB extends WPMDB_Base {
 		} else {
 			echo 'No';
 		}
+		echo "\r\n";
+
+		echo 'Delay Between Requests: ';
+		$delay_between_requests = $this->settings['delay_between_requests'];
+		$delay_between_requests = $delay_between_requests > 0 ? $delay_between_requests / 1000 : $delay_between_requests;
+		echo esc_html( $delay_between_requests ) . ' s';
 		echo "\r\n\r\n";
 
 		do_action( 'wpmdb_diagnostic_info' );
@@ -742,12 +745,12 @@ class WPMDB extends WPMDB_Base {
 
 				if ( 'push' == $this->state_data['intent'] ) {
 					// $db_version has been set to remote database's version.
-					add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 3 );
+					add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 5 );
 				} elseif ( 'savefile' == $this->state_data['intent'] && ! empty( $this->form_data['compatibility_older_mysql'] ) ) {
 					// compatibility_older_mysql is currently a checkbox meaning pre-5.5 compatibility (we play safe and target 5.1),
 					// this may change in the future to be a dropdown or radiobox returning the version to be compatible with.
 					$db_version = '5.1';
-					add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 3 );
+					add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 5 );
 				}
 			}
 
@@ -1394,7 +1397,7 @@ class WPMDB extends WPMDB_Base {
 			$alter_table_query  = '';
 			$create_table[0][1] = $this->process_sql_constraint( $create_table[0][1], $table_name, $alter_table_query );
 
-			$create_table[0][1] = apply_filters( 'wpmdb_create_table_query', $create_table[0][1], $table_name, $db_version );
+			$create_table[0][1] = apply_filters( 'wpmdb_create_table_query', $create_table[0][1], $table_name, $db_version, $this->form_data['action'], $this->state_data['stage'] );
 
 			$this->stow( $create_table[0][1] . ";\n" );
 
@@ -1447,6 +1450,8 @@ class WPMDB extends WPMDB_Base {
 		// $ints = holds a list of the possible integer types so as to not wrap them in quotation marks later in the insert statements
 		$defs = array();
 		$ints = array();
+		$bins = array();
+		$bits = array();
 		foreach ( $table_structure as $struct ) {
 			if ( ( 0 === strpos( $struct->Type, 'tinyint' ) ) ||
 			     ( 0 === strpos( strtolower( $struct->Type ), 'smallint' ) ) ||
@@ -1456,6 +1461,10 @@ class WPMDB extends WPMDB_Base {
 			) {
 				$defs[ strtolower( $struct->Field ) ] = ( null === $struct->Default ) ? 'NULL' : $struct->Default;
 				$ints[ strtolower( $struct->Field ) ] = '1';
+			} elseif ( 0 === strpos( $struct->Type, 'binary' ) ) {
+				$bins[ strtolower( $struct->Field ) ] = '1';
+			} elseif ( 0 === strpos( $struct->Type, 'bit' ) ) {
+				$bits[ strtolower( $struct->Field ) ] = '1';
 			}
 		}
 
@@ -1608,13 +1617,26 @@ class WPMDB extends WPMDB_Base {
 				$first_select = false;
 			}
 
+			$sel = $this->backquote( $table ) . '.*';
+			if ( ! empty( $bins ) ) {
+				foreach ( $bins as $key => $bin ) {
+					$hex_key = strtolower( $key ) . '__hex';
+					$sel .= ', HEX(' . $this->backquote( $key ) . ') as ' . $this->backquote( $hex_key );
+				}
+			}
+			if ( ! empty( $bits ) ) {
+				foreach ( $bits as $key => $bit ) {
+					$bit_key = strtolower( $key ) . '__bit';
+					$sel .= ', ' . $this->backquote( $key ) . '+0 as ' . $this->backquote( $bit_key );
+				}
+			}
 			$join     = implode( ' ', array_unique( $join ) );
 			$join     = apply_filters( 'wpmdb_rows_join', $join, $table );
 			$where    = apply_filters( 'wpmdb_rows_where', $where, $table );
 			$order_by = apply_filters( 'wpmdb_rows_order_by', $order_by, $table );
 			$limit    = apply_filters( 'wpmdb_rows_limit', $limit, $table );
 
-			$sql = 'SELECT ' . $this->backquote( $table ) . '.* FROM ' . $this->backquote( $table ) . " $join $where $order_by $limit";
+			$sql = 'SELECT ' . $sel . ' FROM ' . $this->backquote( $table ) . " $join $where $order_by $limit";
 			$sql = apply_filters( 'wpmdb_rows_sql', $sql, $table );
 
 			$table_data = $wpdb->get_results( $sql );
@@ -1656,6 +1678,24 @@ class WPMDB extends WPMDB_Base {
 
 							if ( null === $value ) {
 								$values[] = 'NULL';
+								continue;
+							}
+
+							// If we have binary data, substitute in hex encoded version and remove hex encoded version from row.
+							$hex_key = strtolower( $key ) . '__hex';
+							if ( isset( $bins[ strtolower( $key ) ] ) && $bins[ strtolower( $key ) ] && isset( $row->$hex_key ) ) {
+								$value    = "UNHEX('" . $row->$hex_key . "')";
+								$values[] = $value;
+								unset( $row->$hex_key );
+								continue;
+							}
+
+							// If we have bit data, substitute in properly bit encoded version.
+							$bit_key = strtolower( $key ) . '__bit';
+							if ( isset( $bits[ strtolower( $key ) ] ) && $bits[ strtolower( $key ) ] && isset( $row->$bit_key ) ) {
+								$value    = "b'" . $row->$bit_key . "'";
+								$values[] = $value;
+								unset( $row->$bit_key );
 								continue;
 							}
 
@@ -2452,6 +2492,7 @@ class WPMDB extends WPMDB_Base {
 			'this_tables'            => $this->get_tables(),
 			'this_prefixed_tables'   => $this->get_tables( 'prefix' ),
 			'this_table_sizes'       => $this->get_table_sizes(),
+			'this_table_sizes_hr'    => array_map( array( $this, 'format_table_sizes' ), $this->get_table_sizes() ),
 			'this_table_rows'        => $this->get_table_row_count(),
 			'this_upload_url'        => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'url' ) ) ) ),
 			'this_upload_dir_long'   => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'path' ) ) ) ),
@@ -2459,6 +2500,7 @@ class WPMDB extends WPMDB_Base {
 			'this_website_name'      => sanitize_title_with_dashes( DB_NAME ),
 			'this_download_url'      => network_admin_url( $this->plugin_base . '&download=' ),
 			'this_prefix'            => esc_html( $table_prefix ),
+			'this_plugin_base'       => esc_html( $this->plugin_base ),
 			'is_multisite'           => esc_html( is_multisite() ? 'true' : 'false' ),
 			'openssl_available'      => esc_html( $this->open_ssl_enabled() ? 'true' : 'false' ),
 			'max_request'            => esc_html( $this->settings['max_request'] ),
@@ -2659,35 +2701,6 @@ class WPMDB extends WPMDB_Base {
 		return __( 'Migrate DB', 'wp-migrate-db' );
 	}
 
-	function deactivate_other_instances( $plugin ) {
-		if ( ! in_array( basename( $plugin ), array( 'wp-migrate-db-pro.php', 'wp-migrate-db.php' ) ) ) {
-			return;
-		}
-
-		$plugin_to_deactivate  = 'wp-migrate-db.php';
-		$deactivated_notice_id = '1';
-		if ( $plugin_to_deactivate == basename( $plugin ) ) {
-			$plugin_to_deactivate  = 'wp-migrate-db-pro.php';
-			$deactivated_notice_id = '2';
-		}
-
-		if ( is_multisite() ) {
-			$active_plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
-			$active_plugins = array_keys( $active_plugins );
-		} else {
-			$active_plugins = (array) get_option( 'active_plugins', array() );
-		}
-
-		foreach ( $active_plugins as $basename ) {
-			if ( false !== strpos( $basename, $plugin_to_deactivate ) ) {
-				set_transient( 'wp_migrate_db_deactivated_notice_id', $deactivated_notice_id, 1 * HOUR_IN_SECONDS );
-				deactivate_plugins( $basename );
-
-				return;
-			}
-		}
-	}
-
 	function plugin_deactivated_notice() {
 		if ( false !== ( $deactivated_notice_id = get_transient( 'wp_migrate_db_deactivated_notice_id' ) ) ) {
 			if ( '1' === $deactivated_notice_id ) {
@@ -2731,14 +2744,16 @@ class WPMDB extends WPMDB_Base {
 	/**
 	 * Ensures that the given create table sql string is compatible with the target database server version.
 	 *
-	 * @param $create_table
-	 * @param $table
-	 * @param $db_version
+	 * @param string $create_table
+	 * @param string $table
+	 * @param string $db_version
+	 * @param string $action
+	 * @param string $stage
 	 *
 	 * @return mixed
 	 */
-	function mysql_compat_filter( $create_table, $table, $db_version ) {
-		if ( empty( $db_version ) ) {
+	function mysql_compat_filter( $create_table, $table, $db_version, $action, $stage ) {
+		if ( empty( $db_version ) || empty( $action ) || empty( $stage ) ) {
 			return $create_table;
 		}
 
@@ -2750,9 +2765,30 @@ class WPMDB extends WPMDB_Base {
 
 			// Replace utf8mb4 introduced in MySQL 5.5.3 with utf8. As of WordPress 4.2 utf8mb4 is used by default on supported MySQL versions
 			// but causes migrations to fail when the remote site uses MySQL < 5.5.3.
-			$create_table = preg_replace( '/(COLLATE\s)utf8mb4/', '$1utf8', $create_table ); // Column collation
-			$create_table = preg_replace( '/(COLLATE=)utf8mb4/', '$1utf8', $create_table ); // Table collation
-			$create_table = preg_replace( '/(CHARSET\s?=\s?)utf8mb4/', '$1utf8', $create_table ); // Table charset
+			$abort_utf8mb4 = false;
+			if ( 'savefile' !== $action && 'backup' !== $stage ) {
+				$abort_utf8mb4 = true;
+			}
+			// Escape hatch if user knows that site content is utf8 safe.
+			$abort_utf8mb4 = apply_filters( 'wpmdb_abort_utf8mb4_to_utf8', $abort_utf8mb4 );
+
+			$replace_count = 0;
+			$create_table = preg_replace( '/(COLLATE\s)utf8mb4/', '$1utf8', $create_table, -1, $replace_count ); // Column collation
+
+			if ( false === $abort_utf8mb4 || 0 === $replace_count ) {
+				$create_table = preg_replace( '/(COLLATE=)utf8mb4/', '$1utf8', $create_table, - 1, $replace_count ); // Table collation
+			}
+
+			if ( false === $abort_utf8mb4 || 0 === $replace_count ) {
+				$create_table = preg_replace( '/(CHARSET\s?=\s?)utf8mb4/', '$1utf8', $create_table, - 1, $replace_count ); // Table charset
+			}
+
+			if ( true === $abort_utf8mb4 && 0 !== $replace_count ) {
+				$return = sprintf( __( 'The source site supports utf8mb4 data but the target does not, aborting migration to avoid possible data corruption. Please see %1$s for more information. (#148)', 'wp-migrate-db-pro' ), sprintf( '<a href="https://deliciousbrains.com/wp-migrate-db-pro/doc/source-site-supports-utf8mb4/">%1$s</a>', __( 'our documentation', 'wp-migrate-db-pro' ) ) );
+				$return = array( 'wpmdb_error' => 1, 'body' => $return );
+				$result = $this->end_ajax( json_encode( $return ) );
+				return $result;
+			}
 		}
 
 		return $create_table;

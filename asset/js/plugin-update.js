@@ -6,12 +6,11 @@
 	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' );
 	var spinner_url = admin_url + '/images/spinner';
 	var spinner;
-	if ( window.devicePixelRatio >= 2 ) {
+	if ( 2 < window.devicePixelRatio ) {
 		spinner_url += '-2x';
 	}
 	spinner_url += '.gif';
-	spinner = $('<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />');
-
+	spinner = $( '<img src="' + spinner_url + '" alt="" class="check-licence-spinner" />' );
 
 	$( document ).ready( function() {
 
@@ -50,10 +49,10 @@
 				},
 				success: function( data ) {
 					doing_check_licence = false;
-					if ( typeof data.errors !== 'undefined' ) {
+					if ( 'undefined' !== typeof data.errors ) {
 						var msg = '';
 						for ( var key in data.errors ) {
-							msg += data.errors[key];
+							msg += data.errors[ key ];
 						}
 						$( '.wpmdb-licence-error-notice' ).fadeOut( fade_duration, function() {
 							$( '.check-licence-spinner' ).remove();
@@ -61,10 +60,10 @@
 								.html( msg )
 								.fadeIn( fade_duration );
 						} );
-					}
-					else {
-						// success
-						// fade out, empty wpmdb custom error content, swap back in the original wordpress upgrade message, fade in
+					} else {
+
+						// Success
+						// Fade out, empty wpmdb custom error content, swap back in the original wordpress upgrade message, fade in
 						$( '.wpmdbpro-custom-visible' ).fadeOut( fade_duration, function() {
 							$( '.check-licence-spinner' ).remove();
 							$( '.wpmdbpro-custom-visible' ).empty()

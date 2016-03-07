@@ -1,11 +1,4 @@
-// global functions
-var migration_complete;
-var migration_complete_events;
-var migrate_table_recursive;
-var execute_next_step;
-var wpmdb_flush;
-
-(function( $ ) {
+(function( $, wpmdb ) {
 
 	var migration_state_id = '';
 	var connection_established = false;
@@ -46,7 +39,7 @@ var wpmdb_flush;
 
 	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/spinner';
 
-	if ( window.devicePixelRatio >= 2 ) {
+	if ( 2 < window.devicePixelRatio ) {
 		spinner_url += '-2x';
 	}
 	spinner_url += '.gif';
@@ -74,7 +67,7 @@ var wpmdb_flush;
 
 	function is_int( n ) {
 		n = parseInt( n );
-		return typeof n === 'number' && n % 1 === 0;
+		return 'number' === typeof n  && 0 === n % 1;
 	}
 
 	function setup_counter() {
@@ -114,10 +107,10 @@ var wpmdb_flush;
 	}
 
 	function get_query_var( name ) {
-		name = name.replace( /[\[]/, "\\[" ).replace( /[\]]/, "\\]" );
-		var regex = new RegExp( "[\\?&]" + name + "=([^&#]*)" ),
+		name = name.replace( /[\[]/, '\\[' ).replace( /[\]]/, '\\]' );
+		var regex = new RegExp( '[\\?&]' + name + '=([^&#]*)' ),
 			results = regex.exec( location.search );
-		return results === null ? "" : decodeURIComponent( results[ 1 ].replace( /\+/g, " " ) );
+		return null === results ? '' : decodeURIComponent( results[ 1 ].replace( /\+/g, ' ' ) );
 	}
 
 	function maybe_show_ssl_warning( url, key, remote_scheme ) {
@@ -126,7 +119,7 @@ var wpmdb_flush;
 			$( '.ssl-notice' ).show();
 			show_ssl_notice = true;
 			url = url.replace( 'https', 'http' );
-			$( '.pull-push-connection-info' ).val( url + "\n" + key );
+			$( '.pull-push-connection-info' ).val( url + '\n' + key );
 			return;
 		}
 		show_ssl_notice = false;
@@ -139,15 +132,14 @@ var wpmdb_flush;
 			show_prefix_notice = true;
 			if ( 'pull' === wpmdb_migration_type() ) {
 				$( '.prefix-notice.pull' ).show();
-			}
-			else {
+			} else {
 				$( '.prefix-notice.push' ).show();
 			}
 		}
 	}
 
 	function maybe_show_mixed_cased_table_name_warning() {
-		if ( 'undefined' === typeof connection_data || false === connection_data ) {
+		if ( 'undefined' === typeof wpmdb.common.connection_data || false === wpmdb.common.connection_data ) {
 			return;
 		}
 
@@ -163,7 +155,7 @@ var wpmdb_flush;
 			if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
 				tables_to_migrate = wpmdb_data.this_prefixed_tables;
 			} else {
-				tables_to_migrate = connection_data.prefixed_tables;
+				tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
 			}
 		}
 
@@ -182,7 +174,7 @@ var wpmdb_flush;
 		 * Do not display the warning if the remote lower_case_table_names does not equal "1" (i.e the only problematic setting)
 		 * Applies to push/export migrations.
 		 */
-		if ( '1' !== connection_data.lower_case_table_names && ( 'push' === migration_intent || 'savefile' === migration_intent ) ) {
+		if ( '1' !== wpmdb.common.connection_data.lower_case_table_names && ( 'push' === migration_intent || 'savefile' === migration_intent ) ) {
 			return;
 		}
 
@@ -217,7 +209,7 @@ var wpmdb_flush;
 	function get_migration_status_label( url, intent, stage ) {
 		var domain = get_domain_name( url );
 		var migrating_stage_label, completed_stage_label;
-		if ( intent === 'pull' ) {
+		if ( 'pull' === intent ) {
 			migrating_stage_label = wpmdb_strings.pull_migration_label_migrating;
 			completed_stage_label = wpmdb_strings.pull_migration_label_completed;
 		} else {
@@ -236,7 +228,7 @@ var wpmdb_flush;
 	}
 
 	function remove_protocol( url ) {
-		return url.replace( /^https?:/i, "" );
+		return url.replace( /^https?:/i, '' );
 	}
 
 	function disable_export_type_controls() {
@@ -266,9 +258,10 @@ var wpmdb_flush;
 			$( '.progress-text' ).html( previous_progress_text );
 			$( '.migration-progress-ajax-spinner' ).show();
 			$( '.pause-resume' ).html( wpmdb_strings.pause );
-			// resume the timer
+
+			// Resume the timer
 			elapsed_interval = setInterval( count, 1000 );
-			execute_next_step();
+			wpmdb.functions.execute_next_step();
 		} else {
 			migration_paused = true;
 			doing_ajax = false;
@@ -314,12 +307,11 @@ var wpmdb_flush;
 			if ( $( this ).is( ':checked' ) ) {
 				var answer = confirm( wpmdb_strings.mu_plugin_confirmation );
 
-				if ( ! answer ) {
+				if ( !answer ) {
 					$( this ).prop( 'checked', false );
 					return;
 				}
-			}
-			else {
+			} else {
 				install = '0';
 			}
 
@@ -347,8 +339,7 @@ var wpmdb_flush;
 				success: function( data ) {
 					if ( '' !== $.trim( data ) ) {
 						alert( data );
-					}
-					else {
+					} else {
 						$( '.plugin-compatibility' ).append( '<span class="ajax-success-msg">' + wpmdb_strings.saved + '</span>' );
 						$( '.ajax-success-msg' ).fadeOut( 2000, function() {
 							$( this ).remove();
@@ -366,12 +357,12 @@ var wpmdb_flush;
 			$( '.plugin-compatibility-wrap' ).show();
 		}
 
-		if ( navigator.userAgent.indexOf( 'MSIE' ) > 0 || navigator.userAgent.indexOf( 'Trident' ) > 0 ) {
+		if ( 0 <= navigator.userAgent.indexOf( 'MSIE' ) || 0 <= navigator.userAgent.indexOf( 'Trident' ) ) {
 			$( '.ie-warning' ).show();
 		}
 
 		if ( 0 === wpmdb_data.valid_licence ) {
-			$( '#savefile' ).prop( "checked", true );
+			$( '#savefile' ).prop( 'checked', true );
 		}
 		var max_request_size_container = $( '.max-request-size' );
 		var max_request_size_slider = $( '.slider', max_request_size_container );
@@ -525,8 +516,7 @@ var wpmdb_flush;
 					if ( 'undefined' !== typeof data.dbrains_api_down ) {
 						support_msg = data.dbrains_api_down + data.message;
 						addons_msg = data.dbrains_api_down;
-					}
-					else if ( 'undefined' !== typeof data.errors ) {
+					} else if ( 'undefined' !== typeof data.errors ) {
 
 						if ( 'undefined' !== typeof data.errors.subscription_expired ) {
 							licence_msg = data.errors.subscription_expired.licence;
@@ -541,10 +531,9 @@ var wpmdb_flush;
 							addons_msg = msg;
 						}
 						if ( 'undefined' !== typeof data.addon_content ) {
-							addons_msg += "\n" + data.addon_content;
+							addons_msg += '\n' + data.addon_content;
 						}
-					}
-					else {
+					} else {
 						support_msg = data.message;
 						addons_msg = data.addon_content;
 					}
@@ -585,12 +574,12 @@ var wpmdb_flush;
 			check_licence( null, 'all' );
 		} );
 		function refresh_table_selects() {
-			if ( undefined !== wpmdb_data && undefined !== wpmdb_data.this_tables && undefined !== wpmdb_data.this_table_sizes ) {
-				$push_select = create_table_select( wpmdb_data.this_tables, wpmdb_data.this_table_sizes, $( $push_select ).val() );
+			if ( undefined !== wpmdb_data && undefined !== wpmdb_data.this_tables && undefined !== wpmdb_data.this_table_sizes_hr ) {
+				$push_select = create_table_select( wpmdb_data.this_tables, wpmdb_data.this_table_sizes_hr, $( $push_select ).val() );
 			}
 
-			if ( undefined !== connection_data && undefined !== connection_data.tables && undefined !== connection_data.table_sizes_hr ) {
-				$pull_select = create_table_select( connection_data.tables, connection_data.table_sizes_hr, $( $pull_select ).val() );
+			if ( undefined !== wpmdb.common.connection_data && undefined !== wpmdb.common.connection_data.tables && undefined !== wpmdb.common.connection_data.table_sizes_hr ) {
+				$pull_select = create_table_select( wpmdb.common.connection_data.tables, wpmdb.common.connection_data.table_sizes_hr, $( $pull_select ).val() );
 			}
 		}
 
@@ -641,8 +630,8 @@ var wpmdb_flush;
 
 		function establish_remote_connection_from_saved_profile() {
 			var action = wpmdb_migration_type();
-			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( "\n" );
-			if ( 'undefined' === typeof wpmdb_default_profile || true === wpmdb_default_profile || 'savefile' === action || doing_ajax || ! wpmdb_data.is_pro ) {
+			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
+			if ( 'undefined' === typeof wpmdb_default_profile || true === wpmdb_default_profile || 'savefile' === action || doing_ajax || !wpmdb_data.is_pro ) {
 				return;
 			}
 
@@ -681,7 +670,7 @@ var wpmdb_flush;
 					doing_ajax = false;
 					enable_export_type_controls();
 
-					if ( typeof data.wpmdb_error !== 'undefined' && data.wpmdb_error === 1 ) {
+					if ( 'undefined' !== typeof data.wpmdb_error && 1 === data.wpmdb_error ) {
 						$( '.connection-status' ).html( data.body );
 						$( '.connection-status' ).addClass( 'notification-message error-notice migration-error' );
 
@@ -702,26 +691,25 @@ var wpmdb_flush;
 					$( '.connection-status' ).hide();
 					$( '.step-two' ).show();
 					connection_established = true;
-					connection_data = data;
+					wpmdb.common.connection_data = data;
 					move_connection_info_box();
 
 					maybe_show_mixed_cased_table_name_warning();
 
 					var loaded_tables = '';
-					if ( wpmdb_default_profile === false && typeof wpmdb_loaded_tables !== 'undefined' ) {
+					if ( false === wpmdb_default_profile && 'undefined' !== typeof wpmdb_loaded_tables ) {
 						loaded_tables = wpmdb_loaded_tables;
 					}
 
-					$pull_select = create_table_select( connection_data.tables, connection_data.table_sizes_hr, loaded_tables );
+					$pull_select = create_table_select( wpmdb.common.connection_data.tables, wpmdb.common.connection_data.table_sizes_hr, loaded_tables );
 
 					var loaded_post_types = '';
-					if ( wpmdb_default_profile === false && typeof wpmdb_loaded_post_types !== 'undefined' ) {
-						if ( typeof data.select_post_types !== 'undefined' ) {
+					if ( false === wpmdb_default_profile && 'undefined' !== typeof wpmdb_loaded_post_types ) {
+						if ( 'undefined' !== typeof data.select_post_types ) {
 							$( '#exclude-post-types' ).attr( 'checked', 'checked' );
 							$( '.post-type-select-wrap' ).show();
 							loaded_post_types = data.select_post_types;
-						}
-						else {
+						} else {
 							loaded_post_types = wpmdb_loaded_post_types;
 						}
 					}
@@ -734,12 +722,11 @@ var wpmdb_flush;
 						class: 'multiselect'
 					} );
 
-					$.each( connection_data.post_types, function( index, value ) {
+					$.each( wpmdb.common.connection_data.post_types, function( index, value ) {
 						var selected = $.inArray( value, loaded_post_types );
-						if ( selected !== -1 || ( wpmdb_convert_exclude_revisions === true && value !== 'revision' ) ) {
+						if ( -1 !== selected || ( true === wpmdb_convert_exclude_revisions && 'revision' !== value ) ) {
 							selected = ' selected="selected" ';
-						}
-						else {
+						} else {
 							selected = ' ';
 						}
 						$( $post_type_select ).append( '<option' + selected + 'value="' + value + '">' + value + '</option>' );
@@ -748,7 +735,7 @@ var wpmdb_flush;
 					$pull_post_type_select = $post_type_select;
 
 					var loaded_tables_backup = '';
-					if ( wpmdb_default_profile === false && typeof wpmdb_loaded_tables_backup !== 'undefined' ) {
+					if ( false === wpmdb_default_profile && 'undefined' !== typeof wpmdb_loaded_tables_backup ) {
 						loaded_tables_backup = wpmdb_loaded_tables_backup;
 					}
 
@@ -760,15 +747,14 @@ var wpmdb_flush;
 						class: 'multiselect'
 					} );
 
-					$.each( connection_data.tables, function( index, value ) {
+					$.each( wpmdb.common.connection_data.tables, function( index, value ) {
 						var selected = $.inArray( value, loaded_tables_backup );
-						if ( selected !== -1 ) {
+						if ( -1 !== selected ) {
 							selected = ' selected="selected" ';
-						}
-						else {
+						} else {
 							selected = ' ';
 						}
-						$( $table_select_backup ).append( '<option' + selected + 'value="' + value + '">' + value + ' (' + connection_data.table_sizes_hr[ value ] + ')</option>' );
+						$( $table_select_backup ).append( '<option' + selected + 'value="' + value + '">' + value + ' (' + wpmdb.common.connection_data.table_sizes_hr[ value ] + ')</option>' );
 					} );
 
 					$push_select_backup = $table_select_backup;
@@ -781,13 +767,12 @@ var wpmdb_flush;
 						$( '.backup-tables-wrap' ).prepend( $pull_select_backup );
 						$( '.table-prefix' ).html( data.prefix );
 						$( '.uploads-dir' ).html( wpmdb_data.this_uploads_dir );
-					}
-					else {
+					} else {
 						$( '#select-backup' ).remove();
 						$( '.backup-tables-wrap' ).prepend( $push_select_backup );
 					}
 
-					$.wpmdb.do_action( 'verify_connection_to_remote_site', connection_data );
+					$.wpmdb.do_action( 'verify_connection_to_remote_site', wpmdb.common.connection_data );
 				}
 
 			} );
@@ -802,7 +787,6 @@ var wpmdb_flush;
 			e.preventDefault();
 			$( this ).blur();
 		} );
-
 
 		function enable_pro_licence( data, licence_key ) {
 			$( '.licence-input, .register-licence' ).remove();
@@ -826,7 +810,7 @@ var wpmdb_flush;
 
 			var licence_key = $.trim( $( '.licence-input' ).val() );
 
-			if ( licence_key === '' ) {
+			if ( '' === licence_key ) {
 				$( '.licence-status' ).addClass( 'notification-message error-notice' );
 				$( '.licence-status' ).html( wpmdb_strings.enter_license_key );
 				return;
@@ -856,22 +840,20 @@ var wpmdb_flush;
 					doing_licence_registration_ajax = false;
 					$( '.register-licence-ajax-spinner' ).remove();
 
-					if ( typeof data.errors !== 'undefined' ) {
+					if ( 'undefined' !== typeof data.errors ) {
 						var msg = '';
 						for ( var key in data.errors ) {
 							msg += data.errors[ key ];
 						}
 						$( '.licence-status' ).html( msg );
 
-						if ( typeof data.masked_licence !== 'undefined' ) {
+						if ( 'undefined' !== typeof data.masked_licence ) {
 							enable_pro_licence( data, licence_key );
 							$( '.migrate-tab .invalid-licence' ).hide();
 						}
-					}
-					else if ( typeof data.wpmdb_error !== 'undefined' && typeof data.body !== 'undefined' ) {
+					} else if ( 'undefined' !== typeof data.wpmdb_error && 'undefined' !== typeof data.body ) {
 						$( '.licence-status' ).html( data.body );
-					}
-					else {
+					} else {
 						$( '.licence-status' ).html( wpmdb_strings.license_registered ).delay( 5000 ).fadeOut( 1000 );
 						$( '.licence-status' ).addClass( 'success notification-message success-notice' );
 						enable_pro_licence( data, licence_key );
@@ -968,8 +950,7 @@ var wpmdb_flush;
 			if ( $( '.expand-collapse-arrow', this ).hasClass( 'collapsed' ) ) {
 				$( '.expand-collapse-arrow', this ).removeClass( 'collapsed' );
 				$( this ).next().show();
-			}
-			else {
+			} else {
 				$( '.expand-collapse-arrow', this ).addClass( 'collapsed' );
 				$( this ).next().hide();
 			}
@@ -978,8 +959,7 @@ var wpmdb_flush;
 		$( '.checkbox-label input[type=checkbox]' ).change( function() {
 			if ( $( this ).is( ':checked' ) ) {
 				$( this ).parent().next().show();
-			}
-			else {
+			} else {
 				$( this ).parent().next().hide();
 			}
 		} );
@@ -989,8 +969,7 @@ var wpmdb_flush;
 			if ( $( this ).is( ':checked' ) ) {
 				$( '.save-settings-button' ).show();
 				$( '.migrate-db .button-primary' ).val( wpmdb_strings.migrate_db_save );
-			}
-			else {
+			} else {
 				$( '.save-settings-button' ).hide();
 				$( '.migrate-db .button-primary' ).val( wpmdb_strings.migrate_db );
 			}
@@ -1022,7 +1001,7 @@ var wpmdb_flush;
 			}
 
 			// check that they've selected some tables to migrate
-			if ( $( '#migrate-selected' ).is( ':checked' ) && $( '#select-tables' ).val() === null ) {
+			if ( $( '#migrate-selected' ).is( ':checked' ) && null === $( '#select-tables' ).val() ) {
 				alert( wpmdb_strings.please_select_one_table );
 				return;
 			}
@@ -1076,16 +1055,16 @@ var wpmdb_flush;
 
 			stage = 'backup';
 
-			if ( migration_intent === 'savefile' ) {
+			if ( 'savefile' === migration_intent ) {
 				stage = 'migrate';
 			}
 
-			if ( $( '#create-backup' ).is( ':checked' ) === false ) {
+			if ( false === $( '#create-backup' ).is( ':checked' ) ) {
 				stage = 'migrate';
 			}
 
 			var table_intent = $( 'input[name=table_migrate_option]:checked' ).val();
-			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( "\n" );
+			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
 			var table_rows = '';
 
 			remote_site = connection_info[ 0 ];
@@ -1097,10 +1076,9 @@ var wpmdb_flush;
 
 			completed_msg = wpmdb_strings.exporting_complete;
 
-			if ( migration_intent === 'savefile' ) {
+			if ( 'savefile' === migration_intent ) {
 				static_migration_label = wpmdb_strings.exporting_please_wait;
-			}
-			else {
+			} else {
 				static_migration_label = get_migration_status_label( remote_site, migration_intent, 'migrating' );
 				completed_msg = get_migration_status_label( remote_site, migration_intent, 'completed' );
 			}
@@ -1112,58 +1090,52 @@ var wpmdb_flush;
 			var table_option = $( 'input[name=table_migrate_option]:checked' ).val();
 			var selected_tables = '';
 
-			if ( stage === 'backup' ) {
-				if ( table_option === 'migrate_only_with_prefix' && backup_option === 'backup_selected' ) {
+			if ( 'backup' === stage ) {
+				if ( 'migrate_only_with_prefix' === table_option && 'backup_selected' === backup_option ) {
 					backup_option = 'backup_only_with_prefix';
 				}
-				if ( migration_intent === 'push' ) {
-					table_rows = connection_data.table_rows;
-					if ( backup_option === 'backup_only_with_prefix' ) {
-						tables_to_migrate = connection_data.prefixed_tables;
-					}
-					else if ( backup_option === 'backup_selected' ) {
+				if ( 'push' === migration_intent ) {
+					table_rows = wpmdb.common.connection_data.table_rows;
+					if ( 'backup_only_with_prefix' === backup_option ) {
+						tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
+					} else if ( 'backup_selected' === backup_option ) {
 						selected_tables = $( '#select-tables' ).val();
-						tables_to_migrate = get_intersect( selected_tables, connection_data.tables );
-					}
-					else if ( backup_option === 'backup_manual_select' ) {
+						tables_to_migrate = get_intersect( selected_tables, wpmdb.common.connection_data.tables );
+					} else if ( 'backup_manual_select' === backup_option ) {
 						tables_to_migrate = $( '#select-backup' ).val();
 					}
-				}
-				else {
+				} else {
 					table_rows = wpmdb_data.this_table_rows;
-					if ( backup_option === 'backup_only_with_prefix' ) {
+					if ( 'backup_only_with_prefix' === backup_option ) {
 						tables_to_migrate = wpmdb_data.this_prefixed_tables;
-					}
-					else if ( backup_option === 'backup_selected' ) {
+					} else if ( 'backup_selected' === backup_option ) {
 						selected_tables = $( '#select-tables' ).val();
 						tables_to_migrate = get_intersect( selected_tables, wpmdb_data.this_tables );
-					}
-					else if ( backup_option === 'backup_manual_select' ) {
+					} else if ( 'backup_manual_select' === backup_option ) {
 						tables_to_migrate = $( '#select-backup' ).val();
 					}
 				}
-			}
-			else {
-				if ( table_intent === 'migrate_select' ) { // user has elected to migrate only certain tables
-					// grab tables as per what the user has selected from the multiselect box
+			} else {
+				if ( 'migrate_select' === table_intent ) { // User has elected to migrate only certain tables
+
+					// Grab tables as per what the user has selected from the multiselect box
 					tables_to_migrate = $( '#select-tables' ).val();
-					// user is pushing or exporting
-					if ( migration_intent === 'push' || migration_intent === 'savefile' ) {
-						// default value, assuming we're not backing up
+
+					// User is pushing or exporting
+					if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
+
+						// Default value, assuming we're not backing up
 						table_rows = wpmdb_data.this_table_rows;
+					} else {
+						table_rows = wpmdb.common.connection_data.table_rows;
 					}
-					else {
-						table_rows = connection_data.table_rows;
-					}
-				}
-				else {
-					if ( migration_intent === 'push' || migration_intent === 'savefile' ) {
+				} else {
+					if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
 						tables_to_migrate = wpmdb_data.this_prefixed_tables;
 						table_rows = wpmdb_data.this_table_rows;
-					}
-					else {
-						tables_to_migrate = connection_data.prefixed_tables;
-						table_rows = connection_data.table_rows;
+					} else {
+						tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
+						table_rows = wpmdb.common.connection_data.table_rows;
 					}
 				}
 			}
@@ -1254,8 +1226,8 @@ var wpmdb_flush;
 				nonce: wpmdb_data.nonces.initiate_migration
 			};
 
-			if ( migration_intent !== 'savefile' ) {
-				request_data.temp_prefix = connection_data.temp_prefix;
+			if ( 'savefile' !== migration_intent ) {
+				request_data.temp_prefix = wpmdb.common.connection_data.temp_prefix;
 			}
 
 			doing_ajax = true;
@@ -1274,15 +1246,15 @@ var wpmdb_flush;
 					console.log( textStatus );
 					console.log( errorThrown );
 					doing_ajax = false;
-					migration_error = true;
-					migration_complete_events();
+					wpmdb.common.migration_error = true;
+					wpmdb.functions.migration_complete_events();
 					return;
 				},
 				success: function( data ) {
 					doing_ajax = false;
-					if ( typeof data !== 'undefined' && typeof data.wpmdb_error !== 'undefined' && data.wpmdb_error === 1 ) {
-						migration_error = true;
-						migration_complete_events();
+					if ( 'undefined' !== typeof data && 'undefined' !== typeof data.wpmdb_error && 1 === data.wpmdb_error ) {
+						wpmdb.common.migration_error = true;
+						wpmdb.functions.migration_complete_events();
 						$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 						$( '.progress-text' ).addClass( 'migration-error' );
 						$( '.progress-text' ).html( data.body );
@@ -1301,37 +1273,34 @@ var wpmdb_flush;
 
 					// Set delay between requests - use max of local/remote values, 0 if doing export
 					delay_between_requests = 0;
-					if ( 'savefile' !== migration_intent && 'undefined' !== typeof connection_data && 'undefined' !== typeof connection_data.delay_between_requests ) {
-						delay_between_requests = Math.max( parseInt( wpmdb_data.delay_between_requests ), parseInt( connection_data.delay_between_requests ) );
+					if ( 'savefile' !== migration_intent && 'undefined' !== typeof wpmdb.common.connection_data && 'undefined' !== typeof wpmdb.common.connection_data.delay_between_requests ) {
+						delay_between_requests = Math.max( parseInt( wpmdb_data.delay_between_requests ), parseInt( wpmdb.common.connection_data.delay_between_requests ) );
 					}
 
-					migrate_table_recursive = function( current_row, primary_keys ) {
+					wpmdb.functions.migrate_table_recursive = function( current_row, primary_keys ) {
 
 						if ( i >= tables_to_migrate.length ) {
-							if ( stage === 'backup' ) {
+							if ( 'backup' === stage ) {
 								stage = 'migrate';
 								i = 0;
 								progress_size = 0;
 								overall_percent = 0;
 								$( '.progress-bar' ).width( '0px' );
 
-								if ( table_intent === 'migrate_select' ) {
+								if ( 'migrate_select' === table_intent ) {
 									tables_to_migrate = $( '#select-tables' ).val();
-									if ( migration_intent === 'push' || migration_intent === 'savefile' ) {
+									if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
 										table_rows = wpmdb_data.this_table_rows;
+									} else {
+										table_rows = wpmdb.common.connection_data.table_rows;
 									}
-									else {
-										table_rows = connection_data.table_rows;
-									}
-								}
-								else {
-									if ( migration_intent === 'push' || migration_intent === 'savefile' ) {
+								} else {
+									if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
 										tables_to_migrate = wpmdb_data.this_prefixed_tables;
 										table_rows = wpmdb_data.this_table_rows;
-									}
-									else {
-										tables_to_migrate = connection_data.prefixed_tables;
-										table_rows = connection_data.table_rows;
+									} else {
+										tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
+										table_rows = wpmdb.common.connection_data.table_rows;
 									}
 								}
 
@@ -1342,25 +1311,23 @@ var wpmdb_flush;
 								table_rows = table_details[ 0 ];
 								total_size = table_details[ 1 ];
 
-							}
-							else {
+							} else {
 								$( '.progress-label' ).removeClass( 'label-visible' );
 
-								hooks = $.wpmdb.apply_filters( 'wpmdb_before_migration_complete_hooks', hooks );
-								hooks.push( 'migration_complete' );
-								hooks.push( 'wpmdb_flush' );
-								hooks = $.wpmdb.apply_filters( 'wpmdb_after_migration_complete_hooks', hooks );
-								hooks.push( 'migration_complete_events' );
-								next_step_in_migration = { fn: wpmdb_call_next_hook };
-								execute_next_step();
+								wpmdb.common.hooks = $.wpmdb.apply_filters( 'wpmdb_before_migration_complete_hooks', wpmdb.common.hooks );
+								wpmdb.common.hooks.push( wpmdb.functions.migration_complete );
+								wpmdb.common.hooks.push( wpmdb.functions.wpmdb_flush );
+								wpmdb.common.hooks = $.wpmdb.apply_filters( 'wpmdb_after_migration_complete_hooks', wpmdb.common.hooks );
+								wpmdb.common.hooks.push( wpmdb.functions.migration_complete_events );
+								wpmdb.common.next_step_in_migration = { fn: wpmdb_call_next_hook };
+								wpmdb.functions.execute_next_step();
 								return;
 							}
 						}
 
-						if ( stage === 'backup' ) {
+						if ( 'backup' === stage ) {
 							$( '.progress-text' ).html( overall_percent + '% - ' + wpmdb_strings.backing_up + ' "' + tables_to_migrate[ i ] + '"' );
-						}
-						else {
+						} else {
 							$( '.progress-text' ).html( overall_percent + '% - ' + wpmdb_strings.migrating + ' "' + tables_to_migrate[ i ] + '"' );
 						}
 
@@ -1370,7 +1337,7 @@ var wpmdb_flush;
 						}
 
 						var gzip = 0;
-						if ( migration_intent !== 'savefile' && parseInt( connection_data.gzip ) === 1 ) {
+						if ( 'savefile' !== migration_intent  && 1 === parseInt( wpmdb.common.connection_data.gzip ) ) {
 							gzip = 1;
 						}
 
@@ -1386,14 +1353,14 @@ var wpmdb_flush;
 							nonce: wpmdb_data.nonces.migrate_table
 						};
 
-						if ( migration_intent !== 'savefile' ) {
-							request_data.bottleneck = connection_data.bottleneck;
-							request_data.prefix = connection_data.prefix;
+						if ( 'savefile' !== migration_intent ) {
+							request_data.bottleneck = wpmdb.common.connection_data.bottleneck;
+							request_data.prefix = wpmdb.common.connection_data.prefix;
 						}
 
-						if ( connection_data && connection_data.path_current_site && connection_data.domain ) {
-							request_data.path_current_site = connection_data.path_current_site;
-							request_data.domain_current_site = connection_data.domain;
+						if ( wpmdb.common.connection_data && wpmdb.common.connection_data.path_current_site && wpmdb.common.connection_data.domain ) {
+							request_data.path_current_site = wpmdb.common.connection_data.path_current_site;
+							request_data.domain_current_site = wpmdb.common.connection_data.domain;
 						}
 
 						doing_ajax = true;
@@ -1414,8 +1381,8 @@ var wpmdb_flush;
 								console.log( jqXHR );
 								console.log( textStatus );
 								console.log( errorThrown );
-								migration_error = true;
-								migration_complete_events();
+								wpmdb.common.migration_error = true;
+								wpmdb.functions.migration_complete_events();
 								return;
 							},
 							success: function( data ) {
@@ -1426,36 +1393,35 @@ var wpmdb_flush;
 									$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 									if ( '' === data || null === data ) {
 										$( '.progress-text' ).html( wpmdb_strings.table_process_problem_empty_response + ' ' + tables_to_migrate[ i ] );
-									}
-									else {
+									} else {
 										$( '.progress-text' ).html( getAjaxErrors( data, null, null ) );
 									}
 									$( '.progress-text' ).addClass( 'migration-error' );
-									migration_error = true;
-									migration_complete_events();
+									wpmdb.common.migration_error = true;
+									wpmdb.functions.migration_complete_events();
 									return;
 								}
 
-								if ( typeof row_information.wpmdb_error !== 'undefined' && row_information.wpmdb_error === 1 ) {
+								if ( 'undefined' !== typeof row_information.wpmdb_error  && 1 === row_information.wpmdb_error ) {
 									$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 									$( '.progress-text' ).addClass( 'migration-error' );
 									$( '.progress-text' ).html( row_information.body );
-									migration_error = true;
-									migration_complete_events();
+									wpmdb.common.migration_error = true;
+									wpmdb.functions.migration_complete_events();
 									return;
 								}
 
 								// We need the returned file name for delivery or display to the user.
 								if ( 1 === last_table && 'savefile' === migration_intent ) {
-									if ( typeof row_information.dump_filename !== 'undefined' ) {
+									if ( 'undefined' !== typeof row_information.dump_filename ) {
 										dump_filename = row_information.dump_filename;
 									}
-									if ( typeof row_information.dump_path !== 'undefined' ) {
+									if ( 'undefined' !== typeof row_information.dump_path ) {
 										dump_path = row_information.dump_path;
 									}
 								}
 
-								if ( row_information.current_row === -1 || row_information.current_row === '-1' ) {
+								if ( -1 === row_information.current_row || '-1' === row_information.current_row ) {
 									progress_size -= overall_table_progress;
 									overall_table_progress = 0;
 									last_progress = 0;
@@ -1463,8 +1429,7 @@ var wpmdb_flush;
 									i++;
 									row_information.current_row = '';
 									row_information.primary_keys = '';
-								}
-								else {
+								} else {
 									temp_progress = parseInt( row_information.current_row );
 									table_progress = temp_progress - last_progress;
 									last_progress = temp_progress;
@@ -1473,18 +1438,21 @@ var wpmdb_flush;
 								}
 								overall_percent = Math.floor( ( progress_size / total_size ) * 100 );
 								$( '.progress-bar' ).width( overall_percent + '%' );
-								next_step_in_migration = {
-									fn: migrate_table_recursive,
+								wpmdb.common.next_step_in_migration = {
+									fn: wpmdb.functions.migrate_table_recursive,
 									args: [ row_information.current_row, row_information.primary_keys ]
 								};
-								execute_next_step();
+								wpmdb.functions.execute_next_step();
 							}
 						} );
 
 					};
 
-					next_step_in_migration = { fn: migrate_table_recursive, args: [ '-1', '' ] };
-					execute_next_step();
+					wpmdb.common.next_step_in_migration = {
+						fn: wpmdb.functions.migrate_table_recursive,
+						args: [ '-1', '' ]
+					};
+					wpmdb.functions.execute_next_step();
 
 				}
 
@@ -1492,16 +1460,15 @@ var wpmdb_flush;
 
 		} );
 
-		migration_complete_events = function() {
-			if ( false === migration_error ) {
-				if ( non_fatal_errors === '' ) {
+		wpmdb.functions.migration_complete_events = function() {
+			if ( false === wpmdb.common.migration_error ) {
+				if ( '' === wpmdb.common.non_fatal_errors ) {
 					if ( 'savefile' !== migration_intent && true === $( '#save_computer' ).is( ':checked' ) ) {
 						$( '.progress-text' ).css( 'visibility', 'hidden' );
 					}
 					$( '.progress-title' ).html( completed_msg ).append( '<div class="dashicons dashicons-yes"></div>' );
-				}
-				else {
-					$( '.progress-text' ).html( non_fatal_errors );
+				} else {
+					$( '.progress-text' ).html( wpmdb.common.non_fatal_errors );
 					$( '.progress-text' ).addClass( 'migration-error' );
 					$( '.progress-title' ).html( wpmdb_strings.completed_with_some_errors );
 				}
@@ -1512,15 +1479,15 @@ var wpmdb_flush;
 			$( '.migration-controls' ).hide();
 
 			// reset migration variables so consecutive migrations work correctly
-			hooks = [];
-			call_stack = [];
-			migration_error = false;
+			wpmdb.common.hooks = [];
+			wpmdb.common.call_stack = [];
+			wpmdb.common.migration_error = false;
 			currently_migrating = false;
 			migration_completed = true;
 			migration_paused = false;
 			migration_cancelled = false;
 			doing_ajax = false;
-			non_fatal_errors = '';
+			wpmdb.common.non_fatal_errors = '';
 
 			$( '.progress-label' ).remove();
 			$( '.migration-progress-ajax-spinner' ).remove();
@@ -1529,9 +1496,9 @@ var wpmdb_flush;
 			clearInterval( elapsed_interval );
 		};
 
-		migration_complete = function() {
+		wpmdb.functions.migration_complete = function() {
 			$( '.migration-controls' ).fadeOut();
-			if ( migration_intent === 'savefile' ) {
+			if ( 'savefile' === migration_intent ) {
 				currently_migrating = false;
 				var migrate_complete_text = wpmdb_strings.migration_complete;
 				if ( $( '#save_computer' ).is( ':checked' ) ) {
@@ -1540,19 +1507,17 @@ var wpmdb_flush;
 						url += '&gzip=1';
 					}
 					window.location = url;
-				}
-				else {
+				} else {
 					migrate_complete_text = wpmdb_strings.completed_dump_located_at + ' ' + dump_path;
 				}
 
-				if ( migration_error === false ) {
+				if ( false === wpmdb.common.migration_error ) {
 					$( '.progress-text' ).html( migrate_complete_text );
-					migration_complete_events();
+					wpmdb.functions.migration_complete_events();
 					$( '.progress-title' ).html( completed_msg );
 				}
 
-			}
-			else { // rename temp tables, delete old tables
+			} else { // rename temp tables, delete old tables
 				$( '.progress-text' ).html( wpmdb_strings.finalizing_migration );
 				doing_ajax = true;
 				$.ajax( {
@@ -1563,7 +1528,7 @@ var wpmdb_flush;
 					data: {
 						action: 'wpmdb_finalize_migration',
 						migration_state_id: migration_state_id,
-						prefix: connection_data.prefix,
+						prefix: wpmdb.common.connection_data.prefix,
 						tables: tables_to_migrate.join( ',' ),
 						nonce: wpmdb_data.nonces.finalize_migration
 					},
@@ -1573,8 +1538,8 @@ var wpmdb_flush;
 						$( '.progress-text' ).html( wpmdb_strings.finalize_tables_problem );
 						$( '.progress-text' ).addClass( 'migration-error' );
 						alert( jqXHR + ' : ' + textStatus + ' : ' + errorThrown );
-						migration_error = true;
-						migration_complete_events();
+						wpmdb.common.migration_error = true;
+						wpmdb.functions.migration_complete_events();
 						return;
 					},
 					success: function( data ) {
@@ -1583,19 +1548,19 @@ var wpmdb_flush;
 							$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 							$( '.progress-text' ).html( data );
 							$( '.progress-text' ).addClass( 'migration-error' );
-							migration_error = true;
-							migration_complete_events();
+							wpmdb.common.migration_error = true;
+							wpmdb.functions.migration_complete_events();
 							return;
 						}
-						next_step_in_migration = { fn: wpmdb_call_next_hook };
-						execute_next_step();
+						wpmdb.common.next_step_in_migration = { fn: wpmdb_call_next_hook };
+						wpmdb.functions.execute_next_step();
 					}
 				} );
 			}
 		};
 
-		wpmdb_flush = function() {
-			if ( migration_intent !== 'savefile' ) {
+		wpmdb.functions.wpmdb_flush = function() {
+			if ( 'savefile' !== migration_intent ) {
 				$( '.progress-text' ).html( wpmdb_strings.flushing );
 				doing_ajax = true;
 				$.ajax( {
@@ -1614,8 +1579,8 @@ var wpmdb_flush;
 						$( '.progress-text' ).html( wpmdb_strings.flush_problem );
 						$( '.progress-text' ).addClass( 'migration-error' );
 						alert( jqXHR + ' : ' + textStatus + ' : ' + errorThrown );
-						migration_error = true;
-						migration_complete_events();
+						wpmdb.common.migration_error = true;
+						wpmdb.functions.migration_complete_events();
 						return;
 					},
 					success: function( data ) {
@@ -1624,12 +1589,12 @@ var wpmdb_flush;
 							$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 							$( '.progress-text' ).html( data );
 							$( '.progress-text' ).addClass( 'migration-error' );
-							migration_error = true;
-							migration_complete_events();
+							wpmdb.common.migration_error = true;
+							wpmdb.functions.migration_complete_events();
 							return;
 						}
-						next_step_in_migration = { fn: wpmdb_call_next_hook };
-						execute_next_step();
+						wpmdb.common.next_step_in_migration = { fn: wpmdb_call_next_hook };
+						wpmdb.functions.execute_next_step();
 					}
 				} );
 			}
@@ -1641,7 +1606,7 @@ var wpmdb_flush;
 		} );
 
 		$( 'body' ).on( 'click', '#overlay', function() {
-			if ( migration_completed === true ) {
+			if ( true === migration_completed ) {
 				hide_overlay();
 			}
 		} );
@@ -1658,7 +1623,7 @@ var wpmdb_flush;
 		// AJAX save button profile
 		$( '.save-settings-button' ).click( function( event ) {
 			event.preventDefault();
-			if ( $.trim( $( '.create-new-profile' ).val() ) === '' && $( '#create_new' ).is( ':checked' ) ) {
+			if ( '' === $.trim( $( '.create-new-profile' ).val() ) && $( '#create_new' ).is( ':checked' ) ) {
 				alert( wpmdb_strings.enter_name_for_profile );
 				$( '.create-new-profile' ).focus();
 				return;
@@ -1670,13 +1635,12 @@ var wpmdb_flush;
 			var profile;
 			$( '.save-settings-button' ).blur();
 
-
 			if ( doing_save_profile ) {
 				return;
 			}
 
 			// check that they've selected some tables to migrate
-			if ( $( '#migrate-selected' ).is( ':checked' ) && $( '#select-tables' ).val() === null ) {
+			if ( $( '#migrate-selected' ).is( ':checked' ) && null === $( '#select-tables' ).val() ) {
 				alert( wpmdb_strings.please_select_one_table );
 				return;
 			}
@@ -1733,13 +1697,14 @@ var wpmdb_flush;
 						var new_profile_key = parseInt( data, 10 );
 						var new_profile_id = new_profile_key + 1;
 						var new_li = $( '<li><span class="delete-profile" data-profile-id="' + new_profile_id + '"></span><label for="profile-' + new_profile_id + '"><input id="profile-' + new_profile_id + '" value="' + new_profile_key + '" name="save_migration_profile_option" type="radio"></label></li>' );
-						new_li.find( "label" ).append( document.createTextNode( " " + profile_name ) );
+						new_li.find( 'label' ).append( document.createTextNode( ' ' + profile_name ) );
 						updated_profile_id = new_profile_id;
 
 						$( '#create_new' ).parents( 'li' ).before( new_li );
 						$( '#profile-' + new_profile_id ).attr( 'checked', 'checked' );
 					}
-					// push updated profile id to history if available
+
+					// Push updated profile id to history if available
 					var updatedURL = window.location.href.replace( '#migrate', '' ).replace( /&wpmdb-profile=-?\d+/, '' ) + '&wpmdb-profile=' + updated_profile_id;
 					var updated_profile_name = $( '#migrate-form input[name=save_migration_profile_option]:checked' ).parent().text().trim();
 
@@ -1748,7 +1713,7 @@ var wpmdb_flush;
 							$( '#migrate-form .crumbs .crumb:last' ).text( updated_profile_name );
 						} else {
 							var $crumbs = $( '<div class="crumbs" />' )
-								.append( '<a class="crumb" href="tools.php?page=wp-migrate-db-pro"> Saved Profiles </a>' )
+								.append( '<a class="crumb" href="' + wpmdb_data.this_plugin_base + '"> Saved Profiles </a>' )
 								.append( '<span class="crumb">' + updated_profile_name + '</span>' );
 							$( '#migrate-form' ).prepend( $crumbs );
 						}
@@ -1770,10 +1735,9 @@ var wpmdb_flush;
 
 		// show / hide progress lavel on hover
 		$( 'body' ).on( 'mouseenter mouseleave', '.progress-chunk-hover', function( event ) {
-			if ( event.type === 'mouseenter' ) {
+			if ( 'mouseenter' === event.type ) {
 				$( '.progress-label' ).addClass( 'label-visible' );
-			}
-			else {
+			} else {
 				$( '.progress-label' ).removeClass( 'label-visible' );
 			}
 		} );
@@ -1792,33 +1756,33 @@ var wpmdb_flush;
 			$( '#create-backup-label' ).removeClass( 'disabled' );
 			$( '.backup-option-disabled' ).hide();
 			$( '.compatibility-older-mysql' ).hide();
-			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( "\n" );
+			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
 			var profile_name;
 			wpmdb_toggle_migration_action_text();
 			if ( 'pull' === wpmdb_migration_type() ) {
 				$( '.pull-list li' ).append( $connection_info_box );
 				$connection_info_box.show( function() {
 					var connection_textarea = $( this ).find( '.pull-push-connection-info' );
-					if ( ! connection_textarea.val() ) {
+					if ( !connection_textarea.val() ) {
 						connection_textarea.focus();
 					}
 				} );
 				if ( connection_established ) {
 					$( '.connection-status' ).hide();
 					$( '.step-two' ).show();
-					$( '.table-prefix' ).html( connection_data.prefix );
+					$( '.table-prefix' ).html( wpmdb.common.connection_data.prefix );
 					$( '.uploads-dir' ).html( wpmdb_data.this_uploads_dir );
-					if ( profile_name_edited === false ) {
-						profile_name = get_domain_name( connection_data.url );
+					if ( false === profile_name_edited ) {
+						profile_name = get_domain_name( wpmdb.common.connection_data.url );
 						$( '.create-new-profile' ).val( profile_name );
 					}
-					if ( show_prefix_notice === true ) {
+					if ( true === show_prefix_notice ) {
 						$( '.prefix-notice.pull' ).show();
 					}
-					if ( show_ssl_notice === true ) {
+					if ( true === show_ssl_notice ) {
 						$( '.ssl-notice' ).show();
 					}
-					if ( show_version_notice === true ) {
+					if ( true === show_version_notice ) {
 						$( '.different-plugin-version-notice' ).show();
 						$( '.step-two' ).hide();
 					}
@@ -1830,17 +1794,15 @@ var wpmdb_flush;
 						$( '.backup-option-disabled' ).show();
 						$( '.upload-directory-location' ).html( wpmdb_data.this_upload_dir_long );
 					}
-				}
-				else {
+				} else {
 					$( '.connection-status' ).show();
 					$( '.step-two' ).hide();
 				}
-			}
-			else if ( 'push' === wpmdb_migration_type() ) {
+			} else if ( 'push' === wpmdb_migration_type() ) {
 				$( '.push-list li' ).append( $connection_info_box );
 				$connection_info_box.show( function() {
 					var connection_textarea = $( this ).find( '.pull-push-connection-info' );
-					if ( ! connection_textarea.val() ) {
+					if ( !connection_textarea.val() ) {
 						connection_textarea.focus();
 					}
 				} );
@@ -1848,41 +1810,39 @@ var wpmdb_flush;
 					$( '.connection-status' ).hide();
 					$( '.step-two' ).show();
 					$( '.table-prefix' ).html( wpmdb_data.this_prefix );
-					$( '.uploads-dir' ).html( connection_data.uploads_dir );
-					if ( profile_name_edited === false ) {
-						profile_name = get_domain_name( connection_data.url );
+					$( '.uploads-dir' ).html( wpmdb.common.connection_data.uploads_dir );
+					if ( false === profile_name_edited ) {
+						profile_name = get_domain_name( wpmdb.common.connection_data.url );
 						$( '.create-new-profile' ).val( profile_name );
 					}
-					if ( show_prefix_notice === true ) {
+					if ( true === show_prefix_notice ) {
 						$( '.prefix-notice.push' ).show();
 					}
-					if ( show_ssl_notice === true ) {
+					if ( true === show_ssl_notice ) {
 						$( '.ssl-notice' ).show();
 					}
-					if ( show_version_notice === true ) {
+					if ( true === show_version_notice ) {
 						$( '.different-plugin-version-notice' ).show();
 						$( '.step-two' ).hide();
 					}
 					wpmdb_toggle_migration_action_text();
-					if ( '0' === connection_data.write_permissions ) {
+					if ( '0' === wpmdb.common.connection_data.write_permissions ) {
 						$( '#create-backup' ).prop( 'checked', false );
 						$( '#create-backup' ).attr( 'disabled', 'disabled' );
 						$( '#create-backup-label' ).addClass( 'disabled' );
 						$( '.backup-option-disabled' ).show();
-						$( '.upload-directory-location' ).html( connection_data.upload_dir_long );
+						$( '.upload-directory-location' ).html( wpmdb.common.connection_data.upload_dir_long );
 					}
-				}
-				else {
+				} else {
 					$( '.connection-status' ).show();
 					$( '.step-two' ).hide();
 				}
-			}
-			else if ( 'savefile' === wpmdb_migration_type() ) {
+			} else if ( 'savefile' === wpmdb_migration_type() ) {
 				$( '.connection-status' ).hide();
 				$( '.step-two' ).show();
 				$( '.table-prefix' ).html( wpmdb_data.this_prefix );
 				$( '.compatibility-older-mysql' ).show();
-				if ( profile_name_edited === false ) {
+				if ( false === profile_name_edited ) {
 					$( '.create-new-profile' ).val( '' );
 				}
 				$( '.backup-options' ).hide();
@@ -1911,6 +1871,13 @@ var wpmdb_flush;
 		} );
 
 		function change_replace_values() {
+			var old_url = null;
+			var old_path = null;
+			if ( null !== wpmdb.common.previous_connection_data && 'object' === typeof wpmdb.common.previous_connection_data && wpmdb.common.previous_connection_data.url !== wpmdb.common.connection_data.url ) {
+				old_url = remove_protocol( wpmdb.common.previous_connection_data.url );
+				old_path = wpmdb.common.previous_connection_data.path;
+			}
+
 			if ( 'push' === wpmdb_migration_type() || 'savefile' === wpmdb_migration_type() ) {
 				if ( 'pull' === last_replace_switch ) {
 					$( '.replace-row' ).each( function() {
@@ -1918,19 +1885,38 @@ var wpmdb_flush;
 						$( '.old-replace-col input', this ).val( $( '.replace-right-col input', this ).val() );
 						$( '.replace-right-col input', this ).val( old_val );
 					} );
+				} else if ( 'push' === last_replace_switch && 'push' === wpmdb_migration_type() && null !== old_url && null !== old_path ) {
+					$( '.replace-row' ).each( function() {
+						var old_val = $( '.replace-right-col input', this ).val();
+						if ( old_val === old_path ) {
+							$( '.replace-right-col input', this ).val( wpmdb.common.connection_data.path );
+						}
+						if ( old_val === old_url ) {
+							$( '.replace-right-col input', this ).val( remove_protocol( wpmdb.common.connection_data.url ) );
+						}
+					} );
 				}
 				$.wpmdb.do_action( 'wpmdb_update_push_table_select' );
 				$( '#select-post-types' ).remove();
 				$( '.select-post-types-wrap' ).prepend( $push_post_type_select );
 				$( '#select-backup' ).remove();
 				$( '.backup-tables-wrap' ).prepend( $push_select_backup );
-			}
-			else if ( 'pull' === wpmdb_migration_type() ) {
+			} else if ( 'pull' === wpmdb_migration_type() ) {
 				if ( '' === last_replace_switch || 'push' === last_replace_switch || 'savefile' === last_replace_switch ) {
 					$( '.replace-row' ).each( function() {
 						var old_val = $( '.old-replace-col input', this ).val();
 						$( '.old-replace-col input', this ).val( $( '.replace-right-col input', this ).val() );
 						$( '.replace-right-col input', this ).val( old_val );
+					} );
+				} else if ( 'pull' === last_replace_switch && 'pull' === wpmdb_migration_type() && null !== old_url && null !== old_path ) {
+					$( '.replace-row' ).each( function() {
+						var old_val = $( '.old-replace-col input', this ).val();
+						if ( old_val === old_path ) {
+							$( '.old-replace-col input', this ).val( wpmdb.common.connection_data.path );
+						}
+						if ( old_val === old_url ) {
+							$( '.old-replace-col input', this ).val( remove_protocol( wpmdb.common.connection_data.url ) );
+						}
 					} );
 				}
 				$.wpmdb.do_action( 'wpmdb_update_pull_table_select' );
@@ -1943,7 +1929,7 @@ var wpmdb_flush;
 		}
 
 		// hide second section if pull or push is selected with no connection established
-		if ( ( 'pull' === wpmdb_migration_type() || 'push' === wpmdb_migration_type() ) && ! connection_established ) {
+		if ( ( 'pull' === wpmdb_migration_type() || 'push' === wpmdb_migration_type() ) && !connection_established ) {
 			$( '.step-two' ).hide();
 			$( '.connection-status' ).show();
 		}
@@ -1960,13 +1946,13 @@ var wpmdb_flush;
 			var position = icon.position();
 			if ( bubble.hasClass( 'bottom' ) ) {
 				bubble.css( {
-					'left': (position.left - bubble.width() / 2) + 'px',
-					'top': (position.top + icon.height() + 9) + 'px'
+					'left': ( position.left - bubble.width() / 2 ) + 'px',
+					'top':  ( position.top + icon.height() + 9 ) + 'px'
 				} );
 			} else {
 				bubble.css( {
-					'left': (position.left + icon.width() + 9) + 'px',
-					'top': (position.top + icon.height() / 2 - 18) + 'px'
+					'left': ( position.left + icon.width() + 9 ) + 'px',
+					'top':  ( position.top + icon.height() / 2 - 18 ) + 'px'
 				} );
 			}
 
@@ -2008,13 +1994,13 @@ var wpmdb_flush;
 			switch_to_plugin_tab( hash, false );
 		} );
 
-		$( 'body' ).on( 'click', "a[href^='#']", function( event ) {
+		$( 'body' ).on( 'click', 'a[href^="#"]', function( event ) {
 			var href = $( event.target ).attr( 'href' );
 			var tab_name = href.substr( 1 );
 
 			if ( tab_name ) {
 				var nav_tab = $( '.' + tab_name );
-				if ( nav_tab.length === 1 ) {
+				if ( 1 === nav_tab.length ) {
 					nav_tab.trigger( 'click' );
 					event.preventDefault();
 				}
@@ -2029,7 +2015,7 @@ var wpmdb_flush;
 		// repeatable fields
 		$( 'body' ).on( 'click', '.replace-remove-row', function() {
 			$( this ).parents( 'tr' ).remove();
-			if ( $( '.replace-row' ).length < 2 ) {
+			if ( 2 >= $( '.replace-row' ).length ) {
 				$( '.no-replaces-message' ).show();
 			}
 
@@ -2098,7 +2084,7 @@ var wpmdb_flush;
 				}
 			}
 
-			if ( hash === 'help' ) {
+			if ( 'help' === hash ) {
 				refresh_debug_log();
 				if ( false === checked_licence && '1' === wpmdb_data.has_licence ) {
 					$( '.support-content p' ).append( ajax_spinner );
@@ -2106,7 +2092,7 @@ var wpmdb_flush;
 				}
 			}
 
-			if ( hash === 'addons' && true !== skip_addons_check ) {
+			if ( 'addons' === hash && true !== skip_addons_check ) {
 				if ( false === checked_licence && '1' === wpmdb_data.has_licence ) {
 					$( '.addons-content p' ).append( ajax_spinner );
 					check_licence();
@@ -2122,7 +2108,7 @@ var wpmdb_flush;
 			switch_to_plugin_tab( hash, false );
 		}
 
-		if ( get_query_var( 'install-plugin' ) !== '' ) {
+		if ( '' !== get_query_var( 'install-plugin' ) ) {
 			hash = 'addons';
 			checked_licence = true;
 			switch_to_plugin_tab( hash, true );
@@ -2151,7 +2137,7 @@ var wpmdb_flush;
 		$( '.reset-api-key' ).click( function() {
 			var answer = confirm( wpmdb_strings.reset_api_key );
 
-			if ( ! answer || doing_reset_api_key_ajax ) {
+			if ( !answer || doing_reset_api_key_ajax ) {
 				return;
 			}
 
@@ -2176,7 +2162,7 @@ var wpmdb_flush;
 					$( '.reset-api-key-ajax-spinner' ).remove();
 					doing_reset_api_key_ajax = false;
 					$( '.connection-info' ).html( data );
-					wpmdb_data.connection_info = $.trim( data ).split( "\n" );
+					wpmdb_data.connection_info = $.trim( data ).split( '\n' );
 				}
 			} );
 
@@ -2197,7 +2183,7 @@ var wpmdb_flush;
 
 		$( 'input[name=backup_option]' ).change( function() {
 			$( '.backup-tables-wrap' ).hide();
-			if ( $( this ).val() === 'backup_manual_select' ) {
+			if ( 'backup_manual_select' === $( this ).val() ) {
 				$( '.backup-tables-wrap' ).show();
 			}
 		} );
@@ -2254,7 +2240,7 @@ var wpmdb_flush;
 			name = $.trim( $( name ).html() );
 			var answer = confirm( wpmdb_strings.remove_profile.replace( '{{profile}}', name ) );
 
-			if ( ! answer ) {
+			if ( !answer ) {
 				return;
 			}
 			var $profile_li = $( this ).parent();
@@ -2287,7 +2273,7 @@ var wpmdb_flush;
 					alert( wpmdb_strings.remove_profile_problem );
 				},
 				success: function( data ) {
-					if ( data === '-1' ) {
+					if ( '-1' === data ) {
 						alert( wpmdb_strings.remove_profile_not_found );
 					}
 				}
@@ -2300,7 +2286,7 @@ var wpmdb_flush;
 			var name = $( this ).prev().html();
 			var answer = confirm( wpmdb_strings.remove_profile.replace( '{{profile}}', name ) );
 
-			if ( ! answer ) {
+			if ( !answer ) {
 				return;
 			}
 
@@ -2327,10 +2313,9 @@ var wpmdb_flush;
 		$( 'body' ).on( 'click', '.temp-disabled', function() {
 			var answer = confirm( wpmdb_strings.change_connection_info );
 
-			if ( ! answer ) {
+			if ( !answer ) {
 				return;
-			}
-			else {
+			} else {
 				$( '.ssl-notice' ).hide();
 				$( '.different-plugin-version-notice' ).hide();
 				$( '.migrate-db-button' ).show();
@@ -2406,9 +2391,9 @@ var wpmdb_flush;
 		} );
 
 		$( 'body' ).on( 'click', '.try-http', function() {
-			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( "\n" );
+			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
 			var new_url = connection_info[ 0 ].replace( 'https', 'http' );
-			var new_contents = new_url + "\n" + connection_info[ 1 ];
+			var new_contents = new_url + '\n' + connection_info[ 1 ];
 			$( '.pull-push-connection-info' ).val( new_contents );
 			connection_box_changed();
 		} );
@@ -2435,36 +2420,36 @@ var wpmdb_flush;
 
 			data = $( '.pull-push-connection-info' ).val();
 
-			var connection_info = $.trim( data ).split( "\n" );
+			var connection_info = $.trim( data ).split( '\n' );
 			var error = false;
 			var error_message = '';
 
-			if ( connection_info === '' ) {
+			if ( '' === connection_info ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_missing;
 			}
 
-			if ( connection_info.length !== 2 && ! error ) {
+			if ( 2 !== connection_info.length && !error ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_incorrect;
 			}
 
-			if ( ! error && ! validate_url( connection_info[ 0 ] ) ) {
+			if ( !error && !validate_url( connection_info[ 0 ] ) ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_url_invalid;
 			}
 
-			if ( ! error && connection_info[ 1 ].length < 32 ) {
+			if ( !error && 32 >= connection_info[ 1 ].length ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_key_invalid;
 			}
 
-			if ( ! error && connection_info[ 0 ] === wpmdb_data.connection_info[ 0 ] ) {
+			if ( !error && connection_info[ 0 ] === wpmdb_data.connection_info[ 0 ] ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_local_url;
 			}
 
-			if ( ! error && connection_info[ 1 ] === wpmdb_data.connection_info[ 1 ] ) {
+			if ( !error && connection_info[ 1 ] === wpmdb_data.connection_info[ 1 ] ) {
 				error = true;
 				error_message = wpmdb_strings.connection_info_local_key;
 			}
@@ -2475,11 +2460,11 @@ var wpmdb_flush;
 				return;
 			}
 
-			var new_connection_info_contents = connection_info[ 0 ] + "\n" + connection_info[ 1 ];
+			var new_connection_info_contents = connection_info[ 0 ] + '\n' + connection_info[ 1 ];
 
 			if ( false === wpmdb_data.openssl_available ) {
 				connection_info[ 0 ] = connection_info[ 0 ].replace( 'https://', 'http://' );
-				new_connection_info_contents = connection_info[ 0 ] + "\n" + connection_info[ 1 ];
+				new_connection_info_contents = connection_info[ 0 ] + '\n' + connection_info[ 1 ];
 				$( '.pull-push-connection-info' ).val( new_connection_info_contents );
 			}
 
@@ -2490,7 +2475,7 @@ var wpmdb_flush;
 			if ( $( '.basic-access-auth-wrapper' ).is( ':visible' ) ) {
 				connection_info[ 0 ] = connection_info[ 0 ].replace( /\/\/(.*)@/, '//' );
 				connection_info[ 0 ] = connection_info[ 0 ].replace( '//', '//' + encodeURIComponent( $.trim( $( '.auth-username' ).val() ) ) + ':' + encodeURIComponent( $.trim( $( '.auth-password' ).val() ) ) + '@' );
-				new_connection_info_contents = connection_info[ 0 ] + "\n" + connection_info[ 1 ];
+				new_connection_info_contents = connection_info[ 0 ] + '\n' + connection_info[ 1 ];
 				$( '.pull-push-connection-info' ).val( new_connection_info_contents );
 				$( '.basic-access-auth-wrapper' ).hide();
 			}
@@ -2533,7 +2518,7 @@ var wpmdb_flush;
 					enable_export_type_controls();
 					maybe_show_ssl_warning( connection_info[ 0 ], connection_info[ 1 ], data.scheme );
 
-					if ( typeof data.wpmdb_error !== 'undefined' && data.wpmdb_error === 1 ) {
+					if ( 'undefined' !== typeof data.wpmdb_error && 1 === data.wpmdb_error ) {
 						$( '.connection-status' ).html( data.body );
 						$( '.connection-status' ).addClass( 'notification-message error-notice migration-error' );
 
@@ -2557,7 +2542,8 @@ var wpmdb_flush;
 					maybe_show_prefix_notice( data.prefix );
 
 					connection_established = true;
-					connection_data = data;
+					wpmdb.common.previous_connection_data = wpmdb.common.connection_data;
+					wpmdb.common.connection_data = data;
 					move_connection_info_box();
 					change_replace_values();
 
@@ -2579,7 +2565,7 @@ var wpmdb_flush;
 						class: 'multiselect'
 					} );
 
-					$.each( connection_data.post_types, function( index, value ) {
+					$.each( wpmdb.common.connection_data.post_types, function( index, value ) {
 						$( $post_type_select ).append( '<option value="' + value + '">' + value + '</option>' );
 					} );
 
@@ -2601,8 +2587,7 @@ var wpmdb_flush;
 						$( '.select-post-types-wrap' ).prepend( $pull_post_type_select );
 						$( '.table-prefix' ).html( data.prefix );
 						$( '.uploads-dir' ).html( wpmdb_data.this_uploads_dir );
-					}
-					else {
+					} else {
 						$( '#new-url' ).val( remove_protocol( data.url ) );
 						$( '#new-path' ).val( data.path );
 						if ( 'true' === wpmdb_data.is_multisite ) {
@@ -2613,11 +2598,11 @@ var wpmdb_flush;
 						$( '.backup-tables-wrap' ).prepend( $push_select_backup );
 					}
 
-					next_step_in_migration = {
+					wpmdb.common.next_step_in_migration = {
 						fn: $.wpmdb.do_action,
-						args: [ 'verify_connection_to_remote_site', connection_data ]
+						args: [ 'verify_connection_to_remote_site', wpmdb.common.connection_data ]
 					};
-					execute_next_step();
+					wpmdb.functions.execute_next_step();
 				}
 
 			} );
@@ -2638,7 +2623,7 @@ var wpmdb_flush;
 
 			if ( true === migration_paused ) {
 				migration_paused = false;
-				execute_next_step();
+				wpmdb.functions.execute_next_step();
 			}
 		}
 
@@ -2651,13 +2636,13 @@ var wpmdb_flush;
 			$( '.licence-input' ).focus();
 		} );
 
-		execute_next_step = function() {
+		wpmdb.functions.execute_next_step = function() {
 
 			// if delay is set, set a timeout for delay to recall this function, then return
 			if ( 0 < delay_between_requests && false === flag_skip_delay ) {
 				setTimeout( function() {
 					flag_skip_delay = true;
-					execute_next_step();
+					wpmdb.functions.execute_next_step();
 				}, delay_between_requests );
 				return;
 			} else {
@@ -2666,9 +2651,11 @@ var wpmdb_flush;
 
 			if ( true === migration_paused ) {
 				$( '.migration-progress-ajax-spinner' ).hide();
-				// pause the timer
+
+				// Pause the timer
 				clearInterval( elapsed_interval );
 				$( '.progress-text' ).html( wpmdb_strings.paused );
+
 				// Re-bind Pause/Resume button to Resume when we are finally Paused
 				$( 'body' ).on( 'click', '.pause-resume', function( event ) {
 					set_pause_resume_button( event );
@@ -2678,28 +2665,23 @@ var wpmdb_flush;
 				} );
 				$( '.pause-resume' ).html( wpmdb_strings.resume );
 				return;
-			}
-			else if ( true === migration_cancelled ) {
+			} else if ( true === migration_cancelled ) {
 				migration_intent = wpmdb_migration_type();
 
 				var progress_msg;
 
 				if ( 'savefile' === migration_intent ) {
 					progress_msg = wpmdb_strings.removing_local_sql;
-				}
-				else if ( 'pull' === migration_intent ) {
+				} else if ( 'pull' === migration_intent ) {
 					if ( 'backup' === stage ) {
 						progress_msg = wpmdb_strings.removing_local_backup;
-					}
-					else {
+					} else {
 						progress_msg = wpmdb_strings.removing_local_temp_tables;
 					}
-				}
-				else if ( 'push' === migration_intent ) {
+				} else if ( 'push' === migration_intent ) {
 					if ( 'backup' === stage ) {
 						progress_msg = wpmdb_strings.removing_remote_sql;
-					}
-					else {
+					} else {
 						progress_msg = wpmdb_strings.removing_remote_temp_tables;
 					}
 				}
@@ -2727,8 +2709,8 @@ var wpmdb_flush;
 						console.log( textStatus );
 						console.log( errorThrown );
 						doing_ajax = false;
-						migration_error = true;
-						migration_complete_events();
+						wpmdb.common.migration_error = true;
+						wpmdb.functions.migration_complete_events();
 						return;
 					},
 					success: function( data ) {
@@ -2738,18 +2720,17 @@ var wpmdb_flush;
 							$( '.progress-title' ).html( wpmdb_strings.migration_cancellation_failed );
 							$( '.progress-text' ).html( data );
 							$( '.progress-text' ).addClass( 'migration-error' );
-							migration_error = true;
-							migration_complete_events();
+							wpmdb.common.migration_error = true;
+							wpmdb.functions.migration_complete_events();
 							return;
 						}
 						completed_msg = wpmdb_strings.migration_cancelled;
 						$( '.progress-text' ).hide();
-						migration_complete_events();
+						wpmdb.functions.migration_complete_events();
 					}
 				} );
-			}
-			else {
-				next_step_in_migration.fn.apply( null, next_step_in_migration.args );
+			} else {
+				wpmdb.common.next_step_in_migration.fn.apply( null, wpmdb.common.next_step_in_migration.args );
 			}
 		};
 
@@ -2758,7 +2739,7 @@ var wpmdb_flush;
 			$( '.connection-status' ).removeClass( 'notification-message error-notice migration-error' );
 			$( '.connection-status' ).append( ajax_spinner );
 
-			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( "\n" );
+			var connection_info = $.trim( $( '.pull-push-connection-info' ).val() ).split( '\n' );
 
 			doing_ajax = true;
 			disable_export_type_controls();
@@ -2786,7 +2767,7 @@ var wpmdb_flush;
 					doing_ajax = false;
 					enable_export_type_controls();
 
-					if ( typeof data.wpmdb_error !== 'undefined' && data.wpmdb_error === 1 ) {
+					if ( 'undefined' !== typeof data.wpmdb_error && 1 === data.wpmdb_error ) {
 						$( '.connection-status' ).html( data.body );
 						$( '.connection-status' ).addClass( 'notification-message error-notice migration-error' );
 
@@ -2826,12 +2807,12 @@ var wpmdb_flush;
 					$( '.ajax-spinner' ).remove();
 					doing_ajax = false;
 
-					if ( typeof data.wpmdb_error !== 'undefined' && data.wpmdb_error === 1 ) {
+					if ( 'undefined' !== typeof data.wpmdb_error && 1 === data.wpmdb_error ) {
 						$( '.invalid-licence' ).html( data.body );
 						return;
 					}
 
-					if ( typeof data.wpmdb_dbrains_api_down !== 'undefined' && data.wpmdb_dbrains_api_down === 1 ) {
+					if ( 'undefined' !== typeof data.wpmdb_dbrains_api_down && 1 === data.wpmdb_dbrains_api_down ) {
 						$( '.invalid-licence' ).html( wpmdb_strings.temporarily_activated_licence );
 						$( '.invalid-licence' ).append( data.body );
 						return;
@@ -2853,4 +2834,4 @@ var wpmdb_flush;
 		} );
 	} );
 
-})( jQuery );
+})( jQuery, wpmdb );

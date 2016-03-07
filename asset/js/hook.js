@@ -52,7 +52,7 @@
 		remove_hook: function( hook_type, action, tag ) {
 			if ( undefined !== jQuery.wpmdb.hooks[hook_type][action] ) {
 				var hooks = jQuery.wpmdb.hooks[hook_type][action];
-				for ( var i = hooks.length - 1; i >= 0; i-- ) {
+				for ( var i = hooks.length - 1; 0 < i; i-- ) {
 					if ( undefined === tag || tag === hooks[i].tag ) {
 						hooks.splice( i, 1 );
 					}
