@@ -99,13 +99,19 @@ class WPMDB_CLI extends WPMDB_Base {
 			return $pre_check;
 		}
 
+		// At this point, $profile has been checked a retrieved into $this->profile, so should not be used in this function any further.
+		if ( empty( $this->profile ) ) {
+			return $this->cli_error( __( 'Profile not found or unable to be generated from params.', 'wp-migrate-db-cli' ) );
+		}
+		unset( $profile );
+
 		$this->set_time_limit();
 		$this->wpmdb->set_cli_migration();
 
 		if ( 'savefile' === $this->profile['action'] ) {
 			$this->post_data['intent'] = 'savefile';
 			if ( ! empty( $this->profile['export_dest'] ) ) {
-				$this->post_data['export_dest'] = $profile['export_dest'];
+				$this->post_data['export_dest'] = $this->profile['export_dest'];
 			} else {
 				$this->post_data['export_dest'] = 'ORIGIN';
 			}
@@ -126,14 +132,15 @@ class WPMDB_CLI extends WPMDB_Base {
 
 				if ( ! empty( $nonexistent_tables ) ) {
 					$local_or_remote = ( 'pull' === $this->profile['action'] ) ? 'remote' : 'local';
+
 					return $this->cli_error( sprintf( __( 'The following table(s) do not exist in the %1$s database: %2$s', 'wp-migrate-db-cli' ), $local_or_remote, implode( ', ', $nonexistent_tables ) ) );
 				}
 			}
 		}
 
-		$profile = apply_filters( 'wpmdb_cli_filter_before_cli_initiate_migration', $profile );
-		if ( is_wp_error( $profile ) ) {
-			return $profile;
+		$this->profile = apply_filters( 'wpmdb_cli_filter_before_cli_initiate_migration', $this->profile );
+		if ( is_wp_error( $this->profile ) ) {
+			return $this->profile;
 		}
 
 		$this->migration = $this->cli_initiate_migration();

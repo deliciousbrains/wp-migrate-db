@@ -1,6 +1,5 @@
 (function( $, wpmdb ) {
 
-	var migration_state_id = '';
 	var connection_established = false;
 	var last_replace_switch = '';
 	var doing_ajax = false;
@@ -27,7 +26,8 @@
 	var tables_to_migrate = '';
 	var migration_paused = false;
 	var previous_progress_title = '';
-	var previous_progress_text = '';
+	var previous_progress_text_primary = '';
+	var previous_progress_text_secondary = '';
 	var timer_count = 0;
 	var overall_percent = 0;
 	var migration_cancelled = false;
@@ -67,7 +67,7 @@
 
 	function is_int( n ) {
 		n = parseInt( n );
-		return 'number' === typeof n  && 0 === n % 1;
+		return 'number' === typeof n && 0 === n % 1;
 	}
 
 	function setup_counter() {
@@ -144,20 +144,9 @@
 		}
 
 		var migration_intent = wpmdb_migration_type();
-		var table_intent = $( 'input[name=table_migrate_option]:checked' ).val();
-		var tables_to_migrate;
+		var tables_to_migrate = get_tables_to_migrate( null, null );
 
 		$( '.mixed-case-table-name-notice' ).hide();
-
-		if ( 'migrate_select' === table_intent ) {
-			tables_to_migrate = $( '#select-tables' ).val();
-		} else {
-			if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
-				tables_to_migrate = wpmdb_data.this_prefixed_tables;
-			} else {
-				tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
-			}
-		}
 
 		if ( null === tables_to_migrate ) {
 			return;
@@ -255,7 +244,8 @@
 			migration_paused = false;
 			doing_ajax = true;
 			$( '.progress-title' ).html( previous_progress_title );
-			$( '.progress-text' ).html( previous_progress_text );
+			$( '.progress-text', '.progress-wrapper-primary' ).html( previous_progress_text_primary );
+			$( '.progress-text', '.progress-wrapper-secondary' ).html( previous_progress_text_secondary );
 			$( '.migration-progress-ajax-spinner' ).show();
 			$( '.pause-resume' ).html( wpmdb_strings.pause );
 
@@ -266,7 +256,8 @@
 			migration_paused = true;
 			doing_ajax = false;
 			previous_progress_title = $( '.progress-title' ).html();
-			previous_progress_text = $( '.progress-text' ).html();
+			previous_progress_text_primary = $( '.progress-text', '.progress-wrapper-primary' ).html();
+			previous_progress_text_secondary = $( '.progress-text', '.progress-wrapper-secondary ' ).html();
 			$( '.progress-title' ).html( wpmdb_strings.migration_paused );
 			$( '.progress-text' ).html( wpmdb_strings.completing_current_request );
 			$( 'body' ).off( 'click', '.pause-resume' ); // Is re-bound at execute_next_step when migration is finally paused
@@ -300,7 +291,40 @@
 		return $table_select;
 	}
 
+	/**
+	 * Returns tables selected for migration.
+	 *
+	 * @param value
+	 * @param args
+	 * @returns {string}
+	 *
+	 * Also handler for wpmdb_get_tables_to_migrate filter, disregards input values as it is the primary source.
+	 */
+	function get_tables_to_migrate( value, args ) {
+		var tables = '';
+		var mig_type = wpmdb_migration_type();
+		var table_intent = $( 'input[name=table_migrate_option]:checked' ).val();
+
+		// Grab tables as per what the user has selected from the multiselect box or all prefixed tables.
+		if ( 'migrate_select' === table_intent ) {
+			tables = $( '#select-tables' ).val();
+		} else {
+			if ( 'push' === mig_type || 'savefile' === mig_type ) {
+				tables = wpmdb_data.this_prefixed_tables;
+			} else {
+				tables = wpmdb.common.connection_data.prefixed_tables;
+			}
+		}
+
+		return tables;
+	}
+
+	function get_table_prefix( value, args ) {
+		return $( '.table-select-wrap .table-prefix' ).text();
+	}
+
 	$( document ).ready( function() {
+		wpmdb.migration_state_id = '';
 
 		$( '#plugin-compatibility' ).change( function( e ) {
 			var install = '1';
@@ -907,7 +931,7 @@
 		// select all tables
 		$( '.multiselect-select-all' ).click( function() {
 			var multiselect = $( this ).parents( '.select-wrap' ).children( '.multiselect' );
-			$( 'option', multiselect ).attr( 'selected', 1 );
+			$( 'option', multiselect ).prop( 'selected', 1 );
 			$( multiselect ).focus().trigger( 'change' );
 		} );
 
@@ -994,7 +1018,7 @@
 		$( '.migrate-db-button' ).click( function( event ) {
 			$( this ).blur();
 			event.preventDefault();
-			migration_state_id = '';
+			wpmdb.migration_state_id = '';
 
 			if ( false === $.wpmdb.apply_filters( 'wpmdb_migration_profile_ready', true ) ) {
 				return;
@@ -1003,6 +1027,12 @@
 			// check that they've selected some tables to migrate
 			if ( $( '#migrate-selected' ).is( ':checked' ) && null === $( '#select-tables' ).val() ) {
 				alert( wpmdb_strings.please_select_one_table );
+				return;
+			}
+
+			// check that they've selected some tables to backup
+			if ( 'savefile' !== wpmdb_migration_type() && $( '#backup-manual-select' ).is( ':checked' ) && null === $( '#select-backup' ).val() ) {
+				alert( wpmdb_strings.please_select_one_table_backup );
 				return;
 			}
 
@@ -1116,27 +1146,15 @@
 					}
 				}
 			} else {
-				if ( 'migrate_select' === table_intent ) { // User has elected to migrate only certain tables
+				tables_to_migrate = get_tables_to_migrate( null, null );
 
-					// Grab tables as per what the user has selected from the multiselect box
-					tables_to_migrate = $( '#select-tables' ).val();
+				// User is pushing or exporting
+				if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
 
-					// User is pushing or exporting
-					if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
-
-						// Default value, assuming we're not backing up
-						table_rows = wpmdb_data.this_table_rows;
-					} else {
-						table_rows = wpmdb.common.connection_data.table_rows;
-					}
+					// Default value, assuming we're not backing up
+					table_rows = wpmdb_data.this_table_rows;
 				} else {
-					if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
-						tables_to_migrate = wpmdb_data.this_prefixed_tables;
-						table_rows = wpmdb_data.this_table_rows;
-					} else {
-						tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
-						table_rows = wpmdb.common.connection_data.table_rows;
-					}
+					table_rows = wpmdb.common.connection_data.table_rows;
 				}
 			}
 
@@ -1177,7 +1195,7 @@
 				} );
 
 				// Only enumerate progress-chunk classed elements from core
-				$( '.progress-tables' ).not( '.media' ).find( '.progress-chunk' ).each( function( index ) {
+				$( '.progress-tables', '.progress-wrapper-primary' ).find( '.progress-chunk' ).each( function( index ) {
 					if ( 1 > $( this ).width() ) {
 						$( this ).hide();
 						$( '.progress-chunk-hover[data-table=' + tables_to_migrate[ index ] + ']' ).hide();
@@ -1261,7 +1279,7 @@
 						return;
 					}
 
-					migration_state_id = data.migration_state_id;
+					wpmdb.migration_state_id = data.migration_state_id;
 
 					var i = 0;
 					var progress_size = 0;
@@ -1287,21 +1305,15 @@
 								overall_percent = 0;
 								$( '.progress-bar' ).width( '0px' );
 
-								if ( 'migrate_select' === table_intent ) {
-									tables_to_migrate = $( '#select-tables' ).val();
-									if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
-										table_rows = wpmdb_data.this_table_rows;
-									} else {
-										table_rows = wpmdb.common.connection_data.table_rows;
-									}
+								tables_to_migrate = get_tables_to_migrate( null, null );
+
+								// User is pushing or exporting
+								if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
+
+									// Default value, assuming we're not backing up
+									table_rows = wpmdb_data.this_table_rows;
 								} else {
-									if ( 'push' === migration_intent || 'savefile' === migration_intent ) {
-										tables_to_migrate = wpmdb_data.this_prefixed_tables;
-										table_rows = wpmdb_data.this_table_rows;
-									} else {
-										tables_to_migrate = wpmdb.common.connection_data.prefixed_tables;
-										table_rows = wpmdb.common.connection_data.table_rows;
-									}
+									table_rows = wpmdb.common.connection_data.table_rows;
 								}
 
 								$( '.progress-tables' ).empty();
@@ -1337,13 +1349,13 @@
 						}
 
 						var gzip = 0;
-						if ( 'savefile' !== migration_intent  && 1 === parseInt( wpmdb.common.connection_data.gzip ) ) {
+						if ( 'savefile' !== migration_intent && 1 === parseInt( wpmdb.common.connection_data.gzip ) ) {
 							gzip = 1;
 						}
 
 						var request_data = {
 							action: 'wpmdb_migrate_table',
-							migration_state_id: migration_state_id,
+							migration_state_id: wpmdb.migration_state_id,
 							table: tables_to_migrate[ i ],
 							stage: stage,
 							current_row: current_row,
@@ -1402,7 +1414,7 @@
 									return;
 								}
 
-								if ( 'undefined' !== typeof row_information.wpmdb_error  && 1 === row_information.wpmdb_error ) {
+								if ( 'undefined' !== typeof row_information.wpmdb_error && 1 === row_information.wpmdb_error ) {
 									$( '.progress-title' ).html( wpmdb_strings.migration_failed );
 									$( '.progress-text' ).addClass( 'migration-error' );
 									$( '.progress-text' ).html( row_information.body );
@@ -1527,7 +1539,7 @@
 					cache: false,
 					data: {
 						action: 'wpmdb_finalize_migration',
-						migration_state_id: migration_state_id,
+						migration_state_id: wpmdb.migration_state_id,
 						prefix: wpmdb.common.connection_data.prefix,
 						tables: tables_to_migrate.join( ',' ),
 						nonce: wpmdb_data.nonces.finalize_migration
@@ -1570,7 +1582,7 @@
 					cache: false,
 					data: {
 						action: 'wpmdb_flush',
-						migration_state_id: migration_state_id,
+						migration_state_id: wpmdb.migration_state_id,
 						nonce: wpmdb_data.nonces.flush
 					},
 					error: function( jqXHR, textStatus, errorThrown ) {
@@ -1642,6 +1654,12 @@
 			// check that they've selected some tables to migrate
 			if ( $( '#migrate-selected' ).is( ':checked' ) && null === $( '#select-tables' ).val() ) {
 				alert( wpmdb_strings.please_select_one_table );
+				return;
+			}
+
+			// check that they've selected some tables to backup
+			if ( 'savefile' !== wpmdb_migration_type() && $( '#backup-manual-select' ).is( ':checked' ) && null === $( '#select-backup' ).val() ) {
+				alert( wpmdb_strings.please_select_one_table_backup );
 				return;
 			}
 
@@ -1947,12 +1965,12 @@
 			if ( bubble.hasClass( 'bottom' ) ) {
 				bubble.css( {
 					'left': ( position.left - bubble.width() / 2 ) + 'px',
-					'top':  ( position.top + icon.height() + 9 ) + 'px'
+					'top': ( position.top + icon.height() + 9 ) + 'px'
 				} );
 			} else {
 				bubble.css( {
 					'left': ( position.left + icon.width() + 9 ) + 'px',
-					'top':  ( position.top + icon.height() / 2 - 18 ) + 'px'
+					'top': ( position.top + icon.height() / 2 - 18 ) + 'px'
 				} );
 			}
 
@@ -2689,7 +2707,7 @@
 
 				var request_data = {
 					action: 'wpmdb_cancel_migration',
-					migration_state_id: migration_state_id
+					migration_state_id: wpmdb.migration_state_id
 				};
 
 				doing_ajax = true;
@@ -2827,11 +2845,16 @@
 
 		$( 'input[name=table_migrate_option]' ).change( function() {
 			maybe_show_mixed_cased_table_name_warning();
+			$.wpmdb.do_action( 'wpmdb_tables_to_migrate_changed' );
 		} );
 
 		$( 'body' ).on( 'change', '#select-tables', function() {
 			maybe_show_mixed_cased_table_name_warning();
+			$.wpmdb.do_action( 'wpmdb_tables_to_migrate_changed' );
 		} );
+
+		$.wpmdb.add_filter( 'wpmdb_get_table_prefix', get_table_prefix );
+		$.wpmdb.add_filter( 'wpmdb_get_tables_to_migrate', get_tables_to_migrate );
 	} );
 
 })( jQuery, wpmdb );

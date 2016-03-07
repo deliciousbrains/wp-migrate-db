@@ -62,4 +62,19 @@ class WPMDB_Utils {
 		}
 	}
 
+	/**
+	 * Use wp_unslash if available, otherwise fall back to stripslashes_deep
+	 *
+	 * @param string|array $arg
+	 *
+	 * @return string|array
+	 */
+	public static function safe_wp_unslash( $arg ){
+		if ( function_exists( 'wp_unslash' ) ) {
+			return wp_unslash( $arg );
+		} else {
+			return stripslashes_deep( $arg );
+		}
+	}
+
 }

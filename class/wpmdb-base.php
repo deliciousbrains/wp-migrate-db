@@ -28,7 +28,9 @@ class WPMDB_Base {
 	protected $core_slug;
 	protected $error_log;
 	protected $state_data;
+	protected $form_data;
 	protected $migration_state;
+	protected $filesystem;
 
 	function __construct( $plugin_file_path ) {
 		$this->load_settings();
@@ -62,6 +64,10 @@ class WPMDB_Base {
 		}
 
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+
+		// in case admin_init isn't run (tests/cli), we'll just instantiate the fs class without wpfs and allow it to be overwritten when/if admin_init is run
+		$this->filesystem = new WPMDB_Filesystem( true );
+		add_action( 'admin_init', array( $this, 'init_wpmdb_filesystem' ) );
 	}
 
 	/**
@@ -88,14 +94,15 @@ class WPMDB_Base {
 	/**
 	 * Sets $this->state_data from $_POST, potentially un-slashed and sanitized.
 	 *
-	 * @param array $key_rules An optional associative array of expected keys and their sanitization rule(s).
-	 * @param string $context The method that is specifying the sanitization rules. Defaults to calling method.
+	 * @param array  $key_rules An optional associative array of expected keys and their sanitization rule(s).
+	 * @param string $state_key The key in $_POST that contains the migration state id (defaults to 'migration_state_id').
+	 * @param string $context   The method that is specifying the sanitization rules. Defaults to calling method.
 	 */
-	function set_post_data( $key_rules = array(), $context = '' ) {
+	function set_post_data( $key_rules = array(), $state_key = 'migration_state_id', $context = '' ) {
 		if ( defined( 'DOING_WPMDB_TESTS' ) || $this->doing_cli_migration ) {
 			$this->state_data = $_POST;
 		} elseif ( is_null( $this->state_data ) ) {
-			$this->state_data = wp_unslash( $_POST );
+			$this->state_data = WPMDB_Utils::safe_wp_unslash( $_POST );
 		} else {
 			return;
 		}
@@ -111,8 +118,8 @@ class WPMDB_Base {
 		}
 
 		$migration_state_id = null;
-		if ( ! empty( $this->state_data['migration_state_id'] ) ) {
-			$migration_state_id = $this->state_data['migration_state_id'];
+		if ( ! empty( $this->state_data[ $state_key ] ) ) {
+			$migration_state_id = $this->state_data[ $state_key ];
 		}
 
 		if ( true !== $this->get_migration_state( $migration_state_id ) ) {
@@ -124,19 +131,27 @@ class WPMDB_Base {
 		load_plugin_textdomain( 'wp-migrate-db', false, dirname( plugin_basename( $this->plugin_file_path ) ) . '/languages/' );
 	}
 
+	function init_wpmdb_filesystem() {
+		if ( class_exists( 'WPMDB_Filesystem' ) ) {
+			if ( ! is_a( $this->filesystem, 'WPMDB_Filesystem' ) || ( is_a( $this->filesystem, 'WPMDB_Filesystem' ) && ! $this->filesystem->using_wp_filesystem() ) ) {
+				$this->filesystem = new WPMDB_Filesystem();
+			}
+		}
+	}
+
 	function pro_addon_construct() {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.3.3',
+				'required_version' => '1.4',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2.1',
+				'required_version' => '1.2.2',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.0.1',
+				'required_version' => '1.0.2',
 			)
 		);
 
@@ -504,11 +519,20 @@ class WPMDB_Base {
 		return $value;
 	}
 
+	/**
+	 * Generate a signature string for the supplied data given a key.
+	 *
+	 * @param array  $data
+	 * @param string $key
+	 *
+	 * @return string
+	 */
 	function create_signature( $data, $key ) {
 		if ( isset( $data['sig'] ) ) {
 			unset( $data['sig'] );
 		}
-		$data      = array_map( array( $this, 'sanitize_signature_data' ), $data );
+		$data = array_map( array( $this, 'sanitize_signature_data' ), $data );
+		ksort( $data );
 		$flat_data = implode( '', $data );
 
 		return base64_encode( hash_hmac( 'sha1', $flat_data, $key, true ) );
@@ -1016,7 +1040,7 @@ class WPMDB_Base {
 	 */
 	function get_tables( $scope = 'regular' ) {
 		global $wpdb;
-		$prefix       = ( $scope == 'temp' ? $this->temp_prefix : $wpdb->prefix );
+		$prefix       = ( $scope == 'temp' ? $this->temp_prefix : $wpdb->base_prefix );
 		$tables       = $wpdb->get_results( 'SHOW FULL TABLES', ARRAY_N );
 		$clean_tables = array();
 
@@ -1537,7 +1561,7 @@ class WPMDB_Base {
 		}
 
 		global $wpdb;
-		$alter_table_name = apply_filters( 'wpmdb_alter_table_name', $wpdb->prefix . 'wpmdb_alter_statements' );
+		$alter_table_name = apply_filters( 'wpmdb_alter_table_name', $wpdb->base_prefix . 'wpmdb_alter_statements' );
 
 		return $alter_table_name;
 	}
@@ -1675,5 +1699,145 @@ class WPMDB_Base {
 		}
 
 		return $input;
+	}
+
+	/**
+	 * Returns HTML for setting a checkbox as checked depending on supplied option value.
+	 *
+	 * @param string|array $option      Options value or array containing $option_name as key.
+	 * @param string       $option_name If $option is an array, the key that contains the value to be checked.
+	 */
+	public function maybe_checked( $option, $option_name = '' ) {
+		if ( is_array( $option ) && ! empty( $option_name ) && ! empty( $option[ $option_name ] ) ) {
+			$option = $option[ $option_name ];
+		}
+		echo esc_html( ( ! empty( $option ) && '1' == $option ) ? ' checked="checked"' : '' );
+	}
+
+	/**
+	 * Get array of subsite simple urls keyed by their ID.
+	 *
+	 * @return array
+	 */
+	public function subsites_list() {
+		$subsites = array();
+
+		if ( ! is_multisite() ) {
+			return $subsites;
+		}
+
+		$sites = wp_get_sites( array( 'limit' => 0 ) );
+
+		if ( ! empty( $sites ) ) {
+			foreach ( $sites as $subsite ) {
+				$subsites[ $subsite['blog_id'] ] = $this->simple_site_url( get_blogaddress_by_id( $subsite['blog_id'] ) );
+			}
+		}
+
+		return $subsites;
+	}
+
+	/**
+	 * Returns validated and sanitized form data.
+	 *
+	 * @param array|string $data
+	 *
+	 * @return array|string
+	 *
+	 * This is a base implementation that should be overridden and included with a call to parent before validating form_data contents.
+	 */
+	function parse_migration_form_data( $data ) {
+		parse_str( $data, $form_data );
+		// As the magic_quotes_gpc setting affects the output of parse_str() we may need to remove any quote escaping.
+		// (it uses the same mechanism that PHP > uses to populate the $_GET, $_POST, etc. variables)
+		if ( get_magic_quotes_gpc() ) {
+			$form_data = WPMDB_Utils::safe_wp_unslash( $form_data );
+		}
+
+		return $form_data;
+	}
+
+	/**
+	 * Returns the profile value for a given key.
+	 *
+	 * @param string $key
+	 *
+	 * @return mixed
+	 */
+	function profile_value( $key ) {
+		if ( ! empty( $key ) && ! empty( $this->form_data ) && isset( $this->form_data[ $key ] ) ) {
+			return $this->form_data[ $key ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a simplified site url (good for identifying subsites).
+	 *
+	 * @param string $site_url
+	 *
+	 * @return string
+	 */
+	public function simple_site_url( $site_url ) {
+		$site_url = untrailingslashit( $this->scheme_less_url( $site_url ) );
+
+		return $site_url;
+	}
+
+	/**
+	 * Checks given subsite id or url to see if it exists and returns its blog id.
+	 *
+	 * @param int|string $subsite       Blog ID or URL
+	 * @param array      $subsites_list Optional array of blog_id => simple urls to use, defaults to result of subsites_list().
+	 *
+	 * @return bool|string
+	 */
+	public function get_subsite_id( $subsite, $subsites_list = array() ) {
+		if ( ! is_numeric( $subsite ) ) {
+			$subsite = $this->simple_site_url( $subsite );
+		}
+
+		if ( empty( $subsites_list ) ) {
+			$subsites_list = $this->subsites_list();
+		}
+
+		foreach ( $subsites_list as $blog_id => $subsite_path ) {
+			if ( is_numeric( $subsite ) ) {
+				if ( $blog_id == $subsite ) {
+					return $blog_id;
+				}
+			} elseif ( $subsite == $subsite_path ) {
+				return $blog_id;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks given array of subsite ids or urls to see if they exist and returns array of blog ids.
+	 *
+	 * @param array $subsites
+	 * @param array $subsites_list Optional array of blog_id => simple urls to use, defaults to result of subsites_list().
+	 *
+	 * @return array
+	 *
+	 * Returned array element values will be false if the given value does not correspond to a subsite.
+	 */
+	public function get_subsite_ids( $subsites, $subsites_list = array() ) {
+		if ( empty( $subsites ) ) {
+			return array();
+		}
+
+		if ( ! is_array( $subsites ) ) {
+			$subsites = array( $subsites );
+		}
+
+		foreach ( $subsites as $index => $subsite ) {
+			$subsites[ $index ] = $this->get_subsite_id( $subsite, $subsites_list );
+		}
+
+		return $subsites;
 	}
 }

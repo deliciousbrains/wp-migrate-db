@@ -12,7 +12,7 @@
 			<li>
 				<label for="backup-only-with-prefix">
 					<input type="radio" id="backup-only-with-prefix" value="backup_only_with_prefix" name="backup_option"<?php echo( $loaded_profile['backup_option'] == 'backup_only_with_prefix' ? ' checked="checked"' : '' ); ?> >
-					<?php _e( 'Backup all tables with prefix', 'wp-migrate-db' ); ?> "<span class="table-prefix"><?php echo $wpdb->prefix; ?></span>"
+					<?php _e( 'Backup all tables with prefix', 'wp-migrate-db' ); ?> "<span class="table-prefix"><?php echo $wpdb->base_prefix; ?></span>"
 				</label>
 			</li>
 			<li>

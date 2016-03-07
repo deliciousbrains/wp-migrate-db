@@ -10,7 +10,7 @@
 			<li>
 				<label for="migrate-only-with-prefix">
 					<input id="migrate-only-with-prefix" class="multiselect-toggle" type="radio" value="migrate_only_with_prefix" name="table_migrate_option"<?php echo( $loaded_profile['table_migrate_option'] == 'migrate_only_with_prefix' ? ' checked="checked"' : '' ); ?> />
-					<?php _e( 'Migrate all tables with prefix', 'wp-migrate-db' ); ?> "<span class="table-prefix"><?php echo esc_html( $wpdb->prefix ); ?></span>"
+					<?php _e( 'Migrate all tables with prefix', 'wp-migrate-db' ); ?> "<span class="table-prefix"><?php echo esc_html( $wpdb->base_prefix ); ?></span>"
 				</label>
 			</li>
 			<li>

@@ -67,8 +67,7 @@ class WPMDBPro_CLI_Export extends WPMDB_CLI {
 			if ( empty( $assoc_args['subsite'] ) ) {
 				return $this->cli_error( __( 'A valid Blog ID or Subsite URL must be supplied to make use of the subsite option', 'wp-migrate-db-pro' ) );
 			}
-			global $wpmdbpro_multisite_tools;
-			$select_subsite = $wpmdbpro_multisite_tools->get_subsite_id( $assoc_args['subsite'] );
+			$select_subsite = $this->get_subsite_id( $assoc_args['subsite'] );
 
 			if ( false === $select_subsite ) {
 				return $this->cli_error( __( 'A valid Blog ID or Subsite URL must be supplied to make use of the subsite option', 'wp-migrate-db-pro' ) );
@@ -120,7 +119,7 @@ class WPMDBPro_CLI_Export extends WPMDB_CLI {
 			'migrate_select' === $this->profile['table_migrate_option'] &&
 			! empty( $this->profile['select_tables'] )
 		) {
-			$tables_to_migrate = array_intersect( $this->profile['select_tables'], $tables_to_migrate );
+			$tables_to_migrate = array_intersect( $this->profile['select_tables'], $this->get_tables() );
 		}
 
 		return $tables_to_migrate;

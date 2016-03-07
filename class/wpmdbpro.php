@@ -387,33 +387,33 @@ class WPMDBPro extends WPMDB {
 		add_filter( 'wpmdb_before_response', array( $this, 'scramble' ) );
 
 		$key_rules = array(
-			'action'      => 'key',
-			'intent'      => 'key',
-			'url'         => 'url',
-			'key'         => 'string',
-			'form_data'   => 'string',
-			'temp_prefix' => 'string',
-			'prefix'      => 'string',
-			'tables'      => 'string',
-			'type'        => 'key',
-			'location'    => 'url',
-			'sig'         => 'string',
+			'action'          => 'key',
+			'remote_state_id' => 'key',
+			'intent'          => 'key',
+			'url'             => 'url',
+			'form_data'       => 'string',
+			'tables'          => 'string',
+			'temp_prefix'     => 'string',
+			'prefix'          => 'string',
+			'type'            => 'key',
+			'location'        => 'url',
+			'sig'             => 'string',
 		);
-		$this->set_post_data( $key_rules );
+		$this->set_post_data( $key_rules, 'remote_state_id' );
 
 		$filtered_post = $this->filter_post_elements(
 			$this->state_data,
 			array(
 				'action',
+				'remote_state_id',
 				'intent',
 				'url',
-				'key',
 				'form_data',
+				'tables',
+				'temp_prefix',
 				'prefix',
 				'type',
 				'location',
-				'tables',
-				'temp_prefix',
 			)
 		);
 
@@ -441,11 +441,10 @@ class WPMDBPro extends WPMDB {
 
 		$key_rules = array(
 			'action' => 'key',
-			'key'    => 'string',
 			'sig'    => 'string',
 		);
 		$this->set_post_data( $key_rules );
-		$filtered_post = $this->filter_post_elements( $this->state_data, array( 'action', 'key' ) );
+		$filtered_post = $this->filter_post_elements( $this->state_data, array( 'action' ) );
 
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			$error_msg = $this->invalid_content_verification_error . ' (#123)';
@@ -471,16 +470,15 @@ class WPMDBPro extends WPMDB {
 
 		$key_rules = array(
 			'action'              => 'key',
+			'remote_state_id'     => 'key',
 			'intent'              => 'key',
 			'url'                 => 'url',
-			'key'                 => 'string',
 			'table'               => 'string',
 			'form_data'           => 'string',
 			'stage'               => 'key',
 			'bottleneck'          => 'positive_int',
 			'prefix'              => 'string',
 			'current_row'         => 'int',
-			'dump_filename'       => 'string',
 			'last_table'          => 'positive_int',
 			'gzip'                => 'positive_int',
 			'primary_keys'        => 'serialized',
@@ -488,31 +486,30 @@ class WPMDBPro extends WPMDB {
 			'domain_current_site' => 'text',
 			'sig'                 => 'string',
 		);
-		$this->set_post_data( $key_rules );
+		$this->set_post_data( $key_rules, 'remote_state_id' );
 
 		$filtered_post = $this->filter_post_elements(
 			$this->state_data,
 			array(
 				'action',
+				'remote_state_id',
 				'intent',
 				'url',
-				'key',
 				'table',
 				'form_data',
 				'stage',
 				'bottleneck',
-				'delay_between_requests',
 				'prefix',
 				'current_row',
-				'dump_filename',
 				'last_table',
 				'gzip',
 				'primary_keys',
 				'path_current_site',
 				'domain_current_site',
-				'db_version',
 			)
 		);
+
+		$filtered_post['primary_keys'] = stripslashes( $filtered_post['primary_keys'] );
 
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			$error_msg = $this->invalid_content_verification_error . ' (#137)';
@@ -538,55 +535,55 @@ class WPMDBPro extends WPMDB {
 
 		$key_rules = array(
 			'action'              => 'key',
+			'remote_state_id'     => 'key',
 			'intent'              => 'key',
 			'url'                 => 'url',
-			'key'                 => 'string',
+			'table'               => 'string',
 			'form_data'           => 'string',
 			'stage'               => 'key',
-			'dump_filename'       => 'string',
-			'site_url'            => 'url',
-			'find_replace_pairs'  => 'serialized',
-			'table'               => 'string',
+			'bottleneck'          => 'positive_int',
 			'current_row'         => 'int',
 			'last_table'          => 'positive_int',
-			'primary_keys'        => 'serialized',
 			'gzip'                => 'positive_int',
-			'bottleneck'          => 'positive_int',
-			'prefix'              => 'string',
+			'primary_keys'        => 'serialized',
+			'site_url'            => 'url',
+			'find_replace_pairs'  => 'serialized',
 			'pull_limit'          => 'positive_int',
 			'db_version'          => 'string',
 			'path_current_site'   => 'string',
 			'domain_current_site' => 'text',
+			'prefix'              => 'string',
 			'sig'                 => 'string',
 		);
-		$this->set_post_data( $key_rules );
+		$this->set_post_data( $key_rules, 'remote_state_id' );
 
 		$filtered_post = $this->filter_post_elements(
 			$this->state_data,
 			array(
 				'action',
+				'remote_state_id',
 				'intent',
 				'url',
-				'key',
 				'table',
 				'form_data',
 				'stage',
 				'bottleneck',
-				'delay_between_requests',
-				'prefix',
 				'current_row',
-				'dump_filename',
-				'pull_limit',
 				'last_table',
 				'gzip',
 				'primary_keys',
-				'path_current_site',
-				'domain_current_site',
-				'db_version',
 				'site_url',
 				'find_replace_pairs',
+				'pull_limit',
+				'db_version',
+				'path_current_site',
+				'domain_current_site',
+				'prefix',
 			)
 		);
+
+		$filtered_post['primary_keys']       = stripslashes( $filtered_post['primary_keys'] );
+		$filtered_post['find_replace_pairs'] = stripslashes( $filtered_post['find_replace_pairs'] );
 
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			$error_msg = $this->invalid_content_verification_error . ' (#124)';
@@ -660,6 +657,13 @@ class WPMDBPro extends WPMDB {
 			$return['message'] = $error_msg;
 		}
 
+		// If there is an error, no need to parse args or create migration state.
+		if ( ! empty( $return['error'] ) ) {
+			$result = $this->end_ajax( serialize( $return ) );
+
+			return $result;
+		}
+
 		$this->form_data = $this->parse_migration_form_data( $this->state_data['form_data'] );
 
 		if ( ! empty( $this->form_data['create_backup'] ) && $this->state_data['intent'] == 'push' ) {
@@ -681,6 +685,11 @@ class WPMDBPro extends WPMDB {
 			$return['site_url']   = site_url();
 		}
 
+		// Store current migration state and return its id.
+		$state = array_merge( $this->state_data, $return );
+		$return['remote_state_id'] = $this->migration_state->id();
+		$return                    = $this->save_migration_state( $state, $return );
+
 		$result = $this->end_ajax( serialize( $return ) );
 
 		return $result;
@@ -697,8 +706,6 @@ class WPMDBPro extends WPMDB {
 	 * @return mixed
 	 */
 	function respond_to_verify_connection_to_remote_site() {
-		add_filter( 'wpmdb_before_response', array( $this, 'scramble' ) );
-
 		$key_rules = array(
 			'action'  => 'key',
 			'intent'  => 'key',
@@ -729,6 +736,9 @@ class WPMDBPro extends WPMDB {
 
 			return $result;
 		}
+
+		// Only scramble response once we know it can be handled.
+		add_filter( 'wpmdb_before_response', array( $this, 'scramble' ) );
 
 		if ( ! $this->verify_signature( $filtered_post, $this->settings['key'] ) ) {
 			$return['error']   = 1;
@@ -775,7 +785,7 @@ class WPMDBPro extends WPMDB {
 		$return['table_sizes_hr']         = array_map( array( $this, 'format_table_sizes' ), $this->get_table_sizes() );
 		$return['path']                   = $this->absolute_root_file_path;
 		$return['url']                    = home_url();
-		$return['prefix']                 = $wpdb->prefix;
+		$return['prefix']                 = $wpdb->base_prefix;
 		$return['bottleneck']             = $this->get_bottleneck();
 		$return['delay_between_requests'] = $this->settings['delay_between_requests'];
 		$return['error']                  = 0;
@@ -790,6 +800,7 @@ class WPMDBPro extends WPMDB {
 		$return['upload_dir_long']        = $this->get_upload_info( 'path' );
 		$return['temp_prefix']            = $this->temp_prefix;
 		$return['lower_case_table_names'] = $this->get_lower_case_table_names_setting();
+		$return['subsites']               = $this->subsites_list();
 		$return                           = apply_filters( 'wpmdb_establish_remote_connection_data', $return );
 		$result                           = $this->end_ajax( serialize( $return ) );
 
@@ -809,31 +820,29 @@ class WPMDBPro extends WPMDB {
 		add_filter( 'wpmdb_before_response', array( $this, 'scramble' ) );
 
 		$key_rules = array(
-			'action'           => 'key',
-			'intent'           => 'key',
-			'url'              => 'url',
-			'key'              => 'string',
-			'form_data'        => 'string',
-			'stage'            => 'key',
-			'temp_prefix'      => 'string',
-			'dump_filename'    => 'string',
-			'sig'              => 'string',
-			'dumpfile_created' => 'positive_int',
+			'action'          => 'key',
+			'remote_state_id' => 'key',
+			'intent'          => 'key',
+			'url'             => 'url',
+			'form_data'       => 'string',
+			'temp_prefix'     => 'string',
+			'stage'           => 'key',
+			'dump_filename'   => 'string',
+			'sig'             => 'string',
 		);
-		$this->set_post_data( $key_rules );
+		$this->set_post_data( $key_rules, 'remote_state_id' );
 
 		$filtered_post = $this->filter_post_elements(
 			$this->state_data,
 			array(
 				'action',
+				'remote_state_id',
 				'intent',
 				'url',
-				'key',
 				'form_data',
-				'dump_filename',
 				'temp_prefix',
 				'stage',
-				'dumpfile_created',
+				'dump_filename',
 			)
 		);
 
@@ -845,7 +854,7 @@ class WPMDBPro extends WPMDB {
 
 		$this->form_data = $this->parse_migration_form_data( $filtered_post['form_data'] );
 
-		if ( $filtered_post['stage'] == 'backup' && ! empty( $filtered_post['dumpfile_created'] ) ) {
+		if ( $filtered_post['stage'] == 'backup' && ! empty( $this->state_data['dumpfile_created'] ) ) {
 			$this->delete_export_file( $filtered_post['dump_filename'], true );
 		} else {
 			$this->delete_temporary_tables( $filtered_post['temp_prefix'] );
@@ -1015,8 +1024,18 @@ class WPMDBPro extends WPMDB {
 		wp_enqueue_style( 'plugin-update-styles', $src, array(), $version );
 	}
 
+	/**
+	 * Appends an export of a table to a backup file as per params defined in $this->state_data.
+	 *
+	 * @return mixed|null
+	 */
 	function handle_table_backup() {
 		$this->set_post_data();
+
+		if ( empty( $this->state_data['dumpfile_created'] ) ) {
+			$this->state_data['dumpfile_created'] = true;
+			$this->save_migration_state( $this->state_data );
+		}
 
 		if ( isset( $this->form_data['gzip_file'] ) ) {
 			unset( $this->form_data['gzip_file'] );
@@ -1258,13 +1277,23 @@ class WPMDBPro extends WPMDB {
 			$return = $this->finalize_migration();
 		} else {
 			do_action( 'wpmdb_migration_complete', 'push', $this->state_data['url'] );
-			$data             = $this->filter_post_elements( $this->state_data, array( 'action', 'intent', 'url', 'key', 'form_data', 'prefix', 'type', 'location', 'tables', 'temp_prefix' ) );
+			$data = $this->filter_post_elements(
+				$this->state_data,
+				array(
+					'remote_state_id',
+					'url',
+					'form_data',
+					'tables',
+					'temp_prefix',
+				)
+			);
+
 			$data['action']   = 'wpmdb_remote_finalize_migration';
 			$data['intent']   = 'pull';
-			$data['prefix']   = $wpdb->prefix;
+			$data['prefix']   = $wpdb->base_prefix;
 			$data['type']     = 'push';
 			$data['location'] = home_url();
-			$data['sig']      = $this->create_signature( $data, $data['key'] );
+			$data['sig']      = $this->create_signature( $data, $this->state_data['key'] );
 			$ajax_url         = $this->ajax_url();
 			$response         = $this->remote_post( $ajax_url, $data, __FUNCTION__ );
 			ob_start();
@@ -1362,16 +1391,15 @@ class WPMDBPro extends WPMDB {
 		$key_rules = array(
 			'action'             => 'key',
 			'migration_state_id' => 'key',
-			'key'                => 'string',
 		);
 		$this->set_post_data( $key_rules );
 
 		if ( $this->state_data['intent'] == 'pull' ) {
 			$return = $this->flush();
 		} else {
-			$data           = $this->filter_post_elements( $this->state_data, array( 'key' ) );
+			$data           = array();
 			$data['action'] = 'wpmdb_remote_flush';
-			$data['sig']    = $this->create_signature( $data, $data['key'] );
+			$data['sig']    = $this->create_signature( $data, $this->state_data['key'] );
 			$ajax_url       = $this->ajax_url();
 			$response       = $this->remote_post( $ajax_url, $data, __FUNCTION__ );
 			ob_start();
@@ -1425,10 +1453,10 @@ class WPMDBPro extends WPMDB {
 		$prefix       = esc_sql( $temp_prefix . $table_prefix );
 
 		foreach ( $temp_tables as $temp_table ) {
-			$table = $wpdb->prefix . str_replace( $prefix, '', $temp_table );
+			$table = $wpdb->base_prefix . str_replace( $prefix, '', $temp_table );
 
 			// Get sitemeta table
-			if ( $this->table_is( 'sitemeta', $table ) ) {
+			if ( is_multisite() && $this->table_is( 'sitemeta', $table ) ) {
 				$sitemeta_table_name = $temp_table;
 			}
 
@@ -1443,8 +1471,8 @@ class WPMDBPro extends WPMDB {
 			return $sql;
 		}
 
-		// Return if options tables not in migration scope
-		if ( true === empty( $options_table_names ) ) {
+		// Return if options tables not in migration scope for non-multisite.
+		if ( ! is_multisite() && true === empty( $options_table_names ) ) {
 			return $sql;
 		}
 
@@ -1459,38 +1487,40 @@ class WPMDBPro extends WPMDB {
 		}
 
 		if ( is_multisite() ) {
-			// Get preserved data in site meta table
-			$table = $wpdb->prefix . str_replace( $prefix, '', $sitemeta_table_name );
+			// Get preserved data in site meta table if being replaced.
+			if ( ! empty( $sitemeta_table_name ) ) {
+				$table = $wpdb->base_prefix . str_replace( $prefix, '', $sitemeta_table_name );
 
-			$preserved_migration_state_options = $wpdb->get_results(
-				"SELECT `meta_key` FROM `{$table}` WHERE `meta_key` LIKE '" . WPMDB_Migration_State::OPTION_PREFIX . "%'",
-				OBJECT_K
-			);
-
-			if ( ! empty( $preserved_migration_state_options ) ) {
-				$preserved_sitemeta_options = array_merge( $preserved_sitemeta_options, array_keys( $preserved_migration_state_options ) );
-			}
-
-			$preserved_sitemeta_options         = apply_filters( 'wpmdb_preserved_sitemeta_options', $preserved_sitemeta_options );
-			$preserved_sitemeta_options_escaped = esc_sql( $preserved_sitemeta_options );
-
-			$preserved_sitemeta_options_data = $wpdb->get_results(
-				sprintf(
-					"SELECT * FROM `{$table}` WHERE `meta_key` IN ('%s')",
-					implode( "','", $preserved_sitemeta_options_escaped )
-				),
-				ARRAY_A
-			);
-
-			// Create preserved data queries for site meta table
-			foreach ( $preserved_sitemeta_options_data as $option ) {
-				$sql .= $wpdb->prepare( "DELETE FROM `{$sitemeta_table_name}` WHERE `meta_key` = %s;\n", $option['meta_key'] );
-				$sql .= $wpdb->prepare(
-					"INSERT INTO `{$sitemeta_table_name}` ( `meta_id`, `site_id`, `meta_key`, `meta_value` ) VALUES ( NULL , %s, %s, %s );\n",
-					$option['site_id'],
-					$option['meta_key'],
-					$option['meta_value']
+				$preserved_migration_state_options = $wpdb->get_results(
+					"SELECT `meta_key` FROM `{$table}` WHERE `meta_key` LIKE '" . WPMDB_Migration_State::OPTION_PREFIX . "%'",
+					OBJECT_K
 				);
+
+				if ( ! empty( $preserved_migration_state_options ) ) {
+					$preserved_sitemeta_options = array_merge( $preserved_sitemeta_options, array_keys( $preserved_migration_state_options ) );
+				}
+
+				$preserved_sitemeta_options         = apply_filters( 'wpmdb_preserved_sitemeta_options', $preserved_sitemeta_options );
+				$preserved_sitemeta_options_escaped = esc_sql( $preserved_sitemeta_options );
+
+				$preserved_sitemeta_options_data = $wpdb->get_results(
+					sprintf(
+						"SELECT * FROM `{$table}` WHERE `meta_key` IN ('%s')",
+						implode( "','", $preserved_sitemeta_options_escaped )
+					),
+					ARRAY_A
+				);
+
+				// Create preserved data queries for site meta table
+				foreach ( $preserved_sitemeta_options_data as $option ) {
+					$sql .= $wpdb->prepare( "DELETE FROM `{$sitemeta_table_name}` WHERE `meta_key` = %s;\n", $option['meta_key'] );
+					$sql .= $wpdb->prepare(
+						"INSERT INTO `{$sitemeta_table_name}` ( `meta_id`, `site_id`, `meta_key`, `meta_value` ) VALUES ( NULL , %s, %s, %s );\n",
+						$option['site_id'],
+						$option['meta_key'],
+						$option['meta_value']
+					);
+				}
 			}
 		} else {
 			$preserved_migration_state_options = $wpdb->get_results(
@@ -1503,39 +1533,42 @@ class WPMDBPro extends WPMDB {
 			}
 		}
 
-		$preserved_options         = apply_filters( 'wpmdb_preserved_options', $preserved_options );
-		$preserved_options_escaped = esc_sql( $preserved_options );
+		// Get preserved data in options tables if being replaced.
+		if ( ! empty( $options_table_names ) ) {
+			$preserved_options         = apply_filters( 'wpmdb_preserved_options', $preserved_options );
+			$preserved_options_escaped = esc_sql( $preserved_options );
 
-		$preserved_options_data = array();
+			$preserved_options_data = array();
 
-		// Get preserved data in options tables
-		foreach ( $options_table_names as $option_table ) {
-			$table = $wpdb->prefix . str_replace( $prefix, '', $option_table );
+			// Get preserved data in options tables
+			foreach ( $options_table_names as $option_table ) {
+				$table = $wpdb->base_prefix . str_replace( $prefix, '', $option_table );
 
-			$preserved_options_data[ $option_table ] = $wpdb->get_results(
-				sprintf(
-					"SELECT * FROM `{$table}` WHERE `option_name` IN ('%s')",
-					implode( "','", $preserved_options_escaped )
-				),
-				ARRAY_A
-			);
-		}
+				$preserved_options_data[ $option_table ] = $wpdb->get_results(
+					sprintf(
+						"SELECT * FROM `{$table}` WHERE `option_name` IN ('%s')",
+						implode( "','", $preserved_options_escaped )
+					),
+					ARRAY_A
+				);
+			}
 
-		// Create preserved data queries for options tables
-		foreach ( $preserved_options_data as $key => $value ) {
-			if ( false === empty( $value ) ) {
-				foreach ( $value as $option ) {
-					$sql .= $wpdb->prepare(
-						"DELETE FROM `{$key}` WHERE `option_name` = %s;\n",
-						$option['option_name']
-					);
+			// Create preserved data queries for options tables
+			foreach ( $preserved_options_data as $key => $value ) {
+				if ( false === empty( $value ) ) {
+					foreach ( $value as $option ) {
+						$sql .= $wpdb->prepare(
+							"DELETE FROM `{$key}` WHERE `option_name` = %s;\n",
+							$option['option_name']
+						);
 
-					$sql .= $wpdb->prepare(
-						"INSERT INTO `{$key}` ( `option_id`, `option_name`, `option_value`, `autoload` ) VALUES ( NULL , %s, %s, %s );\n",
-						$option['option_name'],
-						$option['option_value'],
-						$option['autoload']
-					);
+						$sql .= $wpdb->prepare(
+							"INSERT INTO `{$key}` ( `option_id`, `option_name`, `option_value`, `autoload` ) VALUES ( NULL , %s, %s, %s );\n",
+							$option['option_name'],
+							$option['option_value'],
+							$option['autoload']
+						);
+					}
 				}
 			}
 		}
@@ -1552,15 +1585,23 @@ class WPMDBPro extends WPMDB {
 		add_filter( 'wpmdb_before_response', array( $this, 'scramble' ) );
 
 		$key_rules = array(
-			'action'        => 'key',
-			'table'         => 'string',
-			'chunk_gzipped' => 'positive_int',
-			'sig'           => 'string',
+			'action'          => 'key',
+			'remote_state_id' => 'key',
+			'table'           => 'string',
+			'chunk_gzipped'   => 'positive_int',
+			'sig'             => 'string',
 		);
-		$this->set_post_data( $key_rules );
+		$this->set_post_data( $key_rules, 'remote_state_id' );
 
-		$filtered_post = $this->filter_post_elements( $this->state_data, array( 'action', 'table', 'chunk_gzipped' ) );
-		$gzip          = ( isset( $this->state_data['chunk_gzipped'] ) && $this->state_data['chunk_gzipped'] );
+		$filtered_post = $this->filter_post_elements( $this->state_data, array(
+				'action',
+				'remote_state_id',
+				'table',
+				'chunk_gzipped',
+			)
+		);
+
+		$gzip = ( isset( $this->state_data['chunk_gzipped'] ) && $this->state_data['chunk_gzipped'] );
 
 		$tmp_file_name = 'chunk.txt';
 
@@ -1927,6 +1968,8 @@ class WPMDBPro extends WPMDB {
 			$plugin_slug = 'wp-migrate-db-pro-cli';
 		} elseif ( 'wp-migrate-db-pro-media-files' === $_GET['plugin'] ) {
 			$plugin_slug = 'wp-migrate-db-pro-media-files';
+		} elseif ( 'wp-migrate-db-pro-multisite-tools' === $_GET['plugin'] ) {
+			$plugin_slug = 'wp-migrate-db-pro-multisite-tools';
 		} else {
 			return;
 		}
