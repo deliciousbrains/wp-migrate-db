@@ -51,16 +51,7 @@ class WPMDB extends WPMDB_Base {
 		add_action( 'wp_ajax_wpmdb_update_max_request_size', array( $this, 'ajax_update_max_request_size' ) );
 		add_action( 'wp_ajax_wpmdb_cancel_migration', array( $this, 'ajax_cancel_migration' ) );
 
-		$absolute_path = rtrim( ABSPATH, '\\/' );
-		$site_url      = rtrim( site_url( '', 'http' ), '\\/' );
-		$home_url      = rtrim( home_url( '', 'http' ), '\\/' );
-		if ( $site_url != $home_url ) {
-			$difference = str_replace( $home_url, '', $site_url );
-			if ( strpos( $absolute_path, $difference ) !== false ) {
-				$absolute_path = rtrim( substr( $absolute_path, 0, - strlen( $difference ) ), '\\/' );
-			}
-		}
-		$this->absolute_root_file_path = $absolute_path;
+		$this->absolute_root_file_path = $this->get_absolute_root_file_path();
 
 		$this->accepted_fields = array(
 			'action',
@@ -1347,7 +1338,7 @@ class WPMDB extends WPMDB_Base {
 			$order_by = '';
 			// We need ORDER BY here because with LIMIT, sometimes it will return
 			// the same results from the previous query and we'll have duplicate insert statements
-			if ( 'backup' != $this->post_data['stage'] && isset( $this->form_data['exclude_spam'] ) ) {
+			if ( 'backup' != $this->post_data['stage'] && false === empty( $this->form_data['exclude_spam'] ) ) {
 				if ( $this->table_is( 'comments', $table ) ) {
 					$where .= ' AND comment_approved != "spam"';
 				} elseif ( $this->table_is( 'commentmeta', $table ) ) {
@@ -1458,7 +1449,15 @@ class WPMDB extends WPMDB_Base {
 			if ( $table_data ) {
 				$to_search   = isset( $this->find_replace_pairs['replace_old'] ) ? $this->find_replace_pairs['replace_old'] : '';
 				$to_replace  = isset( $this->find_replace_pairs['replace_new'] ) ? $this->find_replace_pairs['replace_new'] : '';
-				$replacer = new WPMDB_Replace( $table, $to_search, $to_replace, $this );
+				$replacer = new WPMDB_Replace( array(
+					'table'       => $table,
+					'search'      => $to_search,
+					'replace'     => $to_replace,
+					'intent'      => $this->post_data['intent'],
+					'base_domain' => $this->get_domain_replace(),
+					'site_domain' => $this->get_domain_current_site(),
+					'wpmdb'       => $this,
+				) );
 
 				foreach ( $table_data as $row ) {
 					$replacer->set_row( $row );
@@ -1516,7 +1515,7 @@ class WPMDB extends WPMDB_Base {
 							$value = preg_replace( array_keys( $domain_replaces ), array_values( $domain_replaces ), $value );
 						}
 
-						if ( 'guid' != $key || ( isset( $this->form_data['replace_guids'] ) && $this->table_is( 'posts', $table ) ) ) {
+						if ( 'guid' != $key || ( false === empty( $this->form_data['replace_guids'] ) && $this->table_is( 'posts', $table ) ) ) {
 							if ( $this->post_data['stage'] != 'backup' ) {
 								$value = $replacer->recursive_unserialize_replace( $value );
 							}

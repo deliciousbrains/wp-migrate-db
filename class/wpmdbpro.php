@@ -153,18 +153,22 @@ class WPMDBPro extends WPMDB {
 		$this->template( 'licence-info', 'pro', $args );
 	}
 
+	/**
+	 * Shows all the videos on the Help tab.
+	 * @return void
+	 */
 	function template_videos() {
 		$args = array(
 			'videos' => array(
-				'SlfSuuePYaQ' => array(
-					'title' => __( 'Feature Walkthrough', 'wp-migrate-db' ),
+				'u7jFkwwfeJc' => array(
+					'title' => __( 'UI Walkthrough', 'wp-migrate-db' ),
 					'desc'  => __( 'A brief walkthrough of the WP Migrate DB plugin showing all of the different options and explaining them.', 'wp-migrate-db' ),
 				),
-				'IFdHIpf6jjc' => array(
+				'fHFcH4bCzmU' => array(
 					'title' => __( 'Pulling Live Data Into Your Local Development&nbsp;Environment', 'wp-migrate-db' ),
 					'desc'  => __( 'This screencast demonstrates how you can pull data from a remote, live WordPress install and update the data in your local development environment.', 'wp-migrate-db' ),
 				),
-				'FjTzNqAlQE0' => array(
+				'sImZW_sB47g' => array(
 					'title' => __( 'Pushing Local Development Data to a Staging&nbsp;Environment', 'wp-migrate-db' ),
 					'desc'  => __( 'This screencast demonstrates how you can push a local WordPress database you\'ve been using for development to a staging environment.', 'wp-migrate-db' ),
 				),
@@ -1082,8 +1086,10 @@ class WPMDBPro extends WPMDB {
 		do_action( 'wpmdb_migration_complete', $type, $location );
 	}
 
-	/*
+	/**
 	 * Returns SQL queries used to preserve options in the wp_options or wp_sitemeta tables during a migration.
+	 *
+	 * @param $temp_tables
 	 *
 	 * @return string DELETE and INSERT SQL queries separated by a newline character (\n).
 	 */
@@ -1115,7 +1121,7 @@ class WPMDBPro extends WPMDB {
 
 		$this->form_data = $this->parse_migration_form_data( $this->post_data['form_data'] );
 
-		if ( isset( $this->form_data['keep_active_plugins'] ) ) {
+		if ( false === empty( $this->form_data['keep_active_plugins'] ) ) {
 			$preserved_options[]          = 'active_plugins';
 			$preserved_sitemeta_options[] = 'active_sitewide_plugins';
 		}

@@ -82,11 +82,11 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php' => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.2',
+				'required_version' => '1.3',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                 => array(
 				'name'             => 'CLI',
-				'required_version' => '1.0.2',
+				'required_version' => '1.1',
 			)
 		);
 
@@ -1350,5 +1350,31 @@ class WPMDB_Base {
 	 */
 	function slash_one_direction( $path ) {
 		return str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $path );
+	}
+
+	/**
+	 * Returns the absolute path to the root of the website.
+	 *
+	 * @return string
+	 */
+	function get_absolute_root_file_path() {
+		static $absolute_path;
+
+		if ( ! empty( $absolute_path ) ) {
+			return $absolute_path;
+		}
+
+		$absolute_path = rtrim( ABSPATH, '\\/' );
+		$site_url      = rtrim( site_url( '', 'http' ), '\\/' );
+		$home_url      = rtrim( home_url( '', 'http' ), '\\/' );
+
+		if ( $site_url != $home_url ) {
+			$difference = str_replace( $home_url, '', $site_url );
+			if ( strpos( $absolute_path, $difference ) !== false ) {
+				$absolute_path = rtrim( substr( $absolute_path, 0, - strlen( $difference ) ), '\\/' );
+			}
+		}
+
+		return $absolute_path;
 	}
 }

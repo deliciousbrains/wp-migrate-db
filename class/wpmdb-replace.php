@@ -5,16 +5,34 @@ final class WPMDB_Replace {
 	protected $replace;
 	protected $subdomain_replaces_on;
 	protected $wpmdb;
+	protected $intent;
+	protected $base_domain;
+	protected $site_domain;
 
 	private $table;
 	private $column;
 	private $row;
 
-	function __construct( $table, $search, $replace, $wpmdb ) {
-		$this->table   = $table;
-		$this->search  = $search;
-		$this->replace = $replace;
-		$this->wpmdb   = $wpmdb;
+	function __construct( $args ) {
+		$keys = array( 'table', 'search', 'replace', 'intent', 'base_domain', 'site_domain', 'wpmdb' );
+
+		if ( ! is_array( $args ) ) {
+			throw new InvalidArgumentException( 'WPMDB_Replace constructor expects the argument to be an array' );
+		}
+
+		foreach ( $keys as $key ) {
+			if ( ! isset( $args[ $key ] ) ) {
+				throw new InvalidArgumentException( "WPMDB_Replace constructor expects '$key' key to be present in the array argument" );
+			}
+		}
+
+		$this->table       = $args['table'];
+		$this->search      = $args['search'];
+		$this->replace     = $args['replace'];
+		$this->intent      = $args['intent'];
+		$this->base_domain = $args['base_domain'];
+		$this->site_domain = $args['site_domain'];
+		$this->wpmdb       = $args['wpmdb'];
 	}
 
 	/**
@@ -40,14 +58,12 @@ final class WPMDB_Replace {
 	 * @return mixed
 	 */
 	function subdomain_replaces( $new ) {
-		$domain_replace = $this->wpmdb->get_domain_replace();
-
-		if ( empty( $domain_replace ) ) {
+		if ( empty( $this->base_domain ) ) {
 			return $new;
 		}
 
-		$pattern     = '|//(.*?)\\.' . preg_quote( $this->wpmdb->get_domain_current_site(), '|' ) . '|';
-		$replacement = '//$1.' . trim( $domain_replace );
+		$pattern     = '|//(.*?)\\.' . preg_quote( $this->site_domain, '|' ) . '|';
+		$replacement = '//$1.' . trim( $this->base_domain );
 		$new         = preg_replace( $pattern, $replacement, $new );
 
 		return $new;
@@ -75,11 +91,11 @@ final class WPMDB_Replace {
 	 *
 	 * Mostly from https://github.com/interconnectit/Search-Replace-DB
 	 *
-	 * @param array $data              Used to pass any subordinate arrays back to in.
+	 * @param mixed $data              Used to pass any subordinate arrays back to in.
 	 * @param bool  $serialized        Does the array passed via $data need serialising.
 	 * @param bool  $parent_serialized Passes whether the original data passed in was serialized
 	 *
-	 * @return array    The original array with all elements replaced as needed.
+	 * @return mixed    The original array with all elements replaced as needed.
 	 */
 	function recursive_unserialize_replace( $data, $serialized = false, $parent_serialized = false ) {
 		$pre = apply_filters( 'wpmdb_pre_recursive_unserialize_replace', false, $data, $this );
@@ -110,6 +126,11 @@ final class WPMDB_Replace {
 			} elseif ( is_object( $data ) ) { // Submitted by Tina Matter
 				$_tmp = clone $data;
 				foreach ( $data as $key => $value ) {
+					// Integer properties are crazy and the best thing we can do is to just ignore them.
+					// see http://stackoverflow.com/a/10333200 and https://github.com/deliciousbrains/wp-migrate-db-pro/issues/853
+					if ( is_int( $key ) ) {
+						continue;
+					}
 					$_tmp->$key = $this->recursive_unserialize_replace( $value, false, $parent_serialized );
 				}
 
@@ -135,7 +156,11 @@ final class WPMDB_Replace {
 			}
 
 			if ( $serialized ) {
-				return serialize( $data );
+				if ( $is_json ) {
+					return serialize( json_encode( $data ) );
+				} else {
+					return serialize( $data );
+				}
 			}
 
 			if ( $is_json ) {
@@ -210,4 +235,14 @@ final class WPMDB_Replace {
 		return $this->wpmdb->table_is( $desired_table, $this->table );
 	}
 
+	/**
+	 * Intent of the current replace migration.
+	 *
+	 * Helpful for hookers who need to know what intent they are working on.
+	 *
+	 * @return string Intent of the current migration
+	 */
+	public function get_intent() {
+		return $this->intent;
+	}
 }
