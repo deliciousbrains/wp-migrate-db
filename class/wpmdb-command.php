@@ -75,6 +75,38 @@ class WPMDB_Command extends WP_CLI_Command {
 		$this->_perform_cli_migration( $profile );
 	}
 
+	/**
+	 * Returns array of CLI options that are unknown to plugin and addons.
+	 *
+	 * @param array $assoc_args
+	 *
+	 * @return array
+	 */
+	private function _get_unknown_args( $assoc_args = array() ) {
+		$unknown_args = array();
+
+		if ( empty( $assoc_args ) ) {
+			return $unknown_args;
+		}
+
+		$known_args = array(
+			'action',
+			'export_dest',
+			'find',
+			'replace',
+			'exclude-spam',
+			'gzip-file',
+			'exclude-post-revisions',
+			'skip-replace-guids',
+			'include-transients',
+		);
+
+		$known_args = apply_filters( 'wpmdb_cli_filter_get_extra_args', $known_args );
+
+		$unknown_args = array_diff( array_keys( $assoc_args ), $known_args );
+
+		return $unknown_args;
+	}
 
 	/**
 	 * Get profile data from CLI args.
@@ -87,13 +119,27 @@ class WPMDB_Command extends WP_CLI_Command {
 	protected function _get_profile_data_from_args( $args, $assoc_args ) {
 
 		//load correct cli class
-		if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) ){
+		if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) ) {
 			$wpmdb_cli = wp_migrate_db_pro_cli_addon();
-		}
-		elseif ( function_exists( 'wpmdb_pro_cli' ) ) {
+		} elseif ( function_exists( 'wpmdb_pro_cli' ) ) {
 			$wpmdb_cli = wpmdb_pro_cli();
 		} else {
 			$wpmdb_cli = wpmdb_cli();
+		}
+
+		$unknown_args = $this->_get_unknown_args( $assoc_args );
+
+		if ( ! empty( $unknown_args ) ) {
+			$message = __( 'Parameter errors: ', 'wp-migrate-db-cli' );
+			foreach ( $unknown_args as $unknown_arg ) {
+				$message .= "\n " . sprintf( __( 'unknown %s parameter', 'wp-migrate-db-cli' ), '--' . $unknown_arg );
+			}
+
+			if ( is_a( $wpmdb_cli, 'WPMDBPro_CLI' ) ) {
+				$message .= "\n" . __( 'Please make sure that you have activated the appropriate addons for WP Migrate DB Pro.', 'wp-migrate-db-cli' );
+			}
+
+			return $wpmdb_cli->cli_error( $message );
 		}
 
 		if ( empty( $assoc_args['action'] ) ) {
@@ -166,7 +212,6 @@ class WPMDB_Command extends WP_CLI_Command {
 			if ( ! @touch( $export_dest ) ) {
 				return $wpmdb_cli->cli_error( sprintf( __( 'Cannot write to file "%1$s". Please ensure that the specified directory exists and is writable.', 'wp-migrate-db-cli' ), $export_dest ) );
 			}
-
 		}
 
 		$profile = compact(

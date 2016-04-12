@@ -1,6 +1,6 @@
 <div id="wpmdb-sidebar">
 
-	<a class="wpmdb-banner" target="_blank" href="https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_content=sidebar&utm_campaign=freeplugin"><img src="<?php echo plugins_url( 'asset/img/wp-migrate-db-pro.jpg', $this->plugin_file_path ); ?>" width="292" height="292" alt="<?php _e( 'WP Migrate DB Pro &mdash; Push and pull your database from one WordPress install to another in 1-click.', 'wp-migrate-db' ); ?>" /></a>
+	<a class="wpmdb-banner" target="_blank" href="https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=insideplugin&utm_medium=web&utm_content=sidebar&utm_campaign=freeplugin"><img src="<?php echo plugins_url( 'asset/dist/img/wp-migrate-db-pro.jpg', $this->plugin_file_path ); ?>" width="292" height="292" alt="<?php _e( 'WP Migrate DB Pro &mdash; Push and pull your database from one WordPress install to another in 1-click.', 'wp-migrate-db' ); ?>" /></a>
 
 	<form method="post" action="https://deliciousbrains.com/email-subscribe/" target="_blank" class="subscribe block">
 		<h2><?php _e( 'Get 20% Off!', 'wp-migrate-db' ); ?></h2>

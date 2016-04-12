@@ -1,6 +1,7 @@
 <div class="settings-tab content-tab">
 	<form method="post" id="settings-form" action="#settings" autocomplete="off">
-		<?php $this->template_part( array( 'toggle_remote_requests', 'connection_info', 'compatibility', 'max_request_size', 'delay_between_requests' ) ); ?>
+		<table class="form-table">
+			<?php $this->template_part( array( 'connection_info', 'toggle_remote_requests', 'licence', 'request_settings', 'compatibility', 'max_request_size' ) ); ?>
+		</table>
 	</form>
-	<?php $this->template_part( array( 'licence' ) ); ?>
 </div> <!-- end .settings-tab -->

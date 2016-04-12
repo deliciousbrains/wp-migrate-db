@@ -14,7 +14,7 @@ class WPMDB_Base {
 	protected $dbrains_api_url;
 	protected $transient_timeout;
 	protected $transient_retry_timeout;
-	protected $dbrains_api_base = 'https://deliciousbrains.com';
+	protected $dbrains_api_base = 'https://api.deliciousbrains.com';
 	protected $dbrains_api_status_url = 'http://s3.amazonaws.com/cdn.deliciousbrains.com/status.json';
 	protected $multipart_boundary = 'bWH4JVmYCnf6GfXacrcc';
 	protected $attempting_to_connect_to;
@@ -100,6 +100,8 @@ class WPMDB_Base {
 	 * @param array  $key_rules An optional associative array of expected keys and their sanitization rule(s).
 	 * @param string $state_key The key in $_POST that contains the migration state id (defaults to 'migration_state_id').
 	 * @param string $context   The method that is specifying the sanitization rules. Defaults to calling method.
+	 *
+	 * @return array
 	 */
 	function set_post_data( $key_rules = array(), $state_key = 'migration_state_id', $context = '' ) {
 		if ( defined( 'DOING_WPMDB_TESTS' ) || $this->doing_cli_migration ) {
@@ -107,11 +109,20 @@ class WPMDB_Base {
 		} elseif ( is_null( $this->state_data ) ) {
 			$this->state_data = WPMDB_Utils::safe_wp_unslash( $_POST );
 		} else {
-			return;
+			return $this->state_data;
+		}
+
+		// From this point on we're handling data originating from $_POST, so original $key_rules apply.
+		global $wpmdb_key_rules;
+
+		if ( empty( $key_rules ) && ! empty( $wpmdb_key_rules ) ) {
+			$key_rules = $wpmdb_key_rules;
 		}
 
 		// Sanitize the new state data.
 		if ( ! empty( $key_rules ) ) {
+			$wpmdb_key_rules = $key_rules;
+
 			$context          = empty( $context ) ? $this->get_caller_function() : trim( $context );
 			$this->state_data = WPMDB_Sanitize::sanitize_data( $this->state_data, $key_rules, $context );
 
@@ -128,6 +139,8 @@ class WPMDB_Base {
 		if ( true !== $this->get_migration_state( $migration_state_id ) ) {
 			exit;
 		}
+
+		return $this->state_data;
 	}
 
 	function load_plugin_textdomain() {
@@ -144,15 +157,15 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4',
+				'required_version' => '1.4.4',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2.2',
+				'required_version' => '1.2.4',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.0.2',
+				'required_version' => '1.1.2',
 			)
 		);
 
@@ -213,6 +226,8 @@ class WPMDB_Base {
 			'blacklist_plugins'      => array(),
 			'max_request'            => min( 1024 * 1024, $this->get_bottleneck( 'max' ) ),
 			'delay_between_requests' => 0,
+			'prog_tables_hidden'     => true,
+			'pause_before_finalize'  => false,
 		);
 
 		// if we still don't have settings exist this must be a fresh install, set up some default settings
@@ -347,7 +362,7 @@ class WPMDB_Base {
 				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			} elseif ( isset( $response->errors['http_request_failed'][0] ) && strstr( $response->errors['http_request_failed'][0], 'timed out' ) ) {
 				$this->error = sprintf( __( 'The connection to the remote server has timed out, no changes have been committed. (#134 - scope: %s)', 'wp-migrate-db' ), $scope );
-			} elseif ( isset( $response->errors['http_request_failed'][0] ) && ( strstr( $response->errors['http_request_failed'][0], 'Could not resolve host' ) || strstr( $response->errors['http_request_failed'][0], "couldn't connect to host" ) ) ) {
+			} elseif ( isset( $response->errors['http_request_failed'][0] ) && ( strstr( $response->errors['http_request_failed'][0], 'Could not resolve host' ) || strstr( $response->errors['http_request_failed'][0], "Couldn't resolve host" ) || strstr( $response->errors['http_request_failed'][0], "couldn't connect to host" ) ) ) {
 				$this->error = sprintf( __( 'We could not find: %s. Are you sure this is the correct URL?', 'wp-migrate-db' ), $this->state_data['url'] );
 				$url_bits    = $this->parse_url( $this->state_data['url'] );
 				if ( strstr( $this->state_data['url'], 'dev.' ) || strstr( $this->state_data['url'], '.dev' ) || ! strstr( $url_bits['host'], '.' ) ) {
@@ -362,7 +377,7 @@ class WPMDB_Base {
 				if ( defined( 'WP_HTTP_BLOCK_EXTERNAL' ) && WP_HTTP_BLOCK_EXTERNAL ) {
 					$url_parts = $this->parse_url( $url );
 					$host      = $url_parts['host'];
-					if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) || strpos( WP_ACCESSIBLE_HOSTS, $host ) === false ) {
+					if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) || ( defined( 'WP_ACCESSIBLE_HOSTS' ) && ! in_array( $host, explode( ',', WP_ACCESSIBLE_HOSTS ) ) ) ) {
 						$this->error = sprintf( __( 'We\'ve detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled and the host <strong>%1$s</strong> has not been added to <code>WP_ACCESSIBLE_HOSTS</code>. Please disable <code>WP_HTTP_BLOCK_EXTERNAL</code> or add <strong>%1$s</strong> to <code>WP_ACCESSIBLE_HOSTS</code> to continue. <a href="%2$s" target="_blank">More information</a>. (#147 - scope: %3$s)', 'wp-migrate-db' ), esc_attr( $host ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/wp_http_block_external/', $scope );
 					}
 				} else {
@@ -569,7 +584,7 @@ class WPMDB_Base {
 	}
 
 	/**
-	 * Determines, sets up, and returns folder information for storying files.
+	 * Determines, sets up, and returns folder information for storing files.
 	 *
 	 * By default, the folder created will be `wp-migrate-db` and will be stored
 	 * inside of the `uploads` folder in WordPress' current `WP_CONTENT_DIR`,
@@ -700,7 +715,7 @@ class WPMDB_Base {
 
 			$disable_ssl_url           = network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
 			$connection_failed_message = '<div class="updated warning inline-message">';
-			$connection_failed_message .= sprintf( __( '<strong>Could not connect to deliciousbrains.com</strong> &mdash; You will not receive update notifications or be able to activate your license until this is fixed. This issue is often caused by an improperly configured SSL server (https). We recommend <a href="%1$s" target="_blank">fixing the SSL configuration on your server</a>, but if you need a quick fix you can:%2$s', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/could-not-connect-deliciousbrains-com/', sprintf( '<p><a href="%1$s" class="temporarily-disable-ssl button">%2$s</a></p>', $disable_ssl_url, __( 'Temporarily disable SSL for connections to deliciousbrains.com', 'wp-migrate-db' ) ) );
+			$connection_failed_message .= sprintf( __( '<strong>Could not connect to api.deliciousbrains.com</strong> &mdash; You will not receive update notifications or be able to activate your license until this is fixed. This issue is often caused by an improperly configured SSL server (https). We recommend <a href="%1$s" target="_blank">fixing the SSL configuration on your server</a>, but if you need a quick fix you can:%2$s', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/could-not-connect-deliciousbrains-com/', sprintf( '<p><a href="%1$s" class="temporarily-disable-ssl button">%2$s</a></p>', $disable_ssl_url, __( 'Temporarily disable SSL for connections to api.deliciousbrains.com', 'wp-migrate-db' ) ) );
 			$connection_failed_message .= '</div>';
 
 			if ( defined( 'WP_HTTP_BLOCK_EXTERNAL' ) && WP_HTTP_BLOCK_EXTERNAL ) {
@@ -1161,7 +1176,7 @@ class WPMDB_Base {
 
 		if ( isset( $errors['connection_failed'] ) ) {
 			$disable_ssl_url = network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
-			$message         = sprintf( __( '<strong>Could not connect to deliciousbrains.com</strong> &mdash; You will not receive update notifications or be able to activate your license until this is fixed. This issue is often caused by an improperly configured SSL server (https). We recommend <a href="%1$s" target="_blank">fixing the SSL configuration on your server</a>, but if you need a quick fix you can:%2$s', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/could-not-connect-deliciousbrains-com/', sprintf( '<p><a href="%1$s" class="temporarily-disable-ssl button">%2$s</a></p>', $disable_ssl_url, __( 'Temporarily disable SSL for connections to deliciousbrains.com', 'wp-migrate-db' ) ) );
+			$message         = sprintf( __( '<strong>Could not connect to api.deliciousbrains.com</strong> &mdash; You will not receive update notifications or be able to activate your license until this is fixed. This issue is often caused by an improperly configured SSL server (https). We recommend <a href="%1$s" target="_blank">fixing the SSL configuration on your server</a>, but if you need a quick fix you can:%2$s', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/could-not-connect-deliciousbrains-com/', sprintf( '<p><a href="%1$s" class="temporarily-disable-ssl button">%2$s</a></p>', $disable_ssl_url, __( 'Temporarily disable SSL for connections to api.deliciousbrains.com', 'wp-migrate-db' ) ) );
 
 			if ( defined( 'WP_HTTP_BLOCK_EXTERNAL' ) && WP_HTTP_BLOCK_EXTERNAL ) {
 				$url_parts = $this->parse_url( $this->dbrains_api_base );
@@ -1355,7 +1370,9 @@ class WPMDB_Base {
 	 * @return int
 	 */
 	function get_post_max_size() {
-		return $this->return_bytes( trim( ini_get( 'post_max_size' ) ) );
+		$bytes = max( wp_convert_hr_to_bytes( trim( ini_get( 'post_max_size' ) ) ), wp_convert_hr_to_bytes( trim( ini_get( 'hhvm.server.max_post_size' ) ) ) );
+
+		return $bytes;
 	}
 
 	/**
@@ -1739,6 +1756,66 @@ class WPMDB_Base {
 	}
 
 	/**
+	 * Returns uploads info for given subsite or primary site.
+	 *
+	 * @param int $blog_id Optional, defaults to primary.
+	 *
+	 * @return array
+	 *
+	 * NOTE: Must be run from primary site.
+	 */
+	public function uploads_info( $blog_id = 0 ) {
+		static $primary_uploads = array();
+
+		if ( ! empty( $blog_id ) && is_multisite() ) {
+			switch_to_blog( $blog_id );
+		}
+
+		$uploads = wp_upload_dir();
+
+		if ( ! empty( $blog_id ) && is_multisite() ) {
+			restore_current_blog();
+
+			if ( empty( $primary_uploads ) ) {
+				$primary_uploads = $this->uploads_info();
+			}
+			$uploads['short_basedir'] = str_replace( trailingslashit( $primary_uploads['basedir'] ), '', trailingslashit( $uploads['basedir'] ) );
+		}
+
+		return $uploads;
+	}
+
+	/**
+	 * Get array of subsite info keyed by their ID.
+	 *
+	 * @return array
+	 */
+	public function subsites_info() {
+		$subsites = array();
+
+		if ( ! is_multisite() ) {
+			return $subsites;
+		}
+
+		$sites = wp_get_sites( array( 'limit' => 0 ) );
+
+		if ( ! empty( $sites ) ) {
+			// We to fix up the urls in uploads as they all use primary site's base!
+			$primary_url = site_url();
+
+			foreach ( $sites as $subsite ) {
+				$subsites[ $subsite['blog_id'] ]['site_url'] = get_site_url( $subsite['blog_id'] );
+				$subsites[ $subsite['blog_id'] ]['uploads']  = $this->uploads_info( $subsite['blog_id'] );
+
+				$subsites[ $subsite['blog_id'] ]['uploads']['url']     = substr_replace( $subsites[ $subsite['blog_id'] ]['uploads']['url'], $subsites[ $subsite['blog_id'] ]['site_url'], 0, strlen( $primary_url ) );
+				$subsites[ $subsite['blog_id'] ]['uploads']['baseurl'] = substr_replace( $subsites[ $subsite['blog_id'] ]['uploads']['baseurl'], $subsites[ $subsite['blog_id'] ]['site_url'], 0, strlen( $primary_url ) );
+			}
+		}
+
+		return $subsites;
+	}
+
+	/**
 	 * Returns validated and sanitized form data.
 	 *
 	 * @param array|string $data
@@ -1840,5 +1917,77 @@ class WPMDB_Base {
 		}
 
 		return $subsites;
+	}
+
+	/**
+	 * Returns an associative array of html escaped useful information about the site.
+	 *
+	 * @return array
+	 */
+	public function site_details() {
+		global $wpdb;
+		$table_prefix = $wpdb->base_prefix;
+		$uploads      = wp_upload_dir();
+
+		$site_details = array(
+			'is_multisite'    => esc_html( is_multisite() ? 'true' : 'false' ),
+			'site_url'        => esc_html( addslashes( site_url() ) ),
+			'prefix'          => esc_html( $table_prefix ),
+			'uploads_baseurl' => esc_html( addslashes( trailingslashit( $uploads['baseurl'] ) ) ),
+			'uploads'         => $this->uploads_info(),
+			'uploads_dir'     => esc_html( addslashes( $this->get_short_uploads_dir() ) ),
+			'subsites'        => $this->subsites_list(),
+			'subsites_info'   => $this->subsites_info(),
+		);
+
+		return $site_details;
+	}
+
+	/**
+	 * Returns an uploads dir without leading path to site.
+	 *
+	 * @return string
+	 */
+	public function get_short_uploads_dir() {
+		$short_path = str_replace( $this->get_absolute_root_file_path(), '', $this->get_upload_info( 'path' ) );
+
+		return trailingslashit( substr( str_replace( '\\', '/', $short_path ), 1 ) );
+	}
+
+	/**
+	 * Returns max upload size in bytes, defaults to 25M if no limits set.
+	 *
+	 * @return int
+	 */
+	public function get_max_upload_size() {
+		$bytes = wp_max_upload_size();
+
+		if ( 1 > (int) $bytes ) {
+			$p_bytes = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
+			$u_bytes = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
+
+			// If HHVM bug not returning either value, try its own settings.
+			// If HHVM not involved, will drop through to default value.
+			if ( empty( $p_bytes ) && empty( $u_bytes ) ) {
+				$p_bytes = wp_convert_hr_to_bytes( ini_get( 'hhvm.server.max_post_size' ) );
+				$u_bytes = wp_convert_hr_to_bytes( ini_get( 'hhvm.server.upload.upload_max_file_size' ) );
+
+				$bytes = min( $p_bytes, $u_bytes );
+
+				if ( 0 < (int) $bytes ) {
+					return $bytes;
+				}
+			}
+
+			if ( 0 < (int) $p_bytes ) {
+				$bytes = $p_bytes;
+			} elseif ( 0 < (int) $u_bytes ) {
+				$bytes = $u_bytes;
+			} else {
+				$bytes = wp_convert_hr_to_bytes( '25M' );
+			}
+		}
+
+		return $bytes;
 	}
 }

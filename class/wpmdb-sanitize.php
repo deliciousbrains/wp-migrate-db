@@ -4,9 +4,9 @@ class WPMDB_Sanitize {
 	/**
 	 * Sanitize and validate data.
 	 *
-	 * @param string|array $data The data to the sanitized.
+	 * @param string|array $data      The data to the sanitized.
 	 * @param string|array $key_rules The keys in the data (if data is an array) and the sanitization rule(s) to apply for each key.
-	 * @param string $context Additional context data for messages etc.
+	 * @param string       $context   Additional context data for messages etc.
 	 *
 	 * @return mixed The sanitized data, the data if no key rules supplied or `false` if an unrecognized rule supplied.
 	 */
@@ -21,10 +21,10 @@ class WPMDB_Sanitize {
 	/**
 	 * Sanitize and validate data.
 	 *
-	 * @param string|array $data The data to the sanitized.
-	 * @param string|array $key_rules The keys in the data (if data is an array) and the sanitization rule(s) to apply for each key.
-	 * @param string $context Additional context data for messages etc.
-	 * @param int $recursion_level How deep in the recursion are we? Optional, defaults to 0.
+	 * @param string|array $data            The data to the sanitized.
+	 * @param string|array $key_rules       The keys in the data (if data is an array) and the sanitization rule(s) to apply for each key.
+	 * @param string       $context         Additional context data for messages etc.
+	 * @param int          $recursion_level How deep in the recursion are we? Optional, defaults to 0.
 	 *
 	 * @return mixed The sanitized data, the data if no key rules supplied or `false` if an unrecognized rule supplied.
 	 */
@@ -86,6 +86,19 @@ class WPMDB_Sanitize {
 			} elseif ( 'serialized' == $key_rules ) {
 				if ( ! is_string( $data ) || ! is_serialized( $data ) ) {
 					wp_die( sprintf( __( '%1$s was expecting serialized data but got something else: "%2$s"', 'wp-db-migrate-pro' ), $context, $data ) );
+
+					return false;
+				}
+			} elseif ( 'json_array' == $key_rules ) {
+				if ( ! is_string( $data ) || ! WPMDB::is_json( $data ) ) {
+					wp_die( sprintf( __( '%1$s was expecting JSON data but got something else: "%2$s"', 'wp-db-migrate-pro' ), $context, $data ) );
+
+					return false;
+				}
+				$data = json_decode( $data, true );
+			} elseif ( 'json' == $key_rules ) {
+				if ( ! is_string( $data ) || ! WPMDB::is_json( $data ) ) {
+					wp_die( sprintf( __( '%1$s was expecting JSON data but got something else: "%2$s"', 'wp-db-migrate-pro' ), $context, $data ) );
 
 					return false;
 				}

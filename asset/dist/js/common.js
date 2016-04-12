@@ -157,6 +157,24 @@ wpmdb.subsite_for_table = function( table_prefix, table_name ) {
 	}
 };
 
+wpmdb.functions.convertKBSizeToHR = function( size, dec, kbSize ) {
+	kbSize = kbSize || 1000;
+	dec = dec || 2;
+	size = parseInt( size );
+
+	if ( kbSize > Math.abs( size ) ) {
+		return size.toFixed( 0 ) + ' KB';
+	}
+	var units = [ 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ];
+	var u = -1;
+	do {
+		size /= kbSize;
+		++u;
+	} while ( Math.abs( size ) >= kbSize && u < units.length - 1 );
+
+	return Math.round( size * Math.pow( 10, dec ) ) / Math.pow( 10, dec ) + ' ' + units[ u ];
+};
+
 (function( $ ) {
 
 	// jQuery code here

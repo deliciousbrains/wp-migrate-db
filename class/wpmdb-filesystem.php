@@ -104,19 +104,21 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function touch( $abs_path, $time = 0, $atime = 0 ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->touch( $abs_path, $time, $atime );
-		} else {
-			if ( 0 == $time ) {
-				$time = time();
-			}
-			if ( 0 == $atime ) {
-				$atime = time();
-			}
-
-			return @touch( $abs_path, $time, $atime );
+		if ( 0 == $time ) {
+			$time = time();
 		}
+		if ( 0 == $atime ) {
+			$atime = time();
+		}
+
+		$return = @touch( $abs_path, $time, $atime );
+
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->touch( $abs_path, $time, $atime );
+		}
+
+		return $return;
 	}
 
 	/**
@@ -128,16 +130,15 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function put_contents( $abs_path, $contents ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = @file_put_contents( $abs_path, $contents );
+		$this->chmod( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->put_contents( $abs_path, $contents, $this->chmod_file );
-		} else {
-			$return = @file_put_contents( $abs_path, $contents );
-			$this->chmod( $abs_path );
-
-			return (bool) $return;
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->put_contents( $abs_path, $contents, $this->chmod_file );
 		}
+
+		return (bool) $return;
 	}
 
 	/**
@@ -148,13 +149,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function file_exists( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = file_exists( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->exists( $abs_path );
-		} else {
-			return file_exists( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->exists( $abs_path );
 		}
+
+		return (bool) $return;
 	}
 
 	/**
@@ -165,13 +167,14 @@ class WPMDB_Filesystem {
 	 * @return int
 	 */
 	public function filesize( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = filesize( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->size( $abs_path );
-		} else {
-			return filesize( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->size( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -182,13 +185,14 @@ class WPMDB_Filesystem {
 	 * @return string
 	 */
 	public function get_contents( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = @file_get_contents( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->get_contents( $abs_path );
-		} else {
-			return @file_get_contents( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->get_contents( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -199,13 +203,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function unlink( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = @unlink( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->delete( $abs_path, false, false );
-		} else {
-			return @unlink( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->delete( $abs_path, false, false );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -219,17 +224,18 @@ class WPMDB_Filesystem {
 	 * Leave $perms blank to use $this->chmod_file/DIR or pass value like 0777
 	 */
 	public function chmod( $abs_path, $perms = null ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
-
 		if ( is_null( $perms ) ) {
 			$perms = $this->is_file( $abs_path ) ? $this->chmod_file : $this->chmod_dir;
 		}
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->chmod( $abs_path, $perms, false );
-		} else {
-			return @chmod( $abs_path, $perms );
+		$return = @chmod( $abs_path, $perms );
+
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->chmod( $abs_path, $perms, false );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -240,13 +246,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function is_dir( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = is_dir( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->is_dir( $abs_path );
-		} else {
-			return is_dir( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->is_dir( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -257,13 +264,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function is_file( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = is_file( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->is_file( $abs_path );
-		} else {
-			return is_file( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->is_file( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -274,13 +282,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function is_readable( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = is_readable( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->is_readable( $abs_path );
-		} else {
-			return is_readable( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->is_readable( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -291,13 +300,14 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function is_writable( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
+		$return = is_writable( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->is_writable( $abs_path );
-		} else {
-			return is_writable( $abs_path );
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+			$return   = $this->wp_filesystem->is_writable( $abs_path );
 		}
+
+		return $return;
 	}
 
 	/**
@@ -309,38 +319,58 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function mkdir( $abs_path, $perms = null ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
-
 		if ( is_null( $perms ) ) {
 			$perms = $this->chmod_dir;
 		}
 
 		if ( $this->is_dir( $abs_path ) ) {
+			$this->chmod( $perms );
+
 			return true;
-		} else {
-			if ( $this->use_filesystem ) {
-				// WP_Filesystem doesn't offer a recursive mkdir()
-				$abs_path = str_replace( '//', '/', $abs_path );
-				$abs_path = rtrim( $abs_path, '/' );
-				if ( empty( $abs_path ) ) {
-					$abs_path = '/';
-				}
-
-				$dirs        = explode( '/', ltrim( $abs_path, '/' ) );
-				$current_dir = '';
-
-				foreach ( $dirs as $dir ) {
-					$current_dir .= '/' . $dir;
-					if ( ! $this->is_dir( $current_dir ) ) {
-						$this->wp_filesystem->mkdir( $current_dir, $perms );
-					}
-				}
-
-				return $this->is_dir( $abs_path );
-			} else {
-				return @mkdir( $abs_path, $perms, true );
-			}
 		}
+
+		try {
+			$mkdirp = wp_mkdir_p( $abs_path );
+		} catch ( Exception $e ) {
+			$mkdirp = false;
+		}
+
+		if ( $mkdirp ) {
+			$this->chmod( $perms );
+
+			return true;
+		}
+
+		$return = @mkdir( $abs_path, $perms, true );
+
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+
+			if ( $this->is_dir( $abs_path ) ) {
+				return true;
+			}
+
+			// WP_Filesystem doesn't offer a recursive mkdir()
+			$abs_path = str_replace( '//', '/', $abs_path );
+			$abs_path = rtrim( $abs_path, '/' );
+			if ( empty( $abs_path ) ) {
+				$abs_path = '/';
+			}
+
+			$dirs        = explode( '/', ltrim( $abs_path, '/' ) );
+			$current_dir = '';
+
+			foreach ( $dirs as $dir ) {
+				$current_dir .= '/' . $dir;
+				if ( ! $this->is_dir( $current_dir ) ) {
+					$this->wp_filesystem->mkdir( $current_dir, $perms );
+				}
+			}
+
+			$return = $this->is_dir( $abs_path );
+		}
+
+		return $return;
 	}
 
 	/**
@@ -352,45 +382,44 @@ class WPMDB_Filesystem {
 	 * @return bool
 	 */
 	public function rmdir( $abs_path, $recursive = false ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
-
 		if ( ! $this->is_dir( $abs_path ) ) {
 			return false;
 		}
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->rmdir( $abs_path, $recursive );
+		// taken from WP_Filesystem_Direct
+		if ( ! $recursive ) {
+			$return = @rmdir( $abs_path );
 		} else {
-
-			// taken from WP_Filesystem_Direct
-			if ( ! $recursive ) {
-				return @rmdir( $abs_path );
-			}
 
 			// At this point it's a folder, and we're in recursive mode
 			$abs_path = trailingslashit( $abs_path );
 			$filelist = $this->scandir( $abs_path );
 
-			$retval = true;
+			$return = true;
 			if ( is_array( $filelist ) ) {
 				foreach ( $filelist as $filename => $fileinfo ) {
 
 					if ( 'd' === $fileinfo['type'] ) {
-						$retval = $this->rmdir( $abs_path . $filename, $recursive );
+						$return = $this->rmdir( $abs_path . $filename, $recursive );
 					} else {
-						$retval = $this->unlink( $abs_path . $filename );
+						$return = $this->unlink( $abs_path . $filename );
 					}
 				}
 			}
 
 			if ( file_exists( $abs_path ) && ! @rmdir( $abs_path ) ) {
-				$retval = false;
+				$return = false;
 			}
-
-			return $retval;
 		}
 
-		return false;
+		if ( ! $return && $this->use_filesystem ) {
+			$abs_path = $this->get_sanitized_path( $abs_path );
+
+			return $this->wp_filesystem->rmdir( $abs_path, $recursive );
+		}
+
+		return $return;
+
 	}
 
 	/**
@@ -401,30 +430,33 @@ class WPMDB_Filesystem {
 	 * @return array|bool
 	 */
 	public function scandir( $abs_path ) {
-		$abs_path = $this->get_sanitized_path( $abs_path );
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->dirlist( $abs_path, true, false );
-		} else {
-			$dirlist = @scandir( $abs_path );
-			if ( false === $dirlist ) {
-				return false;
-			}
-			$return = array();
+		$dirlist = @scandir( $abs_path );
+		if ( false === $dirlist ) {
+			if ( $this->use_filesystem ) {
+				$abs_path = $this->get_sanitized_path( $abs_path );
 
-			// normalize return to look somewhat like the return value for WP_Filesystem::dirlist
-			foreach ( $dirlist as $entry ) {
-				if ( '.' === $entry || '..' === $entry ) {
-					continue;
-				}
-				$return[ $entry ] = array(
-					'name' => $entry,
-					'type' => $this->is_dir( $abs_path . '/' . $entry ) ? 'd' : 'f',
-				);
+				return $this->wp_filesystem->dirlist( $abs_path, true, false );
 			}
 
-			return $return;
+			return false;
 		}
+
+		$return = array();
+
+		// normalize return to look somewhat like the return value for WP_Filesystem::dirlist
+		foreach ( $dirlist as $entry ) {
+			if ( '.' === $entry || '..' === $entry ) {
+				continue;
+			}
+			$return[ $entry ] = array(
+				'name' => $entry,
+				'type' => $this->is_dir( $abs_path . '/' . $entry ) ? 'd' : 'f',
+			);
+		}
+
+		return $return;
+
 	}
 
 	/**
@@ -460,29 +492,29 @@ class WPMDB_Filesystem {
 	 *
 	 * Taken from WP_Filesystem_Direct
 	 */
-	public function copy( $source_abs_path, $destination_abs_path, $overwrite = false, $perms = false ) {
-		$source_abs_path      = $this->get_sanitized_path( $source_abs_path );
-		$destination_abs_path = $this->get_sanitized_path( $destination_abs_path );
+	public function copy( $source_abs_path, $destination_abs_path, $overwrite = true, $perms = false ) {
 
 		// error if source file doesn't exist
 		if ( ! $this->file_exists( $source_abs_path ) ) {
 			return false;
 		}
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->copy( $source_abs_path, $destination_abs_path, $overwrite, $perms );
-		} else {
-			if ( ! $overwrite && $this->file_exists( $destination_abs_path ) ) {
-				return false;
-			}
-
-			$rtval = copy( $source_abs_path, $destination_abs_path );
-			if ( $perms ) {
-				$this->chmod( $destination_abs_path, $perms );
-			}
-
-			return $rtval;
+		if ( ! $overwrite && $this->file_exists( $destination_abs_path ) ) {
+			return false;
 		}
+
+		$return = copy( $source_abs_path, $destination_abs_path );
+		if ( $perms && $return ) {
+			$this->chmod( $destination_abs_path, $perms );
+		}
+
+		if ( ! $return && $this->use_filesystem ) {
+			$source_abs_path      = $this->get_sanitized_path( $source_abs_path );
+			$destination_abs_path = $this->get_sanitized_path( $destination_abs_path );
+			$return               = $this->wp_filesystem->copy( $source_abs_path, $destination_abs_path, $overwrite, $perms );
+		}
+
+		return $return;
 	}
 
 	/**
@@ -494,34 +526,36 @@ class WPMDB_Filesystem {
 	 *
 	 * @return bool
 	 */
-	public function move( $source_abs_path, $destination_abs_path, $overwrite = false ) {
-		$source_abs_path      = $this->get_sanitized_path( $source_abs_path );
-		$destination_abs_path = $this->get_sanitized_path( $destination_abs_path );
+	public function move( $source_abs_path, $destination_abs_path, $overwrite = true ) {
 
 		// error if source file doesn't exist
 		if ( ! $this->file_exists( $source_abs_path ) ) {
 			return false;
 		}
 
-		if ( $this->use_filesystem ) {
-			return $this->wp_filesystem->move( $source_abs_path, $destination_abs_path, $overwrite );
+		// Try using rename first. if that fails (for example, source is read only) try copy.
+		// Taken in part from WP_Filesystem_Direct
+		if ( ! $overwrite && $this->file_exists( $destination_abs_path ) ) {
+			return false;
+		} elseif ( @rename( $source_abs_path, $destination_abs_path ) ) {
+			return true;
 		} else {
+			if ( $this->copy( $source_abs_path, $destination_abs_path, $overwrite ) && $this->file_exists( $destination_abs_path ) ) {
+				$this->unlink( $source_abs_path );
 
-			// Try using rename first. if that fails (for example, source is read only) try copy.
-			// Taken in part from WP_Filesystem_Direct
-			if ( ! $overwrite && $this->file_exists( $destination_abs_path ) ) {
-				return false;
-			} elseif ( @rename( $source_abs_path, $destination_abs_path ) ) {
 				return true;
 			} else {
-				if ( $this->copy( $source_abs_path, $destination_abs_path, $overwrite ) && $this->exists( $destination_abs_path ) ) {
-					$this->unlink( $source_abs_path );
-
-					return true;
-				} else {
-					return false;
-				}
+				$return = false;
 			}
 		}
+
+		if ( ! $return && $this->use_filesystem ) {
+			$source_abs_path      = $this->get_sanitized_path( $source_abs_path );
+			$destination_abs_path = $this->get_sanitized_path( $destination_abs_path );
+
+			$return = $this->wp_filesystem->move( $source_abs_path, $destination_abs_path, $overwrite );
+		}
+
+		return $return;
 	}
 }
