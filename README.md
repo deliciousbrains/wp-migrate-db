@@ -57,7 +57,7 @@ Using the optional [WP Sync DB Media Files](https://github.com/wp-sync-db/wp-syn
 
 ### Feature Walkthrough
 
-<http://www.youtube.com/watch?v=SlfSuuePYaQ>
+<https://www.youtube.com/watch?v=u7jFkwwfeJc>
 
 A brief walkthrough of the WP Sync DB plugin showing all of the different options and explaining them.
 
