@@ -71,8 +71,6 @@ class WPMDBPro extends WPMDB {
 
 		// Check if WP Engine is filtering the buffer and prevent it. Added here for ajax pull requests
 		$this->maybe_disable_wp_engine_filtering();
-
-		$this->add_tabs();
 	}
 
 	/**
@@ -109,11 +107,6 @@ class WPMDBPro extends WPMDB {
 		return $res;
 	}
 
-	function add_tabs() {
-		$addon_tab = '<a href="#" class="nav-tab js-action-link addons" data-div-name="addons-tab">' . _x( 'Addons', 'Plugin extensions', 'wp-migrate-db' ) . '</a>';
-		array_splice( $this->plugin_tabs, 2, 0, $addon_tab );
-	}
-
 	function template_pull_push_radio_buttons( $loaded_profile ) {
 		$args = array(
 			'loaded_profile' => $loaded_profile,
@@ -136,12 +129,11 @@ class WPMDBPro extends WPMDB {
 	}
 
 	function template_toggle_remote_requests() {
-		$args = array(
-			'pull_checked'       => ( $this->settings['allow_pull'] ) ? ' checked="checked"' : '',
-			'push_checked'       => ( $this->settings['allow_push'] ) ? ' checked="checked"' : '',
-			'verify_ssl_checked' => ( $this->settings['verify_ssl'] ) ? ' checked="checked"' : '',
-		);
-		$this->template( 'toggle-remote-requests', 'pro', $args );
+		$this->template( 'toggle-remote-requests', 'pro' );
+	}
+
+	function template_request_settings() {
+		$this->template( 'request-settings', 'pro' );
 	}
 
 	function template_connection_info() {
@@ -1031,8 +1023,8 @@ class WPMDBPro extends WPMDB {
 		}
 
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$src = plugins_url( "asset/dist/js/plugin-update$min.js", dirname( __FILE__ ) );
 
-		$src = plugins_url( "asset/js/plugin-update$min.js", dirname( __FILE__ ) );
 		wp_enqueue_script( 'wp-migrate-db-pro-plugin-update-script', $src, array( 'jquery' ), false, true );
 
 		wp_localize_script( 'wp-migrate-db-pro-plugin-update-script', 'wpmdb_nonces', array( 'check_licence' => wp_create_nonce( 'check-licence' ), ) );
@@ -1043,7 +1035,7 @@ class WPMDBPro extends WPMDB {
 	function add_plugin_update_styles() {
 		$version     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : $this->plugin_version;
 		$plugins_url = trailingslashit( plugins_url() ) . trailingslashit( $this->plugin_folder_name );
-		$src         = $plugins_url . 'asset/css/plugin-update-styles.css';
+		$src         = $plugins_url . 'asset/dist/css/plugin-update-styles.css';
 		wp_enqueue_style( 'plugin-update-styles', $src, array(), $version );
 	}
 
@@ -1978,8 +1970,14 @@ class WPMDBPro extends WPMDB {
 		<?php if ( $new_version ) { // removes the built-in plugin update message ?>
 			<script type="text/javascript">
 				(function( $ ) {
-					var wpmdb_row = jQuery( '#<?php echo $plugin_slug; ?>' ),
-						next_row = wpmdb_row.next();
+					var wpmdb_row = jQuery( '[data-slug=<?php echo $plugin_slug; ?>]:first' );
+
+					// Fallback for earlier versions of WordPress.
+					if ( ! wpmdb_row.length ) {
+						wpmdb_row = jQuery( '#<?php echo $plugin_slug; ?>' );
+					}
+
+					var next_row = wpmdb_row.next();
 
 					// If there's a plugin update row - need to keep the original update row available so we can switch it out
 					// if the user has a successful response from the 'check my license again' link

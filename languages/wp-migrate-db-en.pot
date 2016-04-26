@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the wp-migrate-db package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2016-02-17 12:55+0000\n"
+"POT-Creation-Date: 2016-04-25 09:11-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,19 +23,19 @@ msgid ""
 "information on the remote site and try again."
 msgstr ""
 
-#: class/wpmdb-base.php:362
+#: class/wpmdb-base.php:364
 #, php-format
 msgid ""
 "The connection to the remote server has timed out, no changes have been "
 "committed. (#134 - scope: %s)"
 msgstr ""
 
-#: class/wpmdb-base.php:364
+#: class/wpmdb-base.php:366
 #, php-format
 msgid "We could not find: %s. Are you sure this is the correct URL?"
 msgstr ""
 
-#: class/wpmdb-base.php:369
+#: class/wpmdb-base.php:371
 msgid ""
 "It appears that you might be trying to pull from a local environment. This "
 "will not work if <u>this</u> website happens to be located on a remote "
@@ -43,7 +43,7 @@ msgid ""
 "environment."
 msgstr ""
 
-#: class/wpmdb-base.php:371
+#: class/wpmdb-base.php:373
 msgid ""
 "It appears that you might be trying to push to a local environment. This "
 "will not work if <u>this</u> website happens to be located on a remote "
@@ -51,7 +51,7 @@ msgid ""
 "environment."
 msgstr ""
 
-#: class/wpmdb-base.php:379
+#: class/wpmdb-base.php:381
 #, php-format
 msgid ""
 "We've detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled and the "
@@ -61,70 +61,70 @@ msgid ""
 "\" target=\"_blank\">More information</a>. (#147 - scope: %3$s)"
 msgstr ""
 
-#: class/wpmdb-base.php:382
+#: class/wpmdb-base.php:384
 #, php-format
 msgid ""
 "The connection failed, an unexpected error occurred, please contact support. "
 "(#121 - scope: %s)"
 msgstr ""
 
-#: class/wpmdb-base.php:392
+#: class/wpmdb-base.php:394
 msgid ""
 "The remote site is protected with Basic Authentication. Please enter the "
 "username and password above to continue. (401 Unauthorized)"
 msgstr ""
 
-#: class/wpmdb-base.php:397
+#: class/wpmdb-base.php:399
 #, php-format
 msgid ""
 "Unable to connect to the remote server, please check the connection details "
 "- %1$s %2$s (#129 - scope: %3$s)"
 msgstr ""
 
-#: class/wpmdb-base.php:407
+#: class/wpmdb-base.php:409
 #, php-format
 msgid ""
 "WP Migrate DB Pro does not seem to be installed or active on the remote "
 "site. (#131 - scope: %s)"
 msgstr ""
 
-#: class/wpmdb-base.php:410
+#: class/wpmdb-base.php:412
 #, php-format
 msgid ""
 "A response was expected from the remote, instead we got nothing. (#146 - "
 "scope: %1$s) Please review %2$s for possible solutions."
 msgstr ""
 
-#: class/wpmdb-base.php:410
-#: class/wpmdb.php:2822
+#: class/wpmdb-base.php:412
+#: class/wpmdb.php:2843
 msgid "our documentation"
 msgstr ""
 
-#: class/wpmdb-base.php:419
+#: class/wpmdb-base.php:421
 msgid ""
 "There was a problem with the AJAX request, we were expecting a serialized "
 "response, instead we received:<br />"
 msgstr ""
 
-#: class/wpmdb-base.php:716
-#: class/wpmdb-base.php:1177
+#: class/wpmdb-base.php:718
+#: class/wpmdb-base.php:1179
 #, php-format
 msgid ""
-"<strong>Could not connect to deliciousbrains.com</strong> &mdash; You will "
-"not receive update notifications or be able to activate your license until "
-"this is fixed. This issue is often caused by an improperly configured SSL "
-"server (https). We recommend <a href=\"%1$s\" target=\"_blank\">fixing the "
-"SSL configuration on your server</a>, but if you need a quick fix you can:"
-"%2$s"
+"<strong>Could not connect to api.deliciousbrains.com</strong> &mdash; You "
+"will not receive update notifications or be able to activate your license "
+"until this is fixed. This issue is often caused by an improperly configured "
+"SSL server (https). We recommend <a href=\"%1$s\" target=\"_blank\">fixing "
+"the SSL configuration on your server</a>, but if you need a quick fix you "
+"can:%2$s"
 msgstr ""
 
-#: class/wpmdb-base.php:716
-#: class/wpmdb-base.php:1177
-msgid "Temporarily disable SSL for connections to deliciousbrains.com"
+#: class/wpmdb-base.php:718
+#: class/wpmdb-base.php:1179
+msgid "Temporarily disable SSL for connections to api.deliciousbrains.com"
 msgstr ""
 
-#: class/wpmdb-base.php:724
-#: class/wpmdb-base.php:1183
+#: class/wpmdb-base.php:726
+#: class/wpmdb-base.php:1185
 #, php-format
 msgid ""
 "We've detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled and the "
@@ -134,43 +134,43 @@ msgid ""
 "\" target=\"_blank\">More information</a>."
 msgstr ""
 
-#: class/wpmdb-base.php:769
+#: class/wpmdb-base.php:771
 msgid ""
 "<strong>Delicious Brains API is Down — </strong>Unfortunately we're "
 "experiencing some problems with our server."
 msgstr ""
 
-#: class/wpmdb-base.php:773
+#: class/wpmdb-base.php:775
 #, php-format
 msgctxt "ex. 2 hours ago"
 msgid "%s ago"
 msgstr ""
 
-#: class/wpmdb-base.php:778
+#: class/wpmdb-base.php:780
 msgid "Here's the most recent update on its status"
 msgstr ""
 
-#: class/wpmdb-base.php:805
+#: class/wpmdb-base.php:807
 #, php-format
 msgid ""
 "Error retrieving download from deliciousbrain.com. Please try again or "
 "download manually from <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
-#: class/wpmdb-base.php:805
+#: class/wpmdb-base.php:807
 msgctxt "Delicious Brains account"
 msgid "My Account"
 msgstr ""
 
-#: class/wpmdb-base.php:864
-#: class/wpmdb.php:106
-#: class/wpmdb.php:301
-#: class/wpmdbpro.php:1957
+#: class/wpmdb-base.php:866
+#: class/wpmdb.php:104
+#: class/wpmdb.php:300
+#: class/wpmdbpro.php:1949
 msgctxt "Plugin configuration and preferences"
 msgid "Settings"
 msgstr ""
 
-#: class/wpmdb-base.php:865
+#: class/wpmdb-base.php:867
 #, php-format
 msgid ""
 "To finish activating WP Migrate DB Pro, please go to %1$s and enter your "
@@ -178,31 +178,31 @@ msgid ""
 "\">purchase one</a>."
 msgstr ""
 
-#: class/wpmdb-base.php:1096
-#: class/wpmdb-base.php:1106
+#: class/wpmdb-base.php:1098
+#: class/wpmdb-base.php:1108
 msgctxt "A new version of the plugin is available"
 msgid "Update Available"
 msgstr ""
 
-#: class/wpmdb-base.php:1097
+#: class/wpmdb-base.php:1099
 #, php-format
 msgid "A new version of %1$s is now available. %2$s"
 msgstr ""
 
-#: class/wpmdb-base.php:1097
-#: class/wpmdb-base.php:1107
+#: class/wpmdb-base.php:1099
+#: class/wpmdb-base.php:1109
 msgctxt "Download and install a new version of the plugin"
 msgid "Update Now"
 msgstr ""
 
-#: class/wpmdb-base.php:1107
+#: class/wpmdb-base.php:1109
 #, php-format
 msgid ""
 "%1$s %2$s is now available. You currently have %3$s installed. <a href=\"%4$s"
 "\">%5$s</a>"
 msgstr ""
 
-#: class/wpmdb-base.php:1151
+#: class/wpmdb-base.php:1153
 #, php-format
 msgid ""
 "<strong>Activate Your License</strong> &mdash; Please <a href=\"%s\" class="
@@ -210,13 +210,13 @@ msgid ""
 "priority support and plugin updates."
 msgstr ""
 
-#: class/wpmdb-base.php:1168
+#: class/wpmdb-base.php:1170
 msgid ""
 "<strong>We've temporarily activated your license and will complete the "
 "activation once the Delicious Brains API is available again.</strong>"
 msgstr ""
 
-#: class/wpmdb-base.php:1190
+#: class/wpmdb-base.php:1192
 #, php-format
 msgid ""
 "<strong>Your License Was Cancelled</strong> &mdash; Please visit <a href=\"%s"
@@ -224,43 +224,43 @@ msgid ""
 "enable push and pull."
 msgstr ""
 
-#: class/wpmdb-base.php:1191
-#: class/wpmdb-base.php:1196
-#: class/wpmdb-base.php:1216
-#: class/wpmdb-base.php:1220
-#: class/wpmdbpro.php:1040
-#: class/wpmdbpro.php:1964
+#: class/wpmdb-base.php:1193
+#: class/wpmdb-base.php:1198
+#: class/wpmdb-base.php:1218
+#: class/wpmdb-base.php:1222
+#: class/wpmdbpro.php:1032
+#: class/wpmdbpro.php:1956
 msgid "Check my license again"
 msgstr ""
 
-#: class/wpmdb-base.php:1194
+#: class/wpmdb-base.php:1196
 msgid "Your License Has Expired"
 msgstr ""
 
-#: class/wpmdb-base.php:1195
+#: class/wpmdb-base.php:1197
 #, php-format
 msgid "Login to <a href=\"%s\">My Account</a> to renew. "
 msgstr ""
 
-#: class/wpmdb-base.php:1200
+#: class/wpmdb-base.php:1202
 msgid "Updates are only available to those with an active license. "
 msgstr ""
 
-#: class/wpmdb-base.php:1201
+#: class/wpmdb-base.php:1203
 msgid "Only active licenses can download and install addons. "
 msgstr ""
 
-#: class/wpmdb-base.php:1202
+#: class/wpmdb-base.php:1204
 msgid "Only active licenses can submit support requests. "
 msgstr ""
 
-#: class/wpmdb-base.php:1203
+#: class/wpmdb-base.php:1205
 msgid ""
 "All features will continue to work, but you won't be able to receive updates "
 "or email support. "
 msgstr ""
 
-#: class/wpmdb-base.php:1215
+#: class/wpmdb-base.php:1217
 #, php-format
 msgid ""
 "<strong>No Activations Left</strong> &mdash; Please visit <a href=\"%s\" "
@@ -268,7 +268,7 @@ msgid ""
 "previous activation and enable push and pull."
 msgstr ""
 
-#: class/wpmdb-base.php:1219
+#: class/wpmdb-base.php:1221
 #, php-format
 msgid ""
 "<strong>Your License Was Not Found</strong> &mdash; Perhaps you made a typo "
@@ -277,53 +277,53 @@ msgid ""
 "license key."
 msgstr ""
 
-#: class/wpmdb-base.php:1223
+#: class/wpmdb-base.php:1225
 msgid "<strong>Your License Was Not Found</strong> &mdash; "
 msgstr ""
 
-#: class/wpmdb-base.php:1227
+#: class/wpmdb-base.php:1229
 msgid "Your License Is Inactive"
 msgstr ""
 
-#: class/wpmdb-base.php:1228
+#: class/wpmdb-base.php:1230
 msgid "Your license has been deactivated for this install."
 msgstr ""
 
-#: class/wpmdb-base.php:1228
+#: class/wpmdb-base.php:1230
 msgid "Reactivate License"
 msgstr ""
 
-#: class/wpmdb-base.php:1231
+#: class/wpmdb-base.php:1233
 #, php-format
 msgid ""
 "<strong>An Unexpected Error Occurred</strong> &mdash; Please contact us at "
 "<a href=\"%1$s\">%2$s</a> and quote the following:"
 msgstr ""
 
-#: class/wpmdb-base.php:1270
+#: class/wpmdb-base.php:1272
 #, php-format
 msgid "Invalid nonce for: %s"
 msgstr ""
 
-#: class/wpmdb-base.php:1278
+#: class/wpmdb-base.php:1280
 #, php-format
 msgid "Access denied for: %s"
 msgstr ""
 
-#: class/wpmdb-base.php:1484
+#: class/wpmdb-base.php:1486
 msgctxt "dismiss notice permanently"
 msgid "Dismiss"
 msgstr ""
 
-#: class/wpmdb-base.php:1493
+#: class/wpmdb-base.php:1495
 msgid "Remind Me Later"
 msgstr ""
 
-#: class/wpmdb-base.php:1595
+#: class/wpmdb-base.php:1597
 msgid "Failed to save migration state. Please contact support."
 msgstr ""
 
-#: class/wpmdb-base.php:1618
+#: class/wpmdb-base.php:1620
 msgid "Failed to retrieve migration state. Please contact support."
 msgstr ""
 
@@ -501,207 +501,216 @@ msgstr ""
 msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
 msgstr ""
 
-#: class/wpmdb.php:105
+#: class/wpmdb.php:103
 msgctxt "Configure a migration or export"
 msgid "Migrate"
 msgstr ""
 
-#: class/wpmdb.php:107
+#: class/wpmdb.php:105
+msgctxt "Plugin extensions"
+msgid "Addons"
+msgstr ""
+
+#: class/wpmdb.php:106
 msgctxt "Get help or contact support"
 msgid "Help"
 msgstr ""
 
-#: class/wpmdb.php:168
+#: class/wpmdb.php:167
 #, php-format
 msgid "The following directory could not be created: %s"
 msgstr ""
 
-#: class/wpmdb.php:173
+#: class/wpmdb.php:172
 #, php-format
 msgid "Could not copy the compatibility plugin from %1$s to %2$s"
 msgstr ""
 
-#: class/wpmdb.php:179
+#: class/wpmdb.php:178
 #, php-format
 msgid "Could not remove the compatibility plugin from %s"
 msgstr ""
 
-#: class/wpmdb.php:935
-#: class/wpmdbpro.php:339
-#: class/wpmdbpro.php:1804
+#: class/wpmdb.php:934
+#: class/wpmdbpro.php:331
+#: class/wpmdbpro.php:1796
 msgid ""
 "Failed attempting to unserialize the response from the remote server. Please "
 "contact support."
 msgstr ""
 
-#: class/wpmdb.php:1349
+#: class/wpmdb.php:1348
 msgid ""
 "Failed to retrieve table structure, please ensure your database is online. "
 "(#125)"
 msgstr ""
 
-#: class/wpmdb.php:1380
+#: class/wpmdb.php:1379
 #, php-format
 msgid "Delete any existing table %s"
 msgstr ""
 
-#: class/wpmdb.php:1391
+#: class/wpmdb.php:1390
 #, php-format
 msgid "Table structure of table %s"
 msgstr ""
 
-#: class/wpmdb.php:1399
+#: class/wpmdb.php:1398
 msgid ""
 "Failed to generate the create table query, please ensure your database is "
 "online. (#126)"
 msgstr ""
 
-#: class/wpmdb.php:1455
+#: class/wpmdb.php:1454
 #, php-format
 msgid "Data contents of table %s"
 msgstr ""
 
-#: class/wpmdb.php:1826
+#: class/wpmdb.php:1825
 #, php-format
 msgid "End of data contents of table %s"
 msgstr ""
 
-#: class/wpmdb.php:1966
+#: class/wpmdb.php:1965
 msgid "WordPress MySQL database migration"
 msgstr ""
 
-#: class/wpmdb.php:1968
+#: class/wpmdb.php:1967
 #, php-format
 msgid "Generated: %s"
 msgstr ""
 
-#: class/wpmdb.php:1969
+#: class/wpmdb.php:1968
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
 
-#: class/wpmdb.php:1970
+#: class/wpmdb.php:1969
 #, php-format
 msgid "Database: %s"
 msgstr ""
 
-#: class/wpmdb.php:2023
+#: class/wpmdb.php:2022
 msgid "Failed to write the gzipped SQL data to the file. (#127)"
 msgstr ""
 
-#: class/wpmdb.php:2030
+#: class/wpmdb.php:2029
 msgid "Failed to write the SQL data to the file. (#128)"
 msgstr ""
 
-#: class/wpmdb.php:2166
-#: class/wpmdb.php:2177
-#: class/wpmdbpro.php:1764
+#: class/wpmdb.php:2165
+#: class/wpmdb.php:2176
+#: class/wpmdbpro.php:1756
 msgid "Migrate DB Pro"
 msgstr ""
 
-#: class/wpmdb.php:2166
-#: class/wpmdb.php:2177
-#: class/wpmdb.php:2736
+#: class/wpmdb.php:2165
+#: class/wpmdb.php:2176
+#: class/wpmdb.php:2757
 msgid "Migrate DB"
 msgstr ""
 
-#: class/wpmdb.php:2353
+#: class/wpmdb.php:2352
 msgid ""
 "A problem occurred when trying to change the maximum request size, please "
 "try again."
 msgstr ""
 
-#: class/wpmdb.php:2354
-#: class/wpmdbpro.php:1040
+#: class/wpmdb.php:2353
+#: class/wpmdbpro.php:1032
 msgid "A problem occurred when trying to check the license, please try again."
 msgstr ""
 
-#: class/wpmdb.php:2355
+#: class/wpmdb.php:2354
 msgid "Establishing connection to remote server, please wait"
 msgstr ""
 
-#: class/wpmdb.php:2356
+#: class/wpmdb.php:2355
 msgid ""
 "A problem occurred when attempting to connect to the local server, please "
 "check the details and try again."
 msgstr ""
 
-#: class/wpmdb.php:2357
+#: class/wpmdb.php:2356
 msgid "Please enter your license key."
 msgstr ""
 
-#: class/wpmdb.php:2358
+#: class/wpmdb.php:2357
 msgid ""
 "A problem occurred when trying to register the license, please try again."
 msgstr ""
 
-#: class/wpmdb.php:2359
+#: class/wpmdb.php:2358
 msgid ""
 "Your license has been activated. You will now receive automatic updates and "
 "access to email support."
 msgstr ""
 
-#: class/wpmdb.php:2360
-#: template/pro/licence-info.php:6
-msgid "Fetching license details, please wait..."
+#: class/wpmdb.php:2359
+msgid "Fetching license details, please wait…"
 msgstr ""
 
-#: class/wpmdb.php:2361
+#: class/wpmdb.php:2360
 msgid ""
 "An error occurred when trying to clear the debug log. Please contact "
 "support. (#132)"
 msgstr ""
 
-#: class/wpmdb.php:2362
+#: class/wpmdb.php:2361
 msgid ""
 "An error occurred when trying to update the debug log. Please contact "
 "support. (#133)"
 msgstr ""
 
-#: class/wpmdb.php:2363
+#: class/wpmdb.php:2362
 msgid "Please select at least one table to migrate."
 msgstr ""
 
-#: class/wpmdb.php:2364
+#: class/wpmdb.php:2363
 msgid "Please select at least one table for backup."
 msgstr ""
 
-#: class/wpmdb.php:2365
+#: class/wpmdb.php:2364
 msgid "Please enter a name for your migration profile."
 msgstr ""
 
-#: class/wpmdb.php:2366
+#: class/wpmdb.php:2365
 msgid ""
 "An error occurred when attempting to save the migration profile. Please see "
 "the Help tab for details on how to request support. (#118)"
 msgstr ""
 
-#: class/wpmdb.php:2367
+#: class/wpmdb.php:2366
 msgctxt "Data has been successfully exported"
-msgid "Exporting complete"
+msgid "Export complete"
+msgstr ""
+
+#: class/wpmdb.php:2367
+msgid "Exporting, please wait…"
 msgstr ""
 
 #: class/wpmdb.php:2368
-msgid "Exporting, please wait..."
+msgid "please wait…"
 msgstr ""
 
 #: class/wpmdb.php:2369
-msgid "please wait..."
-msgstr ""
-
-#: class/wpmdb.php:2370
 msgctxt "Finished successfully"
 msgid "complete"
 msgstr ""
 
-#: class/wpmdb.php:2371
+#: class/wpmdb.php:2370
 msgctxt "Copy of data between servers did not complete"
 msgid "Migration failed"
 msgstr ""
 
-#: class/wpmdb.php:2372
+#: class/wpmdb.php:2371
 msgctxt "Saving a copy of the data before import"
 msgid "Backing up"
+msgstr ""
+
+#: class/wpmdb.php:2372
+msgctxt "In line to be processed"
+msgid "Queued"
 msgstr ""
 
 #: class/wpmdb.php:2373
@@ -710,72 +719,74 @@ msgid "Migrating"
 msgstr ""
 
 #: class/wpmdb.php:2374
+msgctxt "Process is active"
+msgid "Running"
+msgstr ""
+
+#: class/wpmdb.php:2375
 msgctxt "Current request status"
 msgid "Status"
 msgstr ""
 
-#: class/wpmdb.php:2375
+#: class/wpmdb.php:2376
 msgctxt "The message the server responded with"
 msgid "Response"
 msgstr ""
 
-#: class/wpmdb.php:2376
+#: class/wpmdb.php:2377
 msgid ""
 "A problem occurred when attempting to process the following table (#113)"
 msgstr ""
 
-#: class/wpmdb.php:2377
+#: class/wpmdb.php:2378
 msgid ""
 "A problem occurred when processing the following table. We were expecting a "
 "response in JSON format but instead received an empty response."
 msgstr ""
 
-#: class/wpmdb.php:2378
+#: class/wpmdb.php:2379
 msgid "Migration completed with some errors"
 msgstr ""
 
-#: class/wpmdb.php:2379
+#: class/wpmdb.php:2380
 msgid "Migration complete, your backup is located at:"
 msgstr ""
 
-#: class/wpmdb.php:2380
+#: class/wpmdb.php:2381
 msgid "A problem occurred when finalizing the backup. (#140)"
 msgstr ""
 
-#: class/wpmdb.php:2381
-#: template/common/compatibility.php:34
-#: template/common/max-request-size.php:11
-#: template/pro/delay-between-requests.php:11
+#: class/wpmdb.php:2382
 msgctxt "The settings were saved successfully"
 msgid "Saved"
 msgstr ""
 
-#: class/wpmdb.php:2382
+#: class/wpmdb.php:2383
 msgid ""
 "Any sites setup to use the current secret key will no longer be able to "
 "connect. You will need to update those sites with the newly generated secret "
 "key. Do you wish to continue?"
 msgstr ""
 
-#: class/wpmdb.php:2383
+#: class/wpmdb.php:2384
 msgid ""
 "An error occurred when trying to generate the secret key. Please see the "
 "Help tab for details on how to request support. (#105)"
 msgstr ""
 
-#: class/wpmdb.php:2384
+#: class/wpmdb.php:2385
 msgid ""
 "You are about to remove the migration profile \"{{profile}}\". This cannot "
 "be undone. Do you wish to continue?"
 msgstr ""
 
-#: class/wpmdb.php:2385
+#: class/wpmdb.php:2386
 msgid ""
 "An error occurred when trying to delete the profile. Please see the Help tab "
 "for details on how to request support. (#106)"
 msgstr ""
 
-#: class/wpmdb.php:2386
+#: class/wpmdb.php:2387
 msgid ""
 "The selected migration profile could not be deleted because it was not "
 "found.\n"
@@ -783,225 +794,230 @@ msgid ""
 "migration profiles."
 msgstr ""
 
-#: class/wpmdb.php:2387
+#: class/wpmdb.php:2388
 msgid ""
 "If you change the connection details, you will lose any replaces and table "
 "selections you have made below. Do you wish to continue?"
 msgstr ""
 
-#: class/wpmdb.php:2388
+#: class/wpmdb.php:2389
 #: template/migrate.php:113
 msgid "Please enter the connection information above to continue."
 msgstr ""
 
-#: class/wpmdb.php:2389
+#: class/wpmdb.php:2390
 msgid ""
 "An error occurred when trying to save the settings. Please try again. If the "
 "problem persists, please see the Help tab for details on how to request "
 "support. (#108)"
 msgstr ""
 
-#: class/wpmdb.php:2390
+#: class/wpmdb.php:2391
 msgid ""
 "The connection information appears to be missing, please enter it to "
 "continue."
 msgstr ""
 
-#: class/wpmdb.php:2391
+#: class/wpmdb.php:2392
 msgid ""
 "The connection information appears to be incorrect, it should consist of two "
 "lines. The first being the remote server's URL and the second being the "
 "secret key."
 msgstr ""
 
-#: class/wpmdb.php:2392
+#: class/wpmdb.php:2393
 msgid ""
 "The URL on the first line appears to be invalid, please check it and try "
 "again."
 msgstr ""
 
-#: class/wpmdb.php:2393
+#: class/wpmdb.php:2394
 msgid ""
 "The secret key on the second line appears to be invalid. It should be a 32 "
 "character string that consists of letters, numbers and special characters "
 "only."
 msgstr ""
 
-#: class/wpmdb.php:2394
+#: class/wpmdb.php:2395
 msgid ""
 "It appears you've entered the URL for this website, you need to provide the "
 "URL of the remote website instead."
 msgstr ""
 
-#: class/wpmdb.php:2395
+#: class/wpmdb.php:2396
 msgid ""
 "Looks like your remote secret key is the same as the secret key for this "
 "site. To fix this, go to the <a href=\"#settings\">Settings tab</a> and "
 "click \"Reset Secret Key\""
 msgstr ""
 
-#: class/wpmdb.php:2396
-#: template/migrate-progress.php:11
+#: class/wpmdb.php:2397
 msgid "Time Elapsed:"
 msgstr ""
 
-#: class/wpmdb.php:2397
-#: template/migrate-progress.php:25
+#: class/wpmdb.php:2398
+#: template/migrate-progress.php:17
 msgctxt "Temporarily stop migrating"
 msgid "Pause"
 msgstr ""
 
-#: class/wpmdb.php:2398
+#: class/wpmdb.php:2399
 msgctxt "The migration has been temporarily stopped"
 msgid "Migration Paused"
 msgstr ""
 
-#: class/wpmdb.php:2399
+#: class/wpmdb.php:2400
 msgctxt "Restart migrating after it was paused"
 msgid "Resume"
 msgstr ""
 
-#: class/wpmdb.php:2400
+#: class/wpmdb.php:2401
 msgid "Completing current request"
 msgstr ""
 
-#: class/wpmdb.php:2401
+#: class/wpmdb.php:2402
 msgctxt "The migration is being cancelled"
 msgid "Cancelling migration"
 msgstr ""
 
-#: class/wpmdb.php:2402
+#: class/wpmdb.php:2403
 msgctxt "The migration has been temporarily stopped"
 msgid "Paused"
 msgstr ""
 
-#: class/wpmdb.php:2403
+#: class/wpmdb.php:2404
 msgid ""
 "Automatically paused before migrated tables are replaced. Click \"Resume\" "
 "or \"Cancel\" when ready."
 msgstr ""
 
-#: class/wpmdb.php:2404
+#: class/wpmdb.php:2405
 msgid "Removing the local MySQL export file"
 msgstr ""
 
-#: class/wpmdb.php:2405
+#: class/wpmdb.php:2406
 msgid "Removing the local backup MySQL export file"
 msgstr ""
 
-#: class/wpmdb.php:2406
+#: class/wpmdb.php:2407
 msgid "Removing the local temporary tables"
 msgstr ""
 
-#: class/wpmdb.php:2407
+#: class/wpmdb.php:2408
 msgid "Removing the remote backup MySQL export file"
 msgstr ""
 
-#: class/wpmdb.php:2408
+#: class/wpmdb.php:2409
 msgid "Removing the remote temporary tables"
 msgstr ""
 
-#: class/wpmdb.php:2409
+#: class/wpmdb.php:2410
 msgid "Migration cancellation failed"
 msgstr ""
 
-#: class/wpmdb.php:2410
+#: class/wpmdb.php:2411
 msgid ""
 "A problem occurred while cancelling the migration, you may have to manually "
 "delete some temporary files / tables."
 msgstr ""
 
-#: class/wpmdb.php:2411
+#: class/wpmdb.php:2412
 msgctxt "The migration has been cancelled"
 msgid "Migration cancelled"
 msgstr ""
 
-#: class/wpmdb.php:2412
+#: class/wpmdb.php:2413
+msgid ""
+"The migration has been stopped and all temporary files and data have been "
+"cleaned up."
+msgstr ""
+
+#: class/wpmdb.php:2414
 msgctxt "The migration completed successfully"
 msgid "Migration complete"
 msgstr ""
 
-#: class/wpmdb.php:2413
+#: class/wpmdb.php:2415
 msgctxt "The migration is in the last stages"
 msgid "Finalizing migration"
 msgstr ""
 
-#: class/wpmdb.php:2414
+#: class/wpmdb.php:2416
 msgctxt "The caches and rewrite rules for the target are being flushed"
 msgid "Flushing caches and rewrite rules"
 msgstr ""
 
-#: class/wpmdb.php:2415
+#: class/wpmdb.php:2417
 msgid "A problem occurred when trying to add plugins to backlist."
 msgstr ""
 
-#: class/wpmdb.php:2416
+#: class/wpmdb.php:2418
 msgid ""
 "If confirmed we will install an additional WordPress 'Must Use' plugin. This "
 "plugin will allow us to control which plugins are loaded during WP Migrate "
 "DB Pro specific operations. Do you wish to continue?"
 msgstr ""
 
-#: class/wpmdb.php:2417
+#: class/wpmdb.php:2419
 msgid ""
 "A problem occurred when trying to change the plugin compatibility setting."
 msgstr ""
 
-#: class/wpmdb.php:2418
+#: class/wpmdb.php:2420
 msgctxt "Confirmation required"
 msgid "Sure?"
 msgstr ""
 
-#: class/wpmdb.php:2419
-#, php-format
-msgid "Pulling from %s, please wait..."
-msgstr ""
-
-#: class/wpmdb.php:2420
-#, php-format
-msgid "Pulling from %s complete"
-msgstr ""
-
 #: class/wpmdb.php:2421
 #, php-format
-msgid "Pushing to %s, please wait..."
+msgid "Pulling from %s…"
 msgstr ""
 
 #: class/wpmdb.php:2422
 #, php-format
-msgid "Pushing to %s complete"
+msgid "Pull from %s complete"
 msgstr ""
 
 #: class/wpmdb.php:2423
-msgid "Copying license to the remote site, please wait"
+#, php-format
+msgid "Pushing to %s…"
 msgstr ""
 
 #: class/wpmdb.php:2424
-msgid "Attempting to activate your license, please wait..."
+#, php-format
+msgid "Push to %s complete"
 msgstr ""
 
 #: class/wpmdb.php:2425
-msgid "License successfully activated, please wait..."
+msgid "Copying license to the remote site, please wait"
 msgstr ""
 
 #: class/wpmdb.php:2426
+msgid "Attempting to activate your license, please wait…"
+msgstr ""
+
+#: class/wpmdb.php:2427
+msgid "License successfully activated, please wait…"
+msgstr ""
+
+#: class/wpmdb.php:2428
 msgid ""
 "An error occurred when trying to reactivate your license. Please provide the "
 "following information when requesting support:"
 msgstr ""
 
-#: class/wpmdb.php:2427
+#: class/wpmdb.php:2429
 msgid ""
 "<strong>We've temporarily activated your licence and will complete the "
 "activation once the Delicious Brains API is available again.</strong><br /"
 ">Please refresh this page to continue."
 msgstr ""
 
-#: class/wpmdb.php:2428
+#: class/wpmdb.php:2430
 msgid "JSON Decoding Failure"
 msgstr ""
 
-#: class/wpmdb.php:2429
+#: class/wpmdb.php:2431
 msgid ""
 "Our AJAX request was expecting JSON but we received something else. Often "
 "this is caused by your theme and/or plugins spitting out PHP errors. If you "
@@ -1010,81 +1026,157 @@ msgid ""
 "disable errors from showing up."
 msgstr ""
 
-#: class/wpmdb.php:2430
+#: class/wpmdb.php:2432
 msgid "View error messages"
 msgstr ""
 
-#: class/wpmdb.php:2431
+#: class/wpmdb.php:2433
 #, php-format
 msgid "Waiting %s seconds before executing next step"
 msgstr ""
 
-#: class/wpmdb.php:2432
+#: class/wpmdb.php:2434
 msgid ""
 "A problem occurred when trying to change the delay between requests, please "
 "try again."
 msgstr ""
 
-#: class/wpmdb.php:2433
+#: class/wpmdb.php:2435
 msgid "A problem occurred when flushing caches and rewrite rules. (#145)"
 msgstr ""
 
-#: class/wpmdb.php:2434
+#: class/wpmdb.php:2436
 msgctxt "Transfer this database to the remote site"
 msgid "Push"
 msgstr ""
 
-#: class/wpmdb.php:2435
+#: class/wpmdb.php:2437
 msgctxt "Transfer this database to the remote site and save migration profile"
 msgid "Push &amp; Save"
 msgstr ""
 
-#: class/wpmdb.php:2436
+#: class/wpmdb.php:2438
 msgctxt "Transfer the remote database to this site"
 msgid "Pull"
 msgstr ""
 
-#: class/wpmdb.php:2437
+#: class/wpmdb.php:2439
 msgctxt "Transfer the remote database to this site and save migration profile"
 msgid "Pull &amp; Save"
 msgstr ""
 
-#: class/wpmdb.php:2438
-#: template/migrate.php:353
+#: class/wpmdb.php:2440
+#: template/migrate.php:347
 msgctxt "Download a copy of the database"
 msgid "Export"
 msgstr ""
 
-#: class/wpmdb.php:2439
+#: class/wpmdb.php:2441
 msgctxt "Download a copy of the database and save migration profile"
 msgid "Export &amp; Save"
 msgstr ""
 
-#: class/wpmdb.php:2475
+#: class/wpmdb.php:2442
+msgctxt "database tables"
+msgid "Tables"
+msgstr ""
+
+#: class/wpmdb.php:2443
+msgid "Files"
+msgstr ""
+
+#: class/wpmdb.php:2444
+msgctxt "Transferred"
+msgid "Migrated"
+msgstr ""
+
+#: class/wpmdb.php:2445
+msgid "Backed Up"
+msgstr ""
+
+#: class/wpmdb.php:2446
+msgctxt "Obscure from view"
+msgid "Hide"
+msgstr ""
+
+#: class/wpmdb.php:2447
+msgctxt "Reveal"
+msgid "Show"
+msgstr ""
+
+#: class/wpmdb.php:2448
+msgid "Welcome to WP Migrate DB Pro! &#127881;"
+msgstr ""
+
+#: class/wpmdb.php:2449
+#, php-format
+msgid ""
+"Hey, this is the first time activating your license, nice! Your migrations "
+"are about to get awesome! If you haven’t already, you should check out our "
+"<a href=\"%1$s\">Quick Start Guide</a> and <a href=\"%2$s\">Videos</a>. If "
+"you run into any trouble at all, use the <strong>Help tab</strong> above to "
+"submit a support request."
+msgstr ""
+
+#: class/wpmdb.php:2450
+#, php-format
+msgid "%1$s Stage %2$s of %3$s"
+msgstr ""
+
+#: class/wpmdb.php:2451
+msgid "Paused"
+msgstr ""
+
+#: class/wpmdb.php:2452
+msgid "Cancelling"
+msgstr ""
+
+#: class/wpmdb.php:2453
+msgid "Cancelled"
+msgstr ""
+
+#: class/wpmdb.php:2454
+msgid "Finalizing"
+msgstr ""
+
+#: class/wpmdb.php:2455
+msgid "Complete"
+msgstr ""
+
+#: class/wpmdb.php:2456
+msgid "Failed"
+msgstr ""
+
+#: class/wpmdb.php:2457
+#, php-format
+msgid "%1$s items are not shown to maintain browser performance"
+msgstr ""
+
+#: class/wpmdb.php:2493
 msgid "Could not find the file to download:"
 msgstr ""
 
-#: class/wpmdb.php:2670
+#: class/wpmdb.php:2691
 msgid "MySQL export file not found."
 msgstr ""
 
-#: class/wpmdb.php:2676
+#: class/wpmdb.php:2697
 msgid "Could not delete the MySQL export file."
 msgstr ""
 
-#: class/wpmdb.php:2742
+#: class/wpmdb.php:2763
 msgid ""
 "WP Migrate DB and WP Migrate DB Pro cannot both be active. We've "
 "automatically deactivated WP Migrate DB."
 msgstr ""
 
-#: class/wpmdb.php:2744
+#: class/wpmdb.php:2765
 msgid ""
 "WP Migrate DB and WP Migrate DB Pro cannot both be active. We've "
 "automatically deactivated WP Migrate DB Pro."
 msgstr ""
 
-#: class/wpmdb.php:2822
+#: class/wpmdb.php:2843
 #, php-format
 msgid ""
 "The source site supports utf8mb4 data but the target does not, aborting "
@@ -1092,29 +1184,29 @@ msgid ""
 "information. (#148)"
 msgstr ""
 
-#: class/wpmdb.php:2873
+#: class/wpmdb.php:2894
 msgid "Warning: Mixed Case Table Names"
 msgstr ""
 
-#: class/wpmdb.php:2876
+#: class/wpmdb.php:2897
 msgid ""
 "Whoa! We've detected that your <b>local</b> site has the MySQL setting "
 "<code>lower_case_table_names</code> set to <code>1</code>."
 msgstr ""
 
-#: class/wpmdb.php:2878
+#: class/wpmdb.php:2899
 msgid ""
 "Whoa! We've detected that your <b>remote</b> site has the MySQL setting "
 "<code>lower_case_table_names</code> set to <code>1</code>."
 msgstr ""
 
-#: class/wpmdb.php:2881
+#: class/wpmdb.php:2902
 msgid ""
 "As a result, uppercase characters in table names will be converted to "
 "lowercase during the migration."
 msgstr ""
 
-#: class/wpmdb.php:2883
+#: class/wpmdb.php:2904
 #, php-format
 msgid ""
 "You can read more about this in <a href=\"%s\">our documentation</a>, "
@@ -1129,78 +1221,73 @@ msgid ""
 "Now</a></strong>"
 msgstr ""
 
-#: class/wpmdbpro.php:113
-msgctxt "Plugin extensions"
-msgid "Addons"
-msgstr ""
-
-#: class/wpmdbpro.php:185
+#: class/wpmdbpro.php:177
 msgid "UI Walkthrough"
 msgstr ""
 
-#: class/wpmdbpro.php:186
+#: class/wpmdbpro.php:178
 msgid ""
 "A brief walkthrough of the WP Migrate DB plugin showing all of the different "
 "options and explaining them."
 msgstr ""
 
-#: class/wpmdbpro.php:189
+#: class/wpmdbpro.php:181
 msgid "Pulling Live Data Into Your Local Development&nbsp;Environment"
 msgstr ""
 
-#: class/wpmdbpro.php:190
+#: class/wpmdbpro.php:182
 msgid ""
 "This screencast demonstrates how you can pull data from a remote, live "
 "WordPress install and update the data in your local development environment."
 msgstr ""
 
-#: class/wpmdbpro.php:193
+#: class/wpmdbpro.php:185
 msgid "Pushing Local Development Data to a Staging&nbsp;Environment"
 msgstr ""
 
-#: class/wpmdbpro.php:194
+#: class/wpmdbpro.php:186
 msgid ""
 "This screencast demonstrates how you can push a local WordPress database "
 "you've been using for development to a staging environment."
 msgstr ""
 
-#: class/wpmdbpro.php:197
+#: class/wpmdbpro.php:189
 msgid "WP Migrate DB Pro Media Files Addon 1.3 and CLI Addon 1.1"
 msgstr ""
 
-#: class/wpmdbpro.php:198
+#: class/wpmdbpro.php:190
 msgid ""
 "A demonstration of what's new in WP Migrate DB Pro Media Files Addon 1.3 and "
 "CLI Addon 1.1."
 msgstr ""
 
-#: class/wpmdbpro.php:305
+#: class/wpmdbpro.php:297
 msgid ""
 "Please activate your license before attempting a pull or push migration."
 msgstr ""
 
-#: class/wpmdbpro.php:605
+#: class/wpmdbpro.php:597
 msgid ""
 "The connection succeeded but the remote site is configured to reject pull "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#141)"
 msgstr ""
 
-#: class/wpmdbpro.php:668
+#: class/wpmdbpro.php:660
 msgid ""
 "The connection succeeded but the remote site is configured to reject pull "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#110)"
 msgstr ""
 
-#: class/wpmdbpro.php:670
+#: class/wpmdbpro.php:662
 msgid ""
 "The connection succeeded but the remote site is configured to reject push "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#110)"
 msgstr ""
 
-#: class/wpmdbpro.php:749
+#: class/wpmdbpro.php:741
 #, php-format
 msgid ""
 "<b>Version Mismatch</b> &mdash; We've detected you have version %1$s of WP "
@@ -1208,7 +1295,7 @@ msgid ""
 "the Plugins page on both installs and check for updates."
 msgstr ""
 
-#: class/wpmdbpro.php:751
+#: class/wpmdbpro.php:743
 #, php-format
 msgid ""
 "<b>Version Mismatch</b> &mdash; We've detected you have version %1$s of WP "
@@ -1216,138 +1303,138 @@ msgid ""
 "\"%4$s\">Plugins page</a> on both installs and check for updates."
 msgstr ""
 
-#: class/wpmdbpro.php:765
+#: class/wpmdbpro.php:757
 msgctxt "Asking to try and connect to remote server after verification error"
 msgid "Try again?"
 msgstr ""
 
-#: class/wpmdbpro.php:778
+#: class/wpmdbpro.php:770
 #, php-format
 msgid ""
 "Activate remote license &mdash; Looks like you don't have a WP Migrate DB "
 "Pro license active at %s."
 msgstr ""
 
-#: class/wpmdbpro.php:780
+#: class/wpmdbpro.php:772
 #, php-format
 msgid "Copy %1$s license key to %2$s and activate it"
 msgstr ""
 
-#: class/wpmdbpro.php:791
+#: class/wpmdbpro.php:783
 msgid ""
 "The connection succeeded but the remote site is configured to reject pull "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#122)"
 msgstr ""
 
-#: class/wpmdbpro.php:793
+#: class/wpmdbpro.php:785
 msgid ""
 "The connection succeeded but the remote site is configured to reject push "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#122)"
 msgstr ""
 
-#: class/wpmdbpro.php:795
+#: class/wpmdbpro.php:787
 msgctxt "Attempt to connect to the remote server again"
 msgid "Try again?"
 msgstr ""
 
-#: class/wpmdbpro.php:943
+#: class/wpmdbpro.php:935
 msgctxt "Delete license"
 msgid "Remove"
 msgstr ""
 
-#: class/wpmdbpro.php:1127
+#: class/wpmdbpro.php:1119
 msgid ""
 "If you have an <strong>active license</strong>, you may send an email to the "
 "following address."
 msgstr ""
 
-#: class/wpmdbpro.php:1129
+#: class/wpmdbpro.php:1121
 msgid ""
 "Please copy the Diagnostic Info &amp; Error Log info below into a text file "
 "and attach it to your email. Do the same for any other site involved in your "
 "email."
 msgstr ""
 
-#: class/wpmdbpro.php:1160
+#: class/wpmdbpro.php:1152
 msgctxt "License does not allow use of addons"
 msgid "Addons Unavailable"
 msgstr ""
 
-#: class/wpmdbpro.php:1160
+#: class/wpmdbpro.php:1152
 #, php-format
 msgid ""
 "Addons are not included with the Personal license. Visit <a href=\"%s\" "
 "target=\"_blank\">My Account</a> to upgrade in just a few clicks."
 msgstr ""
 
-#: class/wpmdbpro.php:1175
+#: class/wpmdbpro.php:1167
 msgctxt "Installed on website but not activated"
 msgid "Installed"
 msgstr ""
 
-#: class/wpmdbpro.php:1177
+#: class/wpmdbpro.php:1169
 msgctxt "Installed and activated on website"
 msgid "Activated"
 msgstr ""
 
-#: class/wpmdbpro.php:1180
+#: class/wpmdbpro.php:1172
 msgctxt "Enable addon so it may be used"
 msgid "Activate"
 msgstr ""
 
-#: class/wpmdbpro.php:1184
+#: class/wpmdbpro.php:1176
 msgctxt "Download and activate addon"
 msgid "Install"
 msgstr ""
 
-#: class/wpmdbpro.php:1190
+#: class/wpmdbpro.php:1182
 #: template/common/debug-info.php:4
 msgctxt "Download to your computer"
 msgid "Download"
 msgstr ""
 
-#: class/wpmdbpro.php:1656
+#: class/wpmdbpro.php:1648
 msgid "Could not upload the SQL to the server. (#135)"
 msgstr ""
 
-#: class/wpmdbpro.php:1662
+#: class/wpmdbpro.php:1654
 msgid "Could not read the SQL file we uploaded to the server. (#136)"
 msgstr ""
 
-#: class/wpmdbpro.php:1681
+#: class/wpmdbpro.php:1673
 msgid ""
 "The connection succeeded but the remote site is configured to reject push "
 "connections. You can change this in the \"settings\" tab on the remote site. "
 "(#139)"
 msgstr ""
 
-#: class/wpmdbpro.php:1947
+#: class/wpmdbpro.php:1939
 #, php-format
 msgid "There is a new version of %s available."
 msgstr ""
 
-#: class/wpmdbpro.php:1949
+#: class/wpmdbpro.php:1941
 #, php-format
 msgid "View version %s details"
 msgstr ""
 
-#: class/wpmdbpro.php:1959
+#: class/wpmdbpro.php:1951
 #, php-format
 msgid ""
 "To update, go to %1$s and enter your license key. If you don't have a "
 "license key, you may <a href=\"%2$s\">purchase one</a>."
 msgstr ""
 
-#: class/wpmdbpro.php:1961
+#: class/wpmdbpro.php:1953
 #, php-format
 msgid ""
 "To finish activating %1$s, please go to %2$s and enter your license key. If "
 "you don't have a license key, you may <a href=\"%3$s\">purchase one</a>."
 msgstr ""
 
-#: class/wpmdbpro.php:2029
+#: class/wpmdbpro.php:2027
 msgid "Could not retrieve version details. Please try again."
 msgstr ""
 
@@ -1355,15 +1442,64 @@ msgstr ""
 msgid "Fetching addon details, please wait..."
 msgstr ""
 
-#: template/addons.php:9
-#: template/pro/licence-info.php:8
-msgid ""
-"We couldn't find your license information. Please switch to the settings tab "
-"and enter your license."
+#: template/addons.php:12
+msgctxt "License must be activated to use addons"
+msgid "Activate Your License"
 msgstr ""
 
-#: template/addons.php:10
-msgid "Once completed, you may visit this tab to view the available addons."
+#: template/addons.php:12
+msgid ""
+"Please switch to the Settings tab and activate your license. If your license "
+"includes the addons below, you will be able to install them from here with "
+"one-click."
+msgstr ""
+
+#: template/addons.php:16
+msgctxt "Addons are available with a developer license and better"
+msgid "Get Addons"
+msgstr ""
+
+#: template/addons.php:16
+#, php-format
+msgid ""
+"The following addons are available with the WP Migrate DB Pro Developer "
+"license and better. Visit  <a href=\"%s\" target=\"_blank\">deliciousbrains."
+"com</a> to purchase in just a few clicks."
+msgstr ""
+
+#: template/addons.php:22
+msgid "Media Files"
+msgstr ""
+
+#: template/addons.php:23
+#, php-format
+msgid ""
+"Allows you to push and pull your files in the Media Library between two "
+"WordPress installs. It can compare both libraries and only migrate those "
+"missing or updated, or it can do a complete copy of one site's library to "
+"another. <a href=\"%s\">More Details &rarr;</a>"
+msgstr ""
+
+#: template/addons.php:29
+msgid "CLI"
+msgstr ""
+
+#: template/addons.php:30
+#, php-format
+msgid ""
+"Integrates WP Migrate DB Pro with WP-CLI allowing you to run migrations from "
+"the command line: %s <a href=\"%s\">More Details &rarr;</a>"
+msgstr ""
+
+#: template/addons.php:36
+msgid "Multisite Tools"
+msgstr ""
+
+#: template/addons.php:37
+#, php-format
+msgid ""
+"Export a subsite as an SQL file that can then be imported as a single site "
+"install. <a href=\"%s\">More Details &rarr;</a>"
 msgstr ""
 
 #: template/common/breadcrumbs.php:3
@@ -1375,13 +1511,15 @@ msgstr ""
 msgid "Saved Profiles"
 msgstr ""
 
-#: template/common/compatibility.php:4
-msgid ""
-"Improve performance and reliability by not loading the following plugins for "
-"migration requests"
+#: template/common/compatibility.php:2
+msgid "Compatibility"
 msgstr ""
 
 #: template/common/compatibility.php:9
+msgid "Plugin Compatibility Mode"
+msgstr ""
+
+#: template/common/compatibility.php:11
 msgid ""
 "Some plugins add a lot of overhead to each request, requiring extra memory "
 "and CPU. And some plugins even interfere with migrations and cause them to "
@@ -1389,28 +1527,34 @@ msgid ""
 "example a plugin that hooks into WP Migrate DB."
 msgstr ""
 
-#: template/common/compatibility.php:26
+#: template/common/compatibility.php:15
+msgid ""
+"Avoid plugin conflicts and improve performance by not loading plugins for "
+"migration requests."
+msgstr ""
+
+#: template/common/compatibility.php:35
 #: template/pro/backup.php:44
-#: template/pro/exclude-post-types.php:19
+#: template/pro/exclude-post-types.php:31
 #: template/pro/select-tables.php:42
 msgid "Select All"
 msgstr ""
 
-#: template/common/compatibility.php:28
+#: template/common/compatibility.php:37
 #: template/pro/backup.php:46
-#: template/pro/exclude-post-types.php:21
+#: template/pro/exclude-post-types.php:33
 #: template/pro/select-tables.php:44
 msgid "Deselect All"
 msgstr ""
 
-#: template/common/compatibility.php:30
+#: template/common/compatibility.php:39
 #: template/pro/backup.php:48
-#: template/pro/exclude-post-types.php:23
+#: template/pro/exclude-post-types.php:35
 #: template/pro/select-tables.php:46
 msgid "Invert Selection"
 msgstr ""
 
-#: template/common/compatibility.php:33
+#: template/common/compatibility.php:42
 msgid "Save Changes"
 msgstr ""
 
@@ -1422,11 +1566,13 @@ msgstr ""
 msgid "Clear Error Log"
 msgstr ""
 
-#: template/common/max-request-size.php:3
+#: template/common/max-request-size.php:6
+#: template/pro/request-settings.php:24
 msgid "Maximum Request Size"
 msgstr ""
 
-#: template/common/max-request-size.php:7
+#: template/common/max-request-size.php:10
+#: template/pro/request-settings.php:28
 #, php-format
 msgid ""
 "We've detected that your server supports requests up to %s, but it's "
@@ -1436,17 +1582,21 @@ msgid ""
 "with time outs, try throttling this setting down."
 msgstr ""
 
-#: template/migrate-progress.php:5
-msgid "Please wait while migration is running..."
+#: template/migrate-progress.php:6
+msgid "Please wait while migration is running…"
 msgstr ""
 
-#: template/migrate-progress.php:10
+#: template/migrate-progress.php:7
 msgid "Establishing Connection"
 msgstr ""
 
-#: template/migrate-progress.php:26
+#: template/migrate-progress.php:18
 msgctxt "Stop the migration"
 msgid "Cancel"
+msgstr ""
+
+#: template/migrate-progress.php:19
+msgid "Pause before replacing migrated tables"
 msgstr ""
 
 #: template/migrate.php:72
@@ -1558,28 +1708,24 @@ msgstr ""
 msgid "Compatible with older versions of MySQL (pre-5.5)"
 msgstr ""
 
-#: template/migrate.php:277
-msgid "Pause before replacing migrated tables"
-msgstr ""
-
-#: template/migrate.php:293
+#: template/migrate.php:287
 msgid "Save Migration Profile"
 msgstr ""
 
-#: template/migrate.php:293
+#: template/migrate.php:287
 msgid "Save the above settings for the next time you do a similiar migration"
 msgstr ""
 
-#: template/migrate.php:315
+#: template/migrate.php:309
 msgid "Create new profile"
 msgstr ""
 
-#: template/migrate.php:324
-#: template/migrate.php:334
+#: template/migrate.php:318
+#: template/migrate.php:328
 msgid "Warning: Different Table Prefixes"
 msgstr ""
 
-#: template/migrate.php:326
+#: template/migrate.php:320
 msgid ""
 "Whoa! We've detected that the database table prefix differs between "
 "installations. Clicking the Migrate button below will create new database "
@@ -1587,7 +1733,7 @@ msgid ""
 "span>\"."
 msgstr ""
 
-#: template/migrate.php:328
+#: template/migrate.php:322
 #, php-format
 msgid ""
 "However, your local install is configured to use table prefix \"%1$s\" and "
@@ -1596,13 +1742,13 @@ msgid ""
 "variable to \"<span class=\"remote-prefix\"></span>\"."
 msgstr ""
 
-#: template/migrate.php:330
+#: template/migrate.php:324
 msgid ""
 "This will allow your local install the use the migrated tables. Once you do "
 "this, you shouldn't have to do it again."
 msgstr ""
 
-#: template/migrate.php:336
+#: template/migrate.php:330
 #, php-format
 msgid ""
 "Whoa! We've detected that the database table prefix differs between "
@@ -1610,7 +1756,7 @@ msgid ""
 "tables in the remote database with prefix \"%s\"."
 msgstr ""
 
-#: template/migrate.php:338
+#: template/migrate.php:332
 #, php-format
 msgid ""
 "However, your remote install is configured to use table prefix \"<span class="
@@ -1620,13 +1766,13 @@ msgid ""
 "span>\" variable to \"%s\"."
 msgstr ""
 
-#: template/migrate.php:340
+#: template/migrate.php:334
 msgid ""
 "This will allow your remote install the use the migrated tables. Once you do "
 "this, you shouldn't have to do it again."
 msgstr ""
 
-#: template/migrate.php:354
+#: template/migrate.php:348
 msgctxt "Save current migration settings"
 msgid "Save Profile"
 msgstr ""
@@ -1704,9 +1850,9 @@ msgid ""
 "will prevent WP Migrate DB Pro from functioning properly. You should either "
 "disable <code>WP_HTTP_BLOCK_EXTERNAL</code> or add any sites that you'd like "
 "to migrate to or from with WP Migrate DB Pro to <code>WP_ACCESSIBLE_HOSTS</"
-"code> (deliciousbrains.com must be added to <code>WP_ACCESSIBLE_HOSTS</code> "
-"for the API to work). More information on this can be found <a href=\"%s\" "
-"target=\"_blank\">here</a>."
+"code> (api.deliciousbrains.com must be added to <code>WP_ACCESSIBLE_HOSTS</"
+"code> for the API to work). More information on this can be found <a href="
+"\"%s\" target=\"_blank\">here</a>."
 msgstr ""
 
 #. translators: 1: Remind Me Later, 2: Dismiss
@@ -1720,27 +1866,32 @@ msgstr ""
 msgid "Connection Info"
 msgstr ""
 
-#: template/pro/connection-info.php:5
+#: template/pro/connection-info.php:8
 msgid "Reset Secret Key"
-msgstr ""
-
-#: template/pro/delay-between-requests.php:3
-msgid "Delay Between Requests"
-msgstr ""
-
-#: template/pro/delay-between-requests.php:7
-msgid ""
-"Some servers have rate limits which the plugin can hit when performing "
-"migrations. If you're experiencing migration failures due to server rate "
-"limits, you should set this to one or more seconds to alleviate the problem."
 msgstr ""
 
 #: template/pro/exclude-post-types.php:4
 msgid "Exclude Post Types"
 msgstr ""
 
+#: template/pro/exclude-post-types.php:11
+msgid ""
+"WARNING: All of the following post types will be absent in the destination "
+"posts table after migration:"
+msgstr ""
+
 #: template/pro/licence-info.php:2
 msgid "Email Support"
+msgstr ""
+
+#: template/pro/licence-info.php:6
+msgid "Fetching license details, please wait..."
+msgstr ""
+
+#: template/pro/licence-info.php:8
+msgid ""
+"We couldn't find your license information. Please switch to the settings tab "
+"and enter your license."
 msgstr ""
 
 #: template/pro/licence-info.php:9
@@ -1751,11 +1902,11 @@ msgstr ""
 msgid "Your License"
 msgstr ""
 
-#: template/pro/licence.php:5
+#: template/pro/licence.php:8
 msgid "The license key is currently defined in wp-config.php."
 msgstr ""
 
-#: template/pro/licence.php:15
+#: template/pro/licence.php:18
 msgid "Activate License"
 msgstr ""
 
@@ -1782,6 +1933,38 @@ msgstr ""
 
 #: template/pro/pull-push-radio-buttons.php:13
 msgid "Replace remote db with this site's db"
+msgstr ""
+
+#: template/pro/request-settings.php:2
+msgid "Request Settings"
+msgstr ""
+
+#: template/pro/request-settings.php:10
+msgid "Certificate Verification"
+msgstr ""
+
+#: template/pro/request-settings.php:12
+msgid ""
+"We disable SSL verification by default because a lot of people's "
+"environments are not setup for it to work. For example, with XAMPP, you have "
+"to manually enable OpenSSL by editing the php.ini. Without SSL verification, "
+"an HTTPS connection is vulnerable to a man-in-the-middle attack, so we do "
+"recommend you configure your environment and enable this."
+msgstr ""
+
+#: template/pro/request-settings.php:16
+msgid "Verify the authenticity of the remote server’s TLS certificate. "
+msgstr ""
+
+#: template/pro/request-settings.php:42
+msgid "Delay Between Requests"
+msgstr ""
+
+#: template/pro/request-settings.php:46
+msgid ""
+"Some servers have rate limits which the plugin can hit when performing "
+"migrations. If you're experiencing migration failures due to server rate "
+"limits, you should set this to one or more seconds to alleviate the problem."
 msgstr ""
 
 #: template/pro/secret-key-warning.php:2
@@ -1816,26 +1999,24 @@ msgstr ""
 msgid "Migrate only selected tables below"
 msgstr ""
 
-#: template/pro/toggle-remote-requests.php:6
-msgid ""
-"Accept <b>pull</b> requests allow this database to be exported and downloaded"
+#: template/pro/toggle-remote-requests.php:2
+msgid "Permissions"
 msgstr ""
 
-#: template/pro/toggle-remote-requests.php:12
-msgid "Accept <b>push</b> requests allow this database to be overwritten"
+#: template/pro/toggle-remote-requests.php:8
+msgid "Pull"
 msgstr ""
 
-#: template/pro/toggle-remote-requests.php:18
-msgid "Enable SSL verification"
+#: template/pro/toggle-remote-requests.php:9
+msgid "Process requests to pull data from this install, copying it elsewhere."
 msgstr ""
 
-#: template/pro/toggle-remote-requests.php:23
-msgid ""
-"We disable SSL verification by default because a lot of people's "
-"environments are not setup for it to work. For example, with XAMPP, you have "
-"to manually enable OpenSSL by editing the php.ini. Without SSL verification, "
-"an HTTPS connection is vulnerable to a man-in-the-middle attack, so we do "
-"recommend you configure your environment and enable this."
+#: template/pro/toggle-remote-requests.php:16
+msgid "Push"
+msgstr ""
+
+#: template/pro/toggle-remote-requests.php:17
+msgid "Process requests to push data to this install, overwriting its data."
 msgstr ""
 
 #: template/pro/videos.php:2
@@ -1856,7 +2037,7 @@ msgid "Exclude post revisions"
 msgstr ""
 
 #: template/wpmdb/progress-upgrade.php:3
-msgid "Seen the PRO version?"
+msgid "Seen the PRO version yet?"
 msgstr ""
 
 #: template/wpmdb/progress-upgrade.php:5
@@ -1873,11 +2054,13 @@ msgstr ""
 msgid "Run migrations from the command&nbsp;line"
 msgstr ""
 
-#: template/wpmdb/progress-upgrade.php:11
-msgid "Within a few hours WP Migrate DB Pro has paid for itself!"
+#: template/wpmdb/progress-upgrade.php:15
+msgid ""
+"Even though I've been using it for a long time the push/pull functionality "
+"in @dliciousbrains WP&nbsp;Migrate&nbsp;DB&nbsp;Pro continues to impress me."
 msgstr ""
 
-#: template/wpmdb/progress-upgrade.php:17
+#: template/wpmdb/progress-upgrade.php:24
 msgid "More About The Pro Version"
 msgstr ""
 

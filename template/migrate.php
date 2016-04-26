@@ -271,12 +271,6 @@ $breadcrumbs_params = array(
 							<?php _e( 'Compatible with older versions of MySQL (pre-5.5)', 'wp-migrate-db' ); ?>
 						</label>
 					</li>
-					<li class="pause-before-finalize">
-						<label for="pause-before-finalize">
-							<input id="pause-before-finalize" type="checkbox" value="1" autocomplete="off" name="pause_before_finalize"<?php $this->maybe_checked( $loaded_profile['pause_before_finalize'] ); ?> />
-							<?php _e( 'Pause before replacing migrated tables', 'wp-migrate-db' ); ?>
-						</label>
-					</li>
 					<?php $this->template_part( array( 'exclude_post_revisions' ), $loaded_profile ); ?>
 				</ul>
 
@@ -358,5 +352,7 @@ $breadcrumbs_params = array(
 
 	</form>
 	<?php $this->template( 'migrate-progress' ); ?>
+
+	<?php $this->template_part( array( 'progress_upgrade' ) ); ?>
 
 </div> <!-- end .migrate-tab -->

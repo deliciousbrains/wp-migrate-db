@@ -70,7 +70,6 @@ class WPMDB extends WPMDB_Base {
 			'exclude_post_revisions',
 			'compatibility_older_mysql',
 			'export_dest',
-			'pause_before_finalize',
 		);
 
 		$this->default_profile = array(
@@ -98,12 +97,12 @@ class WPMDB extends WPMDB_Base {
 			'exclude_post_types'        => '0',
 			'exclude_transients'        => '0',
 			'compatibility_older_mysql' => '0',
-			'pause_before_finalize'     => '0',
 		);
 
 		$this->plugin_tabs = array(
 			'<a href="#" class="nav-tab nav-tab-active js-action-link migrate" data-div-name="migrate-tab">' . esc_html( _x( 'Migrate', 'Configure a migration or export', 'wp-migrate-db' ) ) . '</a>',
 			'<a href="#" class="nav-tab js-action-link settings" data-div-name="settings-tab">' . esc_html( _x( 'Settings', 'Plugin configuration and preferences', 'wp-migrate-db' ) ) . '</a>',
+			'<a href="#" class="nav-tab js-action-link addons" data-div-name="addons-tab">' . esc_html( _x( 'Addons', 'Plugin extensions', 'wp-migrate-db' ) ) . '</a>',
 			'<a href="#" class="nav-tab js-action-link help" data-div-name="help-tab">' . esc_html( _x( 'Help', 'Get help or contact support', 'wp-migrate-db' ) ) . '</a>',
 		);
 
@@ -2330,22 +2329,22 @@ class WPMDB extends WPMDB_Base {
 		$version     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : $this->plugin_version;
 		$min         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		$src = $plugins_url . 'asset/css/styles.css';
+		$src = $plugins_url . 'asset/dist/css/styles.css';
 		wp_enqueue_style( 'wp-migrate-db-pro-styles', $src, array(), $version );
 
-		$src = $plugins_url . "asset/js/common$min.js";
+		$src = $plugins_url . "asset/dist/js/common$min.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-common', $src, null, $version, true );
 
-		$src = $plugins_url . "asset/js/hook$min.js";
+		$src = $plugins_url . "asset/dist/js/hook$min.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-hook', $src, null, $version, true );
 
-		$src = $plugins_url . "asset/js/multisite$min.js";
+		$src = $plugins_url . "asset/dist/js/multisite$min.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-multisite', $src, array( 'jquery' ), $version, true );
 
 		do_action( 'wpmdb_load_assets' );
 
-		$src = $plugins_url . "asset/js/script$min.js";
-		wp_enqueue_script( 'wp-migrate-db-pro-script', $src, array( 'jquery' ), $version, true );
+		$src = $plugins_url . "asset/dist/js/script$min.js";
+		wp_enqueue_script( 'wp-migrate-db-pro-script', $src, array( 'jquery', 'backbone' ), $version, true );
 
 		wp_localize_script( 'wp-migrate-db-pro-script',
 			'wpmdb_strings',
@@ -2357,20 +2356,22 @@ class WPMDB extends WPMDB_Base {
 				'enter_license_key'                     => __( 'Please enter your license key.', 'wp-migrate-db' ),
 				'register_license_problem'              => __( 'A problem occurred when trying to register the license, please try again.', 'wp-migrate-db' ),
 				'license_registered'                    => __( 'Your license has been activated. You will now receive automatic updates and access to email support.', 'wp-migrate-db' ),
-				'fetching_license'                      => __( 'Fetching license details, please wait...', 'wp-migrate-db' ),
+				'fetching_license'                      => __( 'Fetching license details, please wait…', 'wp-migrate-db' ),
 				'clear_log_problem'                     => __( 'An error occurred when trying to clear the debug log. Please contact support. (#132)', 'wp-migrate-db' ),
 				'update_log_problem'                    => __( 'An error occurred when trying to update the debug log. Please contact support. (#133)', 'wp-migrate-db' ),
 				'please_select_one_table'               => __( 'Please select at least one table to migrate.', 'wp-migrate-db' ),
 				'please_select_one_table_backup'        => __( 'Please select at least one table for backup.', 'wp-migrate-db' ),
 				'enter_name_for_profile'                => __( 'Please enter a name for your migration profile.', 'wp-migrate-db' ),
 				'save_profile_problem'                  => __( 'An error occurred when attempting to save the migration profile. Please see the Help tab for details on how to request support. (#118)', 'wp-migrate-db' ),
-				'exporting_complete'                    => _x( 'Exporting complete', 'Data has been successfully exported', 'wp-migrate-db' ),
-				'exporting_please_wait'                 => __( 'Exporting, please wait...', 'wp-migrate-db' ),
-				'please_wait'                           => __( 'please wait...', 'wp-migrate-db' ),
+				'exporting_complete'                    => _x( 'Export complete', 'Data has been successfully exported', 'wp-migrate-db' ),
+				'exporting_please_wait'                 => __( 'Exporting, please wait…', 'wp-migrate-db' ),
+				'please_wait'                           => __( 'please wait…', 'wp-migrate-db' ),
 				'complete'                              => _x( 'complete', 'Finished successfully', 'wp-migrate-db' ),
 				'migration_failed'                      => _x( 'Migration failed', 'Copy of data between servers did not complete', 'wp-migrate-db' ),
 				'backing_up'                            => _x( 'Backing up', 'Saving a copy of the data before import', 'wp-migrate-db' ),
+				'queued'                                => _x( 'Queued', 'In line to be processed', 'wp-migrate-db' ),
 				'migrating'                             => _x( 'Migrating', 'Copying data between servers', 'wp-migrate-db' ),
+				'running'                               => _x( 'Running', 'Process is active', 'wp-migrate-db'),
 				'status'                                => _x( 'Status', 'Current request status', 'wp-migrate-db' ),
 				'response'                              => _x( 'Response', 'The message the server responded with', 'wp-migrate-db' ),
 				'table_process_problem'                 => __( 'A problem occurred when attempting to process the following table (#113)', 'wp-migrate-db' ),
@@ -2409,6 +2410,7 @@ class WPMDB extends WPMDB_Base {
 				'migration_cancellation_failed'         => __( 'Migration cancellation failed', 'wp-migrate-db' ),
 				'manually_remove_temp_files'            => __( 'A problem occurred while cancelling the migration, you may have to manually delete some temporary files / tables.', 'wp-migrate-db' ),
 				'migration_cancelled'                   => _x( 'Migration cancelled', 'The migration has been cancelled', 'wp-migrate-db' ),
+				'migration_cancelled_success'           => __( 'The migration has been stopped and all temporary files and data have been cleaned up.', 'wp-migrate-db' ),
 				'migration_complete'                    => _x( 'Migration complete', 'The migration completed successfully', 'wp-migrate-db' ),
 				'finalizing_migration'                  => _x( 'Finalizing migration', 'The migration is in the last stages', 'wp-migrate-db' ),
 				'flushing'                              => _x( 'Flushing caches and rewrite rules', 'The caches and rewrite rules for the target are being flushed', 'wp-migrate-db' ),
@@ -2416,13 +2418,13 @@ class WPMDB extends WPMDB_Base {
 				'mu_plugin_confirmation'                => __( "If confirmed we will install an additional WordPress 'Must Use' plugin. This plugin will allow us to control which plugins are loaded during WP Migrate DB Pro specific operations. Do you wish to continue?", 'wp-migrate-db' ),
 				'plugin_compatibility_settings_problem' => __( 'A problem occurred when trying to change the plugin compatibility setting.', 'wp-migrate-db' ),
 				'sure'                                  => _x( 'Sure?', 'Confirmation required', 'wp-migrate-db' ),
-				'pull_migration_label_migrating'        => __( 'Pulling from %s, please wait...', 'wp-migrate-db' ),
-				'pull_migration_label_completed'        => __( 'Pulling from %s complete', 'wp-migrate-db' ),
-				'push_migration_label_migrating'        => __( 'Pushing to %s, please wait...', 'wp-migrate-db' ),
-				'push_migration_label_completed'        => __( 'Pushing to %s complete', 'wp-migrate-db' ),
+				'pull_migration_label_migrating'        => __( 'Pulling from %s…', 'wp-migrate-db' ),
+				'pull_migration_label_completed'        => __( 'Pull from %s complete', 'wp-migrate-db' ),
+				'push_migration_label_migrating'        => __( 'Pushing to %s…', 'wp-migrate-db' ),
+				'push_migration_label_completed'        => __( 'Push to %s complete', 'wp-migrate-db' ),
 				'copying_license'                       => __( 'Copying license to the remote site, please wait', 'wp-migrate-db' ),
-				'attempting_to_activate_licence'        => __( 'Attempting to activate your license, please wait...', 'wp-migrate-db' ),
-				'licence_reactivated'                   => __( 'License successfully activated, please wait...', 'wp-migrate-db' ),
+				'attempting_to_activate_licence'        => __( 'Attempting to activate your license, please wait…', 'wp-migrate-db' ),
+				'licence_reactivated'                   => __( 'License successfully activated, please wait…', 'wp-migrate-db' ),
 				'activate_licence_problem'              => __( 'An error occurred when trying to reactivate your license. Please provide the following information when requesting support:', 'wp-migrate-db' ),
 				'temporarily_activated_licence'         => __( "<strong>We've temporarily activated your licence and will complete the activation once the Delicious Brains API is available again.</strong><br />Please refresh this page to continue.", 'wp-migrate-db' ),
 				'ajax_json_message'                     => __( 'JSON Decoding Failure', 'wp-migrate-db' ),
@@ -2437,6 +2439,22 @@ class WPMDB extends WPMDB_Base {
 				'migrate_button_pull_save'              => _x( 'Pull &amp; Save', 'Transfer the remote database to this site and save migration profile', 'wp-migrate-db' ),
 				'migrate_button_export'                 => _x( 'Export', 'Download a copy of the database', 'wp-migrate-db' ),
 				'migrate_button_export_save'            => _x( 'Export &amp; Save', 'Download a copy of the database and save migration profile', 'wp-migrate-db' ),
+				'tables'                                => _x( 'Tables', 'database tables', 'wp-migrate-db'),
+				'files'                                 => __( 'Files', 'wp-migrate-db'),
+				'migrated'                              => _x( 'Migrated', 'Transferred', 'wp-migrate-db' ),
+				'backed_up'                             => __( 'Backed Up', 'wp-migrate-db' ),
+				'hide'                                  => _x( 'Hide', 'Obscure from view', 'wp-migrate-db' ),
+				'show'                                  => _x( 'Show', 'Reveal', 'wp-migrate-db' ),
+				'welcome_title'                         => __( 'Welcome to WP Migrate DB Pro! &#127881;', 'wp-migrate-db' ),
+				'welcome_text'                          => __( 'Hey, this is the first time activating your license, nice! Your migrations are about to get awesome! If you haven’t already, you should check out our <a href="%1$s">Quick Start Guide</a> and <a href="%2$s">Videos</a>. If you run into any trouble at all, use the <strong>Help tab</strong> above to submit a support request.', 'wp-migrate-db' ),
+				'title_progress'                        => __( '%1$s Stage %2$s of %3$s', 'wp-migrate-db' ),
+				'title_paused'                          => __( 'Paused', 'wp-migrate-db' ),
+				'title_cancelling'                      => __( 'Cancelling', 'wp-migrate-db' ),
+				'title_cancelled'                       => __( 'Cancelled', 'wp-migrate-db' ),
+				'title_finalizing'                      => __( 'Finalizing', 'wp-migrate-db' ),
+				'title_complete'                        => __( 'Complete', 'wp-migrate-db' ),
+				'title_error'                           => __( 'Failed', 'wp-migrate-db' ),
+				'progress_items_truncated_msg'          => __( '%1$s items are not shown to maintain browser performance', 'wp-migrate-db' ),
 			)
 		);
 
@@ -2518,6 +2536,7 @@ class WPMDB extends WPMDB_Base {
 			'this_upload_url'        => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'url' ) ) ) ),
 			'this_upload_dir_long'   => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'path' ) ) ) ),
 			'this_uploads_dir'       => $site_details['uploads_dir'], // TODO: Remove backwards compatibility.
+			'this_plugin_url'        => trailingslashit( plugins_url( $this->plugin_folder_name ) ),
 			'this_website_name'      => sanitize_title_with_dashes( DB_NAME ),
 			'this_download_url'      => network_admin_url( $this->plugin_base . '&download=' ),
 			'this_prefix'            => $site_details['prefix'], // TODO: Remove backwards compatibility.
@@ -2526,6 +2545,8 @@ class WPMDB extends WPMDB_Base {
 			'openssl_available'      => esc_html( $this->open_ssl_enabled() ? 'true' : 'false' ),
 			'max_request'            => esc_html( $this->settings['max_request'] ),
 			'delay_between_requests' => esc_html( $this->settings['delay_between_requests'] ),
+			'prog_tables_hidden'     => ( bool ) $this->settings['prog_tables_hidden'],
+			'pause_before_finalize'  => ( bool ) $this->settings['pause_before_finalize'],
 			'bottleneck'             => esc_html( $this->get_bottleneck( 'max' ) ),
 			'has_licence'            => esc_html( $this->get_licence_key() == '' ? '0' : '1' ),
 			// TODO: Use WP_Filesystem API.
@@ -2684,7 +2705,7 @@ class WPMDB extends WPMDB_Base {
 
 	function template_compatibility() {
 		$args = array(
-			'plugin_compatibility_checked' => ( isset( $GLOBALS['wpmdb_compatibility'] ) ? ' checked="checked"' : '' ),
+			'plugin_compatibility_checked' => ( isset( $GLOBALS['wpmdb_compatibility'] ) ? true : false ),
 		);
 		$this->template( 'compatibility', 'common', $args );
 	}

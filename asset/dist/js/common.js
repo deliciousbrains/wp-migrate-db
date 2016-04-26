@@ -157,8 +157,35 @@ wpmdb.subsite_for_table = function( table_prefix, table_name ) {
 	}
 };
 
-(function( $ ) {
+wpmdb.functions.convertKBSizeToHR = function( size, dec, kbSize, retArray ) {
+	var retVal, units;
+	kbSize = kbSize || 1000;
+	dec = dec || 2;
+	size = parseInt( size );
 
-	// jQuery code here
+	if ( kbSize > Math.abs( size ) ) {
+		retVal = [ size.toFixed( 0 ), 'KB' ];
+	} else {
+		units = [ 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ];
+		var u = -1;
+		do {
+			size /= kbSize;
+			++u;
+		} while ( Math.abs( size ) >= kbSize && u < units.length - 1 );
+		retVal = [ Math.round( size * Math.pow( 10, dec ) ) / Math.pow( 10, dec ), units[ u ] ];
+	}
 
-})( jQuery );
+	if ( ! retArray ) {
+		retVal = retVal[0] + ' ' + retVal[1];
+	}
+	return retVal;
+};
+
+wpmdb.functions.convertKBSizeToHRFixed = function( size, dec, kbSize ) {
+	dec = dec || 2;
+	var hrSizeArray = wpmdb.functions.convertKBSizeToHR( size, dec, kbSize, true );
+	if ( 'KB' !== hrSizeArray[1] ) {
+		return hrSizeArray[ 0 ].toFixed( 2 ) + ' ' + hrSizeArray[ 1 ];
+	}
+	return hrSizeArray[ 0 ] + ' ' + hrSizeArray[ 1 ];
+};
