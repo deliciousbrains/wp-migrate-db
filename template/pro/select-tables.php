@@ -24,9 +24,10 @@
 		<div class="select-tables-wrap select-wrap">
 			<select multiple="multiple" name="select_tables[]" id="select-tables" class="multiselect" autocomplete="off">
 				<?php
-				$table_sizes = $this->get_table_sizes();
+				$table_sizes        = $this->get_table_sizes();
+				$temp_prefix_length = strlen( $this->temp_prefix );
 				foreach ( $this->get_tables() as $table ) :
-					if( ! isset( $table_sizes[ $table ] ) ) {
+					if( ! isset( $table_sizes[ $table ] ) || $this->temp_prefix === substr( $table, 0, $temp_prefix_length ) ) {
 						continue;
 					}
 					$size = (int) $table_sizes[ $table ] * 1024;

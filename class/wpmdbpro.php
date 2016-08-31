@@ -20,7 +20,6 @@ class WPMDBPro extends WPMDB {
 		// Required for Pull if user tables being updated.
 		add_action( 'wp_ajax_nopriv_wpmdb_flush', array( $this, 'ajax_nopriv_flush', ) );
 		add_action( 'wp_ajax_wpmdb_reset_api_key', array( $this, 'ajax_reset_api_key' ) );
-		add_action( 'wp_ajax_wpmdb_save_setting', array( $this, 'ajax_save_setting' ) );
 		add_action( 'wp_ajax_wpmdb_activate_licence', array( $this, 'ajax_activate_licence' ) );
 		add_action( 'wp_ajax_wpmdb_check_licence', array( $this, 'ajax_check_licence' ) );
 		add_action( 'wp_ajax_wpmdb_copy_licence_to_remote_site', array( $this, 'ajax_copy_licence_to_remote_site' ) );
@@ -325,7 +324,7 @@ class WPMDBPro extends WPMDB {
 			return $result;
 		}
 
-		$response = unserialize( trim( $serialized_response ) );
+		$response = WPMDB_Utils::unserialize( $serialized_response, __METHOD__ );
 
 		if ( false === $response ) {
 			$error_msg = __( 'Failed attempting to unserialize the response from the remote server. Please contact support.', 'wp-migrate-db' );
@@ -607,7 +606,7 @@ class WPMDBPro extends WPMDB {
 			add_filter( 'wpmdb_create_table_query', array( $this, 'mysql_compat_filter' ), 10, 5 );
 		}
 
-		$this->find_replace_pairs = unserialize( $filtered_post['find_replace_pairs'] );
+		$this->find_replace_pairs = WPMDB_Utils::unserialize( $filtered_post['find_replace_pairs'], __METHOD__ );
 
 		$this->maximum_chunk_size = $this->state_data['pull_limit'];
 		$this->export_table( $this->state_data['table'], $db_version );
@@ -676,7 +675,7 @@ class WPMDBPro extends WPMDB {
 			return $result;
 		}
 
-		$this->state_data['site_details'] = unserialize( $filtered_post['site_details'] );
+		$this->state_data['site_details'] = WPMDB_Utils::unserialize( $filtered_post['site_details'], __METHOD__ );
 
 		$this->form_data = $this->parse_migration_form_data( $this->state_data['form_data'] );
 
@@ -1021,9 +1020,9 @@ class WPMDBPro extends WPMDB {
 		if ( 'plugins.php' != $hook ) {
 			return;
 		}
-
+		$ver_string  = '-' . str_replace( '.', '', $this->plugin_version );
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		$src = plugins_url( "asset/dist/js/plugin-update$min.js", dirname( __FILE__ ) );
+		$src = plugins_url( "asset/dist/js/plugin-update{$ver_string}{$min}.js", dirname( __FILE__ ) );
 
 		wp_enqueue_script( 'wp-migrate-db-pro-plugin-update-script', $src, array( 'jquery' ), false, true );
 
@@ -1729,29 +1728,6 @@ class WPMDBPro extends WPMDB {
 		return $result;
 	}
 
-	/**
-	 * Handler for ajax request to save a setting, e.g. accept pull/push requests setting.
-	 *
-	 * @return bool|null
-	 */
-	function ajax_save_setting() {
-		$this->check_ajax_referer( 'save-setting' );
-
-		$key_rules = array(
-			'action'  => 'key',
-			'checked' => 'bool',
-			'setting' => 'key',
-			'nonce'   => 'key',
-		);
-		$this->set_post_data( $key_rules );
-
-		$this->settings[ $this->state_data['setting'] ] = ( $this->state_data['checked'] == 'false' ) ? false : true;
-		update_site_option( 'wpmdb_settings', $this->settings );
-		$result = $this->end_ajax();
-
-		return $result;
-	}
-
 	function get_plugin_title() {
 		return __( 'Migrate DB Pro', 'wp-migrate-db' );
 	}
@@ -1790,7 +1766,7 @@ class WPMDBPro extends WPMDB {
 			return $result;
 		}
 
-		$response = unserialize( trim( $serialized_response ) );
+		$response = WPMDB_Utils::unserialize( $serialized_response, __METHOD__ );
 
 		if ( false === $response ) {
 			$error_msg = __( 'Failed attempting to unserialize the response from the remote server. Please contact support.', 'wp-migrate-db' );
@@ -1920,11 +1896,14 @@ class WPMDBPro extends WPMDB {
 	 * @return  void
 	 */
 	function plugin_row( $plugin_path, $plugin_data ) {
-		$plugin_title     = $plugin_data['Name'];
-		$plugin_slug      = sanitize_title( $plugin_title );
-		$licence          = $this->get_licence_key();
-		$licence_response = $this->is_licence_expired();
-		$licence_problem  = isset( $licence_response['errors'] );
+		$plugin_title       = $plugin_data['Name'];
+		$plugin_slug        = sanitize_title( $plugin_title );
+		$licence            = $this->get_licence_key();
+		$licence_response   = $this->is_licence_expired();
+		$licence_problem    = isset( $licence_response['errors'] );
+		$active             = is_plugin_active( $plugin_path ) ? 'active' : '';
+		$shiny_updates      = version_compare( get_bloginfo( 'version' ), '4.6-beta1-37926', '>=' );
+		$update_msg_classes = $shiny_updates ? 'notice inline notice-warning notice-alt post-shiny-updates' : 'pre-shiny-updates';
 
 		if ( ! isset( $GLOBALS['wpmdb_meta'][ $plugin_slug ]['version'] ) ) {
 			$installed_version = '0';
@@ -1958,11 +1937,13 @@ class WPMDBPro extends WPMDB {
 			return;
 		} ?>
 
-		<tr class="plugin-update-tr wpmdbpro-custom">
+		<tr class="plugin-update-tr <?php echo $active; ?> wpmdbpro-custom">
 			<td colspan="3" class="plugin-update">
-				<div class="update-message">
-					<span class="wpmdb-new-version-notice"><?php echo $new_version; ?></span>
-					<span class="wpmdb-licence-error-notice"><?php echo $this->get_licence_status_message( null, 'update' ); ?></span>
+				<div class="update-message <?php echo $update_msg_classes; ?>">
+					<p>
+						<span class="wpmdb-new-version-notice"><?php echo $new_version; ?></span>
+						<span class="wpmdb-licence-error-notice"><?php echo $this->get_licence_status_message( null, 'update' ); ?></span>
+					</p>
 				</div>
 			</td>
 		</tr>

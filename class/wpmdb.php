@@ -35,6 +35,7 @@ class WPMDB extends WPMDB_Base {
 		// internal AJAX handlers
 		add_action( 'wp_ajax_wpmdb_delete_migration_profile', array( $this, 'ajax_delete_migration_profile' ) );
 		add_action( 'wp_ajax_wpmdb_save_profile', array( $this, 'ajax_save_profile' ) );
+		add_action( 'wp_ajax_wpmdb_save_setting', array( $this, 'ajax_save_setting' ) );
 		add_action( 'wp_ajax_wpmdb_initiate_migration', array( $this, 'ajax_initiate_migration' ) );
 		add_action( 'wp_ajax_wpmdb_migrate_table', array( $this, 'ajax_migrate_table' ) );
 		add_action( 'wp_ajax_wpmdb_clear_log', array( $this, 'ajax_clear_log' ) );
@@ -117,6 +118,7 @@ class WPMDB extends WPMDB_Base {
 
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
+			add_action( 'admin_menu', array( $this, 'network_tools_admin_menu' ) );
 			/*
 			 * The URL find & replace is locked down (delete & reorder disabled) on multisite installations as we require the URL
 			 * of the remote site for export migrations. This URL is parsed into its various components and
@@ -153,6 +155,8 @@ class WPMDB extends WPMDB_Base {
 	 * Handler for ajax request to turn on or off Compatibility Mode.
 	 */
 	function ajax_plugin_compatibility() {
+		$this->check_ajax_referer( 'plugin_compatibility' );
+
 		$key_rules = array(
 			'action'  => 'key',
 			'install' => 'numeric',
@@ -168,13 +172,13 @@ class WPMDB extends WPMDB_Base {
 				exit;
 			}
 
-			if ( ! copy( $source, $dest ) ) {
+			if ( ! @copy( $source, $dest ) ) {
 				printf( esc_html__( 'Could not copy the compatibility plugin from %1$s to %2$s', 'wp-migrate-db' ), $source, $dest );
 				exit;
 			}
 		} else { // uninstall MU plugin
 			// TODO: Use WP_Filesystem API.
-			if ( file_exists( $dest ) && ! unlink( $dest ) ) {
+			if ( file_exists( $dest ) && ! @unlink( $dest ) ) {
 				printf( esc_html__( 'Could not remove the compatibility plugin from %s', 'wp-migrate-db' ), $dest );
 				exit;
 			}
@@ -186,6 +190,8 @@ class WPMDB extends WPMDB_Base {
 	 * Handler for updating the plugins that are not to be loaded during a request (Compatibility Mode).
 	 */
 	function ajax_blacklist_plugins() {
+		$this->check_ajax_referer( 'blacklist_plugins' );
+
 		$key_rules = array(
 			'action'            => 'key',
 			'blacklist_plugins' => 'array',
@@ -928,7 +934,7 @@ class WPMDB extends WPMDB_Base {
 				return $result;
 			}
 
-			$return = @unserialize( trim( $response ) );
+			$return = WPMDB_Utils::unserialize( $response, __METHOD__ );
 
 			if ( false === $return ) {
 				$error_msg = __( 'Failed attempting to unserialize the response from the remote server. Please contact support.', 'wp-migrate-db' );
@@ -1055,6 +1061,29 @@ class WPMDB extends WPMDB_Base {
 		return $result;
 	}
 
+	/**
+	 * Handler for ajax request to save a setting, e.g. accept pull/push requests setting.
+	 *
+	 * @return bool|null
+	 */
+	function ajax_save_setting() {
+		$this->check_ajax_referer( 'save-setting' );
+
+		$key_rules = array(
+			'action'  => 'key',
+			'checked' => 'bool',
+			'setting' => 'key',
+			'nonce'   => 'key',
+		);
+		$this->set_post_data( $key_rules );
+
+		$this->settings[ $this->state_data['setting'] ] = ( $this->state_data['checked'] == 'false' ) ? false : true;
+		update_site_option( 'wpmdb_settings', $this->settings );
+		$result = $this->end_ajax();
+
+		return $result;
+	}
+
 	function format_table_sizes( $size ) {
 		$size *= 1024;
 
@@ -1070,7 +1099,7 @@ class WPMDB extends WPMDB_Base {
 		global $wpdb;
 
 		if ( is_multisite() ) {
-			$tables         = $this->get_tables();
+			$tables         = $this->get_tables( 'prefix' );
 			$sql            = "SELECT `post_type` FROM `{$wpdb->base_prefix}posts` ";
 			$prefix_escaped = preg_quote( $wpdb->base_prefix, '/' );
 
@@ -1192,6 +1221,14 @@ class WPMDB extends WPMDB_Base {
 
 	function options_page() {
 		$this->template( 'options' );
+	}
+	
+	/**
+	 * Load Tools HTML template for tools menu on sites in a Network to help users find WPMDB in Multisite
+	 *
+	 */
+	function subsite_tools_options_page() {
+		$this->template( 'options-tools-subsite' );
 	}
 
 	/**
@@ -1513,8 +1550,8 @@ class WPMDB extends WPMDB_Base {
 		$first_select = true;
 		if ( ! empty( $this->state_data['primary_keys'] ) ) {
 			$this->state_data['primary_keys'] = trim( $this->state_data['primary_keys'] );
-			if ( ! empty( $this->state_data['primary_keys'] ) && is_serialized( $this->state_data['primary_keys'] ) ) {
-				$this->primary_keys = unserialize( stripslashes( $this->state_data['primary_keys'] ) );
+			$this->primary_keys = WPMDB_Utils::unserialize( stripslashes( $this->state_data['primary_keys'] ), __METHOD__ );
+			if ( false !== $this->primary_keys && ! empty( $this->state_data['primary_keys'] ) ) {
 				$first_select       = false;
 			}
 		}
@@ -2171,6 +2208,20 @@ class WPMDB extends WPMDB_Base {
 			array( $this, 'options_page' ) );
 		$this->after_admin_menu( $hook_suffix );
 	}
+	
+	/**
+	 * Add a tools menu item to sites on a Multisite network
+	 *
+	 */
+	function network_tools_admin_menu() {
+		add_management_page( 
+			$this->get_plugin_title(),
+			$this->get_plugin_title(),
+			'manage_network_options',
+			$this->core_slug,
+			array( $this, 'subsite_tools_options_page' ) 
+		);
+	}
 
 	function admin_menu() {
 		$title       = ( $this->is_pro ) ? __( 'Migrate DB Pro', 'wp-migrate-db' ) : __( 'Migrate DB', 'wp-migrate-db' );
@@ -2327,23 +2378,24 @@ class WPMDB extends WPMDB_Base {
 
 		$plugins_url = trailingslashit( plugins_url( $this->plugin_folder_name ) );
 		$version     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : $this->plugin_version;
+		$ver_string  = '-' . str_replace( '.', '', $this->plugin_version );
 		$min         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		$src = $plugins_url . 'asset/dist/css/styles.css';
 		wp_enqueue_style( 'wp-migrate-db-pro-styles', $src, array(), $version );
 
-		$src = $plugins_url . "asset/dist/js/common$min.js";
+		$src = $plugins_url . "asset/dist/js/common{$ver_string}{$min}.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-common', $src, null, $version, true );
 
-		$src = $plugins_url . "asset/dist/js/hook$min.js";
+		$src = $plugins_url . "asset/dist/js/hook{$ver_string}{$min}.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-hook', $src, null, $version, true );
 
-		$src = $plugins_url . "asset/dist/js/multisite$min.js";
+		$src = $plugins_url . "asset/dist/js/multisite{$ver_string}{$min}.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-multisite', $src, array( 'jquery' ), $version, true );
 
 		do_action( 'wpmdb_load_assets' );
 
-		$src = $plugins_url . "asset/dist/js/script$min.js";
+		$src = $plugins_url . "asset/dist/js/script{$ver_string}{$min}.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-script', $src, array( 'jquery', 'backbone' ), $version, true );
 
 		wp_localize_script( 'wp-migrate-db-pro-script',
@@ -2391,7 +2443,7 @@ class WPMDB extends WPMDB_Base {
 				'connection_info_missing'               => __( 'The connection information appears to be missing, please enter it to continue.', 'wp-migrate-db' ),
 				'connection_info_incorrect'             => __( "The connection information appears to be incorrect, it should consist of two lines. The first being the remote server's URL and the second being the secret key.", 'wp-migrate-db' ),
 				'connection_info_url_invalid'           => __( 'The URL on the first line appears to be invalid, please check it and try again.', 'wp-migrate-db' ),
-				'connection_info_key_invalid'           => __( 'The secret key on the second line appears to be invalid. It should be a 32 character string that consists of letters, numbers and special characters only.', 'wp-migrate-db' ),
+				'connection_info_key_invalid'           => __( 'The secret key on the second line appears to be invalid. It should be a 40 character string that consists of letters, numbers and special characters only.', 'wp-migrate-db' ),
 				'connection_info_local_url'             => __( "It appears you've entered the URL for this website, you need to provide the URL of the remote website instead.", 'wp-migrate-db' ),
 				'connection_info_local_key'             => __( 'Looks like your remote secret key is the same as the secret key for this site. To fix this, go to the <a href="#settings">Settings tab</a> and click "Reset Secret Key"', 'wp-migrate-db' ),
 				'time_elapsed'                          => __( 'Time Elapsed:', 'wp-migrate-db' ),
@@ -2521,6 +2573,9 @@ class WPMDB extends WPMDB_Base {
 			'reactivate_licence'               => wp_create_nonce( 'reactivate-licence' ),
 			'process_notice_link'              => wp_create_nonce( 'process-notice-link' ),
 			'flush'                            => wp_create_nonce( 'flush' ),
+			'plugin_compatibility'             => wp_create_nonce( 'plugin_compatibility' ),
+			'blacklist_plugins'                => wp_create_nonce( 'blacklist_plugins' ),
+			'cancel_migration'                 => wp_create_nonce( 'cancel_migration' )
 		) );
 
 		$data = apply_filters( 'wpmdb_data', array(
@@ -2540,6 +2595,7 @@ class WPMDB extends WPMDB_Base {
 			'this_website_name'      => sanitize_title_with_dashes( DB_NAME ),
 			'this_download_url'      => network_admin_url( $this->plugin_base . '&download=' ),
 			'this_prefix'            => $site_details['prefix'], // TODO: Remove backwards compatibility.
+			'this_temp_prefix'       => $this->temp_prefix,
 			'this_plugin_base'       => esc_html( $this->plugin_base ),
 			'is_multisite'           => $site_details['is_multisite'], // TODO: Remove backwards compatibility.
 			'openssl_available'      => esc_html( $this->open_ssl_enabled() ? 'true' : 'false' ),
@@ -2623,6 +2679,8 @@ class WPMDB extends WPMDB_Base {
 	 * Called to cancel an in-progress migration.
 	 */
 	function ajax_cancel_migration() {
+		$this->check_ajax_referer( 'cancel_migration' );
+
 		$key_rules = array(
 			'action'             => 'key',
 			'migration_state_id' => 'key',

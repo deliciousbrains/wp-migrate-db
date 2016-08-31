@@ -27,10 +27,14 @@ function wpmdb_toggle_migration_action_text() {
 /**
  * Return the currently selected migration type selected.
  *
- * @return string Will return `push`, `pull`, or `savefile` for exporting as a file.
+ * @return string Will return `push`, `pull`, `savefile`, or `` for exporting as a file.
  */
 function wpmdb_migration_type() {
-	return jQuery( 'input[name=action]:checked' ).val();
+	var action = jQuery( 'input[name=action]:checked' );
+	if ( 0 === action.length ) {
+		return '';
+	}
+	return action.val();
 }
 
 function wpmdb_call_next_hook() {

@@ -42,11 +42,32 @@ final class WPMDB_Replace {
 	 */
 	function is_subdomain_replaces_on() {
 		if ( ! isset( $this->subdomain_replaces_on ) ) {
-			$this->subdomain_replaces_on = ( is_multisite() && is_subdomain_install() && apply_filters( 'wpmdb_subdomain_replace', true ) );
+			$this->subdomain_replaces_on = ( is_multisite() && is_subdomain_install() && ! $this->has_same_base_domain() && apply_filters( 'wpmdb_subdomain_replace', true ) );
 		}
 
 		return $this->subdomain_replaces_on;
 	}
+
+
+	/**
+	 * Determine if the replacement has the same base domain as the search. Produces doubled replacement strings
+	 * otherwise.
+	 *
+	 * @return bool
+	 */
+	function has_same_base_domain() {
+
+		if ( ! isset( $this->replace[1] ) ) {
+			return false;
+		}
+
+		if ( stripos( $this->replace[1], $this->site_domain ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Automatically replace URLs for subdomain based multisite installations
@@ -114,7 +135,7 @@ final class WPMDB_Replace {
 
 		// some unserialized data cannot be re-serialized eg. SimpleXMLElements
 		try {
-			if ( is_string( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
+			if ( is_string( $data ) && ( $unserialized = WPMDB_Utils::unserialize( $data, __METHOD__ ) ) !== false ) {
 				// PHP currently has a bug that doesn't allow you to clone the DateInterval / DatePeriod classes.
 				// We skip them here as they probably won't need data to be replaced anyway
 				if ( is_object( $unserialized ) ) {

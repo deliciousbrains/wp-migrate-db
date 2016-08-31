@@ -157,16 +157,16 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4.4',
+				'required_version' => '1.4.5',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2.4',
+				'required_version' => '1.2.5',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.1.2',
-			)
+				'required_version' => '1.1.3',
+			),
 		);
 
 		$this->invalid_content_verification_error = __( 'Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db' );
@@ -388,13 +388,13 @@ class WPMDB_Base {
 
 			return false;
 		} elseif ( 200 > (int) $response['response']['code'] || 399 < (int) $response['response']['code'] ) {
-			if ( 0 === strpos( $url, 'https://' ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
-				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
-			} elseif ( '401' == $response['response']['code'] ) {
+			if ( 401 === (int) $response['response']['code'] ) {
 				$this->error = __( 'The remote site is protected with Basic Authentication. Please enter the username and password above to continue. (401 Unauthorized)', 'wp-migrate-db' );
 				$this->log_error( $this->error, $response );
 
 				return false;
+			} elseif ( 0 === strpos( $url, 'https://' ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			} else {
 				$this->error = sprintf( __( 'Unable to connect to the remote server, please check the connection details - %1$s %2$s (#129 - scope: %3$s)', 'wp-migrate-db' ), $response['response']['code'], $response['response']['message'], $scope );
 				$this->log_error( $this->error, $response );
@@ -422,14 +422,14 @@ class WPMDB_Base {
 			$this->log_error( $this->error, $response );
 
 			return false;
-		} elseif ( $expecting_serial && true == is_serialized( $response['body'] ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
-			$unserialized_response = unserialize( $response['body'] );
-			if ( isset( $unserialized_response['error'] ) && '1' == $unserialized_response['error'] && 0 === strpos( $url, 'https://' ) ) {
+		} elseif ( $expecting_serial && 'ajax_verify_connection_to_remote_site' == $scope ) {
+			$unserialized_response = WPMDB_Utils::unserialize( $response['body'], __METHOD__ );
+			if ( false !== $unserialized_response && isset( $unserialized_response['error'] ) && '1' == $unserialized_response['error'] && 0 === strpos( $url, 'https://' ) ) {
 				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			}
 		}
 
-		return $response['body'];
+		return trim( $response['body'] );
 	}
 
 	function retry_remote_post( $url, $data, $scope, $args = array(), $expecting_serial = false ) {
