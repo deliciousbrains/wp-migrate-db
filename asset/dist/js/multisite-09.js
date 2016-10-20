@@ -16,7 +16,7 @@ wpmdb.multisite = {};
 
 				var selected = ' ';
 				if ( ( undefined === selected_subsite_ids || null === selected_subsite_ids || 0 === selected_subsite_ids.length ) ||
-					( undefined !== selected_subsite_ids && null !== selected_subsite_ids && 0 < selected_subsite_ids.length && -1 !== $.inArray( blog_id, selected_subsite_ids ) )
+				     ( undefined !== selected_subsite_ids && null !== selected_subsite_ids && 0 < selected_subsite_ids.length && -1 !== $.inArray( blog_id, selected_subsite_ids ) )
 				) {
 					selected = ' selected="selected" ';
 					site_selected = true;
@@ -31,5 +31,4 @@ wpmdb.multisite = {};
 			}
 		}
 	};
-
 })( jQuery, wpmdb );

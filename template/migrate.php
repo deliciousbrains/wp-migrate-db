@@ -66,8 +66,7 @@ $breadcrumbs_params = array(
 
 		<ul class="option-group migrate-selection">
 			<li>
-				<?php $savefile_style = ( true == $this->is_pro ) ? '' : ' style="display: none;"'; ?>
-				<label for="savefile"<?php echo $savefile_style; ?>>
+				<label for="savefile">
 					<input id="savefile" type="radio" value="savefile" name="action"<?php echo ( $loaded_profile['action'] == 'savefile' || ! $this->is_pro ) ? ' checked="checked"' : ''; ?> />
 					<?php _e( 'Export File', 'wp-migrate-db' ); ?>
 				</label>
@@ -89,6 +88,12 @@ $breadcrumbs_params = array(
 				</ul>
 			</li>
 			<?php $this->template_part( array( 'pull_push_radio_buttons' ), $loaded_profile ); ?>
+			<li>
+				<label for="find_replace">
+					<input id="find_replace" type="radio" value="find_replace" name="action"<?php echo ( 'find_replace' === $loaded_profile['action'] ) ? ' checked="checked"' : ''; ?> />
+					<?php _e( 'Find & Replace', 'wp-migrate-db' ); ?><span class="option-description"><?php _e( 'Run a find & replace on this site\'s db', 'wp-migrate-db' ); ?></span>
+				</label>
+			</li>
 		</ul>
 
 		<div class="connection-info-wrapper clearfix">
@@ -144,6 +149,9 @@ $breadcrumbs_params = array(
 					</td>
 					<td class="replace-right-col">
 						<input type="text" size="40" name="replace_new[]" class="code" placeholder="New value" autocomplete="off" />
+
+					</td>
+					<td class="row-action-buttons">
 						<span class="replace-remove-row" data-profile-id="0"></span>
 					</td>
 				</tr>
@@ -160,9 +168,14 @@ $breadcrumbs_params = array(
 						</td>
 						<td class="replace-right-col">
 							<input type="text" size="40" name="replace_new[]" class="code" id="new-url" placeholder="New URL" autocomplete="off" />
-							<?php if ( ! $this->lock_url_find_replace_row ) : ?>
-							<span class="replace-remove-row" data-profile-id="0"></span>
-							<?php endif; ?>
+						</td>
+						<td class="row-action-buttons">
+							<?php $style = $this->lock_url_find_replace_row ? 'display: none;' : ''; ?>
+							<span class="replace-remove-row" data-profile-id="0" style="<?php echo $style; ?>"></span>
+							<a href="#" class="general-helper domain-replace-helper js-action-link"></a>
+							<div class="domain-replace-info helper-message bottom">
+								<?php printf( __( 'This find & replace will find the domain name of your remote site and replace it with the domain name of this site. We\'ve left out the protocol so that both http:// and https:// will be found and replaced. <a href="%s" target="_blank">Find & Replace Documentation</a>', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/find-and-replace/' ); ?>
+							</div>
 						</td>
 					</tr>
 					<tr class="replace-row">
@@ -177,7 +190,13 @@ $breadcrumbs_params = array(
 						</td>
 						<td class="replace-right-col">
 							<input type="text" size="40" name="replace_new[]" class="code" id="new-path" placeholder="New file path" autocomplete="off" />
+						</td>
+						<td class="row-action-buttons">
 							<span class="replace-remove-row" data-profile-id="0"></span>
+							<a href="#" class="general-helper path-replace-helper js-action-link"></a>
+							<div class="path-replace-info helper-message bottom">
+								<?php printf( __( 'This find and replace is mostly for 3rd party plugins that store the website’s root file path in the database. This set of fields will ensure that these values are updated to the correct root file path during the migration. <a href="%s" target="_blank">Find & Replace Documentation</a>', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/find-and-replace/' ); ?>
+							</div>
 						</td>
 					</tr>
 				<?php else :
@@ -198,8 +217,10 @@ $breadcrumbs_params = array(
 							</td>
 							<td class="replace-right-col">
 								<input type="text" size="40" name="replace_new[]" class="code" placeholder="New value" value="<?php echo esc_attr( $replace_new ); ?>" autocomplete="off" />
+							</td>
+							<td class="row-action-buttons">
 								<?php if ( ! $this->lock_url_find_replace_row || ( $this->lock_url_find_replace_row && $i != 1 ) ) : ?>
-								<span class="replace-remove-row" data-profile-id="0"></span>
+									<span class="replace-remove-row" data-profile-id="0"></span>
 								<?php endif; ?>
 							</td>
 						</tr>

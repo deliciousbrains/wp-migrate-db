@@ -157,16 +157,16 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4.4',
+				'required_version' => '1.4.5',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2.4',
+				'required_version' => '1.2.5',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.1.2',
-			)
+				'required_version' => '1.1.3',
+			),
 		);
 
 		$this->invalid_content_verification_error = __( 'Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db' );
@@ -380,6 +380,10 @@ class WPMDB_Base {
 					if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) || ( defined( 'WP_ACCESSIBLE_HOSTS' ) && ! in_array( $host, explode( ',', WP_ACCESSIBLE_HOSTS ) ) ) ) {
 						$this->error = sprintf( __( 'We\'ve detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled and the host <strong>%1$s</strong> has not been added to <code>WP_ACCESSIBLE_HOSTS</code>. Please disable <code>WP_HTTP_BLOCK_EXTERNAL</code> or add <strong>%1$s</strong> to <code>WP_ACCESSIBLE_HOSTS</code> to continue. <a href="%2$s" target="_blank">More information</a>. (#147 - scope: %3$s)', 'wp-migrate-db' ), esc_attr( $host ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/wp_http_block_external/', $scope );
 					}
+				} elseif ( isset( $response->errors['http_request_failed'][0] ) && strstr( $response->errors['http_request_failed'][0], 'port 443: Connection refused' ) ) {
+					$this->error = sprintf( __( 'Couldn\'t connect over HTTPS. You might want to try regular HTTP instead. (#121 - scope: %s)', 'wp-migrate-db' ), $scope );
+				} elseif ( isset( $response->errors['http_request_failed'][0] ) && strstr( $response->errors['http_request_failed'][0], 'SSL' ) ) { // OpenSSL/cURL/MAMP Error
+					$this->error = sprintf( __( '<strong>SSL Connection error:</strong>  (#121 - scope: %s) This typically means that the version of SSL that your local site is using to connect to the remote is incompatible or, more likely, being rejected by the remote server because it\'s insecure. <a href="%s" target="_blank">See our documentation</a> for possible solutions.', 'wp-migrate-db' ), $scope, 'https://deliciousbrains.com/wp-migrate-db-pro/doc/ssl-errors/' );
 				} else {
 					$this->error = sprintf( __( 'The connection failed, an unexpected error occurred, please contact support. (#121 - scope: %s)', 'wp-migrate-db' ), $scope );
 				}
@@ -388,13 +392,13 @@ class WPMDB_Base {
 
 			return false;
 		} elseif ( 200 > (int) $response['response']['code'] || 399 < (int) $response['response']['code'] ) {
-			if ( 0 === strpos( $url, 'https://' ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
-				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
-			} elseif ( '401' == $response['response']['code'] ) {
+			if ( 401 === (int) $response['response']['code'] ) {
 				$this->error = __( 'The remote site is protected with Basic Authentication. Please enter the username and password above to continue. (401 Unauthorized)', 'wp-migrate-db' );
 				$this->log_error( $this->error, $response );
 
 				return false;
+			} elseif ( 0 === strpos( $url, 'https://' ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
+				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 			} else {
 				$this->error = sprintf( __( 'Unable to connect to the remote server, please check the connection details - %1$s %2$s (#129 - scope: %3$s)', 'wp-migrate-db' ), $response['response']['code'], $response['response']['message'], $scope );
 				$this->log_error( $this->error, $response );
@@ -422,14 +426,16 @@ class WPMDB_Base {
 			$this->log_error( $this->error, $response );
 
 			return false;
-		} elseif ( $expecting_serial && true == is_serialized( $response['body'] ) && 'ajax_verify_connection_to_remote_site' == $scope ) {
-			$unserialized_response = unserialize( $response['body'] );
-			if ( isset( $unserialized_response['error'] ) && '1' == $unserialized_response['error'] && 0 === strpos( $url, 'https://' ) ) {
-				return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
+		} elseif ( $expecting_serial && 'ajax_verify_connection_to_remote_site' == $scope ) {
+			$unserialized_response = WPMDB_Utils::unserialize( $response['body'], __METHOD__ );
+			if ( false !== $unserialized_response && isset( $unserialized_response['error'] ) && '1' == $unserialized_response['error'] && 0 === strpos( $url, 'https://' ) ) {
+				if ( 0 === strpos( $unserialized_response, '(#122)' ) ) {
+					return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
+				}
 			}
 		}
 
-		return $response['body'];
+		return trim( $response['body'] );
 	}
 
 	function retry_remote_post( $url, $data, $scope, $args = array(), $expecting_serial = false ) {
@@ -500,6 +506,29 @@ class WPMDB_Base {
 		}
 
 		$this->load_error_log();
+
+		// Error log length in bytes (default 1Mb)
+		$max_log_length = apply_filters( 'wpmdb_max_error_log_length', 1000000 );
+		$max_individual_log_length = apply_filters( 'wpmdb_max_individual_error_log_length', $max_log_length / 2.2 );
+
+		// If error is longer than max individual log length, trim and add notice of doing so
+		if ( strlen( $error ) > $max_individual_log_length ) {
+			$length_trimmed = strlen( $error ) - $max_individual_log_length;
+			$error = substr( $error, 0, $max_individual_log_length );
+			$error .= "\n[$length_trimmed bytes were truncated from this error]\n\n";
+		}
+
+		// Trim existing log to accommodate new error if needed
+		$existing_log_max_length = $max_log_length - strlen( $error );
+		if ( strlen( $this->error_log ) > $existing_log_max_length ) {
+			$this->error_log = substr( $this->error_log, -( $existing_log_max_length ) );
+
+			// Crop at first log header
+			$first_header_pos = strpos( $this->error_log, substr( $error_header, 0, strpos( $error_header, ' ' ) ) );
+			if ( $first_header_pos ) {
+				$this->error_log = substr( $this->error_log, $first_header_pos );
+			}
+		}
 
 		if ( isset( $this->error_log ) ) {
 			$this->error_log .= $error;
@@ -1213,6 +1242,7 @@ class WPMDB_Base {
 			} elseif ( 'all' === $context ) {
 				$message = $contextual_messages;
 			}
+
 		} elseif ( isset( $errors['no_activations_left'] ) ) {
 			$message = sprintf( __( '<strong>No Activations Left</strong> &mdash; Please visit <a href="%s" target="_blank">My Account</a> to upgrade your license or deactivate a previous activation and enable push and pull.', 'wp-migrate-db' ), 'https://deliciousbrains.com/my-account/' );
 			$message .= sprintf( ' <a href="%s" class="check-my-licence-again">%s</a>', $check_licence_again_url, __( 'Check my license again', 'wp-migrate-db' ) );
@@ -1744,10 +1774,16 @@ class WPMDB_Base {
 			return $subsites;
 		}
 
-		$sites = wp_get_sites( array( 'limit' => 0 ) );
+
+		if ( version_compare( $GLOBALS['wp_version'], '4.6', '>=' ) ) {
+			$sites = get_sites( array( 'limit' => 0 ) );
+		} else {
+			$sites = wp_get_sites( array( 'limit' => 0 ) );
+		}
 
 		if ( ! empty( $sites ) ) {
-			foreach ( $sites as $subsite ) {
+			foreach ( (array) $sites as $subsite ) {
+				$subsite                         = (array) $subsite;
 				$subsites[ $subsite['blog_id'] ] = $this->simple_site_url( get_blogaddress_by_id( $subsite['blog_id'] ) );
 			}
 		}
@@ -1797,13 +1833,18 @@ class WPMDB_Base {
 			return $subsites;
 		}
 
-		$sites = wp_get_sites( array( 'limit' => 0 ) );
+		if ( version_compare( $GLOBALS['wp_version'], '4.6', '>=' ) ) {
+			$sites = get_sites( array( 'limit' => 0 ) );
+		} else {
+			$sites = wp_get_sites( array( 'limit' => 0 ) );
+		}
 
 		if ( ! empty( $sites ) ) {
 			// We to fix up the urls in uploads as they all use primary site's base!
 			$primary_url = site_url();
 
 			foreach ( $sites as $subsite ) {
+				$subsite                                     = (array) $subsite;
 				$subsites[ $subsite['blog_id'] ]['site_url'] = get_site_url( $subsite['blog_id'] );
 				$subsites[ $subsite['blog_id'] ]['uploads']  = $this->uploads_info( $subsite['blog_id'] );
 

@@ -1,10 +1,10 @@
 === WP Migrate DB ===
-Contributors: bradt
+Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: migrate, migration, export, data dump, backup, database, mysql
 Requires at least: 3.6
-Tested up to: 4.5
-Stable tag: 0.8
+Tested up to: 4.6.1
+Stable tag: 0.9
 License: GPLv2
 
 Migrates your database by running find & replace on URLs and file paths, handling serialized data, and saving an SQL file.
@@ -86,6 +86,20 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 0.9 - 2016-10-20 =
+
+* New: In-place Find &amp; Replace functionality added - a find and replace can now be run on a site's own database
+* New: CLI [find-replace](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-find-replace-subcommand/) subcommand added
+* Improvement: Removed `font-family` declarations from stylesheets
+* Improvement: Truncate WP Migrate DB Pro diagnostic log to always be < 1MB, to help with memory exhaustion errors
+* Improvement: Added help tooltips for the default find and replace fields
+* Improvement: Added multisite specific constants to the diagnostic log
+* Improvement: "Clear Error Log" button only removes error messages and updates any changed diagnostic values
+* Improvement: Total stage progress now remains visible when scrolling migration item progress
+* Improvement: Show/Hide Tables setting does not persist between sessions.
+* Improvement: Progress bar animations now reflect paused migration state
+* Improvement: JS files now include a version number to better avoid cache issues
 
 = WP Migrate DB 0.8 - 2016-04-12 =
 

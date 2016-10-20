@@ -27,10 +27,14 @@ function wpmdb_toggle_migration_action_text() {
 /**
  * Return the currently selected migration type selected.
  *
- * @return string Will return `push`, `pull`, or `savefile` for exporting as a file.
+ * @return string Will return `push`, `pull`, `savefile`, or `` for exporting as a file.
  */
 function wpmdb_migration_type() {
-	return jQuery( 'input[name=action]:checked' ).val();
+	var action = jQuery( 'input[name=action]:checked' );
+	if ( 0 === action.length ) {
+		return '';
+	}
+	return action.val();
 }
 
 function wpmdb_call_next_hook() {
@@ -157,26 +161,35 @@ wpmdb.subsite_for_table = function( table_prefix, table_name ) {
 	}
 };
 
-wpmdb.functions.convertKBSizeToHR = function( size, dec, kbSize ) {
+wpmdb.functions.convertKBSizeToHR = function( size, dec, kbSize, retArray ) {
+	var retVal, units;
 	kbSize = kbSize || 1000;
 	dec = dec || 2;
 	size = parseInt( size );
 
 	if ( kbSize > Math.abs( size ) ) {
-		return size.toFixed( 0 ) + ' KB';
+		retVal = [ size.toFixed( 0 ), 'KB' ];
+	} else {
+		units = [ 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ];
+		var u = -1;
+		do {
+			size /= kbSize;
+			++u;
+		} while ( Math.abs( size ) >= kbSize && u < units.length - 1 );
+		retVal = [ Math.round( size * Math.pow( 10, dec ) ) / Math.pow( 10, dec ), units[ u ] ];
 	}
-	var units = [ 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' ];
-	var u = -1;
-	do {
-		size /= kbSize;
-		++u;
-	} while ( Math.abs( size ) >= kbSize && u < units.length - 1 );
 
-	return Math.round( size * Math.pow( 10, dec ) ) / Math.pow( 10, dec ) + ' ' + units[ u ];
+	if ( ! retArray ) {
+		retVal = retVal[0] + ' ' + retVal[1];
+	}
+	return retVal;
 };
 
-(function( $ ) {
-
-	// jQuery code here
-
-})( jQuery );
+wpmdb.functions.convertKBSizeToHRFixed = function( size, dec, kbSize ) {
+	dec = dec || 2;
+	var hrSizeArray = wpmdb.functions.convertKBSizeToHR( size, dec, kbSize, true );
+	if ( 'KB' !== hrSizeArray[1] ) {
+		return hrSizeArray[ 0 ].toFixed( 2 ) + ' ' + hrSizeArray[ 1 ];
+	}
+	return hrSizeArray[ 0 ] + ' ' + hrSizeArray[ 1 ];
+};
