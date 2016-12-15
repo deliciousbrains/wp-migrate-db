@@ -110,14 +110,15 @@ final class WPMDB_Replace {
 		 *
 		 * @param array
 		 */
-		$wpmdb_site_urls = apply_filters( 'wpmdb_replace_site_urls', array(
-				'local'  => $this->site_details['local']['site_url'],
-				'remote' => $this->site_details['remote']['site_url'],
+		$wpmdb_home_urls = apply_filters( 'wpmdb_replace_site_urls', array(
+				// TODO: rewrite unit tests that only pass site_url so that we can rely on home_url's existence
+				'local'  => isset( $this->site_details['local']['home_url'] ) ? $this->site_details['local']['home_url'] : $this->site_details['local']['site_url'],
+				'remote' => isset( $this->site_details['remote']['home_url'] ) ? $this->site_details['remote']['home_url'] : $this->site_details['remote']['site_url'],
 			)
 		);
 
-		$local_url_is_https  = false === stripos( $wpmdb_site_urls['local'], 'https' ) ? false : true;
-		$remote_url_is_https = false === stripos( $wpmdb_site_urls['remote'], 'https' ) ? false : true;
+		$local_url_is_https  = false === stripos( $wpmdb_home_urls['local'], 'https' ) ? false : true;
+		$remote_url_is_https = false === stripos( $wpmdb_home_urls['remote'], 'https' ) ? false : true;
 		$local_protocol      = $local_url_is_https ? 'https' : 'http';
 		$remote_protocol     = $remote_url_is_https ? 'https' : 'http';
 
@@ -128,11 +129,11 @@ final class WPMDB_Replace {
 		if ( 'push' === $this->intent ) {
 			$this->destination_protocol = $remote_protocol;
 			$this->source_protocol      = $local_protocol;
-			$this->destination_url      = $wpmdb_site_urls['remote'];
+			$this->destination_url      = $wpmdb_home_urls['remote'];
 		} else {
 			$this->destination_protocol = $local_protocol;
 			$this->source_protocol      = $remote_protocol;
-			$this->destination_url      = $wpmdb_site_urls['local'];
+			$this->destination_url      = $wpmdb_home_urls['local'];
 		}
 
 		return $this->is_protocol_mismatch;

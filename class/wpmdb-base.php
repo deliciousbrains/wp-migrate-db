@@ -157,15 +157,15 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4.5',
+				'required_version' => '1.4.7',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.2.5',
+				'required_version' => '1.3',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.1.3',
+				'required_version' => '1.1.5',
 			),
 		);
 
@@ -429,7 +429,7 @@ class WPMDB_Base {
 		} elseif ( $expecting_serial && 'ajax_verify_connection_to_remote_site' == $scope ) {
 			$unserialized_response = WPMDB_Utils::unserialize( $response['body'], __METHOD__ );
 			if ( false !== $unserialized_response && isset( $unserialized_response['error'] ) && '1' == $unserialized_response['error'] && 0 === strpos( $url, 'https://' ) ) {
-				if ( 0 === strpos( $unserialized_response, '(#122)' ) ) {
+				if ( false === strpos( $unserialized_response['message'], '(#122)' ) ) {
 					return $this->retry_remote_post( $url, $data, $scope, $args, $expecting_serial );
 				}
 			}
@@ -825,7 +825,7 @@ class WPMDB_Base {
 
 		$download_url = $this->get_plugin_update_download_url( $this->plugin_slug );
 
-		if ( 0 === strpos( $url, $download_url ) || 402 != $response['response']['code'] ) {
+		if ( false === strpos( $url, $download_url ) || 402 != $response['response']['code'] ) {
 			return $response;
 		}
 
@@ -1776,7 +1776,7 @@ class WPMDB_Base {
 
 
 		if ( version_compare( $GLOBALS['wp_version'], '4.6', '>=' ) ) {
-			$sites = get_sites( array( 'limit' => 0 ) );
+			$sites = get_sites( array( 'number' => false ) );
 		} else {
 			$sites = wp_get_sites( array( 'limit' => 0 ) );
 		}
@@ -1834,7 +1834,7 @@ class WPMDB_Base {
 		}
 
 		if ( version_compare( $GLOBALS['wp_version'], '4.6', '>=' ) ) {
-			$sites = get_sites( array( 'limit' => 0 ) );
+			$sites = get_sites( array( 'number' => false ) );
 		} else {
 			$sites = wp_get_sites( array( 'limit' => 0 ) );
 		}
@@ -1846,6 +1846,7 @@ class WPMDB_Base {
 			foreach ( $sites as $subsite ) {
 				$subsite                                     = (array) $subsite;
 				$subsites[ $subsite['blog_id'] ]['site_url'] = get_site_url( $subsite['blog_id'] );
+				$subsites[ $subsite['blog_id'] ]['home_url'] = get_home_url( $subsite['blog_id'] );
 				$subsites[ $subsite['blog_id'] ]['uploads']  = $this->uploads_info( $subsite['blog_id'] );
 
 				$subsites[ $subsite['blog_id'] ]['uploads']['url']     = substr_replace( $subsites[ $subsite['blog_id'] ]['uploads']['url'], $subsites[ $subsite['blog_id'] ]['site_url'], 0, strlen( $primary_url ) );
@@ -1973,6 +1974,7 @@ class WPMDB_Base {
 		$site_details = array(
 			'is_multisite'    => esc_html( is_multisite() ? 'true' : 'false' ),
 			'site_url'        => esc_html( addslashes( site_url() ) ),
+			'home_url'        => esc_html( addslashes( home_url() ) ),
 			'prefix'          => esc_html( $table_prefix ),
 			'uploads_baseurl' => esc_html( addslashes( trailingslashit( $uploads['baseurl'] ) ) ),
 			'uploads'         => $this->uploads_info(),

@@ -428,6 +428,7 @@ var MigrationProgressStage = Backbone.Model.extend( {
 		dataType: 'local',
 		name: '',
 		itemsComplete: 0,
+		itemsCompleteArr: [],
 		strings: null
 	},
 	initialize: function() {
@@ -436,6 +437,7 @@ var MigrationProgressStage = Backbone.Model.extend( {
 		this.set( '_initialItems', this.get( 'items' ).slice() );
 		this.set( 'items', [] );
 		this.set( 'lookupItems', {} );
+		this.set( 'itemsCompleteArr', [] );
 
 		_.each( this.get( '_initialItems' ), function( item ) {
 			this.addItem( item.name, item.size, item.rows );
@@ -514,6 +516,14 @@ var MigrationProgressStage = Backbone.Model.extend( {
 		wpmdb.current_migration.model.trigger( 'change:activeStage' );
 	},
 	setItemComplete: function( itemName ) {
+
+		// Guard: return if item has already been set complete
+		var itemsCompleteArr  = this.get( 'itemsCompleteArr' );
+		if ( ~itemsCompleteArr.indexOf( itemName ) ) {
+			return;
+		}
+		itemsCompleteArr.push( itemName );
+
 		var item = this.getItemByName( itemName );
 		var totalTransferred = this.get( 'totalTransferred' );
 		var itemsComplete = this.get( 'itemsComplete' );
@@ -2846,13 +2856,13 @@ module.exports = MigrationProgressStageView;
 				$( '.connection-status' ).hide();
 				$( '.step-two' ).show();
 				$( '.table-prefix' ).html( wpmdb_data.this_prefix );
-				$( '.compatibility-older-mysql' ).show();
 				if ( false === profile_name_edited ) {
 					$( '.create-new-profile' ).val( '' );
 				}
 
-				if ( 'find_replace' !== wpmdb_migration_type() ) {
+				if ( 'savefile' === wpmdb_migration_type() ) {
 					$( '.backup-options' ).hide();
+					$( '.compatibility-older-mysql' ).show();
 				}
 
 				$( '.keep-active-plugins' ).hide();
