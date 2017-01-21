@@ -3078,7 +3078,7 @@ class WPMDB extends WPMDB_Base {
 		// add our custom CSS classes to <body>
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 
-		$plugins_url = trailingslashit( plugins_url( $this->plugin_folder_name ) );
+		$plugins_url = trailingslashit( plugins_url( $this->plugin_folder_name, $this->plugin_dir_path ) );
 		$version     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : $this->plugin_version;
 		$ver_string  = '-' . str_replace( '.', '', $this->plugin_version );
 		$min         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -3305,7 +3305,7 @@ class WPMDB extends WPMDB_Base {
 			'this_upload_url'        => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'url' ) ) ) ),
 			'this_upload_dir_long'   => esc_html( addslashes( trailingslashit( $this->get_upload_info( 'path' ) ) ) ),
 			'this_uploads_dir'       => $site_details['uploads_dir'], // TODO: Remove backwards compatibility.
-			'this_plugin_url'        => trailingslashit( plugins_url( $this->plugin_folder_name ) ),
+			'this_plugin_url'        => trailingslashit( plugins_url( $this->plugin_folder_name, $this->plugin_dir_path ) ),
 			'this_website_name'      => sanitize_title_with_dashes( DB_NAME ),
 			'this_download_url'      => network_admin_url( $this->plugin_base . '&download=' ),
 			'this_prefix'            => $site_details['prefix'], // TODO: Remove backwards compatibility.
