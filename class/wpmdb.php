@@ -3078,7 +3078,7 @@ class WPMDB extends WPMDB_Base {
 		// add our custom CSS classes to <body>
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 
-		$plugins_url = trailingslashit( plugins_url( $this->plugin_folder_name ) );
+		$plugins_url = trailingslashit( plugins_url( '/', $this->plugin_file_path ) );
 		$version     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : $this->plugin_version;
 		$ver_string  = '-' . str_replace( '.', '', $this->plugin_version );
 		$min         = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
