@@ -3,7 +3,7 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: migrate, migration, export, data dump, backup, database, mysql
 Requires at least: 3.6
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: 0.9.2
 License: GPLv2
 
@@ -39,6 +39,8 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 See the video below or [visit the web site](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=desc&utm_campaign=freeplugin) to learn more about the pro version.
 
 https://www.youtube.com/watch?v=fHFcH4bCzmU
+
+*Think Pro might be a good fit for you? We’re increasing the price for Pro on June 22. You can get it at the soon-to-be-old price before then by [visiting our site](https://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2B2017%2BIncrease&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting). Not sure if it’s the right fit? Send us an email at [nom@deliciousbrains.com](mailto://nom@deliciousbrains.com) and we’d be happy to help you decide.*
 
 == Installation ==
 
