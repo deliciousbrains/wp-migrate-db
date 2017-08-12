@@ -193,3 +193,31 @@ wpmdb.functions.convertKBSizeToHRFixed = function( size, dec, kbSize ) {
 	}
 	return hrSizeArray[ 0 ] + ' ' + hrSizeArray[ 1 ];
 };
+
+wpmdb.functions.ajax_handle_dismissible_notice = function( nonce, callback, ele ) {
+	jQuery.ajax( {
+		url: ajaxurl,
+		type: 'POST',
+		dataType: 'text',
+		cache: false,
+		data: {
+			action: 'wpmdb_process_notice_link',
+			nonce: nonce,
+			notice: jQuery( ele ).data( 'notice' ),
+			type: jQuery( ele ).data( 'type' ),
+			reminder: jQuery( ele ).data( 'reminder' )
+		},
+		beforeSend: callback( ele )
+	} );
+};
+
+wpmdb.functions.get_spinner_url = function() {
+	var admin_url = ajaxurl.replace( '/admin-ajax.php', '' ), spinner_url = admin_url + '/images/spinner';
+
+	if ( 2 < window.devicePixelRatio ) {
+		spinner_url += '-2x';
+	}
+	spinner_url += '.gif';
+
+	return spinner_url;
+};

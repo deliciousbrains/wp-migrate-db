@@ -1,6 +1,7 @@
 <?php
 
 final class WPMDB_Replace {
+
 	protected $search;
 	protected $replace;
 	protected $subdomain_replaces_on;
@@ -19,7 +20,16 @@ final class WPMDB_Replace {
 	private $row;
 
 	function __construct( $args ) {
-		$keys = array( 'table', 'search', 'replace', 'intent', 'base_domain', 'site_domain', 'wpmdb', 'site_details' );
+		$keys = array(
+			'table',
+			'search',
+			'replace',
+			'intent',
+			'base_domain',
+			'site_domain',
+			'wpmdb',
+			'site_details',
+		);
 
 		if ( ! is_array( $args ) ) {
 			throw new InvalidArgumentException( 'WPMDB_Replace constructor expects the argument to be an array' );
@@ -65,7 +75,12 @@ final class WPMDB_Replace {
 	 * @return bool
 	 */
 	function has_same_base_domain() {
-		$destination_url = isset( $this->destination_url ) ? $this->destination_url : $this->site_details['local']['site_url'];
+		if( 'push' !== $this->intent || 'pull' !== $this->intent ) {
+			$destination_url = $this->base_domain;
+		} else {
+			$destination_url = isset( $this->destination_url ) ? $this->destination_url : $this->site_details['local']['site_url'];
+		}
+
 		if ( stripos( $destination_url, $this->site_domain ) ) {
 			return true;
 		}
@@ -101,8 +116,24 @@ final class WPMDB_Replace {
 	 * @return bool
 	 */
 	function detect_protocol_mismatch() {
-		if ( ! isset( $this->site_details['remote'] ) ) {
+		if ( ! isset( $this->site_details['remote'] ) && 'import' !== $this->intent ) {
 			return false;
+		}
+
+		$wpmdb_home_urls = array(
+			// TODO: rewrite unit tests that only pass site_url so that we can rely on home_url's existence
+			'local'  => isset( $this->site_details['local']['home_url'] ) ? $this->site_details['local']['home_url'] : $this->site_details['local']['site_url'],
+		);
+
+		if ( 'import' !== $this->intent ) {
+			$wpmdb_home_urls['remote'] = isset( $this->site_details['remote']['home_url'] ) ? $this->site_details['remote']['home_url'] : $this->site_details['remote']['site_url'];
+		} else {
+			$this->state_data = $this->wpmdb->set_post_data();
+
+			if ( ! isset( $this->state_data['import_info'] ) || ! isset( $this->state_data['import_info']['protocol'] ) ) {
+				return false;
+			}
+			$wpmdb_home_urls['remote'] = $this->state_data['import_info']['protocol'] . ':' . $this->state_data['import_info']['URL'];
 		}
 
 		/**
@@ -110,12 +141,7 @@ final class WPMDB_Replace {
 		 *
 		 * @param array
 		 */
-		$wpmdb_home_urls = apply_filters( 'wpmdb_replace_site_urls', array(
-				// TODO: rewrite unit tests that only pass site_url so that we can rely on home_url's existence
-				'local'  => isset( $this->site_details['local']['home_url'] ) ? $this->site_details['local']['home_url'] : $this->site_details['local']['site_url'],
-				'remote' => isset( $this->site_details['remote']['home_url'] ) ? $this->site_details['remote']['home_url'] : $this->site_details['remote']['site_url'],
-			)
-		);
+		$wpmdb_home_urls = apply_filters( 'wpmdb_replace_site_urls', $wpmdb_home_urls );
 
 		$local_url_is_https  = false === stripos( $wpmdb_home_urls['local'], 'https' ) ? false : true;
 		$remote_url_is_https = false === stripos( $wpmdb_home_urls['remote'], 'https' ) ? false : true;
@@ -146,29 +172,30 @@ final class WPMDB_Replace {
 	 *
 	 * Can be filtered to disable entirely.
 	 *
-	 * @param $new
+	 * @param string $new
+	 * @param string $destination_url
 	 *
 	 * @return mixed
 	 */
-	function do_protocol_replace( $new ) {
+	function do_protocol_replace( $new, $destination_url ) {
 		/**
 		 * Filters $do_protocol_replace, return false to prevent protocol replacement.
 		 *
-		 * @param bool   true                   If the replace should be skipped.
-		 * @param string $this->destination_url The URL of the target site.
+		 * @param bool true                   If the replace should be skipped.
+		 * @param string $destination_url The URL of the target site.
 		 */
-		$do_protocol_replace = apply_filters( 'wpmdb_replace_destination_protocol', true, $this->destination_url );
+		$do_protocol_replace = apply_filters( 'wpmdb_replace_destination_protocol', true, $destination_url );
 
 		if ( true !== $do_protocol_replace ) {
 			return $new;
 		}
 
-		$parsed_destination = wp_parse_url( $this->destination_url );
+		$parsed_destination = wp_parse_url( $destination_url );
 		unset( $parsed_destination['scheme'] );
 
-		$protocol_search      = $this->source_protocol . '://' . implode( '', $parsed_destination );
-		$protocol_replace     = $this->destination_url;
-		$new                  = str_ireplace( $protocol_search, $protocol_replace, $new, $count );
+		$protocol_search  = $this->source_protocol . '://' . implode( '', $parsed_destination );
+		$protocol_replace = $destination_url;
+		$new              = str_ireplace( $protocol_search, $protocol_replace, $new, $count );
 
 		return $new;
 	}
@@ -187,7 +214,7 @@ final class WPMDB_Replace {
 		}
 
 		if ( true === $this->is_protocol_mismatch ) {
-			$new = $this->do_protocol_replace( $new );
+			$new = $this->do_protocol_replace( $new, $this->destination_url );
 		}
 
 		return $new;
@@ -199,10 +226,10 @@ final class WPMDB_Replace {
 	 *
 	 * Mostly from https://github.com/interconnectit/Search-Replace-DB
 	 *
-	 * @param mixed $data Used to pass any subordinate arrays back to in.
-	 * @param bool $serialized Does the array passed via $data need serialising.
-	 * @param bool $parent_serialized Passes whether the original data passed in was serialized
-	 * @param bool $filtered Should we apply before and after filters successively
+	 * @param mixed $data              Used to pass any subordinate arrays back to in.
+	 * @param bool  $serialized        Does the array passed via $data need serialising.
+	 * @param bool  $parent_serialized Passes whether the original data passed in was serialized
+	 * @param bool  $filtered          Should we apply before and after filters successively
 	 *
 	 * @return mixed    The original array with all elements replaced as needed.
 	 */
@@ -217,7 +244,11 @@ final class WPMDB_Replace {
 		$successive_filter = $filtered;
 
 		if ( true === $filtered ) {
-			list( $data, $before_fired, $successive_filter ) = apply_filters( 'wpmdb_before_replace_custom_data', array( $data, $before_fired, $successive_filter ), $this );
+			list( $data, $before_fired, $successive_filter ) = apply_filters( 'wpmdb_before_replace_custom_data', array(
+				$data,
+				$before_fired,
+				$successive_filter,
+			), $this );
 		}
 
 		// some unserialized data cannot be re-serialized eg. SimpleXMLElements

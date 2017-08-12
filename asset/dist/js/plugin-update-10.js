@@ -79,5 +79,4 @@
 		$( '.wpmdbpro-custom' ).prev().addClass( 'wpmdbpro-has-message' );
 
 	} );
-
 })( jQuery );

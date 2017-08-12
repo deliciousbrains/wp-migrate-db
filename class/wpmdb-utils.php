@@ -61,12 +61,12 @@ class WPMDB_Utils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return unserialized object or array
 	 *
-	 * @param string    $serialized_string  Serialized string.
-	 * @param string    $method             The name of the caller method.
+	 * @param string $serialized_string Serialized string.
+	 * @param string $method            The name of the caller method.
 	 *
 	 * @return mixed, false on failure
 	 */
@@ -94,7 +94,7 @@ class WPMDB_Utils {
 	 *
 	 * @return string|array
 	 */
-	public static function safe_wp_unslash( $arg ){
+	public static function safe_wp_unslash( $arg ) {
 		if ( function_exists( 'wp_unslash' ) ) {
 			return wp_unslash( $arg );
 		} else {
@@ -102,4 +102,46 @@ class WPMDB_Utils {
 		}
 	}
 
+	/**
+	 * Use gzdecode if available, otherwise fall back to gzinflate
+	 *
+	 * @param string $data
+	 *
+	 * @return string|bool
+	 */
+	public static function gzdecode( $data ) {
+		if ( ! function_exists( 'gzdecode' ) ) {
+			return @gzinflate( substr( $data, 10, -8 ) );
+		}
+
+		return @gzdecode( $data );
+	}
+  
+  /*
+	 * Require wpmdb-wpdb and create new instance
+	 *
+	 * @return WPMDB_WPDB
+	 */
+	public static function make_wpmdb_wpdb_instance() {
+		if ( ! class_exists( 'WPMDB_WPDB' ) ) {
+			require_once dirname( __FILE__ ) . '/wpmdb-wpdb.php';
+		}
+
+		return new WPMDB_WPDB();
+	}
+
+	/**
+	 * Wrapper for replacing first instance of string
+	 *
+	 * @return string
+	 */
+	public static function str_replace_first( $search, $replace, $string ) {
+		$pos = strpos( $string, $search );
+
+		if ( false !== $pos ) {
+			$string = substr_replace( $string, $replace, $pos, strlen( $search ) );
+		}
+
+		return $string;
+	}
 }

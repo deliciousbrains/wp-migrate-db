@@ -89,10 +89,11 @@ class WPMDB_CLI extends WPMDB_Base {
 	 * Performs CLI migration given a profile data.
 	 *
 	 * @param  int|array $profile Profile key or array.
+	 * @param  array     $assoc_args
 	 *
 	 * @return bool|WP_Error Returns true if succeed or WP_Error if failed.
 	 */
-	public function cli_migration( $profile ) {
+	public function cli_migration( $profile, $assoc_args = array() ) {
 		$pre_check = $this->pre_cli_migration_check( $profile );
 		if ( is_wp_error( $pre_check ) ) {
 			return $pre_check;
@@ -120,11 +121,23 @@ class WPMDB_CLI extends WPMDB_Base {
 			$this->post_data['intent'] = 'find_replace';
 		}
 
+		if ( 'import' === $this->profile['action'] ) {
+			$this->post_data['intent'] = 'import';
+
+			if ( ! isset( $this->profile['import_file'] ) ) {
+				if ( isset( $assoc_args['import-file'] ) ) {
+					$this->profile['import_file'] = $assoc_args['import-file'];
+				} else {
+					return $this->cli_error( __( 'Missing path to import file. Use --import-file=/path/to/import.sql.gz', 'wp-migrate-db' ) );
+				}
+			}
+		}
+
 		// Ensure local site_details available.
 		$this->post_data['site_details']['local'] = $this->site_details();
 
 		// Check for tables specified in migration profile that do not exist in the source database
-		if ( ! empty( $this->profile['select_tables'] ) ) {
+		if ( ! empty( $this->profile['select_tables'] ) && 'import' !== $this->profile['action'] ) {
 			$source_tables = apply_filters( 'wpmdb_cli_filter_source_tables', $this->get_tables() );
 
 			if ( ! empty( $source_tables ) ) {
@@ -158,12 +171,23 @@ class WPMDB_CLI extends WPMDB_Base {
 
 		$this->post_data['migration_state_id'] = $this->migration['migration_state_id'];
 
-		$tables_to_process = $this->migrate_tables();
+		if ( 'import' === $this->profile['action'] ) {
+			if ( $this->profile['create_backup'] ) {
+				$tables_to_process = $this->migrate_tables();
+			} else {
+				$tables_to_process = $this->get_tables_to_migrate();
+			}
+		} else {
+			$tables_to_process = $this->migrate_tables();
+		}
+
 		if ( is_wp_error( $tables_to_process ) ) {
 			return $tables_to_process;
 		}
 
 		$this->post_data['tables'] = implode( ',', $tables_to_process );
+
+		do_action( 'wpmdb_cli_during_cli_migration', $this->post_data, $this->profile );
 
 		$finalize = $this->finalize_migration();
 		if ( is_wp_error( $finalize ) || 'savefile' === $this->profile['action'] ) {
@@ -287,7 +311,7 @@ class WPMDB_CLI extends WPMDB_Base {
 	 * @param array $tables
 	 * @param int   $stage
 	 *
-	 * @return \cli\progress\Bar
+	 * @return cli\progress\Bar|WP_CLI\NoOp
 	 */
 	function get_progress_bar( $tables, $stage ) {
 
@@ -303,7 +327,7 @@ class WPMDB_CLI extends WPMDB_Base {
 
 		$count = $this->get_total_rows_from_table_list( $tables, $stage );
 
-		return new \cli\progress\Bar( $progress_label, $count );
+		return WP_CLI\Utils\make_progress_bar( $progress_label, $count );
 	}
 
 	/**
@@ -440,6 +464,11 @@ class WPMDB_CLI extends WPMDB_Base {
 
 			++$stage_iterator;
 			$args['stage'] = 'migrate';
+
+			if ( 'import' === $args['intent'] ) {
+				break;
+			}
+
 			$tables        = $tables_to_migrate;
 			$table_rows    = $this->get_row_counts_from_table_list( $tables, $stage_iterator );
 
@@ -594,7 +623,7 @@ class WPMDB_CLI extends WPMDB_Base {
 	public function get_profile_data_from_args( $args, $assoc_args ) {
 
 		//load correct cli class
-		if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) ) {
+		if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) && function_exists( 'wp_migrate_db_pro' ) ) {
 			$wpmdb_cli = wp_migrate_db_pro_cli_addon();
 		} elseif ( function_exists( 'wpmdb_pro_cli' ) ) {
 			$wpmdb_cli = wpmdb_pro_cli();
@@ -617,6 +646,12 @@ class WPMDB_CLI extends WPMDB_Base {
 			return $wpmdb_cli->cli_error( $message );
 		}
 
+		foreach ( $assoc_args as $key => $value ) {
+			if ( empty( $value) ) {
+				WP_CLI::warning( __( '--' . $key . ' parameter needs a value.', 'wp-migrate-db-cli' ) );
+			}
+		}
+
 		if ( empty( $assoc_args['action'] ) ) {
 			return $wpmdb_cli->cli_error( __( 'Missing action parameter', 'wp-migrate-db-cli' ) );
 		}
@@ -634,11 +669,18 @@ class WPMDB_CLI extends WPMDB_Base {
 			$replace_old = str_getcsv( $assoc_args['find'] );
 		} else {
 			if ( 'find_replace' === $assoc_args['action'] ) {
-				return $wpmdb_cli->cli_error( __( 'Missing find and replace values.', 'wp-migrate-db-cli' ) );
+				if ( empty( $assoc_args['replace'] ) ) {
+					return $wpmdb_cli->cli_error( __( 'Missing find and replace values.', 'wp-migrate-db-cli' ) );
+				}
+				return $wpmdb_cli->cli_error( __( 'Find value is required.', 'wp-migrate-db-cli' ) );
 			}
 		}
 		if ( ! empty( $assoc_args['replace'] ) ) {
 			$replace_new = str_getcsv( $assoc_args['replace'] );
+		} else {
+			if ( 'find_replace' === $assoc_args['action'] ) {
+				return $wpmdb_cli->cli_error( __( 'Replace value is required.', 'wp-migrate-db-cli' ) );
+			}
 		}
 		if ( count( $replace_old ) !== count( $replace_new ) ) {
 			return $wpmdb_cli->cli_error( sprintf( __( '%1$s and %2$s must contain the same number of values', 'wp-migrate-db-cli' ), '--find', '--replace' ) );

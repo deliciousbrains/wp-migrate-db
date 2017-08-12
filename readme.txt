@@ -3,8 +3,8 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: migrate, migration, export, data dump, backup, database, mysql
 Requires at least: 3.6
-Tested up to: 4.8
-Stable tag: 0.9.2
+Tested up to: 4.8.1
+Stable tag: 1.0
 License: GPLv2
 
 Migrates your database by running find & replace on URLs and file paths, handling serialized data, and saving an SQL file.
@@ -32,11 +32,13 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 * Phenomenal email support
 * Stress tested on massive databases
 * Solid security
-* [Media Files addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/media-files-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=desc&utm_campaign=freeplugin)
-* [CLI addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=desc&utm_campaign=freeplugin)
-* [Multisite Tools addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/multisite-tools-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=desc&utm_campaign=freeplugin)
+* [Media Files addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/media-files-addon/?utm_campaign=addons%2Binstall&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=description)
+* [CLI addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-addon/?utm_campaign=addons%2Binstall&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting)
+* [Multisite Tools addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/multisite-tools-addon/?utm_campaign=addons%2Binstall&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=description)
 
-See the video below or [visit the web site](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=desc&utm_campaign=freeplugin) to learn more about the pro version.
+[Compare pro vs free →](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting)
+
+See the video below or [visit the web site](http://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=description) to learn more about the pro version.
 
 https://www.youtube.com/watch?v=fHFcH4bCzmU
 
@@ -49,7 +51,7 @@ https://www.youtube.com/watch?v=fHFcH4bCzmU
 
 = Why wouldn't I just use WordPress' built-in XML export/import to migrate my site? =
 
-WP Migrate DB will migrate your entire WordPress database, WordPress' built-in tools will not. For more details, please see our blog post, [WordPress XML Export/Import vs. WP Migrate DB Pro](https://deliciousbrains.com/wordpress-xml-export-import-vs-wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin).
+WP Migrate DB will migrate your entire WordPress database, WordPress' built-in tools will not. For more details, please see our blog post, [WordPress XML Export/Import vs. WP Migrate DB Pro](https://deliciousbrains.com/wordpress-xml-export-import-vs-wp-migrate-db-pro/?utm_campaign=support%2Bdocs&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting).
 
 = Will you migrate my site for me? =
 
@@ -57,11 +59,11 @@ Sorry, but we do not offer site migration services at the moment.
 
 = Does the plugin support multisite? =
 
-Yes, but the [Multisite Tools addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/multisite-tools-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) for the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) does a lot more with multisite like migrating a subsite as a single-site install.
+Yes, but the [Multisite Tools addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/multisite-tools-addon/?utm_campaign=addons%2Binstall&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=faqs) for the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=faqs%2Bmultisite) does a lot more with multisite like migrating a subsite as a single-site install.
 
 = Does the plugin migrate files as well? =
 
-No, it only operates on the database. The pro version's [Media Files addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/media-files-addon/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) allows you to migrate media files.
+No, it only operates on the database. The pro version's [Media Files addon](https://deliciousbrains.com/wp-migrate-db-pro/doc/media-files-addon/?utm_campaign=addons%2Binstall&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=faqs) allows you to migrate media files.
 
 = Why do I end up with a wp-login.php download instead of the exported SQL file? =
 
@@ -69,15 +71,15 @@ It is likely you have a download manager plugin or extension installed in your w
 
 = Does the plugin handle serialized data? =
 
-Yep, it will run a find &amp; replace on your serialized data and migrate it without corrupting it. See [our documentation](https://deliciousbrains.com/wp-migrate-db-pro/doc/serialized-data/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) for details.
+Yep, it will run a find &amp; replace on your serialized data and migrate it without corrupting it. See [our documentation](https://deliciousbrains.com/wp-migrate-db-pro/doc/serialized-data/?utm_campaign=support%2Bdocs&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting) for details.
 
 = What are the requirements? =
 
-They are the same as the [requirements for WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin#requirements).
+They are the same as the [requirements for WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=requirements#requirements.
 
 = Do you offer email support? =
 
-If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=faq&utm_campaign=freeplugin), we will gladly provide you with email support. We take pride in delivering exceptional customer support. We do not provide email support for the free version.
+If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=faqs%2Bemail%2Bsupport), we will gladly provide you with email support. We take pride in delivering exceptional customer support. We do not provide email support for the free version.
 
 == Screenshots ==
 
@@ -86,6 +88,13 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 1.0 - 2017-08-11 =
+* New: Plugins and themes are disabled by default for HTTP requests made by WP Migrate DB Pro for better performance and compatibility
+* Improvement: Page is reloaded automatically after migrations that alter the wp_options, wp_users, and wp_usermeta tables
+* Improvement: Additional constants added to the diagnostic log for better debugging by our support team
+* Improvement: Compatibility mode directory permission errors are now dismissable and fewer notices are displayed
+* Bug Fix: Find & Replace not operating on `wp_site` and `wp_blogs` tables on multisite
 
 = WP Migrate DB 0.9.2 - 2016-12-16 =
 
@@ -99,7 +108,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 = WP Migrate DB 0.9 - 2016-10-20 =
 
 * New: In-place Find &amp; Replace functionality added - a find and replace can now be run on a site's own database
-* New: CLI [find-replace](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-find-replace-subcommand/) subcommand added
+* New: CLI [find-replace](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-find-replace-subcommand/?utm_campaign=changelogs&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=MDB09) subcommand added
 * Improvement: Removed `font-family` declarations from stylesheets
 * Improvement: Truncate WP Migrate DB Pro diagnostic log to always be < 1MB, to help with memory exhaustion errors
 * Improvement: Added help tooltips for the default find and replace fields
@@ -138,7 +147,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 
 = WP Migrate DB 0.7 - 2015-06-12 =
 
-* New: [WP-CLI export subcommand](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-export-subcommand/)
+* New: [WP-CLI export subcommand](https://deliciousbrains.com/wp-migrate-db-pro/doc/cli-export-subcommand/?utm_campaign=changelogs&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=MDB07)
 * New: Quick copy find textbox value to replace textbox by clicking arrow icon in between (hat tip Jonathan Perlman)
 * New: Added filters to hook into find & replace routine and deal with encoded data ([example](https://github.com/deliciousbrains/wp-migrate-db-pro-tweaks/blob/master/wp-migrate-db-pro-tweaks.php#L316-L413))
 * Improvement: Greatly reduced data passed through each HTTP request for better security and reliability
@@ -213,7 +222,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 * Bug fix: [Find & replace is case-sensitive but shouldn't](https://github.com/bradt/wp-migrate-db/issues/13)
 
 = WP Migrate DB 0.4.4 - 2013-05-19 =
-* [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpress.org&utm_medium=web&utm_content=changelog&utm_campaign=freeplugin) Added some info to the sidebar.
+* [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=changelogs&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=MDB044) Added some info to the sidebar.
 * Updated required version to WordPress 3.0+
 * Bug fix: [Does not handle serialized objects](https://github.com/bradt/wp-migrate-db/issues/11)
 * Bug fix: [Admin menu disappears when DISALLOW_FILE_MODS is true](https://github.com/bradt/wp-migrate-db/issues/8)
