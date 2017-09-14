@@ -1534,6 +1534,71 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	/**
+	 * Preserves the active_plugins option.
+	 *
+	 * @param array $preserved_options
+	 *
+	 * @return array
+	 */
+	function preserve_active_plugins_option( $preserved_options ) {
+		$keep_active_plugins = $this->profile_value( 'keep_active_plugins' );
+
+		if ( empty( $keep_active_plugins ) ) {
+			$preserved_options[] = 'active_plugins';
+		}
+
+		return $preserved_options;
+	}
+
+	/**
+	 * Preserves WPMDB plugins if the "Keep active plugins" option isn't checked.
+	 *
+	 * @param array $preserved_options_data
+	 *
+	 * return array
+	 */
+	function preserve_wpmdb_plugins( $preserved_options_data ) {
+		$keep_active_plugins = $this->profile_value( 'keep_active_plugins' );
+
+		if ( ! empty( $keep_active_plugins ) || empty( $preserved_options_data ) ) {
+			return $preserved_options_data;
+		}
+
+		foreach ( $preserved_options_data as $table => $data ) {
+			foreach ( $data as $key => $option ) {
+				if ( 'active_plugins' === $option['option_name'] ) {
+					global $wpdb;
+
+					$table_name       = esc_sql( $table );
+					$option_value     = WPMDB_Utils::unserialize( $option['option_value'] );
+					$migrated_plugins = array();
+					$wpmdb_plugins    = array();
+
+					if ( $result = $wpdb->get_var( "SELECT option_value FROM $table_name WHERE option_name = 'active_plugins'" )  ) {
+						$unserialized = WPMDB_Utils::unserialize( $result );
+						if ( is_array( $unserialized ) ) {
+							$migrated_plugins = $unserialized;
+						}
+					}
+
+					foreach ( $option_value as $plugin_key => $plugin ) {
+						if ( 0 === strpos( $plugin, 'wp-migrate-db' ) ) {
+							$wpmdb_plugins[] = $plugin;
+						}
+					}
+
+					$merged_plugins                           = array_unique( array_merge( $wpmdb_plugins, $migrated_plugins ) );
+					$option['option_value']                   = serialize( $merged_plugins );
+					$preserved_options_data[ $table ][ $key ] = $option;
+					break;
+				}
+			}
+		}
+
+		return $preserved_options_data;
+	}
+
+	/**
 	 * Handles the request to flush caches and cleanup migration when pushing or not migrating user tables.
 	 *
 	 * @return bool|null
@@ -2465,7 +2530,7 @@ class WPMDB extends WPMDB_Base {
 
 		// We need ORDER BY here because with LIMIT, sometimes it will return
 		// the same results from the previous query and we'll have duplicate insert statements
-		if ( 'backup' != $this->state_data['stage'] && false === empty( $this->form_data['exclude_spam'] ) ) {
+		if ( 'import' !== $this->state_data['intent'] && 'backup' != $this->state_data['stage'] && false === empty( $this->form_data['exclude_spam'] ) ) {
 			if ( $this->table_is( 'comments', $table, 'table', $prefix ) ) {
 				$where .= ' AND comment_approved != "spam"';
 			} elseif ( $this->table_is( 'commentmeta', $table, 'table', $prefix ) ) {
@@ -2475,7 +2540,7 @@ class WPMDB extends WPMDB_Base {
 			}
 		}
 
-		if ( 'backup' != $this->state_data['stage'] && isset( $this->form_data['exclude_post_types'] ) && ! empty( $this->form_data['select_post_types'] ) ) {
+		if ( 'import' !== $this->state_data['intent'] && 'backup' != $this->state_data['stage'] && isset( $this->form_data['exclude_post_types'] ) && ! empty( $this->form_data['select_post_types'] ) ) {
 			$post_types = '\'' . implode( '\', \'', $this->form_data['select_post_types'] ) . '\'';
 			if ( $this->table_is( 'posts', $table, 'table', $prefix ) ) {
 				$where .= ' AND `post_type` NOT IN ( ' . $post_types . ' )';
@@ -2495,7 +2560,7 @@ class WPMDB extends WPMDB_Base {
 			}
 		}
 
-		if ( 'backup' != $this->state_data['stage'] && true === apply_filters( 'wpmdb_exclude_transients', true ) && isset( $this->form_data['exclude_transients'] ) && '1' === $this->form_data['exclude_transients'] && ( $this->table_is( 'options', $table, 'table', $prefix ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
+		if ( 'import' !== $this->state_data['intent'] && 'backup' != $this->state_data['stage'] && true === apply_filters( 'wpmdb_exclude_transients', true ) && isset( $this->form_data['exclude_transients'] ) && '1' === $this->form_data['exclude_transients'] && ( $this->table_is( 'options', $table, 'table', $prefix ) || ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) ) ) {
 			$col_name = 'option_name';
 
 			if ( isset( $wpdb->sitemeta ) && $wpdb->sitemeta == $table ) {
@@ -2614,6 +2679,8 @@ class WPMDB extends WPMDB_Base {
 
 		if ( ! $skip_row ) {
 
+			$replacer->set_row( $row );
+
 			foreach ( $row as $key => $value ) {
 				$data_to_fix = $value;
 
@@ -2683,7 +2750,7 @@ class WPMDB extends WPMDB_Base {
 							if ( ! empty( $this->state_data['domain_current_site'] ) ) {
 								$main_domain_replace = $this->state_data['domain_current_site'];
 							} elseif( 'find_replace' === $this->state_data['stage'] || 'savefile' === $this->state_data['intent'] ) {
-								$main_domain_replace = $this->get_domain_replace() ?: $this->get_domain_current_site();
+								$main_domain_replace = $this->get_domain_replace() ? $this->get_domain_replace() : $this->get_domain_current_site();
 							} elseif ( ! empty ( $this->form_data['replace_new'][1] ) ) {
 								$url                 = $this->parse_url( $this->form_data['replace_new'][1] );
 								$main_domain_replace = $url['host'];
@@ -2940,14 +3007,15 @@ class WPMDB extends WPMDB_Base {
 		$this->stow( '# ' . sprintf( __( 'Hostname: %s', 'wp-migrate-db' ), DB_HOST ) . "\n", false );
 		$this->stow( '# ' . sprintf( __( 'Database: %s', 'wp-migrate-db' ), $this->backquote( DB_NAME ) ) . "\n", false );
 
-		$url = preg_replace( '(^https?:)', '', home_url(), 1 );
-		$key = array_search( $url, $this->form_data['replace_old'] );
+		$home_url = apply_filters( 'wpmdb_backup_header_url', home_url() );
+		$url      = preg_replace( '(^https?:)', '', $home_url, 1 );
+		$key      = array_search( $url, $this->form_data['replace_old'] );
 
 		if ( false !== $key ) {
 			$url = $this->form_data['replace_new'][ $key ];
 		} else {
 			// Protocol might have been added in
-			$key = array_search( home_url(), $this->form_data['replace_old'] );
+			$key = array_search( $home_url, $this->form_data['replace_old'] );
 
 			if ( false !== $key ) {
 				$url = $this->form_data['replace_new'][ $key ];
@@ -2978,7 +3046,7 @@ class WPMDB extends WPMDB_Base {
 		$this->stow( '# Post Types: ' . implode( ', ', $this->get_post_types() ) . "\n", false );
 
 		$protocol = 'http';
-		if ( 'https' === substr( home_url(), 0, 5 ) ) {
+		if ( 'https' === substr( $home_url, 0, 5 ) ) {
 			$protocol = 'https';
 		}
 

@@ -325,31 +325,14 @@
 
 	/**
 	 * Displays the find and replace options for imports
-	 *
-	 * @param event
 	 */
-	function maybe_show_find_replace_options( event ) {
-		if ( $( '#import-find-replace' ).is( ':checked' ) ) {
-			$( '.find-replace-rows, .find-replace-options' ).show();
-
-			if ( $( '.find-replace-options-toggle .expand-collapse-arrow' ).hasClass( 'collapsed' ) ) {
-				$( '.table-options, .advanced-options, .exclude-post-types-options' ).hide();
-			} else {
-				$( '.advanced-options, .exclude-post-types-options' ).show();
-
-				if ( ! unrecognized_import_file ) {
-					$( '.table-options' ).show();
-				} else {
-					$( '.table-options' ).hide();
-				}
-			}
-		} else {
-			$( '.find-replace-rows, .table-options, .exclude-post-types-options, .advanced-options, .find-replace-options' ).hide();
-		}
+	function maybe_show_find_replace_options() {
+		var find_replace_rows = $( '.find-replace-rows' );
+		return $( '#import-find-replace' ).is( ':checked' ) ? find_replace_rows.show() : find_replace_rows.hide();
 	}
 	$( '#import-find-replace' ).on( 'click', maybe_show_find_replace_options );
 
-	function maybe_show_table_options( event ) {
+	function maybe_show_table_options() {
 		if ( ! unrecognized_import_file ) {
 			return;
 		}
@@ -363,6 +346,14 @@
 		}, 1 );
 	}
 	$( '.find-replace-options-toggle' ).on( 'click', maybe_show_table_options );
+
+	/**
+	 * Updates both `keep_active_plugins` checkboxes when one is changed.
+	 */
+	function update_keep_active_plugins_option() {
+		$( 'input[name=keep_active_plugins]' ).prop( 'checked', $( this ).is( ':checked' ) );
+	}
+	$( 'input[name=keep_active_plugins]' ).on( 'click', update_keep_active_plugins_option );
 
 	/**
 	 * Recursively upload an import file

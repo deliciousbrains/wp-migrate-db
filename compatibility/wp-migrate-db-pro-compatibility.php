@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: WP Migrate DB Compatibility
+Plugin Name: WP Migrate DB Pro Compatibility
 Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
 Description: Prevents 3rd party plugins from being loaded during WP Migrate DB specific operations
 Author: Delicious Brains

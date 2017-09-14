@@ -16,10 +16,9 @@ class WPMDB_Compatibility {
 		add_filter( 'site_option_active_sitewide_plugins', array( $this, 'wpmdbc_include_site_plugins' ) );
 		add_filter( 'stylesheet_directory', array( $this, 'wpmdbc_disable_theme' ) );
 		add_filter( 'template_directory', array( $this, 'wpmdbc_disable_theme' ) );
-		add_action( 'muplugins_loaded', array( $this, 'wpmdbc_plugins_loaded' ) );
+		add_action( 'muplugins_loaded', array( $this, 'wpmdbc_set_default_whitelist' ), 5 );
+		add_action( 'muplugins_loaded', array( $this, 'wpmdbc_plugins_loaded' ), 10 );
 		add_action( 'after_setup_theme', array( $this, 'wpmdbc_after_theme_setup' ) );
-
-		$this->default_whitelisted_plugins = $this->wpmdbc_set_default_whitelist();
 	}
 
 	/**
@@ -77,7 +76,8 @@ class WPMDB_Compatibility {
 			'wp-migrate-db',
 		);
 
-		return array_merge( $filtered_plugins, $wpmdb_plugins );
+		$plugins                           = array_merge( $filtered_plugins, $wpmdb_plugins );
+		$this->default_whitelisted_plugins = $plugins;
 	}
 
 	/**
@@ -167,6 +167,11 @@ class WPMDB_Compatibility {
 		}
 
 		$whitelist_plugins = $this->wpmdbc_get_whitelist_plugins();
+
+		if ( ! $this->default_whitelisted_plugins ) {
+			$this->wpmdbc_set_default_whitelist();
+		}
+
 		$default_whitelist = $this->default_whitelisted_plugins;
 
 		foreach ( array_keys( $plugins ) as $plugin ) {
@@ -194,7 +199,10 @@ class WPMDB_Compatibility {
 	 * @return bool
 	 */
 	public function wpmdbc_is_wpmdb_flush_call() {
-		if ( $this->wpmdbc_is_wpmdb_ajax_call() && in_array( $_POST['action'], array( 'wpmdb_flush', 'wpmdb_remote_flush' ) ) ) {
+		if ( $this->wpmdbc_is_wpmdb_ajax_call() && in_array( $_POST['action'], array(
+				'wpmdb_flush',
+				'wpmdb_remote_flush',
+			) ) ) {
 			return true;
 		}
 
@@ -212,8 +220,7 @@ class WPMDB_Compatibility {
 				'wpmdb_get_log',
 				'wpmdb_flush',
 				'wpmdb_remote_flush',
-			) )
-		) {
+			) ) ) {
 			return false;
 		}
 
