@@ -1261,11 +1261,11 @@ class WPSDB extends WPSDB_Base {
 		$last = strtolower( $val[ strlen( $val ) - 1 ] );
 		switch ( $last ) {
 		case 'g':
-			$val *= 1024;
+			$val = intval($val) * 1024;
 		case 'm':
-			$val *= 1024;
+			$val = intval($val) * 1024;
 		case 'k':
-			$val *= 1024;
+			$val = intval($val) * 1024;
 		}
 		return $val;
 	}
