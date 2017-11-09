@@ -19,6 +19,10 @@ class WPMDB_Compatibility {
 		add_action( 'muplugins_loaded', array( $this, 'wpmdbc_set_default_whitelist' ), 5 );
 		add_action( 'muplugins_loaded', array( $this, 'wpmdbc_plugins_loaded' ), 10 );
 		add_action( 'after_setup_theme', array( $this, 'wpmdbc_after_theme_setup' ) );
+
+		if ( ! class_exists( 'WPMDB_Utils' ) ) {
+			require_once( dirname( __FILE__ ) . '/wpmdb-utils.php' );
+		}
 	}
 
 	/**
@@ -188,11 +192,7 @@ class WPMDB_Compatibility {
 	 * @return bool
 	 */
 	public function wpmdbc_is_wpmdb_ajax_call() {
-		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) && ( isset( $_POST['action'] ) && false !== strpos( $_POST['action'], 'wpmdb' ) ) ) {
-			return true;
-		}
-
-		return false;
+		return WPMDB_Utils::is_wpmdb_ajax_call();
 	}
 
 	/**

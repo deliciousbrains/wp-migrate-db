@@ -35,6 +35,9 @@ class WPMDB extends WPMDB_Base {
 		$this->plugin_version = $GLOBALS['wpmdb_meta'][ $this->core_slug ]['version'];
 		$this->max_insert_string_len = 50000; // 50000 is the default as defined by PhpMyAdmin
 
+		// For Firefox extend "Cache-Control" header to include 'no-store' so that refresh after migration doesn't override JS set values.
+		add_filter( 'nocache_headers', array( $this, 'nocache_headers' ) );
+
 		add_filter( 'plugin_action_links_' . $this->plugin_basename, array( $this, 'plugin_action_links' ) );
 		add_filter( 'network_admin_plugin_action_links_' . $this->plugin_basename, array( $this, 'plugin_action_links' ) );
 
@@ -95,6 +98,7 @@ class WPMDB extends WPMDB_Base {
 			'backup_option'             => 'backup_only_with_prefix',
 			'exclude_transients'        => '1',
 			'compatibility_older_mysql' => '0',
+		    'import_find_replace'       => '1',
 		);
 
 		$this->checkbox_options = array(
@@ -144,28 +148,25 @@ class WPMDB extends WPMDB_Base {
 			$this->compatibility_plugin_manager = new WPMDB_Compatibility_Plugin_Manager( $this );
 		}
 
-		// Add some custom JS into the WP admin pages
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_common_js' ) );
-
 		add_action( 'wp_ajax_wpmdb_process_notice_link', array( $this, 'ajax_process_notice_link' ) );
 	}
 
-	public function enqueue_common_js( $hook ) {
-
-		if ( 'plugins.php' != $hook ) {
-			return;
+	/**
+	 * Extend Cache-Control header to include "no-store" so that Firefox doesn't override input selection after refresh.
+	 *
+	 * @param array $headers
+	 *
+	 * @return array
+	 */
+	public function nocache_headers( $headers ) {
+		if ( is_array( $headers ) &&
+		     key_exists( 'Cache-Control', $headers ) &&
+		     false === strpos( $headers['Cache-Control'], 'no-store' )
+		) {
+			$headers['Cache-Control'] .= ', no-store';
 		}
 
-		$ver_string = '-' . str_replace( '.', '', $this->plugin_version );
-		$min        = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		$src = plugins_url( "asset/dist/js/common{$ver_string}{$min}.js", dirname( __FILE__ ) );
-		wp_enqueue_script( 'wp-migrate-db-pro-common', $src, array( 'jquery' ), false, true );
-
-		$src = plugins_url( "asset/dist/js/dismissable-notices{$ver_string}{$min}.js", dirname( __FILE__ ) );
-		wp_enqueue_script( 'wp-migrate-db-pro-dismissable-notices', $src, array( 'jquery' ), false, true );
-
-		wp_localize_script( 'wp-migrate-db-pro-dismissable-notices', 'wpmdb_nonces', array( 'process_notice_link' => wp_create_nonce( 'process-notice-link' ) ) );
+		return $headers;
 	}
 
 	/**
@@ -1555,7 +1556,7 @@ class WPMDB extends WPMDB_Base {
 	 *
 	 * @param array $preserved_options_data
 	 *
-	 * return array
+	 * @return array
 	 */
 	function preserve_wpmdb_plugins( $preserved_options_data ) {
 		$keep_active_plugins = $this->profile_value( 'keep_active_plugins' );
@@ -1766,18 +1767,21 @@ class WPMDB extends WPMDB_Base {
 
 		if ( is_multisite() ) {
 			$tables         = $this->get_tables( 'prefix' );
-			$sql            = "SELECT `post_type` FROM `{$wpdb->base_prefix}posts` ";
+			$sql            = "SELECT DISTINCT `post_type` FROM `{$wpdb->base_prefix}posts` ;";
+			$post_types     = $wpdb->get_results( $sql, ARRAY_A );
 			$prefix_escaped = preg_quote( $wpdb->base_prefix, '/' );
 
 			foreach ( $tables as $table ) {
 				if ( 0 == preg_match( '/' . $prefix_escaped . '[0-9]+_posts/', $table ) ) {
 					continue;
 				}
-				$blog_id = str_replace( array( $wpdb->base_prefix, '_posts' ), array( '', '' ), $table );
-				$sql .= "UNION SELECT `post_type` FROM `{$wpdb->base_prefix}" . $blog_id . '_posts` ';
+				$blog_id         = str_replace( array( $wpdb->base_prefix, '_posts' ), array( '', '' ), $table );
+				$sql             = "SELECT DISTINCT `post_type` FROM `{$wpdb->base_prefix}" . $blog_id . '_posts` ;';
+				$site_post_types = $wpdb->get_results( $sql, ARRAY_A );
+				if ( is_array( $site_post_types ) ) {
+					$post_types = array_merge( $post_types, $site_post_types );
+				}
 			}
-			$sql .= ';';
-			$post_types = $wpdb->get_results( $sql, ARRAY_A );
 		} else {
 			$post_types = $wpdb->get_results(
 				"SELECT DISTINCT `post_type`
@@ -3052,6 +3056,12 @@ class WPMDB extends WPMDB_Base {
 
 		$this->stow( '# Protocol: ' . $protocol . "\n", false );
 
+		$is_multisite = is_multisite() ? 'true' : 'false';
+		$this->stow( '# Multisite: ' . $is_multisite . "\n", false );
+
+		$is_subsite_export = apply_filters( 'wpmdb_backup_header_is_subsite_export', 'false' );
+		$this->stow ( '# Subsite Export: ' . $is_subsite_export . "\n", false );
+
 		$this->stow( "# --------------------------------------------------------\n\n", false );
 		$this->stow( "/*!40101 SET NAMES $charset */;\n\n", false );
 		$this->stow( "SET sql_mode='NO_AUTO_VALUE_ON_ZERO';\n\n", false );
@@ -3445,22 +3455,10 @@ class WPMDB extends WPMDB_Base {
 		$src = $plugins_url . 'asset/dist/css/styles.css';
 		wp_enqueue_style( 'wp-migrate-db-pro-styles', $src, array(), $version );
 
-		$src = $plugins_url . "asset/dist/js/common{$ver_string}{$min}.js";
-		wp_enqueue_script( 'wp-migrate-db-pro-common', $src, null, $version, true );
-
-		$src = $plugins_url . "asset/dist/js/hook{$ver_string}{$min}.js";
-		wp_enqueue_script( 'wp-migrate-db-pro-hook', $src, null, $version, true );
-
-		$src = $plugins_url . "asset/dist/js/multisite{$ver_string}{$min}.js";
-		wp_enqueue_script( 'wp-migrate-db-pro-multisite', $src, array( 'jquery' ), $version, true );
-
 		do_action( 'wpmdb_load_assets' );
 
 		$src = $plugins_url . "asset/dist/js/script{$ver_string}{$min}.js";
 		wp_enqueue_script( 'wp-migrate-db-pro-script', $src, array( 'jquery', 'backbone' ), $version, true );
-
-		$src = $plugins_url . "asset/dist/js/localStorage{$ver_string}{$min}.js";
-		wp_enqueue_script( 'wp-migrate-db-pro-localstorage', $src, array( 'wp-migrate-db-pro-script' ), $version, true );
 
 		wp_localize_script( 'wp-migrate-db-pro-script',
 			'wpmdb_strings',
@@ -3649,28 +3647,28 @@ class WPMDB extends WPMDB_Base {
 		$site_details = $this->site_details();
 
 		$nonces = apply_filters( 'wpmdb_nonces', array(
-			'update_max_request_size'          => wp_create_nonce( 'update-max-request-size' ),
-			'update_delay_between_requests'    => wp_create_nonce( 'update-delay-between-requests' ),
-			'check_licence'                    => wp_create_nonce( 'check-licence' ),
-			'verify_connection_to_remote_site' => wp_create_nonce( 'verify-connection-to-remote-site' ),
-			'activate_licence'                 => wp_create_nonce( 'activate-licence' ),
-			'clear_log'                        => wp_create_nonce( 'clear-log' ),
-			'get_log'                          => wp_create_nonce( 'get-log' ),
-			'save_profile'                     => wp_create_nonce( 'save-profile' ),
-			'initiate_migration'               => wp_create_nonce( 'initiate-migration' ),
-			'migrate_table'                    => wp_create_nonce( 'migrate-table' ),
-			'finalize_migration'               => wp_create_nonce( 'finalize-migration' ),
-			'reset_api_key'                    => wp_create_nonce( 'reset-api-key' ),
-			'delete_migration_profile'         => wp_create_nonce( 'delete-migration-profile' ),
-			'save_setting'                     => wp_create_nonce( 'save-setting' ),
-			'copy_licence_to_remote_site'      => wp_create_nonce( 'copy-licence-to-remote-site' ),
-			'reactivate_licence'               => wp_create_nonce( 'reactivate-licence' ),
-			'process_notice_link'              => wp_create_nonce( 'process-notice-link' ),
-			'flush'                            => wp_create_nonce( 'flush' ),
-			'plugin_compatibility'             => wp_create_nonce( 'plugin_compatibility' ),
-			'import_file'                      => wp_create_nonce( 'import-file' ),
-			'whitelist_plugins'                => wp_create_nonce( 'whitelist_plugins' ),
-			'cancel_migration'                 => wp_create_nonce( 'cancel_migration' ),
+			'update_max_request_size'          => WPMDB_Utils::create_nonce( 'update-max-request-size' ),
+			'update_delay_between_requests'    => WPMDB_Utils::create_nonce( 'update-delay-between-requests' ),
+			'check_licence'                    => WPMDB_Utils::create_nonce( 'check-licence' ),
+			'verify_connection_to_remote_site' => WPMDB_Utils::create_nonce( 'verify-connection-to-remote-site' ),
+			'activate_licence'                 => WPMDB_Utils::create_nonce( 'activate-licence' ),
+			'clear_log'                        => WPMDB_Utils::create_nonce( 'clear-log' ),
+			'get_log'                          => WPMDB_Utils::create_nonce( 'get-log' ),
+			'save_profile'                     => WPMDB_Utils::create_nonce( 'save-profile' ),
+			'initiate_migration'               => WPMDB_Utils::create_nonce( 'initiate-migration' ),
+			'migrate_table'                    => WPMDB_Utils::create_nonce( 'migrate-table' ),
+			'finalize_migration'               => WPMDB_Utils::create_nonce( 'finalize-migration' ),
+			'reset_api_key'                    => WPMDB_Utils::create_nonce( 'reset-api-key' ),
+			'delete_migration_profile'         => WPMDB_Utils::create_nonce( 'delete-migration-profile' ),
+			'save_setting'                     => WPMDB_Utils::create_nonce( 'save-setting' ),
+			'copy_licence_to_remote_site'      => WPMDB_Utils::create_nonce( 'copy-licence-to-remote-site' ),
+			'reactivate_licence'               => WPMDB_Utils::create_nonce( 'reactivate-licence' ),
+			'process_notice_link'              => WPMDB_Utils::create_nonce( 'process-notice-link' ),
+			'flush'                            => WPMDB_Utils::create_nonce( 'flush' ),
+			'plugin_compatibility'             => WPMDB_Utils::create_nonce( 'plugin_compatibility' ),
+			'import_file'                      => WPMDB_Utils::create_nonce( 'import-file' ),
+			'whitelist_plugins'                => WPMDB_Utils::create_nonce( 'whitelist_plugins' ),
+			'cancel_migration'                 => WPMDB_Utils::create_nonce( 'cancel_migration' ),
 		) );
 
 		$data = apply_filters( 'wpmdb_data', array(

@@ -87,6 +87,7 @@ class WPMDB_Base {
 			'plugin_version',
 			'error',
 			'state_data',
+			'is_pro',
 		);
 
 		//Setup strings for license responses
@@ -95,8 +96,8 @@ class WPMDB_Base {
 
 	public function setup_license_responses() {
 
-		$disable_ssl_url         = network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
-		$check_licence_again_url = network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-check-licence' ) . '&wpmdb-check-licence=1' );
+		$disable_ssl_url         = network_admin_url( $this->plugin_base . '&nonce=' . WPMDB_Utils::create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
+		$check_licence_again_url = network_admin_url( $this->plugin_base . '&nonce=' . WPMDB_Utils::create_nonce( 'wpmdb-check-licence' ) . '&wpmdb-check-licence=1' );
 
 		// List of potential license responses. Keys must must exist in both arrays, otherwise the default error message will be shown.
 		$this->license_response_messages = array(
@@ -244,15 +245,15 @@ class WPMDB_Base {
 		$this->addons = array(
 			'wp-migrate-db-pro-media-files/wp-migrate-db-pro-media-files.php'         => array(
 				'name'             => 'Media Files',
-				'required_version' => '1.4.8',
+				'required_version' => '1.4.9',
 			),
 			'wp-migrate-db-pro-cli/wp-migrate-db-pro-cli.php'                         => array(
 				'name'             => 'CLI',
-				'required_version' => '1.3.1',
+				'required_version' => '1.3.2',
 			),
 			'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php' => array(
 				'name'             => 'Multisite Tools',
-				'required_version' => '1.1.6',
+				'required_version' => '1.2',
 			),
 		);
 
@@ -933,7 +934,7 @@ class WPMDB_Base {
 				}
 			}
 
-			$disable_ssl_url           = network_admin_url( $this->plugin_base . '&nonce=' . wp_create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
+			$disable_ssl_url           = network_admin_url( $this->plugin_base . '&nonce=' . WPMDB_Utils::create_nonce( 'wpmdb-disable-ssl' ) . '&wpmdb-disable-ssl=1' );
 			$connection_failed_message = '<div class="updated warning inline-message">';
 			$connection_failed_message .= sprintf( __( '<strong>Could not connect to api.deliciousbrains.com</strong> &mdash; You will not receive update notifications or be able to activate your license until this is fixed. This issue is often caused by an improperly configured SSL server (https). We recommend <a href="%1$s" target="_blank">fixing the SSL configuration on your server</a>, but if you need a quick fix you can:%2$s', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/could-not-connect-deliciousbrains-com/?utm_campaign=error%2Bmessages&utm_source=MDB%2BPaid&utm_medium=insideplugin', sprintf( '<p><a href="%1$s" class="temporarily-disable-ssl button">%2$s</a></p>', $disable_ssl_url, __( 'Temporarily disable SSL for connections to api.deliciousbrains.com', 'wp-migrate-db' ) ) );
 			$connection_failed_message .= '</div>';
@@ -1539,7 +1540,7 @@ class WPMDB_Base {
 			return;
 		}
 
-		$result = check_ajax_referer( $action, 'nonce', false );
+		$result = WPMDB_Utils::check_ajax_referer( $action, 'nonce', false );
 
 		if ( false === $result ) {
 			$return = array( 'wpmdb_error' => 1, 'body' => sprintf( __( 'Invalid nonce for: %s', 'wp-migrate-db' ), $action ) );

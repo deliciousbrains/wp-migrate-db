@@ -256,8 +256,16 @@ final class WPMDB_Replace {
 			if ( is_string( $data ) && ( $unserialized = WPMDB_Utils::unserialize( $data, __METHOD__ ) ) !== false ) {
 				// PHP currently has a bug that doesn't allow you to clone the DateInterval / DatePeriod classes.
 				// We skip them here as they probably won't need data to be replaced anyway
-				if ( is_object( $unserialized ) ) {
+				if ( 'object' == gettype( $unserialized ) ) {
 					if ( $unserialized instanceof DateInterval || $unserialized instanceof DatePeriod ) {
+						return $data;
+					}
+					if ( $unserialized instanceof __PHP_Incomplete_Class && defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
+						$objectName = array();
+						preg_match( '/O:\d+:\"([^\"]+)\"/', $data, $objectName );
+						$objectName = $objectName[1] ? $objectName[1] : $data;
+						$error      = sprintf( __( "WP Migrate DB - Failed to instantiate object for replacement. If the serialized object's class is defined by a plugin, you should enable that plugin for migration requests. \nClass Name: %s", 'wp-migrate-db' ), $objectName );
+						error_log( $error );
 						return $data;
 					}
 				}

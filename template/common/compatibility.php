@@ -22,21 +22,20 @@
 							'value'    => $plugin_compatibility_checked,
 							'disabled' => ! $this->compatibility_plugin_manager->is_muplugin_writable(),
 						) ); ?></td>
-					<td>
+					<td class="compatibility-mode-description">
 						<h4>
-							<?php _e( 'Plugin Compatibility Mode', 'wp-migrate-db' ); ?>
+							<?php _e( 'Plugins to Load for Migration Requests', 'wp-migrate-db' ); ?>
 
 							<span class="setting-status"></span>
 						</h4>
 
-						<p class="has-margin"><?php printf( __( 'Enabling this feature will enhance performance and reduce the likelihood of a third-party plugin interfering with migrations. <a href="%1$s" target="_blank">Learn More »</a>', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/compatibility-mode/' ); ?></p>
+						<p class="has-margin"><?php printf( __( 'By default plugins are not loaded for migration requests. This enhances performance and reduces the likelihood of a third-party plugin interfering with migrations. To load certain plugins for migrations requests, select them below and save. <a href="%1$s" target="_blank">Learn More »</a>', 'wp-migrate-db' ), 'https://deliciousbrains.com/wp-migrate-db-pro/doc/compatibility-mode/' ); ?></p>
 					</td>
 				</tr>
 
 				<tr class="plugin-compatibility-section">
 					<td colspan="2">
 						<div class="indent-wrap expandable-content plugin-compatibility-wrap select-wrap">
-							<p class="has-margin"><label for="selected_plugins">Plugins to enable for migration requests:</label></p>
 							<select autocomplete="off" class="multiselect" id="selected-plugins" name="selected_plugins[]" multiple="multiple">
 								<?php
 								$whitelist = array_flip( (array) $this->settings['whitelist_plugins'] );
@@ -57,7 +56,7 @@
 							<a class="multiselect-invert-selection js-action-link" href="#"><?php _e( 'Invert Selection', 'wp-migrate-db' ); ?></a>
 
 							<p>
-								<span class="button plugin-compatibility-save"><?php _e( 'Enable Selected Plugins for Migration Requests', 'wp-migrate-db' ); ?></span>
+								<span class="button plugin-compatibility-save"><?php _e( 'Save', 'wp-migrate-db' ); ?></span>
 							</p>
 						</div>
 					</td>
