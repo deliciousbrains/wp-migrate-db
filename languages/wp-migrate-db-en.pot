@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2017-11-09 08:33-0800\n"
+"POT-Creation-Date: 2018-01-29 09:28-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2623,40 +2623,44 @@ msgstr ""
 msgid "More About The Pro Version"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:3
-msgid ""
-"WP Migrate DB Pro &mdash; Push and pull your database from one WordPress "
-"install to another in 1-click."
+#: template/wpmdb/sidebar.php:4
+msgid "Upgrade to Pro"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:6
+#: template/wpmdb/sidebar.php:5
+msgid ""
+"Push and pull your database from one WordPress install to another "
+"in&nbsp;1&#8209;click."
+msgstr ""
+
+#: template/wpmdb/sidebar.php:9
 msgid "Get 20% Off!"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:11
+#: template/wpmdb/sidebar.php:14
 #, php-format
 msgid ""
 "Submit your name and email and we'll send you a coupon for 20% off your "
 "upgrade to the pro version."
 msgstr ""
 
-#: template/wpmdb/sidebar.php:15
+#: template/wpmdb/sidebar.php:18
 msgid "Your Email"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:19
+#: template/wpmdb/sidebar.php:22
 msgid "First Name"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:23
+#: template/wpmdb/sidebar.php:26
 msgid "Last Name"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:30
+#: template/wpmdb/sidebar.php:33
 msgid "Send me the coupon"
 msgstr ""
 
-#: template/wpmdb/sidebar.php:34
+#: template/wpmdb/sidebar.php:37
 msgid ""
 "We promise we will not use your email for anything else and you can "
 "unsubscribe with 1-click anytime."

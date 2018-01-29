@@ -4224,7 +4224,7 @@ window.wpmdb = window.wpmdb || {};
 							wpmdb_strings.welcome_text = wpmdb_strings.welcome_text.replace('%1$s', 'https://deliciousbrains.com/wp-migrate-db-pro/doc/quick-start-guide/?utm_campaign=support%2Bdocs&utm_source=MDB%2BPaid&utm_medium=insideplugin');
 							wpmdb_strings.welcome_text = wpmdb_strings.welcome_text.replace('%2$s', 'https://deliciousbrains.com/wp-migrate-db-pro/videos/?utm_campaign=support%2Bdocs&utm_source=MDB%2BPaid&utm_medium=insideplugin');
 
-							$licence_status.after('<div id="welcome-wrap">' + '<img id="welcome-img" src="' + wpmdb_data.this_plugin_url + 'asset/dist/img/welcome.jpg" />' + '<div class="welcome-text">' + '<h3>' + wpmdb_strings.welcome_title + '</h3>' + '<p>' + wpmdb_strings.welcome_text + '</p>' + '</div>' + '</div>');
+							$licence_status.after('<div id="welcome-wrap">' + '<img id="welcome-img" src="' + wpmdb_data.this_plugin_url + 'asset/dist/img/mdb-banner.svg" />' + '<div class="welcome-text">' + '<h3>' + wpmdb_strings.welcome_title + '</h3>' + '<p>' + wpmdb_strings.welcome_text + '</p>' + '</div>' + '</div>');
 						}
 
 						$licence_status.html(wpmdb_strings.license_registered).delay(5000).fadeOut(1000, function () {
