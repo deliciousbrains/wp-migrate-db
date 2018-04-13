@@ -75,7 +75,7 @@ Yep, it will run a find &amp; replace on your serialized data and migrate it wit
 
 = What are the requirements? =
 
-They are the same as the [requirements for WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=requirements#requirements.
+They are the same as the [requirements for WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=requirements#requirements).
 
 = Do you offer email support? =
 
