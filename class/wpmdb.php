@@ -170,7 +170,7 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	/**
-	 * Handler for ajax request to process a link click in a notice, e.g. licence deactivated ... re-check.
+	 * Handler for ajax request to process a link click in a notice, e.g. license deactivated ... re-check.
 	 *
 	 * @return bool|null
 	 */
@@ -3308,7 +3308,7 @@ class WPMDB extends WPMDB_Base {
 		add_action( 'admin_head-' . $hook_suffix, array( $this, 'admin_head_connection_info' ) );
 		add_action( 'load-' . $hook_suffix, array( $this, 'load_assets' ) );
 
-		// Remove licence from the database if constant is set
+		// Remove license from the database if constant is set
 		if ( $this->is_licence_constant() && ! empty( $this->settings['licence'] ) ) {
 			$this->settings['licence'] = '';
 			update_site_option( 'wpmdb_settings', $this->settings );
@@ -3378,7 +3378,7 @@ class WPMDB extends WPMDB_Base {
 
 	/**
 	 * Check for wpmdb-remove-licence and related nonce
-	 * if found cleanup routines related to licenced product
+	 * if found cleanup routines related to licensed product
 	 *
 	 * @return void
 	 */
@@ -3386,7 +3386,7 @@ class WPMDB extends WPMDB_Base {
 		if ( isset( $_GET['wpmdb-remove-licence'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-remove-licence' ) ) {
 			$this->settings['licence'] = '';
 			update_site_option( 'wpmdb_settings', $this->settings );
-			// delete these transients as they contain information only valid for authenticated licence holders
+			// delete these transients as they contain information only valid for authenticated license holders
 			delete_site_transient( 'update_plugins' );
 			delete_site_transient( 'wpmdb_upgrade_data' );
 			delete_site_transient( 'wpmdb_licence_response' );
@@ -3406,7 +3406,7 @@ class WPMDB extends WPMDB_Base {
 		if ( isset( $_GET['wpmdb-disable-ssl'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-disable-ssl' ) ) {
 			set_site_transient( 'wpmdb_temporarily_disable_ssl', '1', 60 * 60 * 24 * 30 ); // 30 days
 			$hash = ( isset( $_GET['hash'] ) ) ? '#' . sanitize_title( $_GET['hash'] ) : '';
-			// delete the licence transient as we want to attempt to fetch the licence details again
+			// delete the license transient as we want to attempt to fetch the license details again
 			delete_site_transient( 'wpmdb_licence_response' );
 			// redirecting here because we don't want to keep the query string in the web browsers address bar
 			wp_redirect( network_admin_url( $this->plugin_base . $hash ) );
@@ -3416,14 +3416,14 @@ class WPMDB extends WPMDB_Base {
 
 	/**
 	 * Check for wpmdb-check-licence and related nonce
-	 * if found refresh licence details
+	 * if found refresh license details
 	 *
 	 * @return void
 	 */
 	function http_refresh_licence() {
 		if ( isset( $_GET['wpmdb-check-licence'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-check-licence' ) ) {
 			$hash = ( isset( $_GET['hash'] ) ) ? '#' . sanitize_title( $_GET['hash'] ) : '';
-			// delete the licence transient as we want to attempt to fetch the licence details again
+			// delete the license transient as we want to attempt to fetch the license details again
 			delete_site_transient( 'wpmdb_licence_response' );
 			// redirecting here because we don't want to keep the query string in the web browsers address bar
 			wp_redirect( network_admin_url( $this->plugin_base . $hash ) );
@@ -3551,7 +3551,7 @@ class WPMDB extends WPMDB_Base {
 				'attempting_to_activate_licence'        => __( 'Attempting to activate your license, please wait…', 'wp-migrate-db' ),
 				'licence_reactivated'                   => __( 'License successfully activated, please wait…', 'wp-migrate-db' ),
 				'activate_licence_problem'              => __( 'An error occurred when trying to reactivate your license. Please provide the following information when requesting support:', 'wp-migrate-db' ),
-				'temporarily_activated_licence'         => __( "<strong>We've temporarily activated your licence and will complete the activation once the Delicious Brains API is available again.</strong><br />Please refresh this page to continue.", 'wp-migrate-db' ),
+				'temporarily_activated_licence'         => __( "<strong>We've temporarily activated your license and will complete the activation once the Delicious Brains API is available again.</strong><br />Please refresh this page to continue.", 'wp-migrate-db' ),
 				'ajax_json_message'                     => __( 'JSON Decoding Failure', 'wp-migrate-db' ),
 				'ajax_json_errors'                      => __( 'Our AJAX request was expecting JSON but we received something else. Often this is caused by your theme and/or plugins spitting out PHP errors. If you can edit the theme or plugins causing the errors, you should be able to fix them up, but if not, you can set WP_DEBUG to false in wp-config.php to disable errors from showing up.', 'wp-migrate-db' ),
 				'view_error_messages'                   => __( 'View error messages', 'wp-migrate-db' ),
