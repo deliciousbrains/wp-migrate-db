@@ -5,7 +5,7 @@
 <div class="addons-tab content-tab">
 	<div class="addons-content">
 		<?php if ( ! empty( $licence ) && $this->is_pro ) : ?>
-			<p><?php _e( 'Fetching addon details, please wait...', 'wp-migrate-db' ); ?></p>
+			<p><?php _e( 'Fetching addon details, please wait…', 'wp-migrate-db' ); ?></p>
 		<?php else : ?>
 
 			<?php if ( $this->is_pro ) : ?>
