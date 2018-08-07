@@ -4,6 +4,10 @@ WP Sync DB eliminates the manual work of migrating a WP database. Copy your db f
 
 <p align="center"><img src="https://raw.github.com/slang800/psychic-ninja/master/wp-migrate-db.png"/></p>
 
+## Looking for a Maintainer
+
+I've moved away from PHP & WordPress work and don't have time to maintain this. If you're a talented PHP developer I'd be happy to give you this repo. Grab the latest code from [delicious-brains](https://github.com/wp-sync-db/wp-sync-db/tree/delicious-brains), remove the license checking, branding, & other cruft, and open up a PR to show me your work.
+
 ## Description
 
 WP Sync DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer, or send it directly to another WordPress instance. It is perfect for developers who develop locally and need to move their WordPress site to a staging or production server.
