@@ -88,7 +88,7 @@ class WPMDB_Compatibility {
 	 * Remove TGM Plugin Activation 'force_activation' admin_init action hook if present.
 	 *
 	 * This is to stop excluded plugins being deactivated after a migration, when a theme uses TGMPA to require a
-	 * plugin to be always active.
+	 * plugin to be always active. Also applies to the WDS-Required-Plugins by removing `activate_if_not` action
 	 */
 	public function wpmdbc_tgmpa_compatibility() {
 		$remove_function = false;
@@ -108,7 +108,7 @@ class WPMDB_Compatibility {
 			foreach ( $admin_init_functions as $priority => $functions ) {
 				foreach ( $functions as $key => $function ) {
 					// searching for function this way as can't rely on the calling class being named TGM_Plugin_Activation
-					if ( false !== strpos( $key, 'force_activation' ) ) {
+					if ( false !== strpos( $key, 'force_activation' ) || false !== strpos( $key, 'activate_if_not' ) ) {
 
 						if ( is_array( $wp_filter['admin_init'] ) ) {
 							// for core versions prior to WP 4.7
@@ -220,6 +220,8 @@ class WPMDB_Compatibility {
 				'wpmdb_get_log',
 				'wpmdb_flush',
 				'wpmdb_remote_flush',
+				'wpmdb_get_themes',
+				'wpmdb_get_plugins',
 			) ) ) {
 			return false;
 		}

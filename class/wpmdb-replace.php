@@ -190,8 +190,12 @@ final class WPMDB_Replace {
 			return $new;
 		}
 
-		$parsed_destination = wp_parse_url( $destination_url );
+		$parsed_destination = WPMDB_Utils::parse_url( $destination_url );
 		unset( $parsed_destination['scheme'] );
+
+		if ( isset( $parsed_destination['port'] ) ) {
+			$parsed_destination['port'] = ':' . $parsed_destination['port'];
+		}
 
 		$protocol_search  = $this->source_protocol . '://' . implode( '', $parsed_destination );
 		$protocol_replace = $destination_url;
