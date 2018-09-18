@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2018-09-10 14:46-0400\n"
+"POT-Creation-Date: 2018-09-18 11:43-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2957,6 +2957,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Receiver.php:215
+#: src/wp-migrate-db-pro/class/Transfers/Receiver.php:216
 msgid "Unable to process payload."
 msgstr ""
 
@@ -3010,6 +3011,7 @@ msgid "File does not exist - %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:310
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:317
 #, php-format
 msgid ""
 "File size of source and destination do not match: <br>%s<br>Destination "
@@ -3017,6 +3019,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:317
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:324
 #, php-format
 msgid ""
 "File MD5's do not match for file: %s \n"
@@ -3024,19 +3027,23 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:336
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:343
 #, php-format
 msgid "Could not write line to file. File name: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:365
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:372
 msgid "Failed to unpack payload."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:371
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:378
 msgid "Failed to create stream from payload."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:391
+#: src/wp-migrate-db-pro/class/Transfers/Files/Payload.php:398
 #, php-format
 msgid "Could not create directory: %s"
 msgstr ""

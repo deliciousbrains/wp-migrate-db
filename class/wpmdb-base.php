@@ -261,7 +261,7 @@ class WPMDB_Base {
 			),
 			'wp-migrate-db-pro-theme-plugin-files/wp-migrate-db-pro-theme-plugin-files.php'   => array(
 				'name'             => 'Theme & Plugin Files',
-				'required_version' => '1.0',
+				'required_version' => '1.0.2',
 			),
 		);
 
