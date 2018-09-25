@@ -47,7 +47,7 @@ https://www.youtube.com/watch?v=fHFcH4bCzmU
 == Installation ==
 
 1. Use WordPress' built-in installer
-2. Access the "Migrate DB" menu option under Tools (or under Settings on multsite intallations)
+2. Access the "Migrate DB" menu option under Tools (or under Settings on multsite installations)
 
 == Frequently Asked Questions ==
 
@@ -177,7 +177,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 * Improvement: Leave it to WordPress core to convert tables to utf8mb4
 * Improvement: Workaround to fix issues with Siteground's staging environments
 * Bug fix: Connection URL with space(s) in beginning failing
-* Bug fix: Cancelling a gzipped Export does not remove file
+* Bug fix: Canceling a gzipped Export does not remove the file
 * Bug fix: Unusual table names causing regular expressions to fail
 * Bug fix: Preserving options not working when default subsite is not 1
 * Bug fix: NAN% shown at beginning of a migration
@@ -246,7 +246,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 
 = WP Migrate DB 0.4.3 - 2012-12-18 =
 * Fixed deprecated error notices when debug mode is on
-* Bug fix: [Exports views as tables](https://github.com/bradt/wp-migrate-db/issues/3)
+* Bug fix: [Export views as tables](https://github.com/bradt/wp-migrate-db/issues/3)
 * Compatibility tested with WordPress 3.5
 
 = WP Migrate DB 0.4.2 - 2012-09-13 =

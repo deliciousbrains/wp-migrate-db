@@ -171,7 +171,7 @@ class WPMDB extends WPMDB_Base {
 	}
 
 	/**
-	 * Handler for ajax request to process a link click in a notice, e.g. licence deactivated ... re-check.
+	 * Handler for ajax request to process a link click in a notice, e.g. license deactivated ... re-check.
 	 *
 	 * @return bool|null
 	 */
@@ -3204,7 +3204,7 @@ class WPMDB extends WPMDB_Base {
 		add_action( 'admin_head-' . $hook_suffix, array( $this, 'admin_head_connection_info' ) );
 		add_action( 'load-' . $hook_suffix, array( $this, 'load_assets' ) );
 
-		// Remove licence from the database if constant is set
+		// Remove license from the database if constant is set
 		if ( $this->is_licence_constant() && ! empty( $this->settings['licence'] ) ) {
 			$this->settings['licence'] = '';
 			update_site_option( 'wpmdb_settings', $this->settings );
@@ -3274,7 +3274,7 @@ class WPMDB extends WPMDB_Base {
 
 	/**
 	 * Check for wpmdb-remove-licence and related nonce
-	 * if found cleanup routines related to licenced product
+	 * if found cleanup routines related to licensed product
 	 *
 	 * @return void
 	 */
@@ -3282,7 +3282,7 @@ class WPMDB extends WPMDB_Base {
 		if ( isset( $_GET['wpmdb-remove-licence'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-remove-licence' ) ) {
 			$this->settings['licence'] = '';
 			update_site_option( 'wpmdb_settings', $this->settings );
-			// delete these transients as they contain information only valid for authenticated licence holders
+			// delete these transients as they contain information only valid for authenticated license holders
 			delete_site_transient( 'update_plugins' );
 			delete_site_transient( 'wpmdb_upgrade_data' );
 			delete_site_transient( 'wpmdb_licence_response' );
@@ -3302,7 +3302,7 @@ class WPMDB extends WPMDB_Base {
 		if ( isset( $_GET['wpmdb-disable-ssl'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-disable-ssl' ) ) {
 			set_site_transient( 'wpmdb_temporarily_disable_ssl', '1', 60 * 60 * 24 * 30 ); // 30 days
 			$hash = ( isset( $_GET['hash'] ) ) ? '#' . sanitize_title( $_GET['hash'] ) : '';
-			// delete the licence transient as we want to attempt to fetch the licence details again
+			// delete the license transient as we want to attempt to fetch the license details again
 			delete_site_transient( 'wpmdb_licence_response' );
 			// redirecting here because we don't want to keep the query string in the web browsers address bar
 			wp_redirect( network_admin_url( $this->plugin_base . $hash ) );
@@ -3312,14 +3312,14 @@ class WPMDB extends WPMDB_Base {
 
 	/**
 	 * Check for wpmdb-check-licence and related nonce
-	 * if found refresh licence details
+	 * if found refresh license details
 	 *
 	 * @return void
 	 */
 	function http_refresh_licence() {
 		if ( isset( $_GET['wpmdb-check-licence'] ) && wp_verify_nonce( $_GET['nonce'], 'wpmdb-check-licence' ) ) {
 			$hash = ( isset( $_GET['hash'] ) ) ? '#' . sanitize_title( $_GET['hash'] ) : '';
-			// delete the licence transient as we want to attempt to fetch the licence details again
+			// delete the license transient as we want to attempt to fetch the license details again
 			delete_site_transient( 'wpmdb_licence_response' );
 			// redirecting here because we don't want to keep the query string in the web browsers address bar
 			wp_redirect( network_admin_url( $this->plugin_base . $hash ) );
@@ -3410,8 +3410,8 @@ class WPMDB extends WPMDB_Base {
 				'find_replace_paused'                   => _x( 'Find &amp; Replace Paused', 'The find & replace has been temporarily stopped', 'wp-migrate-db' ),
 				'resume'                                => _x( 'Resume', 'Restart migrating after it was paused', 'wp-migrate-db' ),
 				'completing_current_request'            => __( 'Completing current request', 'wp-migrate-db' ),
-				'cancelling_migration'                  => _x( 'Cancelling migration', 'The migration is being cancelled', 'wp-migrate-db' ),
-				'cancelling_find_replace'               => _x( 'Cancelling find &amp; replace', 'The find & replace is being cancelled', 'wp-migrate-db' ),
+				'cancelling_migration'                  => _x( 'Canceling migration', 'The migration is being canceled', 'wp-migrate-db' ),
+				'cancelling_find_replace'               => _x( 'Canceling find &amp; replace', 'The find & replace is being canceled', 'wp-migrate-db' ),
 				'paused'                                => _x( 'Paused', 'The migration has been temporarily stopped', 'wp-migrate-db' ),
 				'pause_before_finalize_find_replace'    => __( 'Pause before finalizing the updates', 'wp-migrate-db' ),
 				'paused_before_finalize'                => __( 'Automatically paused before migrated tables are replaced. Click "Resume" or "Cancel" when ready.', 'wp-migrate-db' ),
@@ -3422,11 +3422,11 @@ class WPMDB extends WPMDB_Base {
 				'removing_remote_sql'                   => __( 'Removing the remote backup MySQL export file', 'wp-migrate-db' ),
 				'removing_remote_temp_tables'           => __( 'Removing the remote temporary tables', 'wp-migrate-db' ),
 				'migration_cancellation_failed'         => __( 'Migration cancellation failed', 'wp-migrate-db' ),
-				'manually_remove_temp_files'            => __( 'A problem occurred while cancelling the migration, you may have to manually delete some temporary files / tables.', 'wp-migrate-db' ),
-				'migration_cancelled'                   => _x( 'Migration cancelled', 'The migration has been cancelled', 'wp-migrate-db' ),
+				'manually_remove_temp_files'            => __( 'A problem occurred while canceling the migration, you may have to manually delete some temporary files / tables.', 'wp-migrate-db' ),
+				'migration_cancelled'                   => _x( 'Migration canceled', 'The migration has been canceled', 'wp-migrate-db' ),
 				'migration_cancelled_success'           => __( 'The migration has been stopped and all temporary files and data have been cleaned up.', 'wp-migrate-db' ),
-				'find_replace_cancelled'                => _x( 'Find &amp; replace cancelled', 'The migration has been cancelled', 'wp-migrate-db' ),
-				'find_replace_cancelled_success'        => __( 'The find &amp; replace has been cancelled and all temporary data has been cleaned up.', 'wp-migrate-db' ),
+				'find_replace_cancelled'                => _x( 'Find &amp; replace canceled', 'The migration has been canceled', 'wp-migrate-db' ),
+				'find_replace_cancelled_success'        => __( 'The find &amp; replace has been canceled and all temporary data has been cleaned up.', 'wp-migrate-db' ),
 				'migration_complete'                    => _x( 'Migration complete', 'The migration completed successfully', 'wp-migrate-db' ),
 				'finalizing_migration'                  => _x( 'Finalizing migration', 'The migration is in the last stages', 'wp-migrate-db' ),
 				'flushing'                              => _x( 'Flushing caches and rewrite rules', 'The caches and rewrite rules for the target are being flushed', 'wp-migrate-db' ),
@@ -3446,7 +3446,7 @@ class WPMDB extends WPMDB_Base {
 				'attempting_to_activate_licence'        => __( 'Attempting to activate your license, please wait…', 'wp-migrate-db' ),
 				'licence_reactivated'                   => __( 'License successfully activated, please wait…', 'wp-migrate-db' ),
 				'activate_licence_problem'              => __( 'An error occurred when trying to reactivate your license. Please provide the following information when requesting support:', 'wp-migrate-db' ),
-				'temporarily_activated_licence'         => __( "<strong>We've temporarily activated your licence and will complete the activation once the Delicious Brains API is available again.</strong><br />Please refresh this page to continue.", 'wp-migrate-db' ),
+				'temporarily_activated_licence'         => __( "<strong>We've temporarily activated your license and will complete the activation once the Delicious Brains API is available again.</strong><br />Please refresh this page to continue.", 'wp-migrate-db' ),
 				'ajax_json_message'                     => __( 'JSON Decoding Failure', 'wp-migrate-db' ),
 				'ajax_json_errors'                      => __( 'Our AJAX request was expecting JSON but we received something else. Often this is caused by your theme and/or plugins spitting out PHP errors. If you can edit the theme or plugins causing the errors, you should be able to fix them up, but if not, you can set WP_DEBUG to false in wp-config.php to disable errors from showing up.', 'wp-migrate-db' ),
 				'ajax_php_errors'                      => __( 'Our AJAX request was expecting JSON but we received something else', 'wp-migrate-db' ),
@@ -3475,8 +3475,8 @@ class WPMDB extends WPMDB_Base {
 				'welcome_text'                          => __( 'Hey, this is the first time activating your license, nice! Your migrations are about to get awesome! If you haven’t already, you should check out our <a href="%1$s">Quick Start Guide</a> and <a href="%2$s">Videos</a>. If you run into any trouble at all, use the <strong>Help tab</strong> above to submit a support request.', 'wp-migrate-db' ),
 				'title_progress'                        => __( '%1$s Stage %2$s of %3$s', 'wp-migrate-db' ),
 				'title_paused'                          => __( 'Paused', 'wp-migrate-db' ),
-				'title_cancelling'                      => __( 'Cancelling', 'wp-migrate-db' ),
-				'title_cancelled'                       => __( 'Cancelled', 'wp-migrate-db' ),
+				'title_cancelling'                      => __( 'Canceling', 'wp-migrate-db' ),
+				'title_cancelled'                       => __( 'Canceled', 'wp-migrate-db' ),
 				'title_finalizing'                      => __( 'Finalizing', 'wp-migrate-db' ),
 				'title_complete'                        => __( 'Complete', 'wp-migrate-db' ),
 				'title_error'                           => __( 'Failed', 'wp-migrate-db' ),

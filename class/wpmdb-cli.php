@@ -268,7 +268,7 @@ class WPMDB_CLI extends WPMDB_Base {
 	function cli_initiate_migration() {
 		do_action( 'wpmdb_cli_before_initiate_migration', $this->profile );
 
-		WP_CLI::log( __( 'Initiating migration...', 'wp-migrate-db-cli' ) );
+		WP_CLI::log( __( 'Initiating migration…', 'wp-migrate-db-cli' ) );
 
 		$migration_args                          = $this->post_data;
 		$migration_args['form_data']             = http_build_query( $this->profile );
@@ -498,7 +498,7 @@ class WPMDB_CLI extends WPMDB_Base {
 	function finalize_migration() {
 		do_action( 'wpmdb_cli_before_finalize_migration', $this->profile, $this->migration );
 
-		WP_CLI::log( __( 'Cleaning up...', 'wp-migrate-db-cli' ) );
+		WP_CLI::log( __( 'Cleaning up…', 'wp-migrate-db-cli' ) );
 
 		$finalize = apply_filters( 'wpmdb_cli_finalize_migration', true, $this->profile, $this->migration );
 		if ( is_wp_error( $finalize ) ) {

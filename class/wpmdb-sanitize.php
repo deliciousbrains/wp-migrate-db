@@ -154,7 +154,7 @@ class WPMDB_Sanitize {
 			} elseif ( 'bool' == $key_rules ) {
 				$bool = sanitize_key( $data );
 				if ( empty( $bool ) || ! in_array( $bool, array( 'true', 'false' ) ) ) {
-					wp_die( sprintf( __( '%1$s was expecting a bool but got something else: "%2$s"', 'wp-db-migrate-pro' ), $context, $data ) );
+					wp_die( sprintf( __( '%1$s was expecting a boolean but got something else: "%2$s"', 'wp-db-migrate-pro' ), $context, $data ) );
 
 					return false;
 				}

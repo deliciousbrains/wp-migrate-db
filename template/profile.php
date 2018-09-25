@@ -11,7 +11,7 @@
 			</li>
 		<?php } ?>
 		<li>
-			<a href="<?php echo $this->plugin_base . '&wpmdb-profile=-1'; ?>"><?php _e( 'Nope, let\'s start fresh...', 'wp-migrate-db' ); ?></a>
+			<a href="<?php echo $this->plugin_base . '&wpmdb-profile=-1'; ?>"><?php _e( 'Nope, let\'s start fresh…', 'wp-migrate-db' ); ?></a>
 		</li>
 	</ul>
 </div>
