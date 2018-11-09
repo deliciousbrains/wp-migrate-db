@@ -243,6 +243,13 @@ final class WPMDB_Replace {
 			return $pre;
 		}
 
+		// Some options contain serialized self-references which leads to memory exhaustion. Skip these.
+		if ( $this->table_is( 'options' ) && 'option_value' === $this->get_column() && is_serialized( $data ) ) {
+			if ( preg_match( '/r\:\d+/i', $data ) ) {
+				return $data;
+			}
+		}
+
 		$is_json           = false;
 		$before_fired      = false;
 		$successive_filter = $filtered;

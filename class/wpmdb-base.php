@@ -90,7 +90,8 @@ class WPMDB_Base {
 			'error',
 			'state_data',
 			'is_pro',
-			'default_profile'
+			'default_profile',
+			'doing_cli_migration',
 		);
 
 		//Setup strings for license responses
@@ -261,7 +262,7 @@ class WPMDB_Base {
 			),
 			'wp-migrate-db-pro-theme-plugin-files/wp-migrate-db-pro-theme-plugin-files.php'   => array(
 				'name'             => 'Theme & Plugin Files',
-				'required_version' => '1.0.2',
+				'required_version' => '1.0.3',
 			),
 		);
 

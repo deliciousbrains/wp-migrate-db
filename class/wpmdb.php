@@ -56,7 +56,6 @@ class WPMDB extends WPMDB_Base {
 		add_action( 'wp_ajax_wpmdb_finalize_migration', array( $this, 'ajax_finalize_migration' ) );
 		add_action( 'wp_ajax_wpmdb_flush', array( $this, 'ajax_flush' ) );
 		add_action( 'wp_ajax_nopriv_wpmdb_flush', array( $this, 'ajax_nopriv_flush', ) );
-		add_action( 'wpmdb_initiate_migration', array( $this, 'log_migration_event'), 100 );
 
 		$this->accepted_fields = array(
 			'action',
@@ -3987,93 +3986,4 @@ class WPMDB extends WPMDB_Base {
 		return wptexturize( ob_get_clean() );
 	}
 
-	function log_migration_event( $state_data ) {
-		if ( true !== $this->settings['allow_tracking'] ) {
-			return false;
-		}
-		// TODO refactor into separate class so we can build free without this code
-		// TODO don't run while testing?
-		$api_url = apply_filters( 'wpmdb_logging_endpoint_url', 'https://api2.deliciousbrains.com/event' );
-
-		$log_data = array(
-			'local_timestamp'                        => time(),
-			'licence_key'                            => $this->get_licence_key(),
-			'cli'                                    => $this->doing_cli_migration,
-			'setting-compatibility_plugin_installed' => $this->filesystem->file_exists( $this->mu_plugin_dest ),
-		);
-
-		foreach ( $this->parse_migration_form_data( $state_data['form_data'] ) as $key => $val ) {
-			if ( 'connection_info' === $key ) {
-				continue;
-			}
-			$log_data[ 'profile-' . $key ] = $val;
-		}
-
-		foreach ( $this->settings as $key => $val ) {
-			if ( 'profiles' === $key || 'key' === $key ) {
-				continue;
-			}
-			$log_data[ 'setting-' . $key ] = $val;
-		}
-
-		foreach ( $GLOBALS['wpmdb_meta'] as $plugin => $arr ) {
-			$log_data[ $plugin . '-active' ]  = true;
-			$log_data[ $plugin . '-version' ] = $arr['version'];
-		}
-
-		foreach ( $state_data['site_details'] as $site => $info ) {
-			$log_data[ $site . '-site_url' ] = $info['site_url'];
-			$log_data[ $site . '-home_url' ] = $info['home_url'];
-			$log_data[ $site . '-prefix' ]   = $info['prefix'];
-
-			$log_data[ $site . '-is_multisite' ] = $info['is_multisite'];
-
-			if ( isset( $info['subsites'] ) && is_array( $info['subsites'] ) ) {
-				$log_data[ $site . '-subsite_count' ] = count( $info['subsites'] );
-			}
-
-			$log_data[ $site . '-is_subdomain_install' ] = $info['is_subdomain_install'];
-		}
-
-		foreach ( $log_data as $key => $val ) {
-			if ( strstr( $key, 'count' ) || is_array( $val ) ) {
-				continue;
-			}
-			if ( '1' === $val ) {
-				$log_data[ $key ] = true;
-				continue;
-			}
-			if ( '0' === $val ) {
-				$log_data[ $key ] = false;
-				continue;
-			}
-			if ( 'true' === $val ) {
-				$log_data[ $key ] = true;
-				continue;
-			}
-			if ( 'false' === $val ) {
-				$log_data[ $key ] = false;
-				continue;
-			}
-		}
-
-		$remote_post_args = array(
-			'blocking' => false,
-			'timeout'  => 60,
-			'method'   => 'POST',
-			'headers'  => array( 'Content-Type' => 'application/json' ),
-			'body'     => json_encode( $log_data ),
-		);
-		$result           = wp_remote_post( $api_url, $remote_post_args );
-
-		if ( is_wp_error( $result ) ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Error logging migration event' );
-				error_log( print_r( $result, 1 ) );
-			}
-			$this->log_error( 'Error logging Migration event', $result );
-		}
-
-		return true;
-	}
 }

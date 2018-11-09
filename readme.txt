@@ -4,14 +4,14 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: migrate, migration, export, data dump, backup, database, mysql, find & replace, search & replace, import
 Requires at least: 3.6
 Tested up to: 4.9.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2
 
 Migrates your database by running find & replace on URLs and file paths, handling serialized data, and saving an SQL file.
 
 == Description ==
 
-https://www.youtube.com/watch?v=m8oScnEK5y0
+https://www.youtube.com/watch?v=m8oScnEK5y0&rel=0
 
 WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, handles serialized data, then allows you to save it to your computer as an SQL file. To complete the migration, you need to use a database management tool (e.g. phpMyAdmin) to import the SQL file to your database, replacing your existing database. It is perfect for developers who need to migrate fresh data from the production site to their local install, or migrate their locally developed site to a staging or production server.
 
@@ -42,7 +42,7 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
 See the video below or [visit the web site](http://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting&utm_content=description) to learn more about the pro version.
 
-https://www.youtube.com/watch?v=fHFcH4bCzmU
+https://www.youtube.com/watch?v=8u_kX5d78Bs&rel=0
 
 == Installation ==
 
@@ -90,6 +90,10 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 3. Saving the exported database
 
 == Changelog ==
+= WP Migrate DB 1.0.5 - 2018-11-09  =
+* New: Updated YouTube video in migration progress modal
+* Bug fix: Duplicate JavaScript causes console error
+
 = WP Migrate DB 1.0.4 - 2018-09-13  =
 * Bug fix: Overall progress bar spins when font-awesome loaded
 
