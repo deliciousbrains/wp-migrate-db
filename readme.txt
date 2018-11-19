@@ -92,6 +92,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 
 == Changelog ==
 = WP Migrate DB 1.0.6 - 2018-11-19  =
+* New: Increased PHP version requirement from PHP 5.2+ to PHP 5.4+
 * Improvement: Major reorganization of the PHP code into better classes and a better folder structure
 
 = WP Migrate DB 1.0.5 - 2018-11-09  =
