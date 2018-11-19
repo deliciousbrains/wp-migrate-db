@@ -6,12 +6,12 @@
 			++ $key
 			?>
 			<li>
-				<a href="<?php echo $this->plugin_base . '&wpmdb-profile=' . $key; ?>"><?php printf( '%s - %s', $key, esc_html( $profile['name'] ) ); ?></a>
+				<a href="<?php echo $this->props->plugin_base . '&wpmdb-profile=' . $key; ?>"><?php printf( '%s - %s', $key, esc_html( $profile['name'] ) ); ?></a>
 				<span class="main-list-delete-profile-link" data-profile-id="<?php echo $key; ?>">&times;</span>
 			</li>
 		<?php } ?>
 		<li>
-			<a href="<?php echo $this->plugin_base . '&wpmdb-profile=-1'; ?>"><?php _e( 'Nope, let\'s start fresh...', 'wp-migrate-db' ); ?></a>
+			<a href="<?php echo $this->props->plugin_base . '&wpmdb-profile=-1'; ?>"><?php _e( 'Nope, let\'s start fresh...', 'wp-migrate-db' ); ?></a>
 		</li>
 	</ul>
 </div>

@@ -1,14 +1,18 @@
 <?php
-	$licence = $this->get_licence_key();
-	$is_pro = $this->is_pro ? 'MDB%2BPaid' : 'MDB%2BFree';
+$licence = '';
+if ( isset( $this->license ) ) {
+	$licence = $this->license->get_licence_key();
+}
+
+$is_pro = $this->props->is_pro ? 'MDB%2BPaid' : 'MDB%2BFree';
 ?>
 <div class="addons-tab content-tab">
 	<div class="addons-content">
-		<?php if ( ! empty( $licence ) && $this->is_pro ) : ?>
+		<?php if ( ! empty( $licence ) && $this->props->is_pro ) : ?>
 			<p><?php _e( 'Fetching addon details, please wait...', 'wp-migrate-db' ); ?></p>
 		<?php else : ?>
 
-			<?php if ( $this->is_pro ) : ?>
+			<?php if ( $this->props->is_pro ) : ?>
 				<p class="inline-message warning">
 					<strong><?php _ex( 'Activate Your License', 'License must be activated to use addons', 'wp-migrate-db' ); ?></strong> &ndash; <?php _e( 'Please switch to the Settings tab and activate your license. If your license includes the addons below, you will be able to install them from here with one-click.', 'wp-migrate-db' ); ?>
 				</p>

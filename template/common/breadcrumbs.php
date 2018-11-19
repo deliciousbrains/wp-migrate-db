@@ -5,7 +5,7 @@ if ( count( $this->settings['profiles'] ) > 0 ) :
 
 	<div class="crumbs">
 
-		<a class="crumb" href="<?php echo $this->plugin_base; ?>" class="return-to-profile-selection clearfix">
+		<a class="crumb" href="<?php echo $this->props->plugin_base; ?>" class="return-to-profile-selection clearfix">
 			<?php _e( 'Saved Profiles', 'wp-migrate-db' ); ?>
 		</a>
 

@@ -4,7 +4,7 @@ Plugin Name: WP Migrate DB Pro Compatibility
 Plugin URI: http://deliciousbrains.com/wp-migrate-db-pro/
 Description: Prevents 3rd party plugins from being loaded during WP Migrate DB specific operations
 Author: Delicious Brains
-Version: 1.1
+Version: 1.2
 Author URI: http://deliciousbrains.com
 */
 
@@ -22,7 +22,7 @@ if ( defined( 'WP_PLUGIN_DIR' ) ) {
 } else {
 	$plugins_dir = plugin_dir_path( __FILE__ ) . '../plugins/';
 }
-$compat_class_path            = 'class/wpmdb-compatibility.php';
+$compat_class_path            = 'class/Common/Compatibility/Compatibility.php';
 $wpmdbpro_compatibility_class = $plugins_dir . 'wp-migrate-db-pro/' . $compat_class_path;
 $wpmdb_compatibility_class    = $plugins_dir . 'wp-migrate-db/' . $compat_class_path;
 
@@ -32,6 +32,6 @@ if ( file_exists( $wpmdbpro_compatibility_class ) ) {
 	include_once $wpmdb_compatibility_class;
 }
 
-if ( class_exists( 'WPMDB_Compatibility' ) ) {
-	new WPMDB_Compatibility();
+if ( class_exists( 'DeliciousBrains\WPMDB\Common\Compatibility\Compatibility' ) ) {
+	new DeliciousBrains\WPMDB\Common\Compatibility\Compatibility();
 }

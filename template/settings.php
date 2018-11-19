@@ -12,7 +12,7 @@
 			) ); ?>
 			<?php do_action( 'wpmdb_additional_settings' ); ?>
 			</tbody>
-			<?php if ( $this->is_pro ): ?>
+			<?php if ( $this->props->is_pro ): ?>
 				<tbody class="settings-advanced">
 				<tr class="wpmdb-setting-title">
 					<th colspan="2"><h3><?php _e( 'Advanced Settings', 'wp-migrate-db' ); ?></h3></th>

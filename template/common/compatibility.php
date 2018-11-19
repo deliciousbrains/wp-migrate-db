@@ -6,9 +6,9 @@
 			<div class="option-heading tables-header"><?php _e( 'Compatibility', 'wp-migrate-db' ); ?></div>
 		</div>
 
-		<div class="compatibility-mode-disabled"<?php if ( $this->compatibility_plugin_manager->is_muplugin_writable() ): ?> style="display: none;"<?php endif; ?>>
+		<div class="compatibility-mode-disabled"<?php if ( $this->util->is_muplugin_writable() ): ?> style="display: none;"<?php endif; ?>>
 			<div class="inline-message error-notice notification-message">
-				<?php printf( __( 'The compatibility plugin cannot be %s because the mu-plugin directory is not currently writable.  Please update the permissions of the mu-plugins folder:  <strong>%s</strong>', 'wp-migrate-db' ), ( $this->compatibility_plugin_manager->is_muplugin_installed() ? 'disabled' : 'enabled' ), $this->mu_plugin_dir );
+				<?php printf( __( 'The compatibility plugin cannot be %s because the mu-plugin directory is not currently writable.  Please update the permissions of the mu-plugins folder:  <strong>%s</strong>', 'wp-migrate-db' ), ( $this->util->is_muplugin_installed() ? 'disabled' : 'enabled' ), $this->props->mu_plugin_dir );
 				?>
 			</div>
 		</div>
@@ -20,7 +20,7 @@
 					<td><?php $this->template( 'checkbox', 'common', array(
 							'key'      => 'plugin-compatibility',
 							'value'    => $plugin_compatibility_checked,
-							'disabled' => ! $this->compatibility_plugin_manager->is_muplugin_writable(),
+							'disabled' => ! $this->util->is_muplugin_writable(),
 						) ); ?></td>
 					<td class="compatibility-mode-description">
 						<h4>
