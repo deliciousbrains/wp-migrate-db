@@ -93,7 +93,7 @@ If you upgrade to [WP Migrate DB Pro](http://deliciousbrains.com/wp-migrate-db-p
 == Changelog ==
 = WP Migrate DB 1.0.7 - 2018-11-21  =
 * Bug fix: WP Migrate DB Anonymization plugin no longer functions
-* Bug fix: 500 errors occur when another plugin is intalled that includes Composer
+* Bug fix: 500 errors occur when another plugin is installed that includes Composer
 * Improvement: Add Theme & Plugin Files Addon to addons list
 * Improvement: Remove un-needed template files
 
