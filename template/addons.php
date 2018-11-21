@@ -43,6 +43,13 @@ $is_pro = $this->props->is_pro ? 'MDB%2BPaid' : 'MDB%2BFree';
 				</div>
 			</article>
 
+			<article class="addon wp-migrate-db-pro-theme-plugin-files">
+				<div class="desc">
+					<h1><?php _e( 'Theme &amp; Plugin Files', 'wp-migrate-db' ); ?></h1>
+					<p><?php printf( __( 'Allows you to push and pull your theme and plugin files between two WordPress installs. <a href="%s">More Details &rarr;</a>', 'wp-migrate-db' ), "https://deliciousbrains.com/wp-migrate-db-pro/doc/theme-plugin-files-addon/?utm_campaign=addons%2Binstall&utm_source=$is_pro&utm_medium=insideplugin" ); ?></p>
+				</div>
+			</article>
+
 		<?php endif; ?>
 	</div>
 </div>

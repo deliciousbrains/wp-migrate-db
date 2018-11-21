@@ -62,7 +62,7 @@
 		}
 
 		if( $this->props->is_pro ){
-			$this->template( 'backups' );
+			$this->template( 'backups', 'pro' );
 		}
 
 		$this->template( 'settings' );

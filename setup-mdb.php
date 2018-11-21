@@ -2,7 +2,7 @@
 /**
  * Populate the $wpmdb global with an instance of the WPMDB class and return it.
  *
- * @return WPMDB The one true global instance of the WPMDB class.
+ * @return DeliciousBrains\WPMDB\WPMigrateDB The one true global instance of the WPMDB class.
  */
 function wp_migrate_db() {
 	global $wpmdb;
@@ -11,8 +11,8 @@ function wp_migrate_db() {
 		return $wpmdb;
 	}
 
-	$WPMDB = new DeliciousBrains\WPMDB\Free\WPMigrateDBFree();
-	$WPMDB->register();
+	$wpmdb = new DeliciousBrains\WPMDB\Free\WPMigrateDBFree();
+	$wpmdb->register();
 
 	return $wpmdb;
 }

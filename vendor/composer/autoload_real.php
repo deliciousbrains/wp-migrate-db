@@ -8,7 +8,7 @@ class ComposerAutoloaderInit6f497b9a6dd436300fa985a250762cda
 
     public static function loadClassLoader($class)
     {
-        if ('Composer\Autoload\ClassLoader' === $class) {
+        if ('DeliciousBrains\WPMDB\vendor\Composer\Autoload\ClassLoader' === $class) {
             require __DIR__ . '/ClassLoader.php';
         }
     }
@@ -20,14 +20,14 @@ class ComposerAutoloaderInit6f497b9a6dd436300fa985a250762cda
         }
 
         spl_autoload_register(array('ComposerAutoloaderInit6f497b9a6dd436300fa985a250762cda', 'loadClassLoader'), true, true);
-        self::$loader = $loader = new \Composer\Autoload\ClassLoader();
+        self::$loader = $loader = new \DeliciousBrains\WPMDB\vendor\Composer\Autoload\ClassLoader();
         spl_autoload_unregister(array('ComposerAutoloaderInit6f497b9a6dd436300fa985a250762cda', 'loadClassLoader'));
 
         $useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
         if ($useStaticLoader) {
             require_once __DIR__ . '/autoload_static.php';
 
-            call_user_func(\Composer\Autoload\ComposerStaticInit6f497b9a6dd436300fa985a250762cda::getInitializer($loader));
+            call_user_func(\DeliciousBrains\WPMDB\vendor\Composer\Autoload\ComposerStaticInit6f497b9a6dd436300fa985a250762cda::getInitializer($loader));
         } else {
             $classMap = require __DIR__ . '/autoload_classmap.php';
             if ($classMap) {
