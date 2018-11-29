@@ -4,7 +4,7 @@ Plugin Name: WP Migrate DB
 Plugin URI: https://wordpress.org/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Delicious Brains
-Version: 1.0.7
+Version: 1.0.8
 Author URI: https://deliciousbrains.com
 Network: True
 Text Domain: wp-migrate-db
@@ -22,25 +22,26 @@ Domain Path: /languages/
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // **********************************************************************
 
-$GLOBALS['wpmdb_meta']['wp-migrate-db']['version'] = '1.0.7';
+$wpmdb_base_path                                   = dirname( __FILE__ );
+$GLOBALS['wpmdb_meta']['wp-migrate-db']['version'] = '1.0.8';
 
 if ( ! defined( 'WPMDB_MINIMUM_PHP_VERSION' ) ) {
 	define( 'WPMDB_MINIMUM_PHP_VERSION', '5.4' );
 }
 
 if ( version_compare( PHP_VERSION, WPMDB_MINIMUM_PHP_VERSION, '>=' ) ) {
-	require_once __DIR__ . '/class/autoload.php';
-	require_once __DIR__ . '/setup-mdb.php';
+	require_once $wpmdb_base_path . '/class/autoload.php';
+	require_once $wpmdb_base_path . '/setup-mdb.php';
 }
 
 if ( ! function_exists( 'wpmdb_deactivate_other_instances' ) ) {
-	require_once __DIR__ . '/class/deactivate.php';
+	require_once $wpmdb_base_path . '/class/deactivate.php';
 }
 
 add_action( 'activated_plugin', 'wpmdb_deactivate_other_instances' );
 
 if ( ! class_exists( 'WPMDB_PHP_Checker' ) ) {
-	require_once __DIR__ . '/php-checker.php';
+	require_once $wpmdb_base_path . '/php-checker.php';
 }
 
 $php_checker = new WPMDB_PHP_Checker( __FILE__, WPMDB_MINIMUM_PHP_VERSION );

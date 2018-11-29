@@ -195,6 +195,10 @@ class Cli {
 
 		$this->profile = apply_filters( 'wpmdb_cli_filter_before_cli_initiate_migration', $this->profile, $this->post_data );
 
+		if ( is_wp_error( $this->profile ) ) {
+			\WP_CLI::error( $this->profile->get_error_message() );
+		}
+
 		// Check for tables specified in migration profile that do not exist in the source database
 		if ( ! empty( $this->profile['select_tables'] ) && 'import' !== $this->profile['action'] ) {
 			$source_tables = apply_filters( 'wpmdb_cli_filter_source_tables', $this->table->get_tables(), $this->profile );

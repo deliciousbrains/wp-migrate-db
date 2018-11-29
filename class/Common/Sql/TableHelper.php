@@ -45,7 +45,7 @@ class TableHelper {
 			if ( is_array( $a_name ) ) {
 				$result = array();
 				reset( $a_name );
-				while ( list( $key, $val ) = each( $a_name ) ) {
+				foreach ( $a_name as $key => $val ) {
 					$result[ $key ] = '`' . $val . '`';
 				}
 

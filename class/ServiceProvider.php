@@ -116,7 +116,7 @@ class ServiceProvider extends AbstractServiceProvider {
 	 * $this->get('DeliciousBrains\WPMDB\Common\SomeClass'); // new instance of `SomeClass`
 	 *
 	 * @TODO Generate this automatically
-	 * @see http://container.thephpleague.com/2.x/basic-usage/
+	 * @see  http://container.thephpleague.com/2.x/basic-usage/
 	 *
 	 */
 	public function setupSharedClasses() {

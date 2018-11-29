@@ -8,8 +8,9 @@ if ( isset( $_GET['wpmdb-profile'] ) ) {
 	$loaded_profile = $this->profile->default_profile;
 }
 $is_default_profile = isset( $loaded_profile['default_profile'] );
+$tracking_base      = $this->props->is_pro ? 'MDB%2BPaid' : 'MDB%2BFree';
 
-$tracking_base = $this->props->is_pro ? 'MDB%2BPaid' : 'MDB%2BFree';
+$lock_url_find_replace_row = apply_filters( 'wpmdb_lock_find_replace_row', $this->lock_url_find_replace_row );
 
 $convert_exclude_revisions   = false;
 $convert_post_type_selection = false;
@@ -139,7 +140,7 @@ $breadcrumbs_params = array(
 
 		<div class="step-two">
 
-			<?php do_action( 'wpmdb_before_migration_options' ); ?>
+			<?php do_action( 'wpmdb_before_migration_options', $loaded_profile ); ?>
 
 			<?php $this->template_part( array( 'import_find_replace_option' ) ); ?>
 
@@ -170,12 +171,12 @@ $breadcrumbs_params = array(
 						</td>
 					</tr>
 					<?php if ( $is_default_profile ) : ?>
-						<tr class="replace-row<?php echo $this->lock_url_find_replace_row ? ' pin' : ''; ?>">
+						<tr class="replace-row<?php echo $lock_url_find_replace_row ? ' pin' : ''; ?>">
 							<td class="sort-handle-col">
 								<span class="sort-handle"></span>
 							</td>
 							<td class="old-replace-col">
-								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" placeholder="Old URL" value="<?php echo esc_url( preg_replace( '#^https?:#', '', home_url() ) ); ?>" autocomplete="off"<?php echo $this->lock_url_find_replace_row ? ' readonly' : ''; ?> />
+								<input type="text" size="40" name="replace_old[]" class="code" id="old-url" placeholder="Old URL" value="<?php echo esc_url( preg_replace( '#^https?:#', '', home_url() ) ); ?>" autocomplete="off"<?php echo $lock_url_find_replace_row ? ' readonly' : ''; ?> />
 							</td>
 							<td class="arrow-col" title="Copy Find to Replace">
 								<span class="right-arrow">&rarr;</span>
@@ -184,7 +185,7 @@ $breadcrumbs_params = array(
 								<input type="text" size="40" name="replace_new[]" class="code" id="new-url" placeholder="New URL" autocomplete="off" />
 							</td>
 							<td class="row-action-buttons">
-								<?php $style = $this->lock_url_find_replace_row ? 'display: none;' : ''; ?>
+								<?php $style = $lock_url_find_replace_row ? 'display: none;' : ''; ?>
 								<span class="replace-remove-row" data-profile-id="0" style="<?php echo $style; ?>"></span>
 								<a href="#" class="general-helper domain-replace-helper js-action-link"></a>
 								<div class="domain-replace-info helper-message bottom">
@@ -216,7 +217,8 @@ $breadcrumbs_params = array(
 					<?php else :
 						$i = 1;
 						foreach ( $loaded_profile['replace_old'] as $replace_old ) : ?>
-							<tr class="replace-row<?php echo ( 1 == $i && $this->lock_url_find_replace_row ) ? ' pin' : ''; ?>">
+							<tr class="replace-row<?php
+							echo ( 1 == $i && $lock_url_find_replace_row ) ? ' pin' : ''; ?>">
 								<?php
 								$replace_new = ( ! empty( $loaded_profile['replace_new'][ $i ] ) ) ? $loaded_profile['replace_new'][ $i ] : '';
 								?>
@@ -224,7 +226,7 @@ $breadcrumbs_params = array(
 									<span class="sort-handle"></span>
 								</td>
 								<td class="old-replace-col">
-									<input type="text" size="40" name="replace_old[]" class="code" placeholder="Old value" value="<?php echo esc_attr( $replace_old ); ?>" autocomplete="off"<?php echo ( 1 == $i && $this->lock_url_find_replace_row ) ? ' readonly' : ''; ?> />
+									<input type="text" size="40" name="replace_old[]" class="code" placeholder="Old value" value="<?php echo esc_attr( $replace_old ); ?>" autocomplete="off"<?php echo ( 1 == $i && $lock_url_find_replace_row ) ? ' readonly' : ''; ?> />
 								</td>
 								<td class="arrow-col" title="Copy Find to Replace">
 									<span class="right-arrow">&rarr;</span>
@@ -233,7 +235,7 @@ $breadcrumbs_params = array(
 									<input type="text" size="40" name="replace_new[]" class="code" placeholder="New value" value="<?php echo esc_attr( $replace_new ); ?>" autocomplete="off" />
 								</td>
 								<td class="row-action-buttons">
-									<?php if ( ! $this->lock_url_find_replace_row || ( $this->lock_url_find_replace_row && $i != 1 ) ) : ?>
+									<?php if ( ! $lock_url_find_replace_row || ( $lock_url_find_replace_row && $i != 1 ) ) : ?>
 										<span class="replace-remove-row" data-profile-id="0"></span>
 									<?php endif; ?>
 								</td>
@@ -250,7 +252,7 @@ $breadcrumbs_params = array(
 
 				<?php
 				$new_url_missing_warning = __( '<strong>New URL Missing</strong> &mdash; Please enter the protocol-relative URL of the remote website in the "New URL" field or remove the whole row entirely. If you are unsure of what this URL should be, please consult <a href="%s" target="_blank">our documentation</a> on find and replace fields.', 'wp-migrate-db' );
-				if ( $is_default_profile && $this->lock_url_find_replace_row ) {
+				if ( $is_default_profile && $lock_url_find_replace_row ) {
 					$new_url_missing_warning = __( '<strong>New URL Missing</strong> &mdash; Please enter the protocol-relative URL of the remote website in the "New URL" field. If you are unsure of what this URL should be, please consult <a href="%s" target="_blank">our documentation</a> on find and replace fields.', 'wp-migrate-db' );
 				}
 				?>

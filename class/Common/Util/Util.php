@@ -409,11 +409,8 @@ class Util {
 		}
 	}
 
-
 	function set_time_limit() {
-		if ( ! function_exists( 'ini_get' ) || ! ini_get( 'safe_mode' ) ) {
 			@set_time_limit( 0 );
-		}
 	}
 
 	function display_errors() {

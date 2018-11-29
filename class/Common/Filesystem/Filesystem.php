@@ -39,10 +39,8 @@ class Filesystem {
 	 * @param bool $force_no_fs
 	 */
 	public function __construct( $force_no_fs = false ) {
-		if ( ! $force_no_fs && function_exists( 'request_filesystem_credentials' ) ) {
-			if ( ( defined( 'WPMDB_WP_FILESYSTEM' ) && WPMDB_WP_FILESYSTEM ) || ! defined( 'WPMDB_WP_FILESYSTEM' ) ) {
-				$this->maybe_init_wp_filesystem();
-			}
+		if ( ! $force_no_fs ) {
+			add_action( 'admin_init', [ $this, 'check_for_wp_filesystem' ] );
 		}
 
 		// Set default permissions
@@ -59,6 +57,14 @@ class Filesystem {
 		}
 
 		$this->container = Container::getInstance();
+	}
+
+	public function check_for_wp_filesystem() {
+		if ( function_exists( 'request_filesystem_credentials' ) ) {
+			if ( ( defined( 'WPMDB_WP_FILESYSTEM' ) && WPMDB_WP_FILESYSTEM ) || ! defined( 'WPMDB_WP_FILESYSTEM' ) ) {
+				$this->maybe_init_wp_filesystem();
+			}
+		}
 	}
 
 	/**
@@ -110,7 +116,7 @@ class Filesystem {
 	 */
 	public function maybe_init_wp_filesystem() {
 		ob_start();
-		$this->credentials = request_filesystem_credentials( '', '', false, false, null );
+		$this->credentials = \request_filesystem_credentials( '', '', false, false, null );
 		$ob_contents       = ob_get_contents();
 		ob_end_clean();
 

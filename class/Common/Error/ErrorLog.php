@@ -297,7 +297,7 @@ class ErrorLog {
 		);
 
 		$diagnostic_info['db-server-info'] = array(
-			'MySQL'                    => empty( $wpdb->use_mysqli ) ? mysql_get_server_info() : mysqli_get_server_info( $wpdb->dbh ),
+			'MySQL'                    => mysqli_get_server_info( $wpdb->dbh ),
 			'ext/mysqli'               => empty( $wpdb->use_mysqli ) ? 'no' : 'yes',
 			'WP Locale'                => get_locale(),
 			'DB Charset'               => DB_CHARSET,
