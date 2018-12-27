@@ -250,10 +250,10 @@ class Table {
 		$return = array();
 
 		foreach ( $results as $result ) {
-			if ( $this->get_legacy_alter_table_name() == $result['table_name'] ) {
+			if ( $this->get_legacy_alter_table_name() == $result['TABLE_NAME'] ) {
 				continue;
 			}
-			$return[ $result['table_name'] ] = ( $result['TABLE_ROWS'] == 0 ? 1 : $result['TABLE_ROWS'] );
+			$return[ $result['TABLE_NAME'] ] = ( $result['TABLE_ROWS'] == 0 ? 1 : $result['TABLE_ROWS'] );
 		}
 
 		return $return;
