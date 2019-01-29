@@ -3,20 +3,19 @@
 namespace DeliciousBrains\WPMDB\Common\Error;
 
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
+use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Util\Util;
+use DeliciousBrains\WPMDB\Container;
 
 class ErrorLog {
+
 	/**
 	 * @var
 	 */
 	public $error_log;
-	/**
-	 * @var StateDataContainer
-	 */
-	public $state_container;
 	/**
 	 * @var
 	 */
@@ -47,14 +46,12 @@ class ErrorLog {
 		Settings $settings,
 		Filesystem $filesystem,
 		Util $util,
-		Properties $properties,
-		StateDataContainer $state_data_container
+		Properties $properties
 	) {
-		$this->state_container = $state_data_container;
-		$this->props           = $properties;
-		$this->settings        = $settings->get_settings();
-		$this->filesystem      = $filesystem;
-		$this->util            = $util;
+		$this->props                   = $properties;
+		$this->settings                = $settings->get_settings();
+		$this->filesystem              = $filesystem;
+		$this->util                    = $util;
 	}
 
 	public function get_error_log() {
@@ -83,7 +80,7 @@ class ErrorLog {
 	}
 
 	function log_error( $wpmdb_error, $additional_error_var = false ) {
-		$state_data = $this->state_container->getData();
+		$state_data = Container::getInstance()->get('migration_state_manager')->set_post_data();
 
 		$error_header = "********************************************\n******  Log date: " . date( 'Y/m/d H:i:s' ) . " ******\n********************************************\n\n";
 		$error        = $error_header;

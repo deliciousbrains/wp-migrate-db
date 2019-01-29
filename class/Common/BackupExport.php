@@ -5,6 +5,7 @@ namespace DeliciousBrains\WPMDB\Common;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
 use DeliciousBrains\WPMDB\Common\Http\Http;
+use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
@@ -24,8 +25,6 @@ class BackupExport {
 	 * @var Http
 	 */
 	private $http;
-
-	public $state_data;
 	/**
 	 * @var Table
 	 */
@@ -42,6 +41,10 @@ class BackupExport {
 	 * @var Settings
 	 */
 	private $settings;
+	/**
+	 * @var MigrationStateManager
+	 */
+	private $migration_state_manager;
 
 	public function __construct(
 		Settings $settings,
@@ -51,16 +54,16 @@ class BackupExport {
 		FormData $form_data,
 		Table $table,
 		Properties $properties,
-		StateDataContainer $state_data_container
+		MigrationStateManager $migration_state_manager
 	) {
 		$this->props        = $properties;
 		$this->settings     = $settings->get_settings();
 		$this->filesystem   = $filesystem;
 		$this->table_helper = $table_helper;
 		$this->http         = $http;
-		$this->state_data   = $state_data_container;
 		$this->form_data    = $form_data;
 		$this->table        = $table;
+		$this->migration_state_manager = $migration_state_manager;
 	}
 
 	function register() {
@@ -133,7 +136,7 @@ class BackupExport {
 	 * @return mixed|void
 	 */
 	public function backup_header_included_tables( $included_tables ) {
-		$state_data = $this->state_data->getData();
+		$state_data = $this->migration_state_manager->set_post_data();
 		$form_data  = $this->form_data->getFormData();
 		if ( 'backup' === $state_data['stage'] ) {
 			$included_tables = $this->get_tables_to_backup( $form_data, $this->table->get_tables( 'prefix' ), $this->table->get_tables() );

@@ -43,10 +43,9 @@ class RemotePost extends Http {
 		Settings $settings,
 		ErrorLog $error_log,
 		Scramble $scrambler,
-		DynamicProperties $dynamic_properties,
 		Properties $properties
 	) {
-		parent::__construct( $util, $filesystem, $scrambler, $dynamic_properties, $properties );
+		parent::__construct( $util, $filesystem, $scrambler, $properties );
 
 		$this->util                    = $util;
 		$this->filesystem              = $filesystem;

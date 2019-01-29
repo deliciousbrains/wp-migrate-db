@@ -37,16 +37,15 @@ class Menu {
 		$this->properties          = $properties;
 		$this->plugin_manager_base = $plugin_manager_base;
 		$this->assets              = $assets;
+	}
 
+	public function register() {
 		if ( $this->properties->is_pro ) {
 			$this->template = Container::getInstance()->get( 'template' );
 		} else {
 			$this->template = Container::getInstance()->get( 'free_template' );
 		}
 
-	}
-
-	public function register() {
 		if ( is_multisite() ) {
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
 			add_action( 'admin_menu', array( $this, 'network_tools_admin_menu' ) );

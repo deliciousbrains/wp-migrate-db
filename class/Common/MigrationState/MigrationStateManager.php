@@ -8,6 +8,7 @@ use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sanitize;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Common\Http\Http;
+use DeliciousBrains\WPMDB\Container;
 
 class MigrationStateManager {
 
@@ -39,13 +40,20 @@ class MigrationStateManager {
 	 * @var Http
 	 */
 	private $http;
+	/**
+	 * @var DynamicProperties
+	 */
+	private $dynamic_props;
+	/**
+	 * @var MigrationState
+	 */
+	private $migration_state_class;
 
 	public function __construct(
 		ErrorLog $error_log,
 		Util $util,
 		MigrationState $migration_state,
 		Http $http,
-		DynamicProperties $dynamic_properties,
 		Properties $properties,
 		StateDataContainer $state_data_container
 	) {
@@ -54,10 +62,8 @@ class MigrationStateManager {
 		$this->props           = $properties;
 		$this->util            = $util;
 		$this->state_container = $state_data_container;
-		$this->dynamic_props   = $dynamic_properties;
+		$this->dynamic_props   = DynamicProperties::getInstance();
 
-		// @TODO needs testing
-		// Use the StateDataContainer to hold state
 		$this->state_data            = $this->state_container->state_data;
 		$this->migration_state_class = $migration_state;
 		$this->http                  = $http;
@@ -166,7 +172,7 @@ class MigrationStateManager {
 			exit;
 		}
 
-		$this->state_container->setData( $this->state_data );
+		Container::getInstance()->get( 'state_data_container' )->setData( $this->state_data );
 
 		return $this->state_data;
 	}

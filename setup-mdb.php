@@ -11,7 +11,7 @@ function wp_migrate_db() {
 		return $wpmdb;
 	}
 
-	$wpmdb = new DeliciousBrains\WPMDB\Free\WPMigrateDBFree();
+	$wpmdb = new DeliciousBrains\WPMDB\Free\WPMigrateDBFree( false );
 	$wpmdb->register();
 
 	return $wpmdb;
@@ -74,7 +74,7 @@ function wp_migrate_db_loaded() {
 	}
 	if ( function_exists( 'wp_migrate_db' ) ) {
 		// Remove the compatibility plugin when the plugin is deactivated
-		register_deactivation_hook( dirname( __FILE__) . '/wp-migrate-db.php', 'wpmdb_remove_mu_plugin' );
+		register_deactivation_hook( dirname( __FILE__ ) . '/wp-migrate-db.php', 'wpmdb_remove_mu_plugin' );
 
 		wp_migrate_db();
 	}

@@ -27,13 +27,12 @@ class Multisite {
 
 	public function __construct(
 		MigrationStateManager $migration_state_manager,
-		DynamicProperties $dynamic_properties,
 		Properties $properties,
 		Util $util
 	) {
 		$this->props                   = $properties;
 		$this->migration_state_manager = $migration_state_manager;
-		$this->dynamic_props           = $dynamic_properties;
+		$this->dynamic_props           = DynamicProperties::getInstance();
 		$this->util                    = $util;
 	}
 

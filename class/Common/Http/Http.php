@@ -8,6 +8,7 @@ use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class Http {
+
 	/**
 	 * @var Util
 	 */
@@ -24,18 +25,21 @@ class Http {
 	 * @var Scramble
 	 */
 	private $scrambler;
+	/**
+	 * @var DynamicProperties
+	 */
+	protected $dynamic_props;
 
 	public function __construct(
 		Util $util,
 		Filesystem $filesystem,
 		Scramble $scrambler,
-		DynamicProperties $dynamic_properties,
 		Properties $properties
 	) {
 		$this->props         = $properties;
 		$this->util          = $util;
 		$this->filesystem    = $filesystem;
-		$this->dynamic_props = $dynamic_properties;
+		$this->dynamic_props = DynamicProperties::getInstance();
 		$this->scrambler     = $scrambler;
 	}
 
@@ -108,9 +112,14 @@ class Http {
 		return $result;
 	}
 
-	function file_to_multipart( $file ) {
-		$result = '';
-
+	/**
+	 * Convert file data, including contents, into a serialized array
+	 *
+	 * @param $file
+	 *
+	 * @return bool|string
+	 */
+	function file_to_serialized( $file ) {
 		if ( false == file_exists( $file ) ) {
 			return false;
 		}
@@ -118,12 +127,13 @@ class Http {
 		$filetype = wp_check_filetype( $file );
 		$contents = file_get_contents( $file );
 
-		$result .= '--' . $this->props->multipart_boundary . "\r\n" . sprintf( 'Content-Disposition: form-data; name="media[]"; filename="%s"', basename( $file ) );
-		$result .= sprintf( "\r\nContent-Type: %s", $filetype['type'] );
-		$result .= "\r\n\r\n" . $contents . "\r\n";
-		$result .= '--' . $this->props->multipart_boundary . "--\r\n";
+		$file_details = [
+			'name'      => basename( $file ),
+			'file_type' => $filetype['type'],
+			'contents'  => $contents,
+		];
 
-		return $result;
+		return serialize( $file_details );
 	}
 
 	/**

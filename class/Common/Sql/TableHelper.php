@@ -3,6 +3,8 @@
 namespace DeliciousBrains\WPMDB\Common\Sql;
 
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
+use DeliciousBrains\WPMDB\Common\Migration\MigrationManager;
+use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Container;
@@ -14,21 +16,16 @@ class TableHelper {
 	 */
 	private $form_data;
 	/**
-	 * @var StateDataContainer
+	 * @var MigrationStateManager
 	 */
-	public $state_container;
-	/**
-	 * @var \DeliciousBrains\WPMDB\League\Container\Container|null
-	 */
-	public $container;
+	private $migration_state_manager;
 
 	public function __construct(
 		FormData $form_data,
-		StateDataContainer $state_data_container
+		MigrationStateManager $migration_state_manager
 	) {
 		$this->form_data       = $form_data;
-		$this->state_container = $state_data_container;
-		$this->container       = Container::getInstance();
+		$this->migration_state_manager = $migration_state_manager;
 	}
 
 
@@ -141,7 +138,7 @@ class TableHelper {
 	}
 
 	function format_dump_name( $dump_name ) {
-		$state_data = $this->state_container->getData();
+		$state_data = $this->migration_state_manager->set_post_data();
 		$form_data  = $this->form_data->getFormData();
 		$extension  = '.sql';
 

@@ -12,6 +12,7 @@ use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
+use DeliciousBrains\WPMDB\Container;
 
 class Cli {
 
@@ -89,8 +90,7 @@ class Cli {
 		FinalizeMigration $finalize_migration,
 		Helper $http_helper,
 		MigrationManager $migration_manager,
-		MigrationStateManager $migration_state_manager,
-		DynamicProperties $dynamic_properties
+		MigrationStateManager $migration_state_manager
 	) {
 		$this->form_data               = $form_data;
 		$this->util                    = $util;
@@ -102,11 +102,11 @@ class Cli {
 		$this->http_helper             = $http_helper;
 		$this->migration_manager       = $migration_manager;
 		$this->migration_state_manager = $migration_state_manager;
-		$this->dynamic_properties      = $dynamic_properties;
+		$this->dynamic_properties      = DynamicProperties::getInstance();
 	}
 
 	public function register() {
-		add_filter( 'wpmdb_cli_finalize_migration_response', array( $this, 'finalize_ajax' ), 10, 1 );
+		add_filter( 'wpmdb_cli_finalize_migration_response', array( $this, 'finalize_ajax' ), 10, 2 );
 	}
 
 	/**
@@ -366,7 +366,7 @@ class Cli {
 	 * @return array|WP_Error
 	 */
 	function get_tables_to_migrate() {
-		$tables_to_migrate                   = $this->table->get_tables( 'prefix' );
+		$tables_to_migrate = $this->table->get_tables( 'prefix' );
 
 		// @TODO Hack to get profile and post_data info available in other areas of the codebase...
 		$this->dynamic_properties->profile   = $this->profile;
@@ -585,7 +585,7 @@ class Cli {
 		}
 
 		$response = null;
-		$response = apply_filters( 'wpmdb_cli_finalize_migration_response', $response );
+		$response = apply_filters( 'wpmdb_cli_finalize_migration_response', $response, $this->post_data );
 		if ( ! empty( $response ) && '1' !== $response ) {
 			return $this->cli_error( $response );
 		}
@@ -631,10 +631,11 @@ class Cli {
 	 *
 	 * @return string
 	 */
-	function finalize_ajax( $response ) {
+	function  finalize_ajax( $response, $post_data ) {
 		// don't send redundant POST variables
-		$args     = $this->http_helper->filter_post_elements( $this->dynamic_properties->post_data, array( 'action', 'migration_state_id', 'prefix', 'tables' ) );
+		$args = $this->http_helper->filter_post_elements( $post_data, array( 'action', 'migration_state_id', 'prefix', 'tables' ) );
 		$_POST    = $args;
+
 		$response = $this->finalize_migration->ajax_finalize_migration();
 
 		return trim( $response );

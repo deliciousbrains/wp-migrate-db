@@ -137,7 +137,6 @@ class Table {
 	 * @param Helper                $http_helper
 	 * @param RemotePost            $remote_post
 	 * @param Properties            $properties
-	 * @param DynamicProperties     $dynamic_properties
 	 * @param Replace               $replace
 	 */
 	public function __construct(
@@ -152,13 +151,12 @@ class Table {
 		Helper $http_helper,
 		RemotePost $remote_post,
 		Properties $properties,
-		DynamicProperties $dynamic_properties,
 		Replace $replace
 	) {
 
 		$this->rows_per_segment = apply_filters( 'wpmdb_rows_per_segment', 100 );
 
-		$this->dynamic_props           = $dynamic_properties;
+		$this->dynamic_props           = DynamicProperties::getInstance();
 		$this->form_data               = $form_data;
 		$this->form_data_arr           = $form_data->getFormData();
 		$this->props                   = $properties;
@@ -451,7 +449,8 @@ class Table {
 	 * @return array
 	 */
 	function preserve_active_plugins_option( $preserved_options ) {
-		$keep_active_plugins = $this->util->profile_value( 'keep_active_plugins' );
+		$state_data          = $this->migration_state_manager->set_post_data();
+		$keep_active_plugins = $this->util->profile_value( 'keep_active_plugins', $this->form_data->parse_migration_form_data( $state_data['form_data'] ) );
 
 		if ( empty( $keep_active_plugins ) ) {
 			$preserved_options[] = 'active_plugins';
@@ -468,7 +467,8 @@ class Table {
 	 * @return array
 	 */
 	function preserve_wpmdb_plugins( $preserved_options_data ) {
-		$keep_active_plugins = $this->util->profile_value( 'keep_active_plugins' );
+		$state_data          = $this->migration_state_manager->set_post_data();
+		$keep_active_plugins = $this->util->profile_value( 'keep_active_plugins', $this->form_data->parse_migration_form_data( $state_data['form_data'] ) );
 
 		if ( ! empty( $keep_active_plugins ) || empty( $preserved_options_data ) ) {
 			return $preserved_options_data;
@@ -1293,7 +1293,7 @@ class Table {
 	 * @return array List of table names altered for multisite compatibility
 	 */
 	function get_ms_compat_table_names( $tables, $queried_table ) {
-		$state_data = $state_data = $this->migration_state_manager->set_post_data();
+		$state_data = $this->migration_state_manager->set_post_data();
 		global $wpdb;
 
 		$temp_prefix    = ( 'import' === $state_data['intent'] ) ? $this->props->temp_prefix : '';
@@ -1395,7 +1395,9 @@ class Table {
 					continue;
 				}
 
-				if ( null === $value ) {
+				$test_bit_key = strtolower( $key ) . '__bit';
+				// Correct null values IF we're not working with a BIT type field, they're handled separately below
+				if ( null === $value && ! property_exists( $row, $test_bit_key  ) ) {
 					$values[] = 'NULL';
 					continue;
 				}
@@ -1411,8 +1413,8 @@ class Table {
 
 				// If we have bit data, substitute in properly bit encoded version.
 				$bit_key = strtolower( $key ) . '__bit';
-				if ( isset( $structure_info['bits'][ strtolower( $key ) ] ) && $structure_info['bits'][ strtolower( $key ) ] && isset( $row->$bit_key ) ) {
-					$value    = "b'" . $row->$bit_key . "'";
+				if ( isset( $structure_info['bits'][ strtolower( $key ) ] ) && $structure_info['bits'][ strtolower( $key ) ] && ( isset( $row->$bit_key ) || null === $row->$bit_key ) ) {
+					$value    = null === $row->$bit_key ? 'NULL' : "b'" . $row->$bit_key . "'";
 					$values[] = $value;
 					unset( $row->$bit_key );
 					continue;

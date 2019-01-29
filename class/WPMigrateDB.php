@@ -29,8 +29,11 @@ class WPMigrateDB {
 	 */
 	private $settings_manager;
 
-	public function __construct() {
+	public function __construct( $pro = false ) {
 		$container = Container::getInstance();
+
+		// Only call this once
+		$container->setUpProviders( $pro );
 
 		$this->props                 = $container->get( 'properties' );
 		$this->util                  = $container->get( 'util' );

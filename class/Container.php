@@ -2,38 +2,109 @@
 
 namespace DeliciousBrains\WPMDB;
 
+/**
+ * Class Container
+ *
+ * 'Container' for all the plugins classes. Singleton, so new instances shouldn't be created.
+ *
+ * DO:
+ * Container::getInstance();
+ *
+ * DONT'T DO
+ * new Container();
+ *
+ * @package DeliciousBrains\WPMDB
+ */
 class Container {
 
-	// Hold the class instance.
-	private static $instance = null;
+	public $providers = [];
+	public $classes = [];
+	public $props;
+	private static $instance;
 
-	// The constructor is private
-	// to prevent initiation with outer code.
-	private function __construct() {
-		require __DIR__ . '/../vendor/autoload.php';
-	}
+	/**
+	 * Protected constructor to prevent creating a new instance of the
+	 * class via the `new` operator from outside of this class.
+	 */
+	protected function __construct() { }
+	/**
+	 * As this class is a singleton it should not be clone-able
+	 */
+	protected function __clone() {}
+	/**
+	 * As this class is a singleton it should not be able to be unserialized
+	 */
+	protected function __wakeup() {}
 
-	// The object is created from within the class itself
-	// only if the class has no instance.
 	public static function getInstance() {
-		if ( self::$instance == null ) {
-			self::$instance = ( new Container() )->init();
+		if ( ! ( self::$instance instanceof self ) ) {
+			self::$instance = new self;
 		}
 
 		return self::$instance;
 	}
 
-	public function init() {
-		$container = new League\Container\Container();
+	public function setUpProviders( $pro = false ) {
+		$potential_classes = [
+			'DeliciousBrains\WPMDB\ServiceProvider',
+		];
 
-		$container->addServiceProvider( new ServiceProvider );
+		if ( $pro ) {
+			$pro_classes       = [
+				'DeliciousBrains\WPMDB\Pro\ServiceProvider',
+				'DeliciousBrains\WPMDBCli\ServiceProvider',
+				'DeliciousBrains\WPMDBMST\ServiceProvider',
+				'DeliciousBrains\WPMDBMF\ServiceProvider',
+				'DeliciousBrains\WPMDBTP\ServiceProvider',
+			];
+			$potential_classes = $pro_classes + $potential_classes;
+		} else {
+			$potential_classes[] = 'DeliciousBrains\WPMDB\Free\ServiceProvider';
+		}
 
-		/* // Uses PHP reflection to figure out where a class is. Dramatically slows things down, enable at your own risk.
-		$container->delegate(
-			new \DeliciousBrains\WPMDB\League\Container\ReflectionContainer
-		);
-		*/
+		foreach ( $potential_classes as $class ) {
+			$this->maybeAddProvider( $class );
+		}
 
-		return $container;
+		if ( ! empty( $this->providers ) ) {
+			foreach ( $this->providers as $provider ) {
+				$vars = get_object_vars( $provider );
+				foreach ( $vars as $prop => $var ) {
+					if ( ! \in_array( $var, $this->classes ) ) {
+						$this->classes[ $prop ] = $var;
+					}
+				}
+			}
+		}
+	}
+
+	public function maybeAddProvider( $class ) {
+		if ( class_exists( $class ) ) {
+			$this->providers[ $class ] = new $class;
+		}
+	}
+
+	public function get( $id ) {
+		if ( empty( $this->classes ) ) {
+			$this->setUpProviders();
+		}
+
+		if ( array_key_exists( $id, $this->classes ) ) {
+			return $this->classes[ $id ];
+		}
+	}
+
+	public function add( $key, $instance ) {
+		$this->classes[ $key ] = $instance;
+
+		return $instance;
+	}
+
+	public function has( $id ) {
+		if ( ! array_key_exists( $id, $this->classes ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
