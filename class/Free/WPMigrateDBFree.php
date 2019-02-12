@@ -17,7 +17,7 @@ class WPMigrateDBFree extends WPMigrateDB {
 		$container = Container::getInstance();
 
 		//Menu
-		$this->menu = $container->add( 'menu', new Menu(
+		$this->menu = $container->addClass( 'menu', new Menu(
 				$container->get( 'properties' ),
 				$container->get( 'plugin_manager_base' ),
 				$container->get( 'assets' )
@@ -27,5 +27,6 @@ class WPMigrateDBFree extends WPMigrateDB {
 		$container->get( 'migration_manager' )->register();
 		$container->get( 'plugin_manager' )->register();
 		$container->get( 'menu' )->register();
+		$container->get( 'free_template' )->register();
 	}
 }

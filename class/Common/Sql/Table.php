@@ -194,8 +194,8 @@ class Table {
 			"SELECT TABLE_NAME AS 'table',
 			ROUND( ( data_length + index_length ) / 1024, 0 ) AS 'size'
 			FROM INFORMATION_SCHEMA.TABLES
-			WHERE INFORMATION_SCHEMA.TABLES.table_schema = %s
-			AND INFORMATION_SCHEMA.TABLES.table_type = %s
+			WHERE table_schema = %s
+			AND table_type = %s
 			ORDER BY TABLE_NAME",
 			DB_NAME,
 			'BASE TABLE'

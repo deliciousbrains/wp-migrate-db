@@ -92,12 +92,20 @@ class Container {
 		if ( array_key_exists( $id, $this->classes ) ) {
 			return $this->classes[ $id ];
 		}
+
+		//For back-compat
+		return $this;
 	}
 
-	public function add( $key, $instance ) {
+	public function addClass( $key, $instance ) {
 		$this->classes[ $key ] = $instance;
 
 		return $instance;
+	}
+
+	//For back-compat
+	public function add( $key, $instance ) {
+		return $this;
 	}
 
 	public function has( $id ) {
@@ -106,5 +114,15 @@ class Container {
 		}
 
 		return false;
+	}
+
+	//For back-compat
+	public function withArguments(){
+		//NoOp
+	}
+
+	//For back-compat
+	public function register(){
+		//NoOp
 	}
 }

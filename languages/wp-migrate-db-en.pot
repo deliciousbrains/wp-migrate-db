@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2019-01-29 07:51-0500\n"
+"POT-Creation-Date: 2019-02-12 09:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -945,6 +945,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:60
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:90
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:414
+#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:326
+#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:327
 msgid "Migrate DB Pro"
 msgstr ""
 
@@ -955,6 +957,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:324
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:60
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:90
+#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:326
+#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:327
 msgid "Migrate DB"
 msgstr ""
 
@@ -2126,6 +2130,7 @@ msgid ""
 msgstr ""
 
 #: template/addons.php:23 src/wp-migrate-db-pro/template/addons.php:27
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:4
 msgid "Media Files"
 msgstr ""
 
@@ -2707,6 +2712,7 @@ msgstr ""
 
 #: template/pro/import-radio-button.php:4
 #: src/wp-migrate-db-pro/template/pro/import-radio-button.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/import-radio-button.php:4
 msgctxt "Import data from a SQL file"
 msgid "Import"
 msgstr ""
@@ -2829,6 +2835,7 @@ msgstr ""
 
 #: template/pro/pull-push-radio-buttons.php:4
 #: src/wp-migrate-db-pro/template/pro/pull-push-radio-buttons.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:4
 msgctxt "Import data from remote database"
 msgid "Pull"
 msgstr ""
@@ -2840,6 +2847,7 @@ msgstr ""
 
 #: template/pro/pull-push-radio-buttons.php:13
 #: src/wp-migrate-db-pro/template/pro/pull-push-radio-buttons.php:13
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:13
 msgctxt "Export data to remote database"
 msgid "Push"
 msgstr ""
@@ -3163,6 +3171,12 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/template/wpmdb/sidebar.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:10
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:17
+#: src/wp-migrate-db-pro/template/wpmdb/import-radio-button.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:4
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:13
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -3431,4 +3445,36 @@ msgstr ""
 msgid ""
 "requires PHP version %s or higher to run and has been deactivated. You are "
 "currently running version %s. <a href=\"%s\">Learn More »</a>"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:4
+msgid "to push and pull media files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:10
+msgid "Theme Files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:10
+msgid "to push and pull theme files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:17
+msgid "Plugin Files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/addon-upgrades.php:17
+msgid "to push and pull plugin files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/import-radio-button.php:4
+msgid "to import SQL files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:4
+msgid "to pull remote data into this site"
+msgstr ""
+
+#: src/wp-migrate-db-pro/template/wpmdb/pull-push-radio-buttons.php:13
+msgid "to push data from this site to a remote site"
 msgstr ""

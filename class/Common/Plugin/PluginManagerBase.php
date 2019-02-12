@@ -212,6 +212,8 @@ class PluginManagerBase {
 			'import_file'                      => Util::create_nonce( 'import-file' ),
 			'whitelist_plugins'                => Util::create_nonce( 'whitelist_plugins' ),
 			'cancel_migration'                 => Util::create_nonce( 'cancel_migration' ),
+			'track_usage'                      => Util::create_nonce( 'track-usage' ),
+			'send_migration_complete'          => Util::create_nonce( 'send-migration-complete' ),
 		) );
 
 		$data = apply_filters( 'wpmdb_data', array(
@@ -249,6 +251,7 @@ class PluginManagerBase {
 			'subsites'               => $site_details['subsites'], // TODO: Remove backwards compatibility.
 			'site_details'           => $this->util->site_details(),
 			'alter_table_name'       => $this->tables->get_alter_table_name(),
+			'allow_tracking'         => $this->settings['allow_tracking'],
 		) );
 
 		wp_localize_script( 'wp-migrate-db-pro-script', 'wpmdb_data', $data );

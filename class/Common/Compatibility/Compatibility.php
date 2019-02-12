@@ -237,6 +237,7 @@ class Compatibility {
 		//Requests that shouldn't be handled by compatibility mode
 		if ( ! $this->wpmdbc_is_wpmdb_ajax_call() || in_array( $_POST['action'], array(
 				'wpmdb_get_log',
+				'wpmdb_maybe_collect_data',
 				'wpmdb_flush',
 				'wpmdb_remote_flush',
 				'wpmdb_get_themes',
