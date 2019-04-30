@@ -3,6 +3,7 @@
 namespace DeliciousBrains\WPMDB\Common\Filesystem;
 
 use DeliciousBrains\WPMDB\Common\Util\Singleton;
+use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Container;
 
 class Filesystem {
@@ -38,10 +39,7 @@ class Filesystem {
 	 *
 	 * @param bool $force_no_fs
 	 */
-	public function __construct( $force_no_fs = false ) {
-		if ( ! $force_no_fs ) {
-			add_action( 'admin_init', [ $this, 'check_for_wp_filesystem' ] );
-		}
+	public function __construct() {
 
 		// Set default permissions
 		if ( defined( 'FS_CHMOD_DIR' ) ) {
@@ -57,6 +55,17 @@ class Filesystem {
 		}
 
 		$this->container = Container::getInstance();
+	}
+
+	public function register() {
+		add_action( 'tools_page_wp-migrate-db-pro', [ $this, 'check_for_wp_filesystem' ] ); // Single sites
+		add_action( 'tools_page_wp-migrate-db', [ $this, 'check_for_wp_filesystem' ] );
+		add_action( 'settings_page_wp-migrate-db-pro', [ $this, 'check_for_wp_filesystem' ] ); // Multisites
+		add_action( 'settings_page_wp-migrate-db', [ $this, 'check_for_wp_filesystem' ] );
+
+		if ( Util::is_wpmdb_ajax_call() ) {
+			add_action( 'admin_init', [ $this, 'check_for_wp_filesystem' ] );
+		}
 	}
 
 	public function check_for_wp_filesystem() {

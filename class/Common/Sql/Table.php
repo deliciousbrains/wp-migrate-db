@@ -242,16 +242,16 @@ class Table {
 	function get_table_row_count() {
 		global $wpdb;
 
-		$sql     = $wpdb->prepare( 'SELECT table_name, TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = %s ORDER BY table_name', DB_NAME );
+		$sql     = $wpdb->prepare( 'SELECT TABLE_NAME, TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = %s ORDER BY TABLE_NAME', DB_NAME );
 		$results = $wpdb->get_results( $sql, ARRAY_A );
 
 		$return = array();
 
 		foreach ( $results as $result ) {
-			if ( $this->get_legacy_alter_table_name() == $result['table_name'] ) {
+			if ( $this->get_legacy_alter_table_name() == $result['TABLE_NAME'] ) {
 				continue;
 			}
-			$return[ $result['table_name'] ] = ( $result['TABLE_ROWS'] == 0 ? 1 : $result['TABLE_ROWS'] );
+			$return[ $result['TABLE_NAME'] ] = ( $result['TABLE_ROWS'] == 0 ? 1 : $result['TABLE_ROWS'] );
 		}
 
 		return $return;
@@ -339,8 +339,6 @@ class Table {
 		);
 
 		$preserved_sitemeta_options = $preserved_options;
-
-		$this->form_data = $this->form_data->parse_migration_form_data( $state_data['form_data'] );
 
 		if ( false === empty( $form_data['keep_active_plugins'] ) ) {
 			$preserved_options[]          = 'active_plugins';

@@ -28,5 +28,8 @@ class WPMigrateDBFree extends WPMigrateDB {
 		$container->get( 'plugin_manager' )->register();
 		$container->get( 'menu' )->register();
 		$container->get( 'free_template' )->register();
+
+		$filesystem = $container->get( 'filesystem' );
+		$filesystem->register();
 	}
 }

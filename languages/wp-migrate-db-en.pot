@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2019-02-12 09:11-0500\n"
+"POT-Creation-Date: 2019-04-30 09:12-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -829,6 +829,8 @@ msgid "Help"
 msgstr ""
 
 #: class/wpmdb.php:807 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1074
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1070
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1072
 #, php-format
 msgid ""
 "The imported table `%1s` contains characters which are invalid in the target "
@@ -839,6 +841,8 @@ msgid ""
 msgstr ""
 
 #: class/wpmdb.php:810 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1077
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1073
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1075
 #, php-format
 msgid ""
 "The table `%1s` contains characters which are invalid in the target "
@@ -868,6 +872,8 @@ msgid ""
 msgstr ""
 
 #: class/wpmdb.php:2194 src/wp-migrate-db-pro/class/Common/Sql/Table.php:679
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:675
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:677
 #, php-format
 msgid ""
 "Failed to retrieve table structure for table '%s', please ensure your "
@@ -875,65 +881,84 @@ msgid ""
 msgstr ""
 
 #: class/wpmdb.php:2293 src/wp-migrate-db-pro/class/Common/Sql/Table.php:749
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:745
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:747
 #, php-format
 msgid "Error creating temporary table. Table \"%s\" does not exist."
 msgstr ""
 
 #: class/wpmdb.php:2399 src/wp-migrate-db-pro/class/Common/Sql/Table.php:796
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:792
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:794
 #, php-format
 msgid "Delete any existing table %s"
 msgstr ""
 
 #: class/wpmdb.php:2410 src/wp-migrate-db-pro/class/Common/Sql/Table.php:807
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:803
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:805
 #, php-format
 msgid "Table structure of table %s"
 msgstr ""
 
 #: class/wpmdb.php:2418 src/wp-migrate-db-pro/class/Common/Sql/Table.php:815
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:811
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:813
 msgid ""
 "Failed to generate the create table query, please ensure your database is "
 "online. (#126)"
 msgstr ""
 
 #: class/wpmdb.php:2474 src/wp-migrate-db-pro/class/Common/Sql/Table.php:871
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:867
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:869
 #, php-format
 msgid "Data contents of table %s"
 msgstr ""
 
 #: class/wpmdb.php:2492 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1721
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1723
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1719
 #, php-format
 msgid "End of data contents of table %s"
 msgstr ""
 
 #: class/wpmdb.php:3008 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1839
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1841
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1837
 msgid "WordPress MySQL database migration"
 msgstr ""
 
 #: class/wpmdb.php:3010 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1841
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1843
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1839
 #, php-format
 msgid "Generated: %s"
 msgstr ""
 
 #: class/wpmdb.php:3011 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1842
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1844
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1840
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
 
 #: class/wpmdb.php:3012 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1843
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1845
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1841
 #, php-format
 msgid "Database: %s"
 msgstr ""
 
 #: class/wpmdb.php:3117 src/wp-migrate-db-pro/class/Common/Sql/Table.php:995
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:991
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:993
 msgid "Failed to write the gzipped SQL data to the file. (#127)"
 msgstr ""
 
 #: class/wpmdb.php:3124 src/wp-migrate-db-pro/class/Common/Sql/Table.php:1002
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:998
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1000
 msgid "Failed to write the SQL data to the file. (#128)"
 msgstr ""
 
@@ -1712,12 +1737,14 @@ msgstr ""
 
 #: class/wpmdb.php:3634
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:732
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:741
 #, php-format
 msgid "<h3>Output prevented download. </h3> %s"
 msgstr ""
 
 #: class/wpmdb.php:3637
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:735
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:744
 msgid "Could not find the file to download:"
 msgstr ""
 

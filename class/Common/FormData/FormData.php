@@ -75,7 +75,7 @@ class FormData {
 		$state_data = $this->migration_state_manager->set_post_data();
 
 		if ( empty( $this->form_data ) ) {
-			$this->form_data = $this->parse_migration_form_data( $state_data['form_data'] );
+			$this->parse_migration_form_data( $state_data['form_data'] );
 		}
 	}
 

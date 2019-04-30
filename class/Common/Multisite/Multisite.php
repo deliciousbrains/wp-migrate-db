@@ -53,7 +53,7 @@ class Multisite {
 					$domain_find_keys = array_keys( $grep );
 					$url              = Util::parse_url( $this->dynamic_props->find_replace_pairs['replace_new'][ $domain_find_keys[0] ] );
 					if ( isset( $url['host'] ) ) {
-						$this->domain_replace = $url['host'];
+						$this->domain_replace = $url['host'] . ( isset( $url['port'] ) ? ':' . $url['port'] : '' );
 					} elseif ( ! empty( $state_data['domain_current_site'] ) ) {
 						$this->domain_replace = $state_data['domain_current_site'];
 					}
