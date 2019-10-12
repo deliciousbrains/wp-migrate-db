@@ -48,7 +48,7 @@ https://www.youtube.com/watch?v=8u_kX5d78Bs&rel=0
 == Installation ==
 
 1. Use WordPress' built-in installer
-2. Access the "Migrate DB" menu option under Tools (or under Settings on multsite intallations)
+2. Access the "Migrate DB" menu option under Tools (or under Settings on multisite installations)
 
 == Frequently Asked Questions ==
 
