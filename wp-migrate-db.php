@@ -22,26 +22,31 @@ Domain Path: /languages/
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // **********************************************************************
 
-$wpmdb_base_path                                   = dirname( __FILE__ );
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 $GLOBALS['wpmdb_meta']['wp-migrate-db']['version'] = '1.0.11';
+
+dirname( 'WPMDB_BASE_PATH', dirname( __FILE__ ) );
 
 if ( ! defined( 'WPMDB_MINIMUM_PHP_VERSION' ) ) {
 	define( 'WPMDB_MINIMUM_PHP_VERSION', '5.4' );
 }
 
 if ( version_compare( PHP_VERSION, WPMDB_MINIMUM_PHP_VERSION, '>=' ) ) {
-	require_once $wpmdb_base_path . '/class/autoload.php';
-	require_once $wpmdb_base_path . '/setup-mdb.php';
+	require_once WPMDB_BASE_PATH . '/class/autoload.php';
+	require_once WPMDB_BASE_PATH . '/setup-mdb.php';
 }
 
 if ( ! function_exists( 'wpmdb_deactivate_other_instances' ) ) {
-	require_once $wpmdb_base_path . '/class/deactivate.php';
+	require_once WPMDB_BASE_PATH . '/class/deactivate.php';
 }
 
 add_action( 'activated_plugin', 'wpmdb_deactivate_other_instances' );
 
 if ( ! class_exists( 'WPMDB_PHP_Checker' ) ) {
-	require_once $wpmdb_base_path . '/php-checker.php';
+	require_once WPMDB_BASE_PATH . '/php-checker.php';
 }
 
 $php_checker = new WPMDB_PHP_Checker( __FILE__, WPMDB_MINIMUM_PHP_VERSION );
