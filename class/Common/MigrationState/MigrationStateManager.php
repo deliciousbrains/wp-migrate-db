@@ -126,15 +126,19 @@ class MigrationStateManager {
 	}
 
 	/**
-	 * Sets $this->state_data from $_POST, potentially un-slashed and sanitized.
+	 * Sets $this->state_data from $_POST, potentially un-slashed and un-sanitized.
 	 *
 	 * @param array  $key_rules An optional associative array of expected keys and their sanitization rule(s).
 	 * @param string $state_key The key in $_POST that contains the migration state id (defaults to 'migration_state_id').
 	 * @param string $context   The method that is specifying the sanitization rules. Defaults to calling method.
 	 *
-	 * @return array
+	 * @return array|bool
 	 */
 	public function set_post_data( $key_rules = array(), $state_key = 'migration_state_id', $context = '' ) {
+		if ( ( empty( $key_rules ) && ! empty( $this->state_data ) ) && ! defined( 'DOING_WPMDB_TESTS' ) ) {
+			return $this->state_data;
+		}
+
 		if ( defined( 'DOING_WPMDB_TESTS' ) || $this->dynamic_props->doing_cli_migration ) {
 			$this->state_data = $_POST;
 		} elseif ( empty( $this->state_data ) || null === $this->state_data ) {

@@ -112,7 +112,8 @@ class ServiceProvider extends ServiceProviderAbstract {
 
 		$this->table_helper = new TableHelper(
 			$this->form_data,
-			$this->migration_state_manager
+			$this->migration_state_manager,
+			$this->http
 		);
 
 		//RemotePost

@@ -713,7 +713,9 @@ class Filesystem {
 		$table_helper = $this->container->get( 'table_helper' );
 		// don't need to check for user permissions as our 'add_management_page' already takes care of this
 		$util->set_time_limit();
-		$dump_name = $table_helper->format_dump_name( $_GET['download'] );
+
+		$raw_dump_name = filter_input( INPUT_GET, 'download', FILTER_SANITIZE_STRIPPED );
+		$dump_name     = $table_helper->format_dump_name( $raw_dump_name );
 
 		if ( isset( $_GET['gzip'] ) ) {
 			$dump_name .= '.gz';

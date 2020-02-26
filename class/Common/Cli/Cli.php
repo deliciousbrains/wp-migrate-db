@@ -705,7 +705,7 @@ class Cli {
 	 * @return array|WP_Error
 	 */
 	public function get_profile_data_from_args( $args, $assoc_args ) {
-
+		$export_dest = null;
 		//load correct cli class
 		if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) && function_exists( 'wp_migrate_db_pro' ) ) {
 			$wpmdb_cli = wp_migrate_db_pro_cli_addon();

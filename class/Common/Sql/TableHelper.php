@@ -3,6 +3,7 @@
 namespace DeliciousBrains\WPMDB\Common\Sql;
 
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
+use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Migration\MigrationManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
@@ -19,13 +20,19 @@ class TableHelper {
 	 * @var MigrationStateManager
 	 */
 	private $migration_state_manager;
+	/**
+	 * @var Http
+	 */
+	private $http;
 
 	public function __construct(
 		FormData $form_data,
-		MigrationStateManager $migration_state_manager
+		MigrationStateManager $migration_state_manager,
+		Http $http
 	) {
-		$this->form_data       = $form_data;
+		$this->form_data               = $form_data;
 		$this->migration_state_manager = $migration_state_manager;
+		$this->http                    = $http;
 	}
 
 
@@ -126,9 +133,9 @@ class TableHelper {
 			}
 
 			if ( true === $abort_utf8mb4 && 0 !== $replace_count ) {
-				$return = sprintf( __( 'The source site supports utf8mb4 data but the target does not, aborting migration to avoid possible data corruption. Please see %1$s for more information. (#148)', 'wp-migrate-db-pro' ), sprintf( '<a href="https://deliciousbrains.com/wp-migrate-db-pro/doc/source-site-supports-utf8mb4/?utm_campaign=error%2Bmessages&utm_source=MDB%2BPaid&utm_medium=insideplugin">%1$s</a>', __( 'our documentation', 'wp-migrate-db-pro' ) ) );
+				$return = sprintf( __( 'The source site supports utf8mb4 data but the target does not, aborting migration to avoid possible data corruption. Please see %1$s for more information. (#148)', 'wp-migrate-db-pro' ), sprintf( '<a href="%s">%s</a>', 'https://deliciousbrains.com/wp-migrate-db-pro/doc/source-site-supports-utf8mb4/?utm_campaign=error%2Bmessages&utm_source=MDB%2BPaid&utm_medium=insideplugin', __( 'our documentation', 'wp-migrate-db-pro' ) ) );
 				$return = array( 'wpmdb_error' => 1, 'body' => $return );
-				$result = $this->end_ajax( json_encode( $return ) );
+				$result = $this->http->end_ajax( json_encode( $return ) );
 
 				return $result;
 			}

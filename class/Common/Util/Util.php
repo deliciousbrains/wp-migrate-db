@@ -960,5 +960,9 @@ class Util {
 	public static function get_state_data() {
 		return Container::getInstance()->get( 'state_data_container' )->state_data;
 	}
+
+	public static function json_encode_trim( $item ) {
+		return trim( json_encode( $item ), '"' );
+	}
 }
 
