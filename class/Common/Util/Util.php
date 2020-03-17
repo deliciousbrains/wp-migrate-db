@@ -608,6 +608,7 @@ class Util {
 				if ( ! empty( $upload_path ) ) {
 					$uploads['short_basedir'] = str_replace( trailingslashit( UPLOADBLOGSDIR ), '', trailingslashit( $upload_path ) );
 				}
+				restore_current_blog();
 			}
 		}
 

@@ -144,34 +144,23 @@ class Replace {
 			}
 		}
 
-		$this->table        = $args['table'];
-		$this->search       = $args['search'];
-		$this->replace      = $args['replace'];
-		$this->intent       = $args['intent'];
-		$this->base_domain  = $args['base_domain'];
-		$this->site_domain  = $args['site_domain'];
-		$this->site_details = $args['site_details'];
+		$this->table                = $args['table'];
+		$this->search               = $args['search'];
+		$this->replace              = $args['replace'];
+		$this->intent               = $args['intent'];
+		$this->base_domain          = $args['base_domain'];
+		$this->site_domain          = $args['site_domain'];
+		$this->site_details         = $args['site_details'];
+		$this->json_search          = '';
+		$this->json_replace         = '';
+		$this->json_replace_tables  = '';
+		$this->json_replace_columns = '';
 
 		global $wpdb;
 
 		$prefix = $wpdb->base_prefix;
 
-		$this->json_replace_tables = apply_filters( 'wpmdb_json_replace_tables', [
-			"${prefix}posts",
-		] );
-
-		$this->json_replace_columns = apply_filters( 'wpmdb_json_replace_columns', [
-			'post_content',
-			'post_content_filtered',
-		] );
-
-		$this->json_search = array_map( function ( $item ) {
-			return Util::json_encode_trim( $item );
-		}, $this->search );
-
-		$this->json_replace = array_map( function ( $item ) {
-			return Util::json_encode_trim( $item );
-		}, $this->replace );
+		$this->json_replaces( $prefix );
 
 		// Detect a protocol mismatch between the remote and local sites involved in the migration
 		$this->detect_protocol_mismatch();
@@ -553,5 +542,36 @@ class Replace {
 	 */
 	public function get_intent() {
 		return $this->intent;
+	}
+
+	/**
+	 * @param string $prefix
+	 */
+	protected function json_replaces( $prefix )
+	{
+		$this->json_replace_tables = apply_filters( 'wpmdb_json_replace_tables', [
+			"${prefix}posts",
+		] );
+
+		$this->json_replace_columns = apply_filters( 'wpmdb_json_replace_columns', [
+			'post_content',
+			'post_content_filtered',
+		] );
+
+		if ( empty( $this->search ) && empty( $this->replace ) ) {
+			return;
+		}
+
+		if ( is_array( $this->search ) ) {
+			$this->json_search = array_map( function ( $item ) {
+				return Util::json_encode_trim( $item );
+			}, $this->search );
+		}
+
+		if ( is_array( $this->replace ) ) {
+			$this->json_replace = array_map( function ( $item ) {
+				return Util::json_encode_trim( $item );
+			}, $this->replace );
+		}
 	}
 }

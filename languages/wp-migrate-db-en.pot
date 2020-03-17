@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2020-03-10 10:29-0400\n"
+"POT-Creation-Date: 2020-03-17 11:07-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -436,6 +436,7 @@ msgid "Could not delete the MySQL export file."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Replace.php:419
+#: src/wp-migrate-db-pro/class/Common/Replace.php:408
 #, php-format
 msgid ""
 "WP Migrate DB - Failed to instantiate object for replacement. If the "
@@ -445,6 +446,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Replace.php:474
+#: src/wp-migrate-db-pro/class/Common/Replace.php:463
 msgid ""
 "Failed attempting to do the recursive unserialize replace. Please contact "
 "support."
@@ -650,6 +652,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/License.php:245
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:146
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:384
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:389
 msgid "Check my license again"
 msgstr ""
 
@@ -753,6 +756,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:83
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:139
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:346
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:351
 msgctxt "Plugin configuration and preferences"
 msgid "Settings"
 msgstr ""
@@ -1785,6 +1789,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Plugin/Assets.php:61
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:384
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:389
 msgid "A problem occurred when trying to check the license, please try again."
 msgstr ""
 
@@ -2423,6 +2428,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:89
 #: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:327
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:412
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:417
 msgid "Migrate DB Pro"
 msgstr ""
 
@@ -2973,4 +2979,28 @@ msgstr ""
 msgid ""
 "Unable to create the transfer manifest file. Verify the web server can write "
 "to this folder: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:26
+#, php-format
+msgid ""
+"%s requires PHP version %s or higher and cannot be activated. You are "
+"currently running version %s. <a href=\"%s\">Learn&nbsp;More&nbsp;»</a>"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:33
+#: src/wp-migrate-db-pro/php-checker.php:67
+msgid "WP Migrate DB"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:37
+#: src/wp-migrate-db-pro/php-checker.php:67
+msgid "WP Migrate DB Pro"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:68
+#, php-format
+msgid ""
+"requires PHP version %s or higher to run and has been deactivated. You are "
+"currently running version %s. <a href=\"%s\">Learn More »</a>"
 msgstr ""

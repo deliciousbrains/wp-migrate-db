@@ -88,11 +88,6 @@ class FormData {
 	 */
 	function parse_migration_form_data( $data ) {
 		parse_str( $data, $form_data );
-		// As the magic_quotes_gpc setting affects the output of parse_str() we may need to remove any quote escaping.
-		// (it uses the same mechanism that PHP > uses to populate the $_GET, $_POST, etc. variables)
-		if ( get_magic_quotes_gpc() ) {
-			$form_data = Util::safe_wp_unslash( $form_data );
-		}
 
 		$this->accepted_fields = apply_filters( 'wpmdb_accepted_profile_fields', $this->accepted_fields );
 		$form_data             = array_intersect_key( $form_data, array_flip( $this->accepted_fields ) );
