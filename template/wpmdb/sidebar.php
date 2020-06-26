@@ -1,42 +1,34 @@
 <div id="wpmdb-sidebar">
 
 	<a class="wpmdb-banner" target="_blank" href="https://deliciousbrains.com/wp-migrate-db-pro/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=MDB%2BFree&utm_medium=insideplugin">
-		<h4><?php _e( 'Upgrade to Pro', 'wp-migrate-db' ); ?></h4>
-		<p><?php _e( 'Push and pull your database from one WordPress install to another in&nbsp;1&#8209;click.', 'wp-migrate-db' ); ?></p>
+
 	</a>
 
-	<form method="post" action="https://deliciousbrains.com/email-subscribe/" target="_blank" class="subscribe block">
-		<h2><?php _e( 'Get 20% Off!', 'wp-migrate-db' ); ?></h2>
+	<div class="wpmdb-upgrade-details">
+		<h1><?php _e('Upgrade', 'wp-migrate-db'); ?></h1>
+		<h3><?php _e('Gain access to more features when you upgrade to WP Migrate DB Pro', 'wp-migrate-db'); ?></h3>
+		<ul>
+			<li><?php _e('Email support', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Push and pull your database from one WordPress install to another in 1-click', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Push and pull your theme and plugin files', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Sync the media libraries of two sites', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Migrate from multisite to single site and back again', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Run push/pull migrations from the command line', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Select which tables to migrate', 'wp-migrate-db'); ?></li>
+			<li><?php _e('Exclude post types', 'wp-migrate-db'); ?></li>
+		</ul>
 
-		<?php $user = wp_get_current_user(); ?>
-
-		<p class="interesting">
-			<?php echo wptexturize( __( "Submit your name and email and we'll send you a coupon for 20% off your upgrade to the pro version.", 'wp-migrate-db' ) ); ?>
+		<p style="margin-bottom: 0;">
+			<a href="https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_source=MDB%2BFree&utm_medium=insideplugin&utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade"><?php _e('Visit deliciousbrains.com →', 'wp-migrate-db'); ?></a>
 		</p>
+	</div>
 
-		<div class="field">
-			<input type="email" name="email" value="<?php echo esc_attr( $user->user_email ); ?>" placeholder="<?php _e( 'Your Email', 'wp-migrate-db' ); ?>"/>
-		</div>
+	<div class="wpmdb-discount block">
+		<h2><?php _e('Get up to 50% off your first year of WP Migrate DB Pro!', 'wp-migrate-db'); ?></h2>
 
-		<div class="field">
-			<input type="text" name="first_name" value="<?php echo esc_attr( trim( $user->first_name ) ); ?>" placeholder="<?php _e( 'First Name', 'wp-migrate-db' ); ?>"/>
-		</div>
-
-		<div class="field">
-			<input type="text" name="last_name" value="<?php echo esc_attr( trim( $user->last_name ) ); ?>" placeholder="<?php _e( 'Last Name', 'wp-migrate-db' ); ?>"/>
-		</div>
-
-		<input type="hidden" name="campaigns[]" value="4" />
-		<input type="hidden" name="source" value="8" />
-
-		<div class="field submit-button">
-			<input type="submit" class="button" value="<?php _e( 'Send me the coupon', 'wp-migrate-db' ); ?>"/>
-		</div>
-
-		<p class="promise">
-			<?php _e( 'We promise we will not use your email for anything else and you can unsubscribe with 1-click anytime.', 'wp-migrate-db' ); ?>
-		</p>
-	</form>
+		<h3><a href="https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_source=MDB%2BFree&utm_medium=insideplugin&utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade"><?php _e('Get the discount', 'wp-migrate-db'); ?></a></h3>
+		<p class="discount-applied"><?php _e('Discount applied automatically.', 'wp-migrate-db'); ?></p>
+	</div>
 
 	<div class="block testimonial">
 		<p class="stars">
