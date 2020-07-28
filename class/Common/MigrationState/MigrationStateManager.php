@@ -155,11 +155,18 @@ class MigrationStateManager {
 		}
 
 		// Sanitize the new state data.
-		if ( ! empty( $key_rules ) ) {
+		if ( !empty( $key_rules ) ) {
 			$wpmdb_key_rules = $key_rules;
+			$context         = empty( $context ) ? $this->util->get_caller_function() : trim( $context );
+			$sanitized       = Sanitize::sanitize_data( $this->state_data, $key_rules, $context );
 
-			$context          = empty( $context ) ? $this->util->get_caller_function() : trim( $context );
-			$this->state_data = Sanitize::sanitize_data( $this->state_data, $key_rules, $context );
+			if ( is_wp_error( $sanitized ) ) {
+				$this->error_log->log_error( $sanitized->get_error_message() );
+
+				return $this->http->end_ajax( json_encode( array('wpmdb_error' => 1, 'body' => $sanitized->get_error_message()) ) );
+			}
+
+			$this->state_data = $sanitized;
 
 			if ( false === $this->state_data ) {
 				exit;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2020-06-26 08:57-0400\n"
+"POT-Creation-Date: 2020-07-28 11:17-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -451,6 +451,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sanitize.php:41
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:71
 #, php-format
 msgid "%1$s was not expecting data to be an array."
 msgstr ""
@@ -529,6 +530,7 @@ msgid "%1$s was expecting a bool but got something else: \"%2$s\""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sanitize.php:165
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:169
 #, php-format
 msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
 msgstr ""
@@ -2991,4 +2993,35 @@ msgstr ""
 msgid ""
 "Unable to create the transfer manifest file. Verify the web server can write "
 "to this folder: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:48
+#, php-format
+msgid ""
+"Sanitization Error: `%1$s` method was expecting %2$s for the `%3$s` field, "
+"but got something else: \"%4$s\""
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:26
+#, php-format
+msgid ""
+"%s requires PHP version %s or higher and cannot be activated. You are "
+"currently running version %s. <a href=\"%s\">Learn&nbsp;More&nbsp;»</a>"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:33
+#: src/wp-migrate-db-pro/php-checker.php:67
+msgid "WP Migrate DB"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:37
+#: src/wp-migrate-db-pro/php-checker.php:67
+msgid "WP Migrate DB Pro"
+msgstr ""
+
+#: src/wp-migrate-db-pro/php-checker.php:68
+#, php-format
+msgid ""
+"requires PHP version %s or higher to run and has been deactivated. You are "
+"currently running version %s. <a href=\"%s\">Learn More »</a>"
 msgstr ""

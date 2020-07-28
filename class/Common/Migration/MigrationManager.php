@@ -528,7 +528,6 @@ class MigrationManager {
 		);
 		$state_data = $this->migration_state_manager->set_post_data( $key_rules );
 
-
 		if ( 'push' === $state_data['intent'] ) {
 			$data           = array();
 			$data['action'] = 'wpmdb_remote_flush';

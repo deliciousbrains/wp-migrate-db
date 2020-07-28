@@ -5,7 +5,7 @@ Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress 
 Requires at least: 3.6
 Tested up to: 5.4
 Requires PHP: 5.4
-Stable tag: 1.0.13
+Stable tag: 1.0.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -156,7 +156,7 @@ You can! While cloning a WordPress site can be difficult, WP Migrate DB makes it
 **Step 3:** Export the database.
 **Step 4:** Import the database into your new site.
 
-And it's as simple as that, your data has been cloned onto the new site, ready to go. Pssstâ€¦ If you have [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting), it's even easier to clone your entire website, including all your media, themes, and plugins.
+And it's as simple as that, your data has been cloned onto the new site, ready to go. Pssst¦ If you have [WP Migrate DB Pro](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting), it's even easier to clone your entire website, including all your media, themes, and plugins.
 
 = Is FTP a thing of the past? =
 
@@ -178,7 +178,6 @@ Limited free support is provided, and we offer dedicated priority email support 
 
 Find out all relevant [pricing information over on our official site](https://deliciousbrains.com/wp-migrate-db-pro/pricing/?utm_campaign=WP%2BMigrate%2BDB%2BPro&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting).
 
-
 == Screenshots ==
 
 1. Main screen
@@ -186,6 +185,9 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 1.0.14 - 2020-07-28  =
+* Bug fix: Invalid $_POST values are returned in plain text which is a cross site scripting (XSS) risk
 
 = WP Migrate DB 1.0.13 - 2020-03-17  =
 * Bug fix: Usage of `get_magic_quotes_gpc()` triggers a warning on PHP 7.4+
