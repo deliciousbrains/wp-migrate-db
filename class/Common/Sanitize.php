@@ -159,12 +159,18 @@ class Sanitize
                     throw new SanitizationFailureException(self::create_error_string('URL', $context, $data, self::$field_key));
                 }
                 $data = $url;
-            } elseif ('bool' === $key_rules) {
-                $bool = rest_sanitize_boolean($data);
-                if (empty($bool) || !in_array($bool, array('true', 'false'))) {
-                    throw new SanitizationFailureException(self::create_error_string('a bool', $context, $data, self::$field_key));
-                }
-                $data = $bool;
+            } elseif ( 'bool' === $key_rules ) {
+	            $bool = rest_sanitize_boolean( $data );
+
+	            if ( is_bool( $bool ) ) {
+		            return $bool;
+	            }
+
+	            if ( in_array( $bool, array('true', 'false') ) ) {
+		            return $bool;
+	            }
+
+	            throw new SanitizationFailureException( self::create_error_string( 'a bool', $context, $data, self::$field_key ) );
             } else {
                 throw new SanitizationFailureException(sprintf(__('Unknown sanitization rule "%1$s" supplied by %2$s', 'wp-db-migrate-pro'), $key_rules, $context));
             }

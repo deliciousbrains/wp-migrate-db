@@ -69,7 +69,7 @@ class SettingsManager {
 		);
 		$state_data = $this->state_manager->set_post_data( $key_rules );
 
-		$this->settings[ $state_data['setting'] ] = ( $state_data['checked'] == 'false' ) ? false : true;
+		$this->settings[ $state_data['setting'] ] = $state_data['checked'];
 		update_site_option( 'wpmdb_settings', $this->settings );
 		$result = $this->http->end_ajax();
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2020-07-28 11:17-0400\n"
+"POT-Creation-Date: 2020-07-30 11:21-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -531,6 +531,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sanitize.php:165
 #: src/wp-migrate-db-pro/class/Common/Sanitize.php:169
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:175
 #, php-format
 msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
 msgstr ""

@@ -5,7 +5,7 @@ Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress 
 Requires at least: 3.6
 Tested up to: 5.4
 Requires PHP: 5.4
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -185,6 +185,9 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 1.0.15 - 2020-07-30  =
+* Bug fix: Check boxes are not saved correctly in plugin settings
 
 = WP Migrate DB 1.0.14 - 2020-07-28  =
 * Bug fix: Invalid $_POST values are returned in plain text which is a cross site scripting (XSS) risk

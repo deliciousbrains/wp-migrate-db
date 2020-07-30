@@ -162,7 +162,7 @@ class MigrationStateManager {
 
 			if ( is_wp_error( $sanitized ) ) {
 				$this->error_log->log_error( $sanitized->get_error_message() );
-
+				error_log($sanitized->get_error_message());
 				return $this->http->end_ajax( json_encode( array('wpmdb_error' => 1, 'body' => $sanitized->get_error_message()) ) );
 			}
 
