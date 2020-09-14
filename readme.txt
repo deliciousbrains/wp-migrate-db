@@ -3,7 +3,7 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress migration plugin, WP Migrate DB
 Requires at least: 3.6
-Tested up to: 5.4
+Tested up to: 5.5.1
 Requires PHP: 5.4
 Stable tag: 1.0.16
 License: GPLv2 or later
