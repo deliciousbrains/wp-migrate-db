@@ -291,7 +291,9 @@ class ErrorLog {
 			'OpenSSL'                         => ( $this->util->open_ssl_enabled() ) ? OPENSSL_VERSION_TEXT : 'Disabled',
 			'cURL'                            => ( function_exists( 'curl_init' ) ) ? 'Enabled' : 'Disabled',
 			'Enable SSL verification setting' => ( 1 == $this->settings['verify_ssl'] ) ? 'Yes' : 'No',
+			// phpcs:disable
 			'Opcache Enabled'                 => ( function_exists( 'ini_get' ) && ini_get( 'opcache.enable' ) ) ? 'Enabled' : 'Disabled',
+			// phpcs:enable
 		);
 
 		$diagnostic_info['db-server-info'] = array(

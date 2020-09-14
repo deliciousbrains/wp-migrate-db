@@ -525,7 +525,7 @@ class Table {
 		$temp_prefix       = ( isset( $state_data['temp_prefix'] ) ? $state_data['temp_prefix'] : $this->props->temp_prefix );
 		$site_details      = empty( $state_data['site_details'] ) ? array() : $state_data['site_details'];
 		$target_table_name = apply_filters( 'wpmdb_target_table_name', $table, $form_data['action'], $state_data['stage'], $site_details );
-		$temp_table_name   = $temp_prefix . $target_table_name;
+		$temp_table_name   = $state_data["intent"] === 'import' ? $target_table_name : $temp_prefix . $target_table_name;
 		$structure_info    = $this->get_structure_info( $table );
 		$row_start         = $this->get_current_row();
 		$this->row_tracker = $row_start;

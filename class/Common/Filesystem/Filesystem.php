@@ -12,7 +12,7 @@ class Filesystem {
 	/**
 	 * @var
 	 */
-	private $wp_filesystem;
+	public $wp_filesystem;
 	/**
 	 * @var
 	 */
@@ -153,6 +153,7 @@ class Filesystem {
 			$atime = time();
 		}
 
+		// @TODO revisit usage of error supression opearator
 		$return = @touch( $abs_path, $time, $atime );
 
 		if ( ! $return && $this->use_filesystem ) {
@@ -172,6 +173,7 @@ class Filesystem {
 	 * @return bool
 	 */
 	public function put_contents( $abs_path, $contents ) {
+		// @TODO revisit usage of error supression opearator
 		$return = @file_put_contents( $abs_path, $contents );
 		$this->chmod( $abs_path );
 
@@ -227,6 +229,7 @@ class Filesystem {
 	 * @return string
 	 */
 	public function get_contents( $abs_path ) {
+		// @TODO revisit usage of error supression opearator
 		$return = @file_get_contents( $abs_path );
 
 		if ( ! $return && $this->use_filesystem ) {
@@ -245,6 +248,7 @@ class Filesystem {
 	 * @return bool
 	 */
 	public function unlink( $abs_path ) {
+		// @TODO revisit usage of error supression opearator
 		$return = @unlink( $abs_path );
 
 		if ( ! $return && $this->use_filesystem ) {
@@ -270,7 +274,7 @@ class Filesystem {
 			$perms = $this->is_file( $abs_path ) ? $this->chmod_file : $this->chmod_dir;
 		}
 
-		$return = @chmod( $abs_path, $perms );
+		$return = chmod( $abs_path, $perms );
 
 		if ( ! $return && $this->use_filesystem ) {
 			$abs_path = $this->get_sanitized_path( $abs_path );
@@ -366,25 +370,22 @@ class Filesystem {
 		}
 
 		if ( $this->is_dir( $abs_path ) ) {
-			$this->chmod( $perms );
+			$this->chmod( $abs_path, $perms );
 
 			return true;
 		}
 
-		try {
-			$mkdirp = wp_mkdir_p( $abs_path );
-		} catch ( \Exception $e ) {
-			$mkdirp = false;
-		}
+		$mkdirp = wp_mkdir_p( $abs_path );
 
 		if ( $mkdirp ) {
-			$this->chmod( $perms );
+			$this->chmod( $abs_path, $perms );
 
 			return true;
 		}
 
-		$return = @mkdir( $abs_path, $perms, true );
+		$return = mkdir( $abs_path, $perms, true );
 
+		//WP_Filesystem fallback
 		if ( ! $return && $this->use_filesystem ) {
 			$abs_path = $this->get_sanitized_path( $abs_path );
 
@@ -392,27 +393,40 @@ class Filesystem {
 				return true;
 			}
 
-			// WP_Filesystem doesn't offer a recursive mkdir()
-			$abs_path = str_replace( '//', '/', $abs_path );
-			$abs_path = rtrim( $abs_path, '/' );
-			if ( empty( $abs_path ) ) {
-				$abs_path = '/';
-			}
-
-			$dirs        = explode( '/', ltrim( $abs_path, '/' ) );
-			$current_dir = '';
-
-			foreach ( $dirs as $dir ) {
-				$current_dir .= '/' . $dir;
-				if ( ! $this->is_dir( $current_dir ) ) {
-					$this->wp_filesystem->mkdir( $current_dir, $perms );
-				}
-			}
-
-			$return = $this->is_dir( $abs_path );
+			$return = $this->wp_filesystem_mkdir( $abs_path, $perms );
 		}
 
 		return $return;
+	}
+
+	/**
+	 * WP_Filesystem doesn't offer a recursive mkdir(), so this is that
+	 *
+	 * @param string   $abs_path
+	 * @param int|null $perms
+	 *
+	 * @return string
+	 */
+	public function wp_filesystem_mkdir( $abs_path, $perms )
+	{
+		$abs_path = str_replace( '//', '/', $abs_path );
+		$abs_path = rtrim( $abs_path, '/' );
+
+		if ( empty( $abs_path ) ) {
+			$abs_path = '/';
+		}
+
+		$dirs        = explode( '/', ltrim( $abs_path, '/' ) );
+		$current_dir = '';
+
+		foreach ( $dirs as $dir ) {
+			$current_dir .= '/' . $dir;
+			if ( !$this->is_dir( $current_dir ) ) {
+				$this->wp_filesystem->mkdir( $current_dir, $perms );
+			}
+		}
+
+		return $this->is_dir( $abs_path );
 	}
 
 	/**
@@ -572,7 +586,7 @@ class Filesystem {
 	 * TODO: look into replicating more functionality from wp_handle_upload()
 	 */
 	public function move_uploaded_file( $file, $destination, $perms = null ) {
-		$return = @move_uploaded_file( $file, $destination );
+		$return = move_uploaded_file( $file, $destination );
 
 		if ( $return ) {
 			$this->chmod( $destination, $perms );
@@ -604,6 +618,7 @@ class Filesystem {
 			return false;
 		}
 
+		// @TODO revisit usage of error supression opearator
 		$return = @copy( $source_abs_path, $destination_abs_path );
 		if ( $perms && $return ) {
 			$this->chmod( $destination_abs_path, $perms );

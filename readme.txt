@@ -186,6 +186,12 @@ Find out all relevant [pricing information over on our official site](https://de
 
 == Changelog ==
 
+= WP Migrate DB 1.0.16 - 2020-09-14  =
+
+* Find & Replace migrations do not replace data that is JSON encoded
+* The `Filesystem::chmod()` method does not function correctly and silently logs an error
+* Running a migration without find and replace values throws a PHP warning
+
 = WP Migrate DB 1.0.15 - 2020-07-30  =
 * Bug fix: Check boxes are not saved correctly in plugin settings
 
