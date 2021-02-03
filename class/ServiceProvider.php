@@ -131,7 +131,8 @@ class ServiceProvider extends ServiceProviderAbstract {
 			$this->migration_state_manager,
 			$this->table_helper,
 			$this->error_log,
-			$this->util
+			$this->util,
+			$this->properties
 		);
 
 		// Notice

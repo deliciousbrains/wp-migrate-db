@@ -186,11 +186,19 @@ Find out all relevant [pricing information over on our official site](https://de
 
 == Changelog ==
 
+= WP Migrate DB 1.0.17 - 2021-02-03  =
+
+* Bug fix: Deprecated PHP code causes warnings in PHP 8+
+* Bug fix: Regex to match recursive serialized records matches non-serialized data
+* Bug fix: Invert selection UI option doesn't work on newer versions of WordPress
+* Improvement: Fix several styling issues
+* Improvement: Replace ANSI quotes with backticks for better MySQL compatibility
+
 = WP Migrate DB 1.0.16 - 2020-09-14  =
 
-* Find & Replace migrations do not replace data that is JSON encoded
-* The `Filesystem::chmod()` method does not function correctly and silently logs an error
-* Running a migration without find and replace values throws a PHP warning
+* Bug fix: Find & Replace migrations do not replace data that is JSON encoded
+* Bug fix: The `Filesystem::chmod()` method does not function correctly and silently logs an error
+* Bug fix: Running a migration without find and replace values throws a PHP warning
 
 = WP Migrate DB 1.0.15 - 2020-07-30  =
 * Bug fix: Check boxes are not saved correctly in plugin settings

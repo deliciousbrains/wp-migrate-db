@@ -4,6 +4,7 @@ namespace DeliciousBrains\WPMDB\Common;
 
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
+use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 
@@ -106,16 +107,23 @@ class Replace {
 
 	protected $json_merged;
 
+	/**
+	 * @var Properties
+	 */
+	protected $properties;
+
 	function __construct(
 		MigrationStateManager $migration_state_manager,
 		TableHelper $table_helper,
 		ErrorLog $error_log,
-		Util $util
+		Util $util,
+		Properties $properties
 	) {
 		$this->migration_state_manager = $migration_state_manager;
 		$this->table_helper            = $table_helper;
 		$this->error_log               = $error_log;
 		$this->util                    = $util;
+		$this->properties              = $properties;
 	}
 
 	public function get($prop){
@@ -406,9 +414,16 @@ class Replace {
 			return $pre;
 		}
 
+		//If the intent is find_replace we need to prefix the tables with the temp prefix and wp base table prefix.
+		$table_prefix = '';
+		if ( 'find_replace' === $this->get_intent() ) {
+			global $wpdb;
+			$table_prefix = $this->properties->temp_prefix . $wpdb->base_prefix;
+		}
+
 		// Some options contain serialized self-references which leads to memory exhaustion. Skip these.
-		if ( $this->table_is( 'options' ) && 'option_value' === $this->get_column() && is_serialized( $data ) ) {
-			if ( preg_match( '/r\:\d+/i', $data ) ) {
+		if ( $this->table_is( 'options', $table_prefix ) && 'option_value' === $this->get_column() && is_serialized( $data ) ) {
+			if ( preg_match( '/r\:\d+;/i', $data ) ) {
 				return $data;
 			}
 		}
@@ -558,12 +573,15 @@ class Replace {
 	 *
 	 * $is_posts = $this->table_is( 'posts' );
 	 *
+	 * @TODO Cover table prefixing with Unit Tests
+	 *
 	 * @param  string $desired_table Name of the desired table, table prefix omitted.
+	 * @param  string $prefix        The table prefix
 	 *
 	 * @return boolean                Whether or not the desired table is the table currently being processed.
 	 */
-	public function table_is( $desired_table ) {
-		return $this->table_helper->table_is( $desired_table, $this->table );
+	public function table_is( $desired_table, $prefix = '' ) {
+		return $this->table_helper->table_is( $desired_table, $this->table, 'table', $prefix );
 	}
 
 	/**

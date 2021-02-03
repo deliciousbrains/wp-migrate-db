@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2020-09-14 11:51-0400\n"
+"POT-Creation-Date: 2021-02-03 11:53-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -437,6 +437,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Replace.php:408
 #: src/wp-migrate-db-pro/class/Common/Replace.php:441
+#: src/wp-migrate-db-pro/class/Common/Replace.php:456
 #, php-format
 msgid ""
 "WP Migrate DB - Failed to instantiate object for replacement. If the "
@@ -447,6 +448,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Replace.php:463
 #: src/wp-migrate-db-pro/class/Common/Replace.php:496
+#: src/wp-migrate-db-pro/class/Common/Replace.php:511
 msgid ""
 "Failed attempting to do the recursive unserialize replace. Please contact "
 "support."
@@ -655,6 +657,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/License.php:245
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:146
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:389
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:147
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:394
 msgid "Check my license again"
 msgstr ""
 
@@ -758,6 +762,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:83
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:139
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:351
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:140
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:356
 msgctxt "Plugin configuration and preferences"
 msgid "Settings"
 msgstr ""
@@ -1810,6 +1816,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Plugin/Assets.php:61
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:389
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:394
 msgid "A problem occurred when trying to check the license, please try again."
 msgstr ""
 
@@ -2448,6 +2455,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:89
 #: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:327
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:417
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:422
 msgid "Migrate DB Pro"
 msgstr ""
 
@@ -2504,19 +2512,23 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:869
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:871
 #, php-format
 msgid "Data contents of table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:993
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:995
 msgid "Failed to write the gzipped SQL data to the file. (#127)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1000
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1002
 msgid "Failed to write the SQL data to the file. (#128)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1072
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1074
 #, php-format
 msgid ""
 "The imported table `%1s` contains characters which are invalid in the target "
@@ -2527,6 +2539,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1075
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1077
 #, php-format
 msgid ""
 "The table `%1s` contains characters which are invalid in the target "
@@ -2535,25 +2548,30 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1721
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1723
 #, php-format
 msgid "End of data contents of table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1839
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1841
 msgid "WordPress MySQL database migration"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1841
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1843
 #, php-format
 msgid "Generated: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1842
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1844
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1843
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1845
 #, php-format
 msgid "Database: %s"
 msgstr ""
@@ -2624,11 +2642,13 @@ msgid "Remind Me Later"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:199
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:218
 #, php-format
 msgid "Scope: %s()."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:200
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:219
 #, php-format
 msgid "WPMDB Error: Data cannot be unserialized. %s"
 msgstr ""
@@ -2815,16 +2835,19 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:129
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:130
 #, php-format
 msgid "There is a new version of %s available."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:131
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:132
 #, php-format
 msgid "View version %s details"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:141
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:142
 #, php-format
 msgid ""
 "To update, go to %1$s and enter your license key. If you don't have a "
@@ -2832,6 +2855,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:143
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:144
 #, php-format
 msgid ""
 "To finish activating %1$s, please go to %2$s and enter your license key. If "
@@ -2840,6 +2864,8 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:208
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:219
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:209
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:220
 msgid "Could not retrieve version details. Please try again."
 msgstr ""
 

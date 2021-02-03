@@ -814,6 +814,8 @@ class Table {
 
 			return false;
 		}
+		//Replaces ANSI quotes with backticks
+		$create_table[0][1] = $this->remove_ansi_quotes( $create_table[0][1] );
 		$create_table[0][1] = str_replace( 'CREATE TABLE `' . $table . '`', 'CREATE TABLE `' . $table_to_stow . '`', $create_table[0][1] );
 		$create_table[0][1] = str_replace( 'TYPE=', 'ENGINE=', $create_table[0][1] );
 
@@ -1159,7 +1161,7 @@ class Table {
 		// the same results from the previous query and we'll have duplicate insert statements
 		if ( 'import' !== $state_data['intent'] && 'backup' != $state_data['stage'] && false === empty( $form_data['exclude_spam'] ) ) {
 			if ( $this->table_helper->table_is( 'comments', $table, 'table', $prefix ) ) {
-				$where .= ' AND comment_approved != "spam"';
+				$where .= ' AND comment_approved != \'spam\'';
 			} elseif ( $this->table_helper->table_is( 'commentmeta', $table, 'table', $prefix ) ) {
 				$tables = $this->get_ms_compat_table_names( array( 'commentmeta', 'comments' ), $table );
 				$join[] = sprintf( 'INNER JOIN %1$s ON %1$s.comment_ID = %2$s.comment_id', $this->table_helper->backquote( $tables['comments_table'] ), $this->table_helper->backquote( $tables['commentmeta_table'] ) );
@@ -1943,5 +1945,21 @@ class Table {
 
 	function empty_current_chunk() {
 		$this->current_chunk = '';
+	}
+
+
+	/**
+	 * Removes ANSI quotes from a given string and replaces it with backticks `
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
+	public function remove_ansi_quotes( $string ) {
+		if ( ! is_string( $string ) ) {
+
+			return $string;
+		}
+		return str_replace( '"', '`', $string );
 	}
 }

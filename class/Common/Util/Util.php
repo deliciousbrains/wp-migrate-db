@@ -119,6 +119,25 @@ class Util {
 		return $bytes;
 	}
 
+
+	/**
+	 * Get estimated usable memory limit.
+	 *
+	 * @return int
+	 */
+	public function get_memory_limit() {
+		if ( function_exists( 'ini_get' ) ) {
+			$memory_limit = ini_get( 'memory_limit' );
+		} else {
+			$memory_limit = '256M';
+		}
+
+		if ( ! $memory_limit || -1 === $memory_limit ) {
+			$memory_limit = '1000M';
+		}
+		return wp_convert_hr_to_bytes( trim( $memory_limit ) ) * 0.8;
+	}
+
 	/**
 	 * Test to see if executing an AJAX call specific to the WP Migrate DB family of plugins.
 	 *
