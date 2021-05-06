@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace DeliciousBrains\WPMDB\Common\MigrationState;
 
 class MigrationState {
@@ -32,7 +34,7 @@ class MigrationState {
 	 */
 	function id() {
 		if ( empty( $this->_id ) ) {
-			$this->_id = uniqid();
+			$this->_id = uniqid( 'wpmdb', true );
 		}
 
 		return $this->_id;
@@ -115,8 +117,8 @@ class MigrationState {
 	 *
 	 * @return mixed
 	 */
-	function get() {
-		return get_site_option( $this->_option(), false, false );
+	function get( $id = null ) {
+		return get_site_option( $this->_option( $id ), false, false );
 	}
 
 	/**
@@ -278,6 +280,8 @@ class MigrationState {
 	 */
 	static function cleanup( $timeout = 0 ) {
 		$count = 0;
+
+		delete_site_option( 'wpmdb_migration_id' );
 
 		$timed_out_ids = self::_timed_out_ids( $timeout );
 

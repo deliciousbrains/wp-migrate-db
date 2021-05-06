@@ -1,0 +1,560 @@
+[
+    {
+        "name": "container-interop\/container-interop",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/container-interop\/container-interop.git",
+            "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/container-interop\/container-interop\/zipball\/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+            "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+            "shasum": ""
+        },
+        "require": {
+            "psr\/container": "^1.0"
+        },
+        "time": "2017-02-14T19:40:03+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Interop\\Container\\": "src\/Interop\/Container\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
+        "homepage": "https:\/\/github.com\/container-interop\/container-interop",
+        "support": {
+            "issues": "https:\/\/github.com\/container-interop\/container-interop\/issues",
+            "source": "https:\/\/github.com\/container-interop\/container-interop\/tree\/master"
+        },
+        "abandoned": "psr\/container"
+    },
+    {
+        "name": "doctrine\/cache",
+        "version": "v1.4.0",
+        "version_normalized": "1.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/doctrine\/cache.git",
+            "reference": "2346085d2b027b233ae1d5de59b07440b9f288c8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/doctrine\/cache\/zipball\/2346085d2b027b233ae1d5de59b07440b9f288c8",
+            "reference": "2346085d2b027b233ae1d5de59b07440b9f288c8",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "conflict": {
+            "doctrine\/common": ">2.2,<2.4"
+        },
+        "require-dev": {
+            "phpunit\/phpunit": ">=3.7",
+            "predis\/predis": "~0.8",
+            "satooshi\/php-coveralls": "~0.6"
+        },
+        "time": "2015-01-15T20:38:55+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.4.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Doctrine\\Common\\Cache\\": "lib\/Doctrine\/Common\/Cache\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            },
+            {
+                "name": "Johannes Schmitt",
+                "email": "schmittjoh@gmail.com"
+            }
+        ],
+        "description": "Caching library offering an object-oriented API for many cache backends",
+        "homepage": "http:\/\/www.doctrine-project.org",
+        "keywords": [
+            "cache",
+            "caching"
+        ],
+        "support": {
+            "source": "https:\/\/github.com\/doctrine\/cache\/tree\/master"
+        }
+    },
+    {
+        "name": "php-di\/invoker",
+        "version": "1.3.3",
+        "version_normalized": "1.3.3.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/PHP-DI\/Invoker.git",
+            "reference": "1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/PHP-DI\/Invoker\/zipball\/1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7",
+            "reference": "1f4ca63b9abc66109e53b255e465d0ddb5c2e3f7",
+            "shasum": ""
+        },
+        "require": {
+            "container-interop\/container-interop": "~1.1"
+        },
+        "require-dev": {
+            "athletic\/athletic": "~0.1.8",
+            "phpunit\/phpunit": "~4.5"
+        },
+        "time": "2016-07-14T13:09:58+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Invoker\\": "src\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Generic and extensible callable invoker",
+        "homepage": "https:\/\/github.com\/PHP-DI\/Invoker",
+        "keywords": [
+            "callable",
+            "dependency",
+            "dependency-injection",
+            "injection",
+            "invoke",
+            "invoker"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/PHP-DI\/Invoker\/issues",
+            "source": "https:\/\/github.com\/PHP-DI\/Invoker\/tree\/master"
+        }
+    },
+    {
+        "name": "php-di\/php-di",
+        "version": "5.4.0",
+        "version_normalized": "5.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/PHP-DI\/PHP-DI.git",
+            "reference": "e348393488fa909e4bc0707ba5c9c44cd602a1cb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/PHP-DI\/PHP-DI\/zipball\/e348393488fa909e4bc0707ba5c9c44cd602a1cb",
+            "reference": "e348393488fa909e4bc0707ba5c9c44cd602a1cb",
+            "shasum": ""
+        },
+        "require": {
+            "container-interop\/container-interop": "~1.0",
+            "php": ">=5.5.0",
+            "php-di\/invoker": "^1.3.2",
+            "php-di\/phpdoc-reader": "^2.0.1"
+        },
+        "provide": {
+            "container-interop\/container-interop-implementation": "^1.0"
+        },
+        "replace": {
+            "mnapoli\/php-di": "*"
+        },
+        "require-dev": {
+            "doctrine\/annotations": "~1.2",
+            "doctrine\/cache": "~1.4",
+            "mnapoli\/phpunit-easymock": "~0.2.0",
+            "ocramius\/proxy-manager": "~1.0|~2.0",
+            "phpunit\/phpunit": "~4.5"
+        },
+        "suggest": {
+            "doctrine\/annotations": "Install it if you want to use annotations (version ~1.2)",
+            "doctrine\/cache": "Install it if you want to use the cache (version ~1.4)",
+            "ocramius\/proxy-manager": "Install it if you want to use lazy injection (version ~1.0 or ~2.0)"
+        },
+        "time": "2016-08-23T20:18:00+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\DI\\": "src\/DI\/"
+            },
+            "files": [
+                "src\/DI\/functions.php"
+            ]
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "description": "The dependency injection container for humans",
+        "homepage": "http:\/\/php-di.org\/",
+        "keywords": [
+            "container",
+            "dependency injection",
+            "di"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/PHP-DI\/PHP-DI\/issues",
+            "source": "https:\/\/github.com\/PHP-DI\/PHP-DI\/tree\/master"
+        }
+    },
+    {
+        "name": "php-di\/phpdoc-reader",
+        "version": "2.1.1",
+        "version_normalized": "2.1.1.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/PHP-DI\/PhpDocReader.git",
+            "reference": "15678f7451c020226807f520efb867ad26fbbfcf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/PHP-DI\/PhpDocReader\/zipball\/15678f7451c020226807f520efb867ad26fbbfcf",
+            "reference": "15678f7451c020226807f520efb867ad26fbbfcf",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit\/phpunit": "~4.6"
+        },
+        "time": "2019-09-26T11:24:58+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\PhpDocReader\\": "src\/PhpDocReader"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "description": "PhpDocReader parses @var and @param values in PHP docblocks (supports namespaced class names with the same resolution rules as PHP)",
+        "keywords": [
+            "phpdoc",
+            "reflection"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/PHP-DI\/PhpDocReader\/issues",
+            "source": "https:\/\/github.com\/PHP-DI\/PhpDocReader\/tree\/master"
+        }
+    },
+    {
+        "name": "phpoption\/phpoption",
+        "version": "1.7.5",
+        "version_normalized": "1.7.5.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/schmittjoh\/php-option.git",
+            "reference": "994ecccd8f3283ecf5ac33254543eb0ac946d525"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/schmittjoh\/php-option\/zipball\/994ecccd8f3283ecf5ac33254543eb0ac946d525",
+            "reference": "994ecccd8f3283ecf5ac33254543eb0ac946d525",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5.9 || ^7.0 || ^8.0"
+        },
+        "require-dev": {
+            "bamarni\/composer-bin-plugin": "^1.4.1",
+            "phpunit\/phpunit": "^4.8.35 || ^5.7.27 || ^6.5.6 || ^7.0 || ^8.0 || ^9.0"
+        },
+        "time": "2020-07-20T17:29:33+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.7-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\PhpOption\\": "src\/PhpOption\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Johannes M. Schmitt",
+                "email": "schmittjoh@gmail.com"
+            },
+            {
+                "name": "Graham Campbell",
+                "email": "graham@alt-three.com"
+            }
+        ],
+        "description": "Option Type for PHP",
+        "keywords": [
+            "language",
+            "option",
+            "php",
+            "type"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/schmittjoh\/php-option\/issues",
+            "source": "https:\/\/github.com\/schmittjoh\/php-option\/tree\/1.7.5"
+        },
+        "funding": [
+            {
+                "url": "https:\/\/github.com\/GrahamCampbell",
+                "type": "github"
+            },
+            {
+                "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/phpoption\/phpoption",
+                "type": "tidelift"
+            }
+        ]
+    },
+    {
+        "name": "psr\/container",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/php-fig\/container.git",
+            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/php-fig\/container\/zipball\/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2017-02-14T16:28:37+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Psr\\Container\\": "src\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http:\/\/www.php-fig.org\/"
+            }
+        ],
+        "description": "Common Container Interface (PHP FIG PSR-11)",
+        "homepage": "https:\/\/github.com\/php-fig\/container",
+        "keywords": [
+            "PSR-11",
+            "container",
+            "container-interface",
+            "container-interop",
+            "psr"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/php-fig\/container\/issues",
+            "source": "https:\/\/github.com\/php-fig\/container\/tree\/master"
+        }
+    },
+    {
+        "name": "symfony\/polyfill-ctype",
+        "version": "v1.19.0",
+        "version_normalized": "1.19.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/symfony\/polyfill-ctype.git",
+            "reference": "aed596913b70fae57be53d86faa2e9ef85a2297b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/symfony\/polyfill-ctype\/zipball\/aed596913b70fae57be53d86faa2e9ef85a2297b",
+            "reference": "aed596913b70fae57be53d86faa2e9ef85a2297b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "suggest": {
+            "ext-ctype": "For best performance"
+        },
+        "time": "2020-10-23T09:01:57+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-main": "1.19-dev"
+            },
+            "thanks": {
+                "name": "symfony\/polyfill",
+                "url": "https:\/\/github.com\/symfony\/polyfill"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\": ""
+            },
+            "files": [
+                "bootstrap.php"
+            ]
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Gert de Pagter",
+                "email": "BackEndTea@gmail.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https:\/\/symfony.com\/contributors"
+            }
+        ],
+        "description": "Symfony polyfill for ctype functions",
+        "homepage": "https:\/\/symfony.com",
+        "keywords": [
+            "compatibility",
+            "ctype",
+            "polyfill",
+            "portable"
+        ],
+        "support": {
+            "source": "https:\/\/github.com\/symfony\/polyfill-ctype\/tree\/v1.19.0"
+        },
+        "funding": [
+            {
+                "url": "https:\/\/symfony.com\/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https:\/\/github.com\/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/symfony\/symfony",
+                "type": "tidelift"
+            }
+        ]
+    },
+    {
+        "name": "vlucas\/phpdotenv",
+        "version": "v4.2.0",
+        "version_normalized": "4.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/vlucas\/phpdotenv.git",
+            "reference": "da64796370fc4eb03cc277088f6fede9fde88482"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/vlucas\/phpdotenv\/zipball\/da64796370fc4eb03cc277088f6fede9fde88482",
+            "reference": "da64796370fc4eb03cc277088f6fede9fde88482",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5.9 || ^7.0 || ^8.0",
+            "phpoption\/phpoption": "^1.7.3",
+            "symfony\/polyfill-ctype": "^1.17"
+        },
+        "require-dev": {
+            "bamarni\/composer-bin-plugin": "^1.4.1",
+            "ext-filter": "*",
+            "ext-pcre": "*",
+            "phpunit\/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20"
+        },
+        "suggest": {
+            "ext-filter": "Required to use the boolean validator.",
+            "ext-pcre": "Required to use most of the library."
+        },
+        "time": "2021-01-20T15:11:48+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.1-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "DeliciousBrains\\WPMDB\\Container\\Dotenv\\": "src\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Graham Campbell",
+                "email": "graham@alt-three.com",
+                "homepage": "https:\/\/gjcampbell.co.uk\/"
+            },
+            {
+                "name": "Vance Lucas",
+                "email": "vance@vancelucas.com",
+                "homepage": "https:\/\/vancelucas.com\/"
+            }
+        ],
+        "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
+        "keywords": [
+            "dotenv",
+            "env",
+            "environment"
+        ],
+        "support": {
+            "issues": "https:\/\/github.com\/vlucas\/phpdotenv\/issues",
+            "source": "https:\/\/github.com\/vlucas\/phpdotenv\/tree\/v4.2.0"
+        },
+        "funding": [
+            {
+                "url": "https:\/\/github.com\/GrahamCampbell",
+                "type": "github"
+            },
+            {
+                "url": "https:\/\/tidelift.com\/funding\/github\/packagist\/vlucas\/phpdotenv",
+                "type": "tidelift"
+            }
+        ]
+    }
+]

@@ -2,10 +2,12 @@
 
 namespace DeliciousBrains\WPMDB\Common\Cli;
 
-class Command {
+class Command
+{
 
-	public static function register() {
-		\WP_CLI::add_command( 'migratedb', 'DeliciousBrains\WPMDB\Common\Cli\Command' );
+	public static function register()
+	{
+		\WP_CLI::add_command('migratedb', 'DeliciousBrains\WPMDB\Common\Cli\Command');
 	}
 
 	/**
@@ -60,22 +62,23 @@ class Command {
 	 * @param array $args
 	 * @param array $assoc_args
 	 */
-	public function export( $args, $assoc_args ) {
+	public function export($args, $assoc_args)
+	{
 
 		$assoc_args['action']      = 'savefile';
-		$assoc_args['export_dest'] = trim( $args[0] );
+		$assoc_args['export_dest'] = trim($args[0]);
 
-		if ( empty( $assoc_args['export_dest'] ) ) {
-			\WP_CLI::error( Cli::cleanup_message( __( 'You must provide a destination filename.', 'wp-migrate-db-cli' ) ) );
+		if (empty($assoc_args['export_dest'])) {
+			\WP_CLI::error(Cli::cleanup_message(__('You must provide a destination filename.', 'wp-migrate-db-cli')));
 		}
 
-		$profile = $this->_get_profile_data_from_args( $args, $assoc_args );
+		$profile = $this->_get_profile_data_from_args($args, $assoc_args);
 
-		if ( is_wp_error( $profile ) ) {
-			\WP_CLI::error( $profile );
+		if (is_wp_error($profile)) {
+			\WP_CLI::error($profile);
 		}
 
-		$this->_perform_cli_migration( $profile );
+		$this->_perform_cli_migration($profile);
 	}
 
 	/**
@@ -102,16 +105,6 @@ class Command {
 	 *     Should be used in conjunction with the --find=<strings> argument, see it's
 	 *     documentation for further explanation of the find & replace functionality.
 	 *
-	 * [--backup=<prefix|selected|table_one,table_two,table_etc>]
-	 * : Perform a backup of the destination site's database tables before replacing it.
-	 *
-	 *     Accepted values:
-	 *
-	 *     * prefix - Backup only tables that begin with your installation's
-	 *                table prefix (e.g. wp_)
-	 *     * selected - Backup only tables selected for migration (as in --include-tables)
-	 *     * A comma separated list of the tables to backup.
-	 *
 	 * [--exclude-post-revisions]
 	 * : Exclude post revisions from the find & replace.
 	 *
@@ -135,17 +128,18 @@ class Command {
 	 *
 	 * @subcommand find-replace
 	 */
-	public function find_replace( $args, $assoc_args ) {
+	public function find_replace($args, $assoc_args)
+	{
 
 		$assoc_args['action'] = 'find_replace';
 
-		$profile = $this->_get_profile_data_from_args( $args, $assoc_args );
+		$profile = $this->_get_profile_data_from_args($args, $assoc_args);
 
-		if ( is_wp_error( $profile ) ) {
-			\WP_CLI::error( $profile );
+		if (is_wp_error($profile)) {
+			\WP_CLI::error($profile);
 		}
 
-		$this->_perform_cli_migration( $profile );
+		$this->_perform_cli_migration($profile);
 	}
 
 	/**
@@ -156,10 +150,11 @@ class Command {
 	 *
 	 * @return array|WP_Error
 	 */
-	protected function _get_profile_data_from_args( $args, $assoc_args ) {
+	protected function _get_profile_data_from_args($args, $assoc_args)
+	{
 		// Load the correct CLI class
-		if ( function_exists( 'wpmdb_pro_cli' ) ) {
-			if ( function_exists( 'wp_migrate_db_pro_cli_addon' ) ) {
+		if (function_exists('wpmdb_pro_cli')) {
+			if (function_exists('wp_migrate_db_pro_cli_addon')) {
 				$wpmdb_cli = wp_migrate_db_pro_cli_addon();
 			} else {
 				$wpmdb_cli = wpmdb_pro_cli();
@@ -168,7 +163,7 @@ class Command {
 			$wpmdb_cli = wpmdb_cli();
 		}
 
-		return $wpmdb_cli->get_profile_data_from_args( $args, $assoc_args );
+		return $wpmdb_cli->get_profile_data_from_args($args, $assoc_args);
 	}
 
 	/**
@@ -178,34 +173,35 @@ class Command {
 	 *
 	 * @return void
 	 */
-	protected function _perform_cli_migration( $profile ) {
+	protected function _perform_cli_migration($profile)
+	{
 		$wpmdb_cli = null;
 
 		//load correct cli class
-		if ( function_exists( 'wpmdb_pro_cli' ) ) {
+		if (function_exists('wpmdb_pro_cli')) {
 			$wpmdb_cli = wpmdb_pro_cli();
 		} else {
 			$wpmdb_cli = wpmdb_cli();
 		}
 
-		if ( empty( $wpmdb_cli ) ) {
-			\WP_CLI::error( __( 'WP Migrate DB CLI class not available.', 'wp-migrate-db-cli' ) );
+		if (empty($wpmdb_cli)) {
+			\WP_CLI::error(__('WP Migrate DB CLI class not available.', 'wp-migrate-db-cli'));
 
 			return;
 		}
 
-		$result = $wpmdb_cli->cli_migration( $profile );
+		$result = $wpmdb_cli->cli_migration($profile);
 
-		if ( ! is_wp_error( $result ) ) {
-			$success_msg = sprintf( __( 'Export saved to: %s', 'wp-migrate-db-cli' ), $result );
+		if (!is_wp_error($result)) {
+			$success_msg = sprintf(__('Export saved to: %s', 'wp-migrate-db-cli'), $result);
 
-			if ( 'find_replace' === $profile['action'] ) {
-				$success_msg = __( 'Find & Replace complete', 'wp-migrate-db-cli' );
+			if ('find_replace' === $profile['current_migration']['intent']) {
+				$success_msg = __('Find & Replace complete', 'wp-migrate-db-cli');
 			}
 
-			\WP_CLI::success( $success_msg );
-		} elseif ( is_wp_error( $result ) ) {
-			\WP_CLI::error( Cli::cleanup_message( $result->get_error_message() ) );
+			\WP_CLI::success($success_msg);
+		} elseif (is_wp_error($result)) {
+			\WP_CLI::error(Cli::cleanup_message($result->get_error_message()));
 		}
 	}
 }

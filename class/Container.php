@@ -1,114 +1,63 @@
 <?php
 
+
 namespace DeliciousBrains\WPMDB;
 
 /**
  * Class Container
  *
- * 'Container' for all the plugins classes. Singleton, so new instances shouldn't be created.
- *
- * DO:
- * Container::getInstance();
- *
- * DONT'T DO
- * new Container();
+ * THIS CLASS EXISTS AS A BACK-COMPAT FOR PRE 2.0 VERSIONS OF THE PLUGIN AND ADDONS
  *
  * @package DeliciousBrains\WPMDB
  */
-class Container {
+class Container
+{
 
-	public $providers = [];
-	public $classes = [];
-	public $props;
-	private static $instance;
+    public $providers = [];
+    public $classes = [];
+    public $props;
 
-	public static function getInstance() {
-		if ( ! ( self::$instance instanceof self ) ) {
-			self::$instance = new self;
-		}
+    public static function getInstance()
+    {
+    }
 
-		return self::$instance;
-	}
+    public function get()
+    {
+        //For back-compat
+        return $this;
+    }
 
-	public function setUpProviders( $pro = false ) {
-		$potential_classes = [
-			'DeliciousBrains\WPMDB\ServiceProvider',
-		];
+    public function addClass($key, $instance)
+    {
+        $this->classes[$key] = $instance;
 
-		if ( $pro ) {
-			$pro_classes       = [
-				'DeliciousBrains\WPMDB\Pro\ServiceProvider',
-				'DeliciousBrains\WPMDBCli\ServiceProvider',
-				'DeliciousBrains\WPMDBMST\ServiceProvider',
-				'DeliciousBrains\WPMDBMF\ServiceProvider',
-				'DeliciousBrains\WPMDBTP\ServiceProvider',
-			];
-			$potential_classes = $pro_classes + $potential_classes;
-		} else {
-			$potential_classes[] = 'DeliciousBrains\WPMDB\Free\ServiceProvider';
-		}
+        return $instance;
+    }
 
-		foreach ( $potential_classes as $class ) {
-			$this->maybeAddProvider( $class );
-		}
+    //For back-compat
+    public function add($key, $instance)
+    {
+        return $this;
+    }
 
-		if ( ! empty( $this->providers ) ) {
-			foreach ( $this->providers as $provider ) {
-				$vars = get_object_vars( $provider );
-				foreach ( $vars as $prop => $var ) {
-					if ( ! \in_array( $var, $this->classes ) ) {
-						$this->classes[ $prop ] = $var;
-					}
-				}
-			}
-		}
-	}
+    public function has($id)
+    {
+        if (!array_key_exists($id, $this->classes)) {
+            return true;
+        }
 
-	public function maybeAddProvider( $class ) {
-		if ( class_exists( $class ) ) {
-			$this->providers[ $class ] = new $class;
-		}
-	}
+        return false;
+    }
 
-	public function get( $id ) {
-		if ( empty( $this->classes ) ) {
-			$this->setUpProviders();
-		}
+    //For back-compat
+    public function withArguments()
+    {
+        //NoOp
+    }
 
-		if ( array_key_exists( $id, $this->classes ) ) {
-			return $this->classes[ $id ];
-		}
-
-		//For back-compat
-		return $this;
-	}
-
-	public function addClass( $key, $instance ) {
-		$this->classes[ $key ] = $instance;
-
-		return $instance;
-	}
-
-	//For back-compat
-	public function add( $key, $instance ) {
-		return $this;
-	}
-
-	public function has( $id ) {
-		if ( ! array_key_exists( $id, $this->classes ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	//For back-compat
-	public function withArguments(){
-		//NoOp
-	}
-
-	//For back-compat
-	public function register(){
-		//NoOp
-	}
+    //For back-compat
+    public function register()
+    {
+        //NoOp
+    }
 }

@@ -3,7 +3,9 @@
 namespace DeliciousBrains\WPMDB\Common\Compatibility;
 
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
+use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\Http;
+use DeliciousBrains\WPMDB\Common\Http\WPMDBRestAPIServer;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
@@ -67,16 +69,26 @@ class CompatibilityManager {
 	 * @var MigrationStateManager
 	 */
 	public $migration_state;
+    /**
+     * @var WPMDBRestAPIServer
+     */
+    private $rest_API_server;
+    /**
+     * @var Helper
+     */
+    private $http_helper;
 
-	public function __construct(
+    public function __construct(
 		Filesystem $filesystem,
 		Settings $settings,
 		Notice $notice,
 		Http $http,
+		Helper $http_helper,
 		TemplateBase $template,
 		MigrationStateManager $migration_state,
 		Util $util,
-		Properties $properties
+		Properties $properties,
+        WPMDBRestAPIServer $rest_API_server
 	) {
 
 		$this->filesystem      = $filesystem;
@@ -89,23 +101,26 @@ class CompatibilityManager {
 		$this->migration_state = $migration_state;
 		$this->util            = $util;
 
-
 		//Version of the compatibility plugin, to force an update of the MU plugin, increment this value
 		$this->compatibility_plugin_version = '1.2';
 
 		$this->mu_plugin_dir    = $this->props->mu_plugin_dir;
 		$this->mu_plugin_source = $this->props->mu_plugin_source;
 		$this->mu_plugin_dest   = $this->props->mu_plugin_dest;
-	}
+        $this->http_helper = $http_helper;
+    }
 
 	public function register() {
-		//Checks the compatibility mode MU plugin version and updates if it's out of date
-		add_action( 'wp_ajax_wpmdb_plugin_compatibility', array( $this, 'ajax_plugin_compatibility' ) );
+		// Checks the compatibility mode MU plugin version and updates if it's out of date.
 		add_action( 'admin_init', array( $this, 'muplugin_version_check' ), 1 );
-		add_action( 'wpmdb_notices', array( $this, 'template_muplugin_update_fail' ) );
-		//Fired in the register_deactivation_hook() call in both the pro and non-pro plugins
+
+		// Fired in the register_deactivation_hook() call in both the pro and non-pro plugins.
 		add_action( 'wp_migrate_db_remove_compatibility_plugin', array( $this, 'remove_muplugin_on_deactivation' ) );
 	}
+
+	public function addNotices(){
+        add_filter('wpmdb_notification_strings', array($this, 'template_muplugin_update_fail'));
+    }
 
 	/**
 	 * Triggered with the `admin_init` hook on the WP Migrate DB Pro dashboard page
@@ -153,53 +168,20 @@ class CompatibilityManager {
 	/**
 	 * Preemptively shows a warning warning on WPMDB pages if the mu-plugins folder isn't writable
 	 */
-	function template_muplugin_update_fail() {
+	function template_muplugin_update_fail($notifications) {
 		if ( $this->is_muplugin_update_required() && false === $this->util->is_muplugin_writable() ) {
-			$notice_links = $this->notices->check_notice( 'muplugin_failed_update_' . $this->compatibility_plugin_version, 'SHOW_ONCE' );
+            $notice_id = 'muplugin_failed_update_' . $this->compatibility_plugin_version;
+			$notice_links = $this->notices->check_notice( $notice_id, 'SHOW_ONCE' );
+
 			if ( is_array( $notice_links ) ) {
-				$this->template->template( 'muplugin-failed-update-warning', 'common', $notice_links );
+                $notifications[$notice_id] = [
+                    'message' => $this->template->template_to_string('muplugin-failed-update-warning', 'common', $notice_links),
+                    'link'    => $notice_links,
+                    'id'      => $notice_id,
+                ];
 			}
 		}
-	}
-
-	/**
-	 * Handler for ajax request to turn on or off Compatibility Mode.
-	 */
-	public function ajax_plugin_compatibility() {
-		$this->http->check_ajax_referer( 'plugin_compatibility' );
-		$message = false;
-
-		$key_rules      = array(
-			'action'  => 'key',
-			'install' => 'numeric',
-		);
-		$state_data     = $this->migration_state->set_post_data( $key_rules );
-		$do_install     = ( '1' === trim( $state_data['install'] ) ) ? true : false;
-		$plugin_toggled = $this->toggle_muplugin( $do_install );
-
-		//If there's an error message, display it
-		if ( true !== $plugin_toggled ) {
-			$message = $plugin_toggled;
-		}
-
-		$this->http->end_ajax( $message );
-	}
-
-
-	/**
-	 *
-	 * Toggles the compatibility plugin based on the $do_install param.
-	 *
-	 * @param $do_install
-	 *
-	 * @return bool|string|void
-	 */
-	public function toggle_muplugin( $do_install ) {
-		if ( true === $do_install ) {
-			return $this->copy_muplugin();
-		} else {
-			return $this->remove_muplugin();
-		}
+		return $notifications;
 	}
 
 	/**

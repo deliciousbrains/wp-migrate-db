@@ -41,3 +41,38 @@ function wpmdb_deactivate_other_instances( $plugin ){
 		}
 	}
 }
+
+
+/**
+ * Check if both Pro and Free instances of the plugin are active at the same time.
+ * And deactivates the free instance.
+ * Hooked on `wpmdb_migration_complete`
+ *
+ * @param string $type Intent type
+ */
+function wpmdb_deactivate_free_instance_after_migration( $type ) {
+	if ( $type !== 'import' ) {
+		return;
+	}
+	// Flush WP cache to get list of active plugins from DB
+	wp_cache_flush();
+
+	$plugins = wpmdb_get_active_plugins();
+	$pro_basename = $free_basename = false;
+
+	foreach ( $plugins as $plugin ) {
+		$basename = basename( $plugin );
+		if ( $basename === 'wp-migrate-db-pro.php' ) {
+			$pro_basename = $plugin;
+			continue;
+		}
+
+		if ( $basename === 'wp-migrate-db.php' ) {
+			$free_basename = $plugin;
+		}
+	}
+
+	if ( $free_basename !== false && $pro_basename !== false ) {
+		deactivate_plugins( $free_basename );
+	}
+}

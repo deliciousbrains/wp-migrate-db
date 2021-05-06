@@ -1,0 +1,41 @@
+<?php
+
+namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
+
+use DeliciousBrains\WPMDB\Container\Couchbase;
+use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CouchbaseCache;
+class CouchbaseCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+{
+    private $couchbase;
+    public function setUp()
+    {
+        if (\extension_loaded('couchbase')) {
+            try {
+                $this->couchbase = new \DeliciousBrains\WPMDB\Container\Couchbase('127.0.0.1', 'Administrator', 'password', 'default');
+            } catch (\DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\Exception $ex) {
+                $this->markTestSkipped('Could not instantiate the Couchbase cache because of: ' . $ex);
+            }
+        } else {
+            $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of the couchbase extension');
+        }
+    }
+    public function testNoExpire()
+    {
+        $cache = $this->_getCacheDriver();
+        $cache->save('noexpire', 'value', 0);
+        \sleep(1);
+        $this->assertTrue($cache->contains('noexpire'), 'Couchbase provider should support no-expire');
+    }
+    public function testLongLifetime()
+    {
+        $cache = $this->_getCacheDriver();
+        $cache->save('key', 'value', 30 * 24 * 3600 + 1);
+        $this->assertTrue($cache->contains('key'), 'Couchbase provider should support TTL > 30 days');
+    }
+    protected function _getCacheDriver()
+    {
+        $driver = new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CouchbaseCache();
+        $driver->setCouchbase($this->couchbase);
+        return $driver;
+    }
+}

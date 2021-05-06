@@ -1,0 +1,117 @@
+<?php
+
+namespace DeliciousBrains\WPMDB\Container\DI\Definition\Resolver;
+
+use DeliciousBrains\WPMDB\Container\DI\Definition\Definition;
+use DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException;
+use DeliciousBrains\WPMDB\Container\DI\Proxy\ProxyFactory;
+use DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface;
+/**
+ * Dispatches to more specific resolvers.
+ *
+ * Dynamic dispatch pattern.
+ *
+ * @since 5.0
+ * @author Matthieu Napoli <matthieu@mnapoli.fr>
+ */
+class ResolverDispatcher implements \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver
+{
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+    /**
+     * @var ProxyFactory
+     */
+    private $proxyFactory;
+    private $selfResolvingResolver;
+    private $arrayResolver;
+    private $factoryResolver;
+    private $decoratorResolver;
+    private $objectResolver;
+    private $instanceResolver;
+    private $envVariableResolver;
+    public function __construct(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container, \DeliciousBrains\WPMDB\Container\DI\Proxy\ProxyFactory $proxyFactory)
+    {
+        $this->container = $container;
+        $this->proxyFactory = $proxyFactory;
+    }
+    /**
+     * Resolve a definition to a value.
+     *
+     * @param Definition $definition Object that defines how the value should be obtained.
+     * @param array      $parameters Optional parameters to use to build the entry.
+     *
+     * @throws DefinitionException If the definition cannot be resolved.
+     *
+     * @return mixed Value obtained from the definition.
+     */
+    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    {
+        $definitionResolver = $this->getDefinitionResolver($definition);
+        return $definitionResolver->resolve($definition, $parameters);
+    }
+    /**
+     * Check if a definition can be resolved.
+     *
+     * @param Definition $definition Object that defines how the value should be obtained.
+     * @param array      $parameters Optional parameters to use to build the entry.
+     *
+     * @return bool
+     */
+    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    {
+        $definitionResolver = $this->getDefinitionResolver($definition);
+        return $definitionResolver->isResolvable($definition, $parameters);
+    }
+    /**
+     * Returns a resolver capable of handling the given definition.
+     *
+     * @param Definition $definition
+     *
+     * @throws \RuntimeException No definition resolver was found for this type of definition.
+     * @return DefinitionResolver
+     */
+    private function getDefinitionResolver(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition)
+    {
+        switch (\true) {
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\SelfResolvingDefinition:
+                if (!$this->selfResolvingResolver) {
+                    $this->selfResolvingResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\SelfResolver($this->container);
+                }
+                return $this->selfResolvingResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition:
+                if (!$this->objectResolver) {
+                    $this->objectResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\ObjectCreator($this, $this->proxyFactory);
+                }
+                return $this->objectResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\DecoratorDefinition:
+                if (!$this->decoratorResolver) {
+                    $this->decoratorResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DecoratorResolver($this->container, $this);
+                }
+                return $this->decoratorResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\FactoryDefinition:
+                if (!$this->factoryResolver) {
+                    $this->factoryResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\FactoryResolver($this->container, $this);
+                }
+                return $this->factoryResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinition:
+                if (!$this->arrayResolver) {
+                    $this->arrayResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\ArrayResolver($this);
+                }
+                return $this->arrayResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\EnvironmentVariableDefinition:
+                if (!$this->envVariableResolver) {
+                    $this->envVariableResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\EnvironmentVariableResolver($this);
+                }
+                return $this->envVariableResolver;
+            case $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\InstanceDefinition:
+                if (!$this->instanceResolver) {
+                    $this->instanceResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\InstanceInjector($this, $this->proxyFactory);
+                }
+                return $this->instanceResolver;
+            default:
+                throw new \RuntimeException('No definition resolver was configured for definition of type ' . \get_class($definition));
+        }
+    }
+}

@@ -1,4 +1,8 @@
 <?php
+
+use DeliciousBrains\WPMDB\Common\Cli\Cli;
+use DeliciousBrains\WPMDB\WPMDBDI;
+
 /**
  * Populate the $wpmdb global with an instance of the WPMDB class and return it.
  *
@@ -7,7 +11,10 @@
 function wp_migrate_db() {
 	global $wpmdb;
 
-	if ( ! is_null( $wpmdb ) ) {
+	//Load in front-end code
+    require_once __DIR__ . '/react-wp-scripts.php';
+
+    if ( ! is_null( $wpmdb ) ) {
 		return $wpmdb;
 	}
 
@@ -41,7 +48,7 @@ function wpmdb_cli() {
 
 	do_action( 'wp_migrate_db_cli_before_load' );
 
-	$wpmdb_cli = \DeliciousBrains\WPMDB\Container::getInstance()->get( 'cli' );
+	$wpmdb_cli = WPMDBDI::getInstance()->get( Cli::class );
 
 	do_action( 'wp_migrate_db_cli_after_load' );
 
@@ -67,17 +74,19 @@ function wpmdb_is_ajax() {
 	return true;
 }
 
-function wp_migrate_db_loaded() {
-	// exit quickly unless: standalone admin; one of our AJAX calls
-	if ( ! is_admin() || ( is_multisite() && ! current_user_can( 'manage_network_options' ) && ! wpmdb_is_ajax() ) ) {
-		return false;
-	}
-	if ( function_exists( 'wp_migrate_db' ) ) {
-		// Remove the compatibility plugin when the plugin is deactivated
-		register_deactivation_hook( dirname( __FILE__ ) . '/wp-migrate-db.php', 'wpmdb_remove_mu_plugin' );
+function wp_migrate_db_loaded()
+{
+    // @TODO revisit since we're reming is_admin()
+    // exit quickly unless: standalone admin; one of our AJAX calls
+    if (is_multisite() && !current_user_can('manage_network_options') && !wpmdb_is_ajax()) {
+        return false;
+    }
+    if (function_exists('wp_migrate_db')) {
+        // Remove the compatibility plugin when the plugin is deactivated
+        register_deactivation_hook(dirname(__FILE__) . '/wp-migrate-db.php', 'wpmdb_remove_mu_plugin');
 
-		wp_migrate_db();
-	}
+            wp_migrate_db();
+    }
 }
 
-add_action( 'plugins_loaded', 'wp_migrate_db_loaded' );
+add_action('plugins_loaded', 'wp_migrate_db_loaded');
