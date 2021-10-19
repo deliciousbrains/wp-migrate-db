@@ -9,6 +9,6 @@ use DeliciousBrains\WPMDB\Container\Psr\Container\ContainerExceptionInterface as
 /**
  * Base interface representing a generic exception in a container.
  */
-interface ContainerException extends \DeliciousBrains\WPMDB\Container\Psr\Container\ContainerExceptionInterface
+interface ContainerException extends PsrContainerException
 {
 }

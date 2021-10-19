@@ -94,7 +94,7 @@ class RepositoryBuilder
         if ($this->readers === null || $this->writers === null) {
             $defaults = self::defaultAdapters();
         }
-        return new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\AdapterRepository($this->readers === null ? $defaults : $this->readers, $this->writers === null ? $defaults : $this->writers, $this->immutable);
+        return new AdapterRepository($this->readers === null ? $defaults : $this->readers, $this->writers === null ? $defaults : $this->writers, $this->immutable);
     }
     /**
      * Return the array of default adapters.
@@ -103,7 +103,7 @@ class RepositoryBuilder
      */
     private static function defaultAdapters()
     {
-        return self::filterByAvailability([new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ApacheAdapter(), new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\EnvConstAdapter(), new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ServerConstAdapter(), new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\PutenvAdapter()]);
+        return self::filterByAvailability([new ApacheAdapter(), new EnvConstAdapter(), new ServerConstAdapter(), new PutenvAdapter()]);
     }
     /**
      * Filter an array of adapters to only those that are supported.
@@ -114,7 +114,7 @@ class RepositoryBuilder
      */
     private static function filterByAvailability(array $adapters)
     {
-        return \array_filter($adapters, function (\DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\AvailabilityInterface $adapter) {
+        return \array_filter($adapters, function (AvailabilityInterface $adapter) {
             return $adapter->isSupported();
         });
     }

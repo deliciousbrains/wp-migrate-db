@@ -30,7 +30,7 @@ class Validator
      *
      * @return void
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, array $variables, $required = \true)
+    public function __construct(RepositoryInterface $repository, array $variables, $required = \true)
     {
         $this->repository = $repository;
         $this->variables = $variables;
@@ -124,7 +124,7 @@ class Validator
             if ($value === null) {
                 return \true;
             }
-            return \DeliciousBrains\WPMDB\Container\Dotenv\Regex\Regex::match($regex, $value)->success()->getOrElse(0) === 1;
+            return Regex::match($regex, $value)->success()->getOrElse(0) === 1;
         }, \sprintf('does not match "%s"', $regex));
     }
     /**
@@ -146,7 +146,7 @@ class Validator
             }
         }
         if (\count($failing) > 0) {
-            throw new \DeliciousBrains\WPMDB\Container\Dotenv\Exception\ValidationException(\sprintf('One or more environment variables failed assertions: %s.', \implode(', ', $failing)));
+            throw new ValidationException(\sprintf('One or more environment variables failed assertions: %s.', \implode(', ', $failing)));
         }
         return $this;
     }

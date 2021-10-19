@@ -40,11 +40,11 @@ class Dotenv
      *
      * @return void
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInterface $loader, \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, $store)
+    public function __construct(LoaderInterface $loader, RepositoryInterface $repository, $store)
     {
         $this->loader = $loader;
         $this->repository = $repository;
-        $this->store = \is_array($store) ? new \DeliciousBrains\WPMDB\Container\Dotenv\Store\FileStore($store, \true) : $store;
+        $this->store = \is_array($store) ? new FileStore($store, \true) : $store;
     }
     /**
      * Create a new dotenv instance.
@@ -56,13 +56,13 @@ class Dotenv
      *
      * @return \Dotenv\Dotenv
      */
-    public static function create(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, $paths, $names = null, $shortCircuit = \true)
+    public static function create(RepositoryInterface $repository, $paths, $names = null, $shortCircuit = \true)
     {
-        $builder = \DeliciousBrains\WPMDB\Container\Dotenv\Store\StoreBuilder::create()->withPaths($paths)->withNames($names);
+        $builder = StoreBuilder::create()->withPaths($paths)->withNames($names);
         if ($shortCircuit) {
             $builder = $builder->shortCircuit();
         }
-        return new self(new \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Loader(), $repository, $builder->make());
+        return new self(new Loader(), $repository, $builder->make());
     }
     /**
      * Create a new mutable dotenv instance with default repository.
@@ -75,7 +75,7 @@ class Dotenv
      */
     public static function createMutable($paths, $names = null, $shortCircuit = \true)
     {
-        $repository = \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryBuilder::create()->make();
+        $repository = RepositoryBuilder::create()->make();
         return self::create($repository, $paths, $names, $shortCircuit);
     }
     /**
@@ -89,7 +89,7 @@ class Dotenv
      */
     public static function createImmutable($paths, $names = null, $shortCircuit = \true)
     {
-        $repository = \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryBuilder::create()->immutable()->make();
+        $repository = RepositoryBuilder::create()->immutable()->make();
         return self::create($repository, $paths, $names, $shortCircuit);
     }
     /**
@@ -103,8 +103,8 @@ class Dotenv
      */
     public static function createArrayBacked($paths, $names = null, $shortCircuit = \true)
     {
-        $adapter = new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ArrayAdapter();
-        $repository = \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
+        $adapter = new ArrayAdapter();
+        $repository = RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
         return self::create($repository, $paths, $names, $shortCircuit);
     }
     /**
@@ -121,9 +121,9 @@ class Dotenv
      */
     public static function parse($content)
     {
-        $adapter = new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ArrayAdapter();
-        $repository = \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
-        $phpdotenv = new self(new \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Loader(), $repository, new \DeliciousBrains\WPMDB\Container\Dotenv\Store\StringStore($content));
+        $adapter = new ArrayAdapter();
+        $repository = RepositoryBuilder::create()->withReaders([$adapter])->withWriters([$adapter])->make();
+        $phpdotenv = new self(new Loader(), $repository, new StringStore($content));
         return $phpdotenv->load();
     }
     /**
@@ -148,7 +148,7 @@ class Dotenv
     {
         try {
             return $this->load();
-        } catch (\DeliciousBrains\WPMDB\Container\Dotenv\Exception\InvalidPathException $e) {
+        } catch (InvalidPathException $e) {
             // suppressing exception
             return [];
         }
@@ -162,7 +162,7 @@ class Dotenv
      */
     public function required($variables)
     {
-        return new \DeliciousBrains\WPMDB\Container\Dotenv\Validator($this->repository, (array) $variables);
+        return new Validator($this->repository, (array) $variables);
     }
     /**
      * Returns a new validator object that won't check if the specified variables exist.
@@ -173,6 +173,6 @@ class Dotenv
      */
     public function ifPresent($variables)
     {
-        return new \DeliciousBrains\WPMDB\Container\Dotenv\Validator($this->repository, (array) $variables, \false);
+        return new Validator($this->repository, (array) $variables, \false);
     }
 }

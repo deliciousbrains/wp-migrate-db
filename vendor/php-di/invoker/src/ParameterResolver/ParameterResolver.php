@@ -24,5 +24,5 @@ interface ParameterResolver
      *
      * @return array
      */
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters);
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters);
 }

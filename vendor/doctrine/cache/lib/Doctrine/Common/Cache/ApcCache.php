@@ -30,7 +30,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class ApcCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class ApcCache extends CacheProvider
 {
     /**
      * {@inheritdoc}
@@ -87,6 +87,6 @@ class ApcCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Ca
             $info['num_misses'] = isset($info['num_misses']) ? $info['num_misses'] : $info['nmisses'];
             $info['start_time'] = isset($info['start_time']) ? $info['start_time'] : $info['stime'];
         }
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => $info['num_hits'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => $info['num_misses'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $info['start_time'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $info['mem_size'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $sma['avail_mem']);
+        return array(Cache::STATS_HITS => $info['num_hits'], Cache::STATS_MISSES => $info['num_misses'], Cache::STATS_UPTIME => $info['start_time'], Cache::STATS_MEMORY_USAGE => $info['mem_size'], Cache::STATS_MEMORY_AVAILABLE => $sma['avail_mem']);
     }
 }

@@ -31,7 +31,7 @@ use Memcached;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class MemcachedCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class MemcachedCache extends CacheProvider
 {
     /**
      * @var Memcached|null
@@ -44,7 +44,7 @@ class MemcachedCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Ca
      *
      * @return void
      */
-    public function setMemcached(\Memcached $memcached)
+    public function setMemcached(Memcached $memcached)
     {
         $this->memcached = $memcached;
     }
@@ -111,6 +111,6 @@ class MemcachedCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Ca
         $servers = $this->memcached->getServerList();
         $key = $servers[0]['host'] . ':' . $servers[0]['port'];
         $stats = $stats[$key];
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => $stats['get_hits'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => $stats['get_misses'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $stats['uptime'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $stats['bytes'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $stats['limit_maxbytes']);
+        return array(Cache::STATS_HITS => $stats['get_hits'], Cache::STATS_MISSES => $stats['get_misses'], Cache::STATS_UPTIME => $stats['uptime'], Cache::STATS_MEMORY_USAGE => $stats['bytes'], Cache::STATS_MEMORY_AVAILABLE => $stats['limit_maxbytes']);
     }
 }

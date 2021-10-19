@@ -198,7 +198,7 @@ class TableHelper
      *
      * @return boolean
      */
-    function table_is($desired_table, $given_table, $scope = 'table', $new_prefix = '', $blog_id = 0)
+    function table_is($desired_table, $given_table, $scope = 'table', $new_prefix = '', $blog_id = 0, $source_prefix = '')
     {
         global $wpdb;
 
@@ -217,7 +217,7 @@ class TableHelper
         }
 
         $match                 = false;
-        $prefix_escaped        = preg_quote($wpdb->base_prefix, '/');
+        $prefix_escaped        = $source_prefix ? preg_quote($source_prefix, '/') : preg_quote($wpdb->base_prefix, '/');
         $desired_table_escaped = preg_quote($desired_table, '/');
 
         if ('table' === $scope) {
@@ -238,6 +238,10 @@ class TableHelper
             }
 
             if (!empty($tables)) {
+                if ($source_prefix) {
+                    $local_prefix = preg_quote($wpdb->base_prefix, '/');
+                    $tables       = Util::change_tables_prefix($tables, $local_prefix, $source_prefix);
+                }
                 foreach ($tables as $table_name) {
                     if (!empty($table_name) && strtolower($table_name) === strtolower($given_table)) {
                         $match = true;

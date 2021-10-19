@@ -6,6 +6,6 @@ use DeliciousBrains\WPMDB\Container\Interop\Container\Exception\ContainerExcepti
 /**
  * Exception for the Container.
  */
-class DependencyException extends \Exception implements \DeliciousBrains\WPMDB\Container\Interop\Container\Exception\ContainerException
+class DependencyException extends \Exception implements ContainerException
 {
 }

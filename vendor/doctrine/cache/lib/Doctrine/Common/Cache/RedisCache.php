@@ -27,7 +27,7 @@ use Redis;
  * @since  2.2
  * @author Osman Ungur <osmanungur@gmail.com>
  */
-class RedisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class RedisCache extends CacheProvider
 {
     /**
      * @var Redis|null
@@ -40,9 +40,9 @@ class RedisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\
      *
      * @return void
      */
-    public function setRedis(\Redis $redis)
+    public function setRedis(Redis $redis)
     {
-        $redis->setOption(\Redis::OPT_SERIALIZER, $this->getSerializerValue());
+        $redis->setOption(Redis::OPT_SERIALIZER, $this->getSerializerValue());
         $this->redis = $redis;
     }
     /**
@@ -98,7 +98,7 @@ class RedisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\
     protected function doGetStats()
     {
         $info = $this->redis->info();
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => \false, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => \false, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $info['uptime_in_seconds'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $info['used_memory'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => \false);
+        return array(Cache::STATS_HITS => \false, Cache::STATS_MISSES => \false, Cache::STATS_UPTIME => $info['uptime_in_seconds'], Cache::STATS_MEMORY_USAGE => $info['used_memory'], Cache::STATS_MEMORY_AVAILABLE => \false);
     }
     /**
      * Returns the serializer constant to use. If Redis is compiled with
@@ -110,8 +110,8 @@ class RedisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\
     protected function getSerializerValue()
     {
         if (\defined('HHVM_VERSION')) {
-            return \Redis::SERIALIZER_PHP;
+            return Redis::SERIALIZER_PHP;
         }
-        return \defined('Redis::SERIALIZER_IGBINARY') ? \Redis::SERIALIZER_IGBINARY : \Redis::SERIALIZER_PHP;
+        return \defined('Redis::SERIALIZER_IGBINARY') ? Redis::SERIALIZER_IGBINARY : Redis::SERIALIZER_PHP;
     }
 }

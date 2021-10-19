@@ -8,6 +8,6 @@ namespace DeliciousBrains\WPMDB\Container\Psr\Container;
 /**
  * No entry was found in the container.
  */
-interface NotFoundExceptionInterface extends \DeliciousBrains\WPMDB\Container\Psr\Container\ContainerExceptionInterface
+interface NotFoundExceptionInterface extends ContainerExceptionInterface
 {
 }

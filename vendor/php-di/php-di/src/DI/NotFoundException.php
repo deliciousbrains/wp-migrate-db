@@ -6,6 +6,6 @@ use DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundExceptio
 /**
  * Exception thrown when a class or a value is not found in the container.
  */
-class NotFoundException extends \Exception implements \DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundException
+class NotFoundException extends \Exception implements BaseNotFoundException
 {
 }

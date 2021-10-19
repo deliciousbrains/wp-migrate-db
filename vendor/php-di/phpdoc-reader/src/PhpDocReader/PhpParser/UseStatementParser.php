@@ -27,7 +27,7 @@ class UseStatementParser
         }
         $namespace = \preg_quote($class->getNamespaceName());
         $content = \preg_replace('/^.*?(\\bnamespace\\s+' . $namespace . '\\s*[;{].*)$/s', '\\1', $content);
-        $tokenizer = new \DeliciousBrains\WPMDB\Container\PhpDocReader\PhpParser\TokenParser('<?php ' . $content);
+        $tokenizer = new TokenParser('<?php ' . $content);
         $statements = $tokenizer->parseUseStatements($class->getNamespaceName());
         return $statements;
     }
@@ -46,7 +46,7 @@ class UseStatementParser
         }
         $content = '';
         $lineCnt = 0;
-        $file = new \SplFileObject($filename);
+        $file = new SplFileObject($filename);
         while (!$file->eof()) {
             if ($lineCnt++ == $lineNumber) {
                 break;

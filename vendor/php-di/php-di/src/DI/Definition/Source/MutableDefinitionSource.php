@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\Definition;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-interface MutableDefinitionSource extends \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource
+interface MutableDefinitionSource extends DefinitionSource
 {
-    public function addDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition);
+    public function addDefinition(Definition $definition);
 }

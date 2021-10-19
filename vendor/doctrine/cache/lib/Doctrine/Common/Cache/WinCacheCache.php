@@ -30,7 +30,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class WinCacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class WinCacheCache extends CacheProvider
 {
     /**
      * {@inheritdoc}
@@ -74,6 +74,6 @@ class WinCacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cac
     {
         $info = \wincache_ucache_info();
         $meminfo = \wincache_ucache_meminfo();
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => $info['total_hit_count'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => $info['total_miss_count'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $info['total_cache_uptime'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $meminfo['memory_total'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $meminfo['memory_free']);
+        return array(Cache::STATS_HITS => $info['total_hit_count'], Cache::STATS_MISSES => $info['total_miss_count'], Cache::STATS_UPTIME => $info['total_cache_uptime'], Cache::STATS_MEMORY_USAGE => $meminfo['memory_total'], Cache::STATS_MEMORY_AVAILABLE => $meminfo['memory_free']);
     }
 }

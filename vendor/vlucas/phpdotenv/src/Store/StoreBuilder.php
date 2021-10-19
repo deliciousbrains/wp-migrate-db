@@ -85,6 +85,6 @@ class StoreBuilder
      */
     public function make()
     {
-        return new \DeliciousBrains\WPMDB\Container\Dotenv\Store\FileStore(\DeliciousBrains\WPMDB\Container\Dotenv\Store\File\Paths::filePaths($this->paths, $this->names === null ? ['.env'] : $this->names), $this->shortCircuit);
+        return new FileStore(Paths::filePaths($this->paths, $this->names === null ? ['.env'] : $this->names), $this->shortCircuit);
     }
 }

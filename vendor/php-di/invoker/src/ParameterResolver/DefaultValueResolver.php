@@ -9,9 +9,9 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class DefaultValueResolver implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class DefaultValueResolver implements ParameterResolver
 {
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         $parameters = $reflection->getParameters();
         // Skip parameters already resolved
@@ -23,7 +23,7 @@ class DefaultValueResolver implements \DeliciousBrains\WPMDB\Container\Invoker\P
             if ($parameter->isOptional()) {
                 try {
                     $resolvedParameters[$index] = $parameter->getDefaultValue();
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     // Can't get default values from PHP internal classes and functions
                 }
             }

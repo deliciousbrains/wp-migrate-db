@@ -51,7 +51,7 @@ final class Inject
         if (\is_array($values)) {
             foreach ($values as $key => $value) {
                 if (!\is_string($value)) {
-                    throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\AnnotationException(\sprintf('@Inject({"param" = "value"}) expects "value" to be a string, %s given.', \json_encode($value)));
+                    throw new AnnotationException(\sprintf('@Inject({"param" = "value"}) expects "value" to be a string, %s given.', \json_encode($value)));
                 }
                 $this->parameters[$key] = $value;
             }

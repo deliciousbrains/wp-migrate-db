@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-abstract class BaseFileCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+abstract class BaseFileCacheTest extends CacheTest
 {
     protected $directory;
     public function setUp()
@@ -18,8 +18,8 @@ abstract class BaseFileCacheTest extends \DeliciousBrains\WPMDB\Container\Doctri
         if (!\is_dir($this->directory)) {
             return;
         }
-        $iterator = new \RecursiveDirectoryIterator($this->directory);
-        foreach (new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::CHILD_FIRST) as $file) {
+        $iterator = new RecursiveDirectoryIterator($this->directory);
+        foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $file) {
             if ($file->isFile()) {
                 @\unlink($file->getRealPath());
             } elseif ($file->isDir()) {

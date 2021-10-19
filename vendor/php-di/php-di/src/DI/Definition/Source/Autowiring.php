@@ -10,7 +10,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjecti
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class Autowiring implements \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource
+class Autowiring implements DefinitionSource
 {
     /**
      * {@inheritdoc}
@@ -20,12 +20,12 @@ class Autowiring implements \DeliciousBrains\WPMDB\Container\DI\Definition\Sourc
         if (!\class_exists($name) && !\interface_exists($name)) {
             return null;
         }
-        $definition = new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition($name);
+        $definition = new ObjectDefinition($name);
         // Constructor
         $class = new \ReflectionClass($name);
         $constructor = $class->getConstructor();
         if ($constructor && $constructor->isPublic()) {
-            $definition->setConstructorInjection(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection::constructor($this->getParametersDefinition($constructor)));
+            $definition->setConstructorInjection(MethodInjection::constructor($this->getParametersDefinition($constructor)));
         }
         return $definition;
     }
@@ -42,7 +42,7 @@ class Autowiring implements \DeliciousBrains\WPMDB\Container\DI\Definition\Sourc
             }
             $parameterClass = $parameter->getClass();
             if ($parameterClass) {
-                $parameters[$index] = new \DeliciousBrains\WPMDB\Container\DI\Definition\EntryReference($parameterClass->getName());
+                $parameters[$index] = new EntryReference($parameterClass->getName());
             }
         }
         return $parameters;

@@ -4,15 +4,15 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 
 use DeliciousBrains\WPMDB\Container\Couchbase;
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CouchbaseCache;
-class CouchbaseCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class CouchbaseCacheTest extends CacheTest
 {
     private $couchbase;
     public function setUp()
     {
         if (\extension_loaded('couchbase')) {
             try {
-                $this->couchbase = new \DeliciousBrains\WPMDB\Container\Couchbase('127.0.0.1', 'Administrator', 'password', 'default');
-            } catch (\DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\Exception $ex) {
+                $this->couchbase = new Couchbase('127.0.0.1', 'Administrator', 'password', 'default');
+            } catch (Exception $ex) {
                 $this->markTestSkipped('Could not instantiate the Couchbase cache because of: ' . $ex);
             }
         } else {
@@ -34,7 +34,7 @@ class CouchbaseCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
     }
     protected function _getCacheDriver()
     {
-        $driver = new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CouchbaseCache();
+        $driver = new CouchbaseCache();
         $driver->setCouchbase($this->couchbase);
         return $driver;
     }

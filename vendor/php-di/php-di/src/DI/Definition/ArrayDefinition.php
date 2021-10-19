@@ -10,7 +10,7 @@ use DeliciousBrains\WPMDB\Container\DI\Scope;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ArrayDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\Definition
+class ArrayDefinition implements Definition
 {
     /**
      * Entry name.
@@ -42,7 +42,7 @@ class ArrayDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\
      */
     public function getScope()
     {
-        return \DeliciousBrains\WPMDB\Container\DI\Scope::SINGLETON;
+        return Scope::SINGLETON;
     }
     /**
      * @return array
@@ -59,7 +59,7 @@ class ArrayDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\
                 $key = "'" . $key . "'";
             }
             $str .= '    ' . $key . ' => ';
-            if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+            if ($value instanceof DefinitionHelper) {
                 $str .= \str_replace(\PHP_EOL, \PHP_EOL . '    ', $value->getDefinition(''));
             } else {
                 $str .= \var_export($value, \true);

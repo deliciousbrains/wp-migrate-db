@@ -316,7 +316,7 @@ class Table
         $options_table_names = array();
 
         $temp_prefix  = isset($state_data['temp_prefix']) ? $state_data['temp_prefix'] : $this->props->temp_prefix;
-        $table_prefix = isset($state_data['prefix']) ? $state_data['prefix'] : $wpdb->base_prefix;
+        $table_prefix = $wpdb->base_prefix;
         $prefix       = esc_sql($temp_prefix . $table_prefix);
 
         foreach ($temp_tables as $temp_table) {
@@ -529,6 +529,21 @@ class Table
     }
 
     /**
+     * Change table prefix if needed
+     *
+     * @param string $table
+     *
+     * @return string
+     */
+    public function prefix_target_table_name($table, $state_data)
+    {
+        if($state_data['source_prefix'] === $state_data['destination_prefix']) {
+            return $table;
+        }
+        return Util::prefix_updater($table, $state_data['source_prefix'], $state_data['destination_prefix']);
+    }
+
+    /**
      * Loops over data in the provided table to perform a migration.
      *
      * @TODO this has a memory leak, each iteration of the do/while loop leaks 1k or so of memory
@@ -548,6 +563,9 @@ class Table
         $temp_prefix       = (isset($state_data['temp_prefix']) ? $state_data['temp_prefix'] : $this->props->temp_prefix);
         $site_details      = empty($state_data['site_details']) ? array() : $state_data['site_details'];
         $target_table_name = apply_filters('wpmdb_target_table_name', $table, $state_data, $site_details);
+        if (in_array($state_data['intent'], ['push', 'pull'])) {
+            $target_table_name = $this->prefix_target_table_name($target_table_name, $state_data);
+        }
         $temp_table_name   = $state_data["intent"] === 'import' ? $target_table_name : $temp_prefix . $target_table_name;
         $structure_info    = $this->get_structure_info($table, [], $state_data);
         $row_start         = $this->get_current_row($state_data);
@@ -558,18 +576,22 @@ class Table
         }
 
         $this->pre_process_data($table, $target_table_name, $temp_table_name, $fp, $state_data);
-        $to_search  = isset($state_data['find_replace_pairs']['replace_old']) ? $state_data['find_replace_pairs']['replace_old'] : '';
-        $to_replace = isset($state_data['find_replace_pairs']['replace_new']) ? $state_data['find_replace_pairs']['replace_new'] : '';
+        $to_search                     = isset($state_data['find_replace_pairs']['replace_old']) ? $state_data['find_replace_pairs']['replace_old'] : '';
+        $to_replace                    = isset($state_data['find_replace_pairs']['replace_new']) ? $state_data['find_replace_pairs']['replace_new'] : '';
+        $search_replace_regex          = isset($state_data['find_replace_pairs']['regex']) ? $state_data['find_replace_pairs']['regex'] : '';
+        $search_replace_case_sensitive = isset($state_data['find_replace_pairs']['case_sensitive']) ? $state_data['find_replace_pairs']['case_sensitive'] : '';
 
         $replacer = $this->replace->register(array(
-            'table'        => ('find_replace' === $state_data['stage']) ? $temp_table_name : $table,
-            'search'       => $to_search,
-            'replace'      => $to_replace,
-            'intent'       => $state_data['intent'],
-            'base_domain'  => $this->multisite->get_domain_replace(),
-            'site_domain'  => $this->multisite->get_domain_current_site(),
-            'wpmdb'        => $this,
-            'site_details' => $site_details,
+            'table'          => ('find_replace' === $state_data['stage']) ? $temp_table_name : $table,
+            'search'         => $to_search,
+            'replace'        => $to_replace,
+            'regex'          => $search_replace_regex,
+            'case_sensitive' => $search_replace_case_sensitive,
+            'intent'         => $state_data['intent'],
+            'base_domain'    => $this->multisite->get_domain_replace(),
+            'site_domain'    => $this->multisite->get_domain_current_site(),
+            'wpmdb'          => $this,
+            'site_details'   => $site_details,
         ));
 
         $table_data = null;
@@ -1542,6 +1564,10 @@ class Table
                     $value = str_replace($multibyte_search, $multibyte_replace, $value);
                 }
 
+                if ($state_data['destination_prefix'] !== $state_data['source_prefix']) {
+                    $value = $this->handle_different_prefix($key, $value, $table);
+                }
+
                 $values[] = "'" . $value . "'";
             }
 
@@ -1661,6 +1687,10 @@ class Table
 
             if ($this->row_tracker === -1) {
                 $result['current_row'] = '-1';
+            }
+
+            if ('find_replace' === $state_data['stage']) {
+                $result['replace_data'] = json_encode($this->replace->get_diff_result());
             }
 
             $result = $this->http->end_ajax($result);
@@ -1874,7 +1904,7 @@ class Table
         $this->stow('# ' . sprintf(__('Hostname: %s', 'wp-migrate-db'), DB_HOST) . "\n", false, $fp);
         $this->stow('# ' . sprintf(__('Database: %s', 'wp-migrate-db'), $this->table_helper->backquote(DB_NAME)) . "\n", false, $fp);
 
-        $home_url = apply_filters('wpmdb_backup_header_url', home_url());
+        $home_url = apply_filters('wpmdb_backup_header_url', Util::home_url());
         $url      = preg_replace('(^https?:)', '', $home_url, 1);
         $key      = array_search($url, $search_replace_values['replace_old']);
 
@@ -1994,5 +2024,46 @@ class Table
         }
 
         return str_replace('"', '`', $string);
+    }
+
+     /**
+     * Changes db prefix for values that use prefixes
+     *
+     * @param string $key
+     * 
+     * @param string $value
+     * 
+     * @param string $table
+     *
+     * @return string
+     */
+    private function handle_different_prefix($key, $value, $table)
+    {
+        $source_prefix      = $this->state_data['source_prefix'];
+        $destination_prefix = $this->state_data['destination_prefix'];
+        if ('meta_key' === $key && $this->table_helper->table_is('usermeta', $table)) {
+            if (strpos($value , $source_prefix) === 0) {
+                $value = Util::prefix_updater($value, $source_prefix, $destination_prefix);
+            }  
+        }
+        if ('option_name' === $key && $this->is_user_roles($source_prefix, $value) && $this->table_helper->table_is('options', $table)) {   
+            $value = Util::prefix_updater($value, $source_prefix, $destination_prefix);
+        }
+        return $value;
+    }
+
+    /**
+     * Checks if value is user_roles for both single site
+     * and multisite options values
+     *
+     * @param string $source_prefix
+     * 
+     * @param string $value
+     *
+     * @return bool
+     */
+    private function is_user_roles( $source_prefix, $value)
+    {
+        return $source_prefix . 'user_roles' === $value || preg_match('/^' . $source_prefix . '[0-9]+_' . 'user_roles' . '$/', $value);
     }
 }

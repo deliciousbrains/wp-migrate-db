@@ -20,7 +20,7 @@ use ReflectionProperty;
  * @since 4.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver
+class ObjectCreator implements DefinitionResolver
 {
     /**
      * @var ProxyFactory
@@ -38,11 +38,11 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      * @param DefinitionResolver $definitionResolver Used to resolve nested definitions.
      * @param ProxyFactory       $proxyFactory       Used to create proxies for lazy injections.
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver $definitionResolver, \DeliciousBrains\WPMDB\Container\DI\Proxy\ProxyFactory $proxyFactory)
+    public function __construct(DefinitionResolver $definitionResolver, ProxyFactory $proxyFactory)
     {
         $this->definitionResolver = $definitionResolver;
         $this->proxyFactory = $proxyFactory;
-        $this->parameterResolver = new \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\ParameterResolver($definitionResolver);
+        $this->parameterResolver = new ParameterResolver($definitionResolver);
     }
     /**
      * Resolve a class definition to a value.
@@ -53,7 +53,7 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      *
      * {@inheritdoc}
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function resolve(Definition $definition, array $parameters = [])
     {
         // Lazy?
         if ($definition->isLazy()) {
@@ -69,7 +69,7 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      *
      * {@inheritdoc}
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function isResolvable(Definition $definition, array $parameters = [])
     {
         return $definition->isInstantiable();
     }
@@ -81,7 +81,7 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      *
      * @return LazyLoadingInterface Proxy instance
      */
-    private function createProxy(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition, array $parameters)
+    private function createProxy(ObjectDefinition $definition, array $parameters)
     {
         /** @noinspection PhpUnusedParameterInspection */
         $proxy = $this->proxyFactory->createProxy($definition->getClassName(), function (&$wrappedObject, $proxy, $method, $params, &$initializer) use($definition, $parameters) {
@@ -102,11 +102,11 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      * @throws DependencyException
      * @return object
      */
-    private function createInstance(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition, array $parameters)
+    private function createInstance(ObjectDefinition $definition, array $parameters)
     {
         $this->assertClassExists($definition);
         $classname = $definition->getClassName();
-        $classReflection = new \ReflectionClass($classname);
+        $classReflection = new ReflectionClass($classname);
         $this->assertClassIsInstantiable($definition);
         $constructorInjection = $definition->getConstructorInjection();
         try {
@@ -117,17 +117,17 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
                 $object = new $classname();
             }
             $this->injectMethodsAndProperties($object, $definition);
-        } catch (\DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundException $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\DependencyException(\sprintf('Error while injecting dependencies into %s: %s', $classReflection->getName(), $e->getMessage()), 0, $e);
-        } catch (\DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException $e) {
-            throw \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: %s', $definition->getName(), $e->getMessage()));
+        } catch (NotFoundException $e) {
+            throw new DependencyException(\sprintf('Error while injecting dependencies into %s: %s', $classReflection->getName(), $e->getMessage()), 0, $e);
+        } catch (DefinitionException $e) {
+            throw DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: %s', $definition->getName(), $e->getMessage()));
         }
         if (!$object) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\DependencyException(\sprintf('Entry "%s" cannot be resolved: %s could not be constructed', $definition->getName(), $classReflection->getName()));
+            throw new DependencyException(\sprintf('Entry "%s" cannot be resolved: %s could not be constructed', $definition->getName(), $classReflection->getName()));
         }
         return $object;
     }
-    protected function injectMethodsAndProperties($object, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $objectDefinition)
+    protected function injectMethodsAndProperties($object, ObjectDefinition $objectDefinition)
     {
         // Property injections
         foreach ($objectDefinition->getPropertyInjections() as $propertyInjection) {
@@ -149,22 +149,22 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      * @throws DependencyException
      * @throws DefinitionException
      */
-    private function injectProperty($object, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\PropertyInjection $propertyInjection)
+    private function injectProperty($object, PropertyInjection $propertyInjection)
     {
         $propertyName = $propertyInjection->getPropertyName();
         $className = $propertyInjection->getClassName();
         $className = $className ?: \get_class($object);
-        $property = new \ReflectionProperty($className, $propertyName);
+        $property = new ReflectionProperty($className, $propertyName);
         $value = $propertyInjection->getValue();
-        if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+        if ($value instanceof DefinitionHelper) {
             /** @var Definition $nestedDefinition */
             $nestedDefinition = $value->getDefinition('');
             try {
                 $value = $this->definitionResolver->resolve($nestedDefinition);
-            } catch (\DeliciousBrains\WPMDB\Container\DI\DependencyException $e) {
+            } catch (DependencyException $e) {
                 throw $e;
-            } catch (\Exception $e) {
-                throw new \DeliciousBrains\WPMDB\Container\DI\DependencyException(\sprintf('Error while injecting in %s::%s. %s', \get_class($object), $propertyName, $e->getMessage()), 0, $e);
+            } catch (Exception $e) {
+                throw new DependencyException(\sprintf('Error while injecting in %s::%s. %s', \get_class($object), $propertyName, $e->getMessage()), 0, $e);
             }
         }
         if (!$property->isPublic()) {
@@ -172,16 +172,16 @@ class ObjectCreator implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
         }
         $property->setValue($object, $value);
     }
-    private function assertClassExists(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function assertClassExists(ObjectDefinition $definition)
     {
         if (!$definition->classExists()) {
-            throw \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: the class doesn\'t exist', $definition->getName()));
+            throw DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: the class doesn\'t exist', $definition->getName()));
         }
     }
-    private function assertClassIsInstantiable(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function assertClassIsInstantiable(ObjectDefinition $definition)
     {
         if (!$definition->isInstantiable()) {
-            throw \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: the class is not instantiable', $definition->getName()));
+            throw DefinitionException::create($definition, \sprintf('Entry "%s" cannot be resolved: the class is not instantiable', $definition->getName()));
         }
     }
 }

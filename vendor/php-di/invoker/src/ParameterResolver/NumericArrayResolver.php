@@ -15,9 +15,9 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class NumericArrayResolver implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class NumericArrayResolver implements ParameterResolver
 {
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         // Skip parameters already resolved
         if (!empty($resolvedParameters)) {

@@ -302,6 +302,8 @@ class MigrationManager
                     'primary_keys',
                     'site_url',
                     'find_replace_pairs',
+                    'source_prefix',
+                    'destination_prefix',
                 )
             );
 
@@ -321,11 +323,12 @@ class MigrationManager
             }
 
             $sig_data = $data;
-            unset($sig_data['find_replace_pairs'], $sig_data['form_data']);
-
+            unset($sig_data['find_replace_pairs'], $sig_data['form_data'], $sig_data['source_prefix'], $sig_data['destination_prefix']);
             $data['find_replace_pairs'] = base64_encode(serialize($data['find_replace_pairs']));
             $data['form_data']          = base64_encode($data['form_data']);
             $data['primary_keys']       = base64_encode($data['primary_keys']);
+            $data['source_prefix']      = base64_encode($data['source_prefix']);
+            $data['destination_prefix'] = base64_encode($data['destination_prefix']);
 
             $data['sig'] = $this->http_helper->create_signature($sig_data, $state_data['key']);
 

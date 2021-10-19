@@ -22,7 +22,7 @@ interface DefinitionResolver
      *
      * @return mixed Value obtained from the definition.
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = []);
+    public function resolve(Definition $definition, array $parameters = []);
     /**
      * Check if a definition can be resolved.
      *
@@ -31,5 +31,5 @@ interface DefinitionResolver
      *
      * @return bool
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = []);
+    public function isResolvable(Definition $definition, array $parameters = []);
 }

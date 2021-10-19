@@ -6,7 +6,7 @@ use ArrayAccess;
 /**
  * @extends \ArrayAccess<string,string|null>
  */
-interface RepositoryInterface extends \ArrayAccess
+interface RepositoryInterface extends ArrayAccess
 {
     /**
      * Tells whether environment variable has been defined.

@@ -9,7 +9,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ArrayDefinitionExtension extends \DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\HasSubDefinition
+class ArrayDefinitionExtension extends ArrayDefinition implements HasSubDefinition
 {
     /**
      * @var ArrayDefinition
@@ -35,10 +35,10 @@ class ArrayDefinitionExtension extends \DeliciousBrains\WPMDB\Container\DI\Defin
     /**
      * {@inheritdoc}
      */
-    public function setSubDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition)
+    public function setSubDefinition(Definition $definition)
     {
-        if (!$definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinition) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Definition %s tries to add array entries but the previous definition is not an array', $this->getName()));
+        if (!$definition instanceof ArrayDefinition) {
+            throw new DefinitionException(\sprintf('Definition %s tries to add array entries but the previous definition is not an array', $this->getName()));
         }
         $this->subDefinition = $definition;
     }

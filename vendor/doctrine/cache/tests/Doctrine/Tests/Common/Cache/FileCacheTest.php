@@ -85,8 +85,8 @@ class FileCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Doct
         $doGetStats->setAccessible(\true);
         $stats1 = $doGetStats->invoke($driver1);
         $stats2 = $doGetStats->invoke($driver2);
-        $this->assertSame(0, $stats1[\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE]);
-        $this->assertGreaterThan(0, $stats2[\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE]);
+        $this->assertSame(0, $stats1[Cache::STATS_MEMORY_USAGE]);
+        $this->assertGreaterThan(0, $stats2[Cache::STATS_MEMORY_USAGE]);
     }
     /**
      * @group DCOM-266
@@ -97,6 +97,6 @@ class FileCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Doct
         $doGetStats = new \ReflectionMethod($driver, 'doGetStats');
         $doGetStats->setAccessible(\true);
         $stats = $doGetStats->invoke($driver);
-        $this->assertGreaterThan(0, $stats[\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE]);
+        $this->assertGreaterThan(0, $stats[Cache::STATS_MEMORY_USAGE]);
     }
 }

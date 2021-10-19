@@ -7,6 +7,6 @@ namespace DeliciousBrains\WPMDB\Container\DI\Definition\Exception;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class AnnotationException extends \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException
+class AnnotationException extends DefinitionException
 {
 }

@@ -24,7 +24,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  *
  * @author Michaël Gallego <mic.gallego@gmail.com>
  */
-class ChainCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class ChainCache extends CacheProvider
 {
     /**
      * @var CacheProvider[]

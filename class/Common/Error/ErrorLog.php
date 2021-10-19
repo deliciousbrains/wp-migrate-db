@@ -250,7 +250,7 @@ class ErrorLog
 
         $diagnostic_info['basic-info'] = array(
             'site_url()' => site_url(),
-            'home_url()' => home_url(),
+            'home_url()' => Util::home_url(),
         );
 
         $diagnostic_info['db-info'] = array(

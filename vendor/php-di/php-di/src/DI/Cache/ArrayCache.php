@@ -20,7 +20,7 @@ use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\FlushableCache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class ArrayCache implements \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\FlushableCache, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\ClearableCache
+class ArrayCache implements Cache, FlushableCache, ClearableCache
 {
     /**
      * @var array

@@ -42,6 +42,6 @@ class Reader
     {
         $content = @\file_get_contents($filePath);
         /** @var \PhpOption\Option<string> */
-        return \DeliciousBrains\WPMDB\Container\PhpOption\Option::fromValue($content, \false);
+        return Option::fromValue($content, \false);
     }
 }

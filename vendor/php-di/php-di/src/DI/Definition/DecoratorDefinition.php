@@ -8,7 +8,7 @@ namespace DeliciousBrains\WPMDB\Container\DI\Definition;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class DecoratorDefinition extends \DeliciousBrains\WPMDB\Container\DI\Definition\FactoryDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\Definition, \DeliciousBrains\WPMDB\Container\DI\Definition\HasSubDefinition
+class DecoratorDefinition extends FactoryDefinition implements Definition, HasSubDefinition
 {
     /**
      * @var Definition
@@ -24,7 +24,7 @@ class DecoratorDefinition extends \DeliciousBrains\WPMDB\Container\DI\Definition
     /**
      * @param Definition $definition
      */
-    public function setSubDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition)
+    public function setSubDefinition(Definition $definition)
     {
         $this->decorated = $definition;
     }

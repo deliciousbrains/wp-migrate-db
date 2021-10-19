@@ -30,7 +30,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class XcacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class XcacheCache extends CacheProvider
 {
     /**
      * {@inheritdoc}
@@ -89,6 +89,6 @@ class XcacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache
     {
         $this->checkAuthorization();
         $info = \xcache_info(XC_TYPE_VAR, 0);
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => $info['hits'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => $info['misses'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $info['size'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $info['avail']);
+        return array(Cache::STATS_HITS => $info['hits'], Cache::STATS_MISSES => $info['misses'], Cache::STATS_UPTIME => null, Cache::STATS_MEMORY_USAGE => $info['size'], Cache::STATS_MEMORY_AVAILABLE => $info['avail']);
     }
 }

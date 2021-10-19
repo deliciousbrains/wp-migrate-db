@@ -1,3 +1,5 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
+
 <div class="wrap wpmdb">
 	<div id="wpmdb-main">
         <?php

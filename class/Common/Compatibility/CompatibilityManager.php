@@ -193,12 +193,7 @@ class CompatibilityManager {
 	public function copy_muplugin() {
 		$wpmdb_settings = $this->settings;
 
-		// Make the mu-plugins folder if it doesn't already exist, if the folder does exist it's left as-is.
-		if ( ! $this->filesystem->mkdir( $this->mu_plugin_dir ) ) {
-			return sprintf( esc_html__( 'The following directory could not be created: %s', 'wp-migrate-db' ), $this->mu_plugin_dir );
-		}
-
-		if ( ! $this->filesystem->copy( $this->mu_plugin_source, $this->mu_plugin_dest ) ) {
+		if ( ! $this->filesystem->mkdir( $this->mu_plugin_dir ) || ! $this->filesystem->copy( $this->mu_plugin_source, $this->mu_plugin_dest ) ) {
 			return sprintf( __( 'The compatibility plugin could not be activated because your mu-plugin directory is currently not writable.  Please update the permissions of the mu-plugins folder:  %s', 'wp-migrate-db' ), $this->mu_plugin_dir );
 		}
 

@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\Predis\Client;
  *
  * @author othillo <othillo@othillo.nl>
  */
-class PredisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class PredisCache extends CacheProvider
 {
     /**
      * @var Client
@@ -19,7 +19,7 @@ class PredisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache
      *
      * @return void
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\Predis\Client $client)
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }
@@ -74,6 +74,6 @@ class PredisCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache
     protected function doGetStats()
     {
         $info = $this->client->info();
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => \false, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => \false, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $info['Server']['uptime_in_seconds'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $info['Memory']['used_memory'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => \false);
+        return array(Cache::STATS_HITS => \false, Cache::STATS_MISSES => \false, Cache::STATS_UPTIME => $info['Server']['uptime_in_seconds'], Cache::STATS_MEMORY_USAGE => $info['Memory']['used_memory'], Cache::STATS_MEMORY_AVAILABLE => \false);
     }
 }

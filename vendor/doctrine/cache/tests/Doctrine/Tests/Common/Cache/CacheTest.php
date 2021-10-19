@@ -43,7 +43,7 @@ abstract class CacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
     }
     public function provideCrudValues()
     {
-        return array('array' => array(array('one', 2, 3.0)), 'string' => array('value'), 'integer' => array(1), 'float' => array(1.5), 'object' => array(new \ArrayObject()), 'null' => array(null));
+        return array('array' => array(array('one', 2, 3.0)), 'string' => array('value'), 'integer' => array(1), 'float' => array(1.5), 'object' => array(new ArrayObject()), 'null' => array(null));
     }
     public function testDeleteAll()
     {
@@ -178,11 +178,11 @@ abstract class CacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
     {
         $cache = $this->_getCacheDriver();
         $stats = $cache->getStats();
-        $this->assertArrayHasKey(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS, $stats);
-        $this->assertArrayHasKey(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES, $stats);
-        $this->assertArrayHasKey(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME, $stats);
-        $this->assertArrayHasKey(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE, $stats);
-        $this->assertArrayHasKey(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE, $stats);
+        $this->assertArrayHasKey(Cache::STATS_HITS, $stats);
+        $this->assertArrayHasKey(Cache::STATS_MISSES, $stats);
+        $this->assertArrayHasKey(Cache::STATS_UPTIME, $stats);
+        $this->assertArrayHasKey(Cache::STATS_MEMORY_USAGE, $stats);
+        $this->assertArrayHasKey(Cache::STATS_MEMORY_AVAILABLE, $stats);
     }
     public function testFetchMissShouldReturnFalse()
     {

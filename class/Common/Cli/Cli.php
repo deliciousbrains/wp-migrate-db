@@ -87,6 +87,8 @@ class Cli
 	 */
 	private $dynamic_properties;
 
+	private $wpmdb_cli;
+
 	function __construct(
 		FormData $form_data,
 		Util $util,
@@ -244,6 +246,7 @@ class Cli
 			return $this->profile;
 		}
 
+		$this->profile = apply_filters('wpmdb_cli_filter_before_migration', $this->profile, $this->post_data);
 		do_action('wpmdb_cli_before_migration', $this->post_data, $this->profile);
 		$this->migration = $this->cli_initiate_migration();
 
@@ -716,6 +719,10 @@ class Cli
 			'export_dest',
 			'find',
 			'replace',
+			'regex-find',
+			'regex-replace',
+			'case-sensitive-find',
+			'case-sensitive-replace',
 			'exclude-spam',
 			'gzip-file',
 			'exclude-post-revisions',
@@ -724,9 +731,7 @@ class Cli
 		);
 
 		$known_args   = apply_filters('wpmdb_cli_filter_get_extra_args', $known_args);
-		$unknown_args = array_diff(array_keys($assoc_args), $known_args);
-
-		return $unknown_args;
+		return array_diff(array_keys($assoc_args), $known_args);
 	}
 
 	/**
@@ -746,11 +751,11 @@ class Cli
 
 		//load correct cli class
 		if (function_exists('wp_migrate_db_pro_cli_addon') && function_exists('wp_migrate_db_pro')) {
-			$wpmdb_cli = wp_migrate_db_pro_cli_addon();
+			$this->wpmdb_cli = wp_migrate_db_pro_cli_addon();
 		} elseif (function_exists('wpmdb_pro_cli')) {
-			$wpmdb_cli = wpmdb_pro_cli();
+			$this->wpmdb_cli = wpmdb_pro_cli();
 		} else {
-			$wpmdb_cli = wpmdb_cli();
+			$this->wpmdb_cli = wpmdb_cli();
 		}
 
 		$unknown_args = $this->get_unknown_args($assoc_args);
@@ -762,13 +767,13 @@ class Cli
 			}
 
 			if (
-				is_a($wpmdb_cli, '\DeliciousBrains\WPMDB\Pro\Cli\Export') ||
-				is_a($wpmdb_cli, '\DeliciousBrains\WPMDBCli\Cli')
+				is_a($this->wpmdb_cli, '\DeliciousBrains\WPMDB\Pro\Cli\Export') ||
+				is_a($this->wpmdb_cli, '\DeliciousBrains\WPMDBCli\Cli')
 			) {
 				$message .= "\n" . __('Please make sure that you have activated the appropriate addons for WP Migrate DB Pro.', 'wp-migrate-db-cli');
 			}
 
-			return $wpmdb_cli->cli_error($message);
+			return $this->wpmdb_cli->cli_error($message);
 		}
 
 		foreach ($assoc_args as $key => $value) {
@@ -778,7 +783,7 @@ class Cli
 		}
 
 		if (empty($assoc_args['action'])) {
-			return $wpmdb_cli->cli_error(__('Missing action parameter', 'wp-migrate-db-cli'));
+			return $this->wpmdb_cli->cli_error(__('Missing action parameter', 'wp-migrate-db-cli'));
 		}
 
 		if ('savefile' === $assoc_args['action'] && !empty($assoc_args['export_dest'])) {
@@ -787,29 +792,80 @@ class Cli
 
 		$action = $assoc_args['action'];
 
-		// --find=<old> and --replace=<new>
-		$replace_old = array();
-		$replace_new = array();
-		if (!empty($assoc_args['find'])) {
-			$replace_old = str_getcsv($assoc_args['find']);
-		} else {
-			if ('find_replace' === $assoc_args['action']) {
-				if (empty($assoc_args['replace'])) {
-					return $wpmdb_cli->cli_error(__('Missing find and replace values.', 'wp-migrate-db-cli'));
-				}
+		// --find=<old> and --replace=<new> and --regex-find=<regex> and --regex-replace=<string>
+		$replace_old   = array();
+		$replace_new   = array();
+		$regex = array();
+		$case_sensitive = array();
 
-				return $wpmdb_cli->cli_error(__('Find value is required.', 'wp-migrate-db-cli'));
-			}
-		}
-		if (!empty($assoc_args['replace'])) {
-			$replace_new = str_getcsv($assoc_args['replace']);
-		} else {
-			if ('find_replace' === $assoc_args['action']) {
-				return $wpmdb_cli->cli_error(__('Replace value is required.', 'wp-migrate-db-cli'));
-			}
-		}
+        if(!empty($assoc_args['regex-find'])) {
+            $regex_search = $assoc_args['regex-find'];
+
+            if(!Util::is_regex_pattern_valid($regex_search)){
+                return $this->wpmdb_cli->cli_error(__('Please make sure Regular Expression find & replace pattern is valid', 'wp-migrate-db-cli'));
+            }
+
+            if (('find_replace' === $assoc_args['action']) && empty($assoc_args['regex-replace'])) {
+                return $this->wpmdb_cli->cli_error(__('Missing Regex find and replace values.', 'wp-migrate-db-cli'));
+            }
+
+            $replace_old[] = $regex_search;
+            $regex[count($replace_old)] = true;
+        }
+
+        if (!empty($assoc_args['regex-replace'])) {
+            $regex_replace = $assoc_args['regex-replace'];
+            if (('find_replace' === $assoc_args['action']) && empty($assoc_args['regex-find'])) {
+                return $this->wpmdb_cli->cli_error(__('Missing Regex find and replace values.', 'wp-migrate-db-cli'));
+            }
+            $replace_new[] = $regex_replace;
+        }
+
+        if (!empty($assoc_args['case-sensitive-find'])) {
+            $case_sensitive_search = $this->extract_argument('case-sensitive-find', $assoc_args);
+            if (('find_replace' === $assoc_args['action']) && empty($assoc_args['case-sensitive-replace'])) {
+                return $this->wpmdb_cli->cli_error(__('Missing case sensitive find and replace values.', 'wp-migrate-db-cli'));
+            }
+
+            $replace_old_count = count($replace_old);
+            $i = $replace_old_count === 0 ? 1 : $replace_old_count+1;
+            $replace_old = array_merge($replace_old, $case_sensitive_search);
+
+            foreach ($case_sensitive_search as $value) {
+                $case_sensitive[$i] = true;
+                $i++;
+            }
+        }
+
+        if (!empty($assoc_args['case-sensitive-replace'])) {
+            $case_sensitive_replace = $this->extract_argument('case-sensitive-replace', $assoc_args);
+            if (('find_replace' === $assoc_args['action']) && empty($assoc_args['case-sensitive-find'])) {
+                return $this->wpmdb_cli->cli_error(__('Missing case sensitive find and replace values.', 'wp-migrate-db-cli'));
+            }
+            $replace_new = array_merge($replace_new, $case_sensitive_replace);
+        }
+
+        if (!empty($assoc_args['find'])) {
+            $replace_old = array_merge($replace_old, str_getcsv($assoc_args['find']));
+        } else if (('find_replace' === $assoc_args['action']) && empty($regex_replace) && empty($regex_search) && empty($case_sensitive_search) && empty($case_sensitive_replace)) {
+            if (empty($assoc_args['replace'])) {
+
+                return $this->wpmdb_cli->cli_error(__('Missing find and replace values.', 'wp-migrate-db-cli'));
+            }
+
+            return $this->wpmdb_cli->cli_error(__('Find value is required.', 'wp-migrate-db-cli'));
+        }
+
+        if (!empty($assoc_args['replace'])) {
+            $replace_new = array_merge($replace_new, str_getcsv($assoc_args['replace']));
+        } else {
+            if ('find_replace' === $assoc_args['action'] && empty($regex_replace) && empty($regex_search) && empty($case_sensitive_search) && empty($case_sensitive_replace)) {
+                return $this->wpmdb_cli->cli_error(__('Replace value is required.', 'wp-migrate-db-cli'));
+            }
+        }
+
 		if (count($replace_old) !== count($replace_new)) {
-			return $wpmdb_cli->cli_error(sprintf(__('%1$s and %2$s must contain the same number of values', 'wp-migrate-db-cli'), '--find', '--replace'));
+			return $this->wpmdb_cli->cli_error(sprintf(__('%1$s and %2$s must contain the same number of values', 'wp-migrate-db-cli'), '--find', '--replace'));
 		}
 
 		// --exclude-spam
@@ -855,7 +911,7 @@ class Cli
 
 			// ensure export destination is writable
 			if (!@touch($export_dest)) {
-				return $wpmdb_cli->cli_error(sprintf(__('Cannot write to file "%1$s". Please ensure that the specified directory exists and is writable.', 'wp-migrate-db-cli'), $export_dest));
+				return $this->wpmdb_cli->cli_error(sprintf(__('Cannot write to file "%1$s". Please ensure that the specified directory exists and is writable.', 'wp-migrate-db-cli'), $export_dest));
 			}
 		}
 
@@ -874,7 +930,9 @@ class Cli
 			'export_dest',
 			'create_backup',
 			'name',
-			'cli_profile'
+			'cli_profile',
+			'regex',
+			'case_sensitive'
 		);
 
 		$home        = preg_replace('/^https?:/', '', home_url());
@@ -887,7 +945,13 @@ class Cli
 		}
 
 		$new_profile = $this->profile_importer->profileFormat($old_profile, $home, $path);
-
 		return array_merge($old_profile, $new_profile);
 	}
+
+	private function extract_argument($argument, $assoc_args) {
+	    if(!empty($assoc_args[$argument])) {
+	        return str_getcsv($assoc_args[$argument]);
+        }
+	    return null;
+    }
 }

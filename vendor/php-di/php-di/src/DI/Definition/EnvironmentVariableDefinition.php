@@ -10,7 +10,7 @@ use DeliciousBrains\WPMDB\Container\DI\Scope;
  *
  * @author James Harris <james.harris@icecave.com.au>
  */
-class EnvironmentVariableDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\CacheableDefinition
+class EnvironmentVariableDefinition implements CacheableDefinition
 {
     /**
      * Entry name.
@@ -93,13 +93,13 @@ class EnvironmentVariableDefinition implements \DeliciousBrains\WPMDB\Container\
      */
     public function getScope()
     {
-        return $this->scope ?: \DeliciousBrains\WPMDB\Container\DI\Scope::SINGLETON;
+        return $this->scope ?: Scope::SINGLETON;
     }
     public function __toString()
     {
         $str = '    variable = ' . $this->variableName . \PHP_EOL . '    optional = ' . ($this->isOptional ? 'yes' : 'no');
         if ($this->isOptional) {
-            if ($this->defaultValue instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+            if ($this->defaultValue instanceof DefinitionHelper) {
                 $nestedDefinition = (string) $this->defaultValue->getDefinition('');
                 $defaultValueStr = \str_replace(\PHP_EOL, \PHP_EOL . '    ', $nestedDefinition);
             } else {

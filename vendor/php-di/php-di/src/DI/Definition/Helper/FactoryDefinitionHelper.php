@@ -9,7 +9,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\FactoryDefinition;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class FactoryDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class FactoryDefinitionHelper implements DefinitionHelper
 {
     /**
      * @var callable
@@ -55,9 +55,9 @@ class FactoryDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Def
     public function getDefinition($entryName)
     {
         if ($this->decorate) {
-            return new \DeliciousBrains\WPMDB\Container\DI\Definition\DecoratorDefinition($entryName, $this->factory, $this->scope, $this->parameters);
+            return new DecoratorDefinition($entryName, $this->factory, $this->scope, $this->parameters);
         }
-        return new \DeliciousBrains\WPMDB\Container\DI\Definition\FactoryDefinition($entryName, $this->factory, $this->scope, $this->parameters);
+        return new FactoryDefinition($entryName, $this->factory, $this->scope, $this->parameters);
     }
     /**
      * Defines arguments to pass to the factory.

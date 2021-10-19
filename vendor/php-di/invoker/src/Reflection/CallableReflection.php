@@ -29,7 +29,7 @@ class CallableReflection
         if (\is_array($callable)) {
             list($class, $method) = $callable;
             if (!\method_exists($class, $method)) {
-                throw \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException::fromInvalidCallable($callable);
+                throw NotCallableException::fromInvalidCallable($callable);
             }
             return new \ReflectionMethod($class, $method);
         }
@@ -45,6 +45,6 @@ class CallableReflection
         if (\is_string($callable) && \function_exists($callable)) {
             return new \ReflectionFunction($callable);
         }
-        throw new \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException(\sprintf('%s is not a callable', \is_string($callable) ? $callable : 'Instance of ' . \get_class($callable)));
+        throw new NotCallableException(\sprintf('%s is not a callable', \is_string($callable) ? $callable : 'Instance of ' . \get_class($callable)));
     }
 }

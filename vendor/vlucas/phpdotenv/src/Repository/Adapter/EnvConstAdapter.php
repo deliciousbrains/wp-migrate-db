@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter;
 
 use DeliciousBrains\WPMDB\Container\PhpOption\None;
 use DeliciousBrains\WPMDB\Container\PhpOption\Some;
-class EnvConstAdapter implements \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\AvailabilityInterface, \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ReaderInterface, \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\WriterInterface
+class EnvConstAdapter implements AvailabilityInterface, ReaderInterface, WriterInterface
 {
     /**
      * Determines if the adapter is supported.
@@ -25,9 +25,9 @@ class EnvConstAdapter implements \DeliciousBrains\WPMDB\Container\Dotenv\Reposit
     public function get($name)
     {
         if (\array_key_exists($name, $_ENV)) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\Some::create($_ENV[$name]);
+            return Some::create($_ENV[$name]);
         }
-        return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        return None::create();
     }
     /**
      * Set an environment variable.

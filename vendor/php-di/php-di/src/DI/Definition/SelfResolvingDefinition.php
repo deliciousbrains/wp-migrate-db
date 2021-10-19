@@ -15,11 +15,11 @@ interface SelfResolvingDefinition
      *
      * @return mixed
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container);
+    public function resolve(ContainerInterface $container);
     /**
      * Check if a definition can be resolved.
      *
      * @return bool
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container);
+    public function isResolvable(ContainerInterface $container);
 }

@@ -67,7 +67,7 @@ class Properties
             $is_pro = true;
         }
 
-        $this->invalid_content_verification_error = __('Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db') . sprintf(__(' Remote URL: %s ', 'Ex. Remote URL: http://wp.dev', 'wp-migrate-db'), home_url());
+        $this->invalid_content_verification_error = __('Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db') . sprintf(__(' Remote URL: %s ', 'Ex. Remote URL: http://wp.dev', 'wp-migrate-db'), Util::home_url());
 
         $this->plugin_file_path = $is_pro ? realpath(dirname(__DIR__) . '/../../wp-migrate-db-pro.php') : realpath(dirname(__DIR__) . '/../../wp-migrate-db.php');
 
@@ -106,6 +106,8 @@ class Properties
             $this->core_slug;
         }
 
-        $this->plugin_version = $GLOBALS['wpmdb_meta'][$this->core_slug]['version'];
+        if (isset($GLOBALS['wpmdb_meta'][$this->core_slug])) {
+            $this->plugin_version = $GLOBALS['wpmdb_meta'][$this->core_slug]['version'];
+        }
     }
 }

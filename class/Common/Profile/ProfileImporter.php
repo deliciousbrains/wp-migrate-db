@@ -62,7 +62,7 @@ class ProfileImporter
 
         $new_saved_profiles = get_site_option('wpmdb_saved_profiles'); //New profiles
         $wpmdb_settings     = get_site_option('wpmdb_settings');
-        $home               = preg_replace('/^https?:/', '', home_url());
+        $home               = preg_replace('/^https?:/', '', Util::home_url());
         $path               = esc_html(addslashes($this->util->get_absolute_root_file_path()));
 
         $new_saved_profiles = $this->importOldProfiles($new_saved_profiles, $wpmdb_settings, $home, $path);
@@ -303,11 +303,15 @@ class ProfileImporter
             'plugin_files'     => [
                 'enabled' => false,
             ],
+            'plugins_option'   => '',
             'plugins_selected' => [],
+            'plugins_excluded' => [],
             'theme_files'      => [
                 'enabled' => false,
             ],
+            'themes_option'    => '',
             'themes_selected'  => [],
+            'themes_excluded'  => [],
         ];
 
         if (isset($profile->migrate_themes) && $profile->migrate_themes === '1') {
@@ -323,7 +327,7 @@ class ProfileImporter
                 $output['plugins_selected']        = $profile->select_plugins;
             }
         }
-
+        //check if migrate_plugins === '1' and 'plugins_selected'
         if (isset($profile->file_ignores)) {
             $output['excludes'] = $profile->file_ignores;
         }

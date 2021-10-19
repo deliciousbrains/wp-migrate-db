@@ -19,7 +19,7 @@ class ObjectDefinitionDumper
      *
      * @return string
      */
-    public function dump(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    public function dump(ObjectDefinition $definition)
     {
         $className = $definition->getClassName();
         $classExist = \class_exists($className) || \interface_exists($className);
@@ -45,7 +45,7 @@ class ObjectDefinitionDumper
         }
         return \sprintf('Object (' . \PHP_EOL . '%s' . \PHP_EOL . ')', $str);
     }
-    private function dumpConstructor($className, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function dumpConstructor($className, ObjectDefinition $definition)
     {
         $str = '';
         $constructorInjection = $definition->getConstructorInjection();
@@ -55,12 +55,12 @@ class ObjectDefinitionDumper
         }
         return $str;
     }
-    private function dumpProperties(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function dumpProperties(ObjectDefinition $definition)
     {
         $str = '';
         foreach ($definition->getPropertyInjections() as $propertyInjection) {
             $value = $propertyInjection->getValue();
-            if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\EntryReference) {
+            if ($value instanceof EntryReference) {
                 $valueStr = \sprintf('get(%s)', $value->getName());
             } else {
                 $valueStr = \var_export($value, \true);
@@ -69,7 +69,7 @@ class ObjectDefinitionDumper
         }
         return $str;
     }
-    private function dumpMethods($className, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function dumpMethods($className, ObjectDefinition $definition)
     {
         $str = '';
         foreach ($definition->getMethodInjections() as $methodInjection) {
@@ -78,7 +78,7 @@ class ObjectDefinitionDumper
         }
         return $str;
     }
-    private function dumpMethodParameters($className, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection $methodInjection)
+    private function dumpMethodParameters($className, MethodInjection $methodInjection)
     {
         $methodReflection = new \ReflectionMethod($className, $methodInjection->getMethodName());
         $args = [];
@@ -86,7 +86,7 @@ class ObjectDefinitionDumper
         foreach ($methodReflection->getParameters() as $index => $parameter) {
             if (\array_key_exists($index, $definitionParameters)) {
                 $value = $definitionParameters[$index];
-                if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\EntryReference) {
+                if ($value instanceof EntryReference) {
                     $args[] = \sprintf('$%s = get(%s)', $parameter->getName(), $value->getName());
                 } else {
                     $args[] = \sprintf('$%s = %s', $parameter->getName(), \var_export($value, \true));
@@ -99,7 +99,7 @@ class ObjectDefinitionDumper
                     $value = $parameter->getDefaultValue();
                     $args[] = \sprintf('$%s = (default value) %s', $parameter->getName(), \var_export($value, \true));
                     continue;
-                } catch (\ReflectionException $e) {
+                } catch (ReflectionException $e) {
                     // The default value can't be read through Reflection because it is a PHP internal class
                 }
             }

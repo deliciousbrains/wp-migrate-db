@@ -21,7 +21,7 @@ use EmptyIterator;
 /**
  * @extends Option<mixed>
  */
-final class None extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
+final class None extends Option
 {
     /** @var None|null */
     private static $instance;
@@ -59,7 +59,7 @@ final class None extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
     {
         return \false;
     }
-    public function orElse(\DeliciousBrains\WPMDB\Container\PhpOption\Option $else)
+    public function orElse(Option $else)
     {
         return $else;
     }
@@ -97,7 +97,7 @@ final class None extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
     }
     public function getIterator()
     {
-        return new \EmptyIterator();
+        return new EmptyIterator();
     }
     public function foldLeft($initialValue, $callable)
     {

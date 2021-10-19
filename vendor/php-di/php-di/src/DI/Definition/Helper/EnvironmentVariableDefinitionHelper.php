@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\EnvironmentVariableDefinition;
  *
  * @author James Harris <james.harris@icecave.com.au>
  */
-class EnvironmentVariableDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class EnvironmentVariableDefinitionHelper implements DefinitionHelper
 {
     /**
      * The name of the environment variable.
@@ -47,6 +47,6 @@ class EnvironmentVariableDefinitionHelper implements \DeliciousBrains\WPMDB\Cont
      */
     public function getDefinition($entryName)
     {
-        return new \DeliciousBrains\WPMDB\Container\DI\Definition\EnvironmentVariableDefinition($entryName, $this->variableName, $this->isOptional, $this->defaultValue);
+        return new EnvironmentVariableDefinition($entryName, $this->variableName, $this->isOptional, $this->defaultValue);
     }
 }

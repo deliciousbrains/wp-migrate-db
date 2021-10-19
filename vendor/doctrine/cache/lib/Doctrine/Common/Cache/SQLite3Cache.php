@@ -27,7 +27,7 @@ use SQLite3Result;
  * @since  1.4
  * @author Jake Bell <jake@theunraveler.com>
  */
-class SQLite3Cache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class SQLite3Cache extends CacheProvider
 {
     /**
      * The ID field will store the cache key.
@@ -59,7 +59,7 @@ class SQLite3Cache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
      * @param SQLite3 $sqlite
      * @param string $table
      */
-    public function __construct(\SQLite3 $sqlite, $table)
+    public function __construct(SQLite3 $sqlite, $table)
     {
         $this->sqlite = $sqlite;
         $this->table = (string) $table;
@@ -92,7 +92,7 @@ class SQLite3Cache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
         $statement->bindValue(':id', $id);
         $statement->bindValue(':data', \serialize($data));
         $statement->bindValue(':expire', $lifeTime > 0 ? \time() + $lifeTime : null);
-        return $statement->execute() instanceof \SQLite3Result;
+        return $statement->execute() instanceof SQLite3Result;
     }
     /**
      * {@inheritdoc}
@@ -102,7 +102,7 @@ class SQLite3Cache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
         list($idField) = $this->getFields();
         $statement = $this->sqlite->prepare(\sprintf('DELETE FROM %s WHERE %s = :id', $this->table, $idField));
         $statement->bindValue(':id', $id);
-        return $statement->execute() instanceof \SQLite3Result;
+        return $statement->execute() instanceof SQLite3Result;
     }
     /**
      * {@inheritdoc}

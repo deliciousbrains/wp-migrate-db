@@ -82,9 +82,9 @@ class Regex
     {
         $result = $operation($subject);
         if (($e = \preg_last_error()) !== \PREG_NO_ERROR) {
-            return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Error::create(self::lookupError($e));
+            return Error::create(self::lookupError($e));
         }
-        return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create($result);
+        return Success::create($result);
     }
     /**
      * Lookup the preg error code.

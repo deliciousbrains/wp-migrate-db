@@ -11,7 +11,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinitionExtension;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ArrayDefinitionExtensionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class ArrayDefinitionExtensionHelper implements DefinitionHelper
 {
     /**
      * @var array
@@ -31,6 +31,6 @@ class ArrayDefinitionExtensionHelper implements \DeliciousBrains\WPMDB\Container
      */
     public function getDefinition($entryName)
     {
-        return new \DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinitionExtension($entryName, $this->values);
+        return new ArrayDefinitionExtension($entryName, $this->values);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace DeliciousBrains\WPMDB\Common\Multisite;
 
+use DeliciousBrains\WPMDB\Common\Helpers;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
@@ -178,7 +179,7 @@ class Multisite
 				);
 			}
 		} else {
-			$license_response = get_site_transient( 'wpmdb_licence_response' );
+			$license_response = get_site_transient( Helpers::get_licence_response_transient_key() );
 
 			if ( $license_response ) {
 				$license_response = json_decode( $license_response );

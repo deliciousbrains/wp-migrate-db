@@ -5,7 +5,7 @@ namespace DeliciousBrains\WPMDB\Container\Dotenv\Loader;
 use DeliciousBrains\WPMDB\Container\Dotenv\Regex\Regex;
 use DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface;
 use DeliciousBrains\WPMDB\Container\PhpOption\Option;
-class Loader implements \DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInterface
+class Loader implements LoaderInterface
 {
     /**
      * The variable name whitelist.
@@ -34,9 +34,9 @@ class Loader implements \DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInt
      *
      * @return array<string,string|null>
      */
-    public function load(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, $content)
+    public function load(RepositoryInterface $repository, $content)
     {
-        return $this->processEntries($repository, \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Lines::process(\DeliciousBrains\WPMDB\Container\Dotenv\Regex\Regex::split("/(\r\n|\n|\r)/", $content)->getSuccess()));
+        return $this->processEntries($repository, Lines::process(Regex::split("/(\r\n|\n|\r)/", $content)->getSuccess()));
     }
     /**
      * Process the environment variable entries.
@@ -51,11 +51,11 @@ class Loader implements \DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInt
      *
      * @return array<string,string|null>
      */
-    private function processEntries(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, array $entries)
+    private function processEntries(RepositoryInterface $repository, array $entries)
     {
         $vars = [];
         foreach ($entries as $entry) {
-            list($name, $value) = \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Parser::parse($entry);
+            list($name, $value) = Parser::parse($entry);
             if ($this->whitelist === null || \in_array($name, $this->whitelist, \true)) {
                 $vars[$name] = self::resolveNestedVariables($repository, $value);
                 $repository->set($name, $vars[$name]);
@@ -74,11 +74,11 @@ class Loader implements \DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInt
      *
      * @return string|null
      */
-    private static function resolveNestedVariables(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Value $value = null)
+    private static function resolveNestedVariables(RepositoryInterface $repository, Value $value = null)
     {
         /** @var Option<Value> */
-        $option = \DeliciousBrains\WPMDB\Container\PhpOption\Option::fromValue($value);
-        return $option->map(function (\DeliciousBrains\WPMDB\Container\Dotenv\Loader\Value $v) use($repository) {
+        $option = Option::fromValue($value);
+        return $option->map(function (Value $v) use($repository) {
             /** @var string */
             return \array_reduce($v->getVars(), function ($s, $i) use($repository) {
                 return \substr($s, 0, $i) . self::resolveNestedVariable($repository, \substr($s, $i));
@@ -93,10 +93,10 @@ class Loader implements \DeliciousBrains\WPMDB\Container\Dotenv\Loader\LoaderInt
      *
      * @return string
      */
-    private static function resolveNestedVariable(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, $str)
+    private static function resolveNestedVariable(RepositoryInterface $repository, $str)
     {
-        return \DeliciousBrains\WPMDB\Container\Dotenv\Regex\Regex::replaceCallback('/\\A\\${([a-zA-Z0-9_.]+)}/', function (array $matches) use($repository) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\Option::fromValue($repository->get($matches[1]))->getOrElse($matches[0]);
+        return Regex::replaceCallback('/\\A\\${([a-zA-Z0-9_.]+)}/', function (array $matches) use($repository) {
+            return Option::fromValue($repository->get($matches[1]))->getOrElse($matches[0]);
         }, $str, 1)->success()->getOrElse($str);
     }
 }

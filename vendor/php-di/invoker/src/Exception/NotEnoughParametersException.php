@@ -7,6 +7,6 @@ namespace DeliciousBrains\WPMDB\Container\Invoker\Exception;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class NotEnoughParametersException extends \DeliciousBrains\WPMDB\Container\Invoker\Exception\InvocationException
+class NotEnoughParametersException extends InvocationException
 {
 }

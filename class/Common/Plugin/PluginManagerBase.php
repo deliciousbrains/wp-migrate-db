@@ -8,6 +8,7 @@ use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Http\WPMDBRestAPIServer;
 use DeliciousBrains\WPMDB\Common\Migration\MigrationHelper;
 use DeliciousBrains\WPMDB\Common\Multisite\Multisite;
+use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Sanitize;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
@@ -88,6 +89,11 @@ class PluginManagerBase
     private $notice;
 
     /**
+     * @var ProfileManager
+     */
+    private $profile_manager;
+
+    /**
      * PluginManagerBase constructor.
      *
      * Free and Pro extend this class
@@ -117,7 +123,8 @@ class PluginManagerBase
         WPMDBRestAPIServer $rest_API_server,
         Helper $http_helper,
         TemplateBase $template,
-        Notice $notice
+        Notice $notice,
+        ProfileManager $profile_manager
     ) {
         $this->props            = $properties;
         $this->settings         = $settings->get_settings();
@@ -132,6 +139,7 @@ class PluginManagerBase
         $this->http_helper      = $http_helper;
         $this->template         = $template;
         $this->notice           = $notice;
+        $this->profile_manager  = $profile_manager;
     }
 
     /**
@@ -233,6 +241,13 @@ class PluginManagerBase
 
             $update_schema  = true;
             $schema_version = 3.2;
+        }
+
+        if($schema_version < 3.3) {
+            $this->update_profiles();
+
+            $update_schema  = true;
+            $schema_version = 3.3;
         }
 
         if (true === $update_schema) {
@@ -357,5 +372,48 @@ class PluginManagerBase
     public function get_plugin_title()
     {
         return $this->props->is_pro ? __('Migrate DB Pro', 'wp-migrate-db') : __('Migrate DB', 'wp-migrate-db');
+    }
+
+
+    /**
+     * Runs on schema update events, responsible for updating media file profiles.
+     */
+    private function update_profiles()
+    {
+        foreach (['wpmdb_saved_profiles', 'wpmdb_recent_migrations'] as $profile_type) {
+            $profiles = $profile_type === 'wpmdb_saved_profiles' ? $this->assets->get_saved_migration_profiles()
+                : $this->assets->get_recent_migrations(get_site_option($profile_type));
+            foreach ($profiles as $profile) {
+
+                $loaded_profile = $this->profile_manager->get_profile_by_id($profile_type === 'wpmdb_recent_migrations' ? 'unsaved' : $profile_type, $profile['id']);
+
+                if(is_wp_error($loaded_profile)) {
+                    continue;
+                }
+
+                $profile_data = json_decode($loaded_profile['value']);
+                if (property_exists($profile_data, 'media_files')) {
+                    $profile_data->media_files->last_migration = $profile_data->media_files->date;
+                }
+                if (property_exists($profile_data, 'theme_plugin_files')) {
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'themes_option')) {
+                        $profile_data->theme_plugin_files->themes_option = $profile_data->theme_plugin_files->themes_selected ? 'selected' : 'all';
+                    }
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'plugins_option')) {
+                        $profile_data->theme_plugin_files->plugins_option = $profile_data->theme_plugin_files->plugins_selected ? 'selected': 'all';
+                    }
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'themes_excluded')) {
+                        $profile_data->theme_plugin_files->themes_excluded = [];
+                    }
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'plugins_excluded')) {
+                        $profile_data->theme_plugin_files->plugins_excluded = [];
+                    }
+                }
+
+                $saved_profiles = get_site_option($profile_type);
+                $saved_profiles[$profile['id']]['value'] = json_encode($profile_data);
+                update_site_option($profile_type, $saved_profiles);
+            }
+        }
     }
 }

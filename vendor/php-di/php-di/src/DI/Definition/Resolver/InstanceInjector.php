@@ -12,7 +12,7 @@ use DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundExceptio
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class InstanceInjector extends \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\ObjectCreator
+class InstanceInjector extends ObjectCreator
 {
     /**
      * Injects dependencies on an existing instance.
@@ -21,19 +21,19 @@ class InstanceInjector extends \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      *
      * {@inheritdoc}
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function resolve(Definition $definition, array $parameters = [])
     {
         try {
             $this->injectMethodsAndProperties($definition->getInstance(), $definition->getObjectDefinition());
-        } catch (\DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundException $e) {
+        } catch (NotFoundException $e) {
             $message = \sprintf('Error while injecting dependencies into %s: %s', \get_class($definition->getInstance()), $e->getMessage());
-            throw new \DeliciousBrains\WPMDB\Container\DI\DependencyException($message, 0, $e);
+            throw new DependencyException($message, 0, $e);
         }
     }
     /**
      * {@inheritdoc}
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function isResolvable(Definition $definition, array $parameters = [])
     {
         return \true;
     }

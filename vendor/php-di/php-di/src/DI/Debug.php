@@ -18,7 +18,7 @@ class Debug
      * @deprecated You should cast the definition to string instead.
      * This feature was simplified: definitions can be cast to string directly.
      */
-    public static function dumpDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition)
+    public static function dumpDefinition(Definition $definition)
     {
         return (string) $definition;
     }

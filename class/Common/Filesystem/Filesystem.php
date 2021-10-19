@@ -36,7 +36,7 @@ class Filesystem
 	 */
 	private $chmod_file;
 	/**
-	 * @var \DeliciousBrains\WPMDB\League\Container\Container|null
+	 * @var Container|null
 	 */
 	private $container;
 
@@ -500,19 +500,19 @@ class Filesystem
     /**
      * Get a list of files/folders under specified directory
      *
-     * @param $abs_path
+     * @param string $abs_path
+     * @param int $offset
+     * @param int $limit
+     * @param int $scan_count
      *
      * @return array|bool|\WP_error
      */
-    public function scandir($abs_path)
+    public function scandir($abs_path, $offset = 0, $limit = -1, &$scan_count = 0)
     {
-        if (is_link($abs_path)) {
-            return new \WP_Error('wpmdb_transfers_symlink', sprintf(__('The directory `%s` is a symlink. Symlinked folders cannot be migrated. Please exclude this folder and try again.', 'wp-migrate-db'), $abs_path));
-        }
+        $symlink = is_link($abs_path);
+        $dirlist = @scandir($abs_path, SCANDIR_SORT_DESCENDING);
 
-        $dirlist = @scandir($abs_path);
-
-        if (false === $dirlist) {
+        if (false === $dirlist || empty($dirlist)) {
             if ($this->use_filesystem) {
                 $abs_path = $this->get_sanitized_path($abs_path);
 
@@ -522,15 +522,20 @@ class Filesystem
             return false;
         }
 
+        if (-1 !== $limit) {
+            $dirlist = array_slice($dirlist, $offset, $limit, true);
+            $scan_count = count($dirlist);
+        }
+
         $return = array();
 
         // normalize return to look somewhat like the return value for WP_Filesystem::dirlist
         foreach ($dirlist as $entry) {
-            if ('.' === $entry || '..' === $entry || is_link($abs_path . $entry)) {
+            if ('.' === $entry || '..' === $entry) {
                 continue;
             }
 
-            $return[$entry] = $this->get_file_info($entry, $abs_path);
+            $return[$entry] = $this->get_file_info($entry, $abs_path, $symlink);
         }
 
         return $return;
@@ -539,26 +544,35 @@ class Filesystem
     /**
      * @param string $entry
      * @param string $abs_path
+     * @param bool   $symlink
      *
      * @return array
      */
-    public function get_file_info($entry, $abs_path)
+    public function get_file_info($entry, $abs_path, $symlink = false )
     {
         $abs_path  = $this->slash_one_direction($abs_path);
-        $full_path = realpath(trailingslashit($abs_path) . $entry);
+        $full_path = trailingslashit($abs_path) . $entry;
+        $real_path = realpath($full_path); // Might be different due to symlinks.
 
-        $upload_info = wp_get_upload_dir();
-        $uploads_folder = wp_basename($upload_info['basedir']);
-
+        $upload_info     = wp_get_upload_dir();
+        $uploads_basedir = $upload_info['basedir'];
+        $uploads_folder  = wp_basename($uploads_basedir);
+        $is_uploads_in_content     = strpos($uploads_basedir, WP_CONTENT_DIR);
+        $content_path              = false !== $is_uploads_in_content ? WP_CONTENT_DIR : dirname($uploads_basedir);
         $return                    = array();
         $return['name']            = $entry;
         $return['relative_path']   = str_replace($abs_path, '', $full_path);
-        $return['wp_content_path'] = str_replace($this->slash_one_direction(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR, '', $full_path);
-        $return['subpath']         = preg_replace("#^(themes|plugins|{$uploads_folder})#", '', $return['wp_content_path']);
+        $return['wp_content_path'] = str_replace($this->slash_one_direction($content_path) . DIRECTORY_SEPARATOR, '', $full_path);
         $return['absolute_path']   = $full_path;
         $return['type']            = $this->is_dir($abs_path . DIRECTORY_SEPARATOR . $entry) ? 'd' : 'f';
         $return['size']            = $this->filesize($abs_path . DIRECTORY_SEPARATOR . $entry);
         $return['filemtime']       = filemtime($abs_path . DIRECTORY_SEPARATOR . $entry);
+
+        if ($symlink) {
+            $return['subpath'] = DIRECTORY_SEPARATOR . basename(dirname($real_path)) . DIRECTORY_SEPARATOR . $entry;
+        } else {
+            $return['subpath'] = preg_replace("#^(themes|plugins|{$uploads_folder})#", '', $return['wp_content_path']);
+        }
 
         $exploded              = explode(DIRECTORY_SEPARATOR, $return['subpath']);
         $return['folder_name'] = isset($exploded[1]) ? $exploded[1] : $return['relative_path'];
@@ -985,6 +999,11 @@ class Filesystem
                 $network_plugins = array_keys($network_plugins);
                 $active_plugins  = array_merge($active_plugins, $network_plugins);
             }
+            $sites = get_sites();
+            foreach($sites as $site) {
+                $site_plugins = get_blog_option($site->blog_id, 'active_plugins'); 
+                $active_plugins  = array_merge($active_plugins, $site_plugins);
+            } 
         }
 
         return $active_plugins;

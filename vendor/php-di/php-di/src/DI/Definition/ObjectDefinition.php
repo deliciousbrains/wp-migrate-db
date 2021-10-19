@@ -12,7 +12,7 @@ use ReflectionClass;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\Definition, \DeliciousBrains\WPMDB\Container\DI\Definition\CacheableDefinition, \DeliciousBrains\WPMDB\Container\DI\Definition\HasSubDefinition
+class ObjectDefinition implements Definition, CacheableDefinition, HasSubDefinition
 {
     /**
      * Entry name (most of the time, same as $classname).
@@ -103,7 +103,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
     /**
      * @param MethodInjection $constructorInjection
      */
-    public function setConstructorInjection(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection $constructorInjection)
+    public function setConstructorInjection(MethodInjection $constructorInjection)
     {
         $this->constructorInjection = $constructorInjection;
     }
@@ -114,7 +114,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
     {
         return $this->propertyInjections;
     }
-    public function addPropertyInjection(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\PropertyInjection $propertyInjection)
+    public function addPropertyInjection(PropertyInjection $propertyInjection)
     {
         $className = $propertyInjection->getClassName();
         if ($className) {
@@ -141,7 +141,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
     /**
      * @param MethodInjection $methodInjection
      */
-    public function addMethodInjection(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection $methodInjection)
+    public function addMethodInjection(MethodInjection $methodInjection)
     {
         $method = $methodInjection->getMethodName();
         if (!isset($this->methodInjections[$method])) {
@@ -161,7 +161,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
      */
     public function getScope()
     {
-        return $this->scope ?: \DeliciousBrains\WPMDB\Container\DI\Scope::SINGLETON;
+        return $this->scope ?: Scope::SINGLETON;
     }
     /**
      * @param bool|null $lazy
@@ -206,7 +206,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
     /**
      * {@inheritdoc}
      */
-    public function setSubDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition)
+    public function setSubDefinition(Definition $definition)
     {
         if (!$definition instanceof self) {
             return;
@@ -230,9 +230,9 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
     }
     public function __toString()
     {
-        return (new \DeliciousBrains\WPMDB\Container\DI\Definition\Dumper\ObjectDefinitionDumper())->dump($this);
+        return (new ObjectDefinitionDumper())->dump($this);
     }
-    private function mergeConstructorInjection(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function mergeConstructorInjection(ObjectDefinition $definition)
     {
         if ($definition->getConstructorInjection() !== null) {
             if ($this->constructorInjection !== null) {
@@ -244,7 +244,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
             }
         }
     }
-    private function mergePropertyInjections(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function mergePropertyInjections(ObjectDefinition $definition)
     {
         foreach ($definition->propertyInjections as $propertyName => $propertyInjection) {
             if (!isset($this->propertyInjections[$propertyName])) {
@@ -253,7 +253,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
             }
         }
     }
-    private function mergeMethodInjections(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function mergeMethodInjections(ObjectDefinition $definition)
     {
         foreach ($definition->methodInjections as $methodName => $calls) {
             if (\array_key_exists($methodName, $this->methodInjections)) {
@@ -285,7 +285,7 @@ class ObjectDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition
             $this->isInstantiable = \false;
             return;
         }
-        $class = new \ReflectionClass($className);
+        $class = new ReflectionClass($className);
         $this->isInstantiable = $class->isInstantiable();
     }
 }

@@ -29,7 +29,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
  */
-abstract class CacheProvider implements \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\FlushableCache, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\ClearableCache, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\MultiGetCache
+abstract class CacheProvider implements Cache, FlushableCache, ClearableCache, MultiGetCache
 {
     const DOCTRINE_NAMESPACE_CACHEKEY = 'DoctrineNamespaceCacheKey[%s]';
     /**

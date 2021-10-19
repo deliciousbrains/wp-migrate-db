@@ -3,7 +3,7 @@
 namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\RedisCache;
-class RedisCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class RedisCacheTest extends CacheTest
 {
     private $_redis;
     public function setUp()
@@ -20,7 +20,7 @@ class RedisCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Com
     }
     protected function _getCacheDriver()
     {
-        $driver = new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\RedisCache();
+        $driver = new RedisCache();
         $driver->setRedis($this->_redis);
         return $driver;
     }

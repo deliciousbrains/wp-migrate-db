@@ -13,9 +13,9 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class AssociativeArrayResolver implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class AssociativeArrayResolver implements ParameterResolver
 {
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         $parameters = $reflection->getParameters();
         // Skip parameters already resolved

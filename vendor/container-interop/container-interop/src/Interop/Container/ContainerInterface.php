@@ -9,6 +9,6 @@ use DeliciousBrains\WPMDB\Container\Psr\Container\ContainerInterface as PsrConta
 /**
  * Describes the interface of a container that exposes methods to read its entries.
  */
-interface ContainerInterface extends \DeliciousBrains\WPMDB\Container\Psr\Container\ContainerInterface
+interface ContainerInterface extends PsrContainerInterface
 {
 }

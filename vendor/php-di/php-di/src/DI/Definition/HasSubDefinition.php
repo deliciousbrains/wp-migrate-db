@@ -7,7 +7,7 @@ namespace DeliciousBrains\WPMDB\Container\DI\Definition;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-interface HasSubDefinition extends \DeliciousBrains\WPMDB\Container\DI\Definition\Definition
+interface HasSubDefinition extends Definition
 {
     /**
      * @return string
@@ -16,5 +16,5 @@ interface HasSubDefinition extends \DeliciousBrains\WPMDB\Container\DI\Definitio
     /**
      * @param Definition $definition
      */
-    public function setSubDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition);
+    public function setSubDefinition(Definition $definition);
 }

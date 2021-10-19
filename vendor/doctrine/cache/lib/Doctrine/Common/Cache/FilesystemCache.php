@@ -25,7 +25,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @since  2.3
  * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
  */
-class FilesystemCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\FileCache
+class FilesystemCache extends FileCache
 {
     const EXTENSION = '.doctrinecache.data';
     /**

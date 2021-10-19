@@ -5,7 +5,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache;
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\SQLite3Cache;
 use SQLite3;
-class SQLite3Test extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class SQLite3Test extends CacheTest
 {
     /**
      * @var SQLite3
@@ -15,7 +15,7 @@ class SQLite3Test extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common
     {
         $this->file = \tempnam(null, 'doctrine-cache-test-');
         \unlink($this->file);
-        $this->sqlite = new \SQLite3($this->file);
+        $this->sqlite = new SQLite3($this->file);
     }
     protected function tearDown()
     {
@@ -27,6 +27,6 @@ class SQLite3Test extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common
     }
     protected function _getCacheDriver()
     {
-        return new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\SQLite3Cache($this->sqlite, 'test_table');
+        return new SQLite3Cache($this->sqlite, 'test_table');
     }
 }

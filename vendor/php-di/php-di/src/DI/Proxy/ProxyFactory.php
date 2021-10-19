@@ -57,17 +57,17 @@ class ProxyFactory
         if ($this->proxyManager !== null) {
             return;
         }
-        if (!\class_exists(\DeliciousBrains\WPMDB\Container\ProxyManager\Configuration::class)) {
+        if (!\class_exists(Configuration::class)) {
             throw new \RuntimeException('The ocramius/proxy-manager library is not installed. Lazy injection requires that library to be installed with Composer in order to work. Run "composer require ocramius/proxy-manager:~1.0".');
         }
-        $config = new \DeliciousBrains\WPMDB\Container\ProxyManager\Configuration();
+        $config = new Configuration();
         if ($this->writeProxiesToFile) {
             $config->setProxiesTargetDir($this->proxyDirectory);
-            $config->setGeneratorStrategy(new \DeliciousBrains\WPMDB\Container\ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy(new \DeliciousBrains\WPMDB\Container\ProxyManager\FileLocator\FileLocator($this->proxyDirectory)));
+            $config->setGeneratorStrategy(new FileWriterGeneratorStrategy(new FileLocator($this->proxyDirectory)));
             \spl_autoload_register($config->getProxyAutoloader());
         } else {
-            $config->setGeneratorStrategy(new \DeliciousBrains\WPMDB\Container\ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy());
+            $config->setGeneratorStrategy(new EvaluatingGeneratorStrategy());
         }
-        $this->proxyManager = new \DeliciousBrains\WPMDB\Container\ProxyManager\Factory\LazyLoadingValueHolderFactory($config);
+        $this->proxyManager = new LazyLoadingValueHolderFactory($config);
     }
 }

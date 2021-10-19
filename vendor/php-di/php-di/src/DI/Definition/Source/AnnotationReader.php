@@ -28,7 +28,7 @@ use UnexpectedValueException;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource
+class AnnotationReader implements DefinitionSource
 {
     /**
      * @var Reader
@@ -56,8 +56,8 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
         if (!\class_exists($name) && !\interface_exists($name)) {
             return null;
         }
-        $class = new \ReflectionClass($name);
-        $definition = new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition($name);
+        $class = new ReflectionClass($name);
+        $definition = new ObjectDefinition($name);
         $this->readInjectableAnnotation($class, $definition);
         // Browse the class properties looking for annotated properties
         $this->readProperties($class, $definition);
@@ -68,7 +68,7 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
     /**
      * Browse the class properties looking for annotated properties.
      */
-    private function readProperties(\ReflectionClass $class, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function readProperties(ReflectionClass $class, ObjectDefinition $definition)
     {
         foreach ($class->getProperties() as $property) {
             if ($property->isStatic()) {
@@ -79,7 +79,7 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
         // Read also the *private* properties of the parent classes
         /** @noinspection PhpAssignmentInConditionInspection */
         while ($class = $class->getParentClass()) {
-            foreach ($class->getProperties(\ReflectionProperty::IS_PRIVATE) as $property) {
+            foreach ($class->getProperties(ReflectionProperty::IS_PRIVATE) as $property) {
                 if ($property->isStatic()) {
                     continue;
                 }
@@ -87,7 +87,7 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
             }
         }
     }
-    private function readProperty(\ReflectionProperty $property, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition, $classname = null)
+    private function readProperty(ReflectionProperty $property, ObjectDefinition $definition, $classname = null)
     {
         // Look for @Inject annotation
         /** @var $annotation Inject */
@@ -98,17 +98,17 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
         // @Inject("name") or look for @var content
         $entryName = $annotation->getName() ?: $this->getPhpDocReader()->getPropertyClass($property);
         if ($entryName === null) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\AnnotationException(\sprintf('@Inject found on property %s::%s but unable to guess what to inject, use a @var annotation', $property->getDeclaringClass()->getName(), $property->getName()));
+            throw new AnnotationException(\sprintf('@Inject found on property %s::%s but unable to guess what to inject, use a @var annotation', $property->getDeclaringClass()->getName(), $property->getName()));
         }
-        $definition->addPropertyInjection(new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\PropertyInjection($property->getName(), new \DeliciousBrains\WPMDB\Container\DI\Definition\EntryReference($entryName), $classname));
+        $definition->addPropertyInjection(new PropertyInjection($property->getName(), new EntryReference($entryName), $classname));
     }
     /**
      * Browse the object's methods looking for annotated methods.
      */
-    private function readMethods(\ReflectionClass $class, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $objectDefinition)
+    private function readMethods(ReflectionClass $class, ObjectDefinition $objectDefinition)
     {
         // This will look in all the methods, including those of the parent classes
-        foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+        foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if ($method->isStatic()) {
                 continue;
             }
@@ -123,14 +123,14 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
             }
         }
     }
-    private function getMethodInjection(\ReflectionMethod $method)
+    private function getMethodInjection(ReflectionMethod $method)
     {
         // Look for @Inject annotation
         /** @var $annotation Inject|null */
         try {
             $annotation = $this->getAnnotationReader()->getMethodAnnotation($method, 'DeliciousBrains\\WPMDB\\Container\\DI\\Annotation\\Inject');
-        } catch (\DeliciousBrains\WPMDB\Container\DI\Definition\Exception\AnnotationException $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\AnnotationException(\sprintf('@Inject annotation on %s::%s is malformed. %s', $method->getDeclaringClass()->getName(), $method->getName(), $e->getMessage()), 0, $e);
+        } catch (AnnotationException $e) {
+            throw new AnnotationException(\sprintf('@Inject annotation on %s::%s is malformed. %s', $method->getDeclaringClass()->getName(), $method->getName(), $e->getMessage()), 0, $e);
         }
         $annotationParameters = $annotation ? $annotation->getParameters() : [];
         // @Inject on constructor is implicit
@@ -141,13 +141,13 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
         foreach ($method->getParameters() as $index => $parameter) {
             $entryName = $this->getMethodParameter($index, $parameter, $annotationParameters);
             if ($entryName !== null) {
-                $parameters[$index] = new \DeliciousBrains\WPMDB\Container\DI\Definition\EntryReference($entryName);
+                $parameters[$index] = new EntryReference($entryName);
             }
         }
         if ($method->isConstructor()) {
-            return \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection::constructor($parameters);
+            return MethodInjection::constructor($parameters);
         } else {
-            return new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection($method->getName(), $parameters);
+            return new MethodInjection($method->getName(), $parameters);
         }
     }
     /**
@@ -157,7 +157,7 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
      *
      * @return string|null Entry name or null if not found.
      */
-    private function getMethodParameter($parameterIndex, \ReflectionParameter $parameter, array $annotationParameters)
+    private function getMethodParameter($parameterIndex, ReflectionParameter $parameter, array $annotationParameters)
     {
         // @Inject has definition for this parameter (by index, or by name)
         if (isset($annotationParameters[$parameterIndex])) {
@@ -184,8 +184,8 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
     public function getAnnotationReader()
     {
         if ($this->annotationReader === null) {
-            \DeliciousBrains\WPMDB\Container\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace('DeliciousBrains\\WPMDB\\Container\\DI\\Annotation', __DIR__ . '/../../../');
-            $this->annotationReader = new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Annotations\SimpleAnnotationReader();
+            AnnotationRegistry::registerAutoloadNamespace('DeliciousBrains\\WPMDB\\Container\\DI\\Annotation', __DIR__ . '/../../../');
+            $this->annotationReader = new SimpleAnnotationReader();
             $this->annotationReader->addNamespace('DeliciousBrains\\WPMDB\\Container\\DI\\Annotation');
         }
         return $this->annotationReader;
@@ -196,17 +196,17 @@ class AnnotationReader implements \DeliciousBrains\WPMDB\Container\DI\Definition
     private function getPhpDocReader()
     {
         if ($this->phpDocReader === null) {
-            $this->phpDocReader = new \DeliciousBrains\WPMDB\Container\PhpDocReader\PhpDocReader($this->ignorePhpDocErrors);
+            $this->phpDocReader = new PhpDocReader($this->ignorePhpDocErrors);
         }
         return $this->phpDocReader;
     }
-    private function readInjectableAnnotation(\ReflectionClass $class, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition)
+    private function readInjectableAnnotation(ReflectionClass $class, ObjectDefinition $definition)
     {
         try {
             /** @var $annotation Injectable|null */
             $annotation = $this->getAnnotationReader()->getClassAnnotation($class, 'DeliciousBrains\\WPMDB\\Container\\DI\\Annotation\\Injectable');
-        } catch (\UnexpectedValueException $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Error while reading @Injectable on %s: %s', $class->getName(), $e->getMessage()), 0, $e);
+        } catch (UnexpectedValueException $e) {
+            throw new DefinitionException(\sprintf('Error while reading @Injectable on %s: %s', $class->getName(), $e->getMessage()), 0, $e);
         }
         if (!$annotation) {
             return;

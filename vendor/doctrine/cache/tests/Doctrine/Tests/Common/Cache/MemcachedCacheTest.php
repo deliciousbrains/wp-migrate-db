@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\MemcachedCache;
 use Memcached;
-class MemcachedCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class MemcachedCacheTest extends CacheTest
 {
     private $memcached;
     public function setUp()
@@ -12,8 +12,8 @@ class MemcachedCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
         if (!\extension_loaded('memcached')) {
             $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of memcached');
         }
-        $this->memcached = new \Memcached();
-        $this->memcached->setOption(\Memcached::OPT_COMPRESSION, \false);
+        $this->memcached = new Memcached();
+        $this->memcached->setOption(Memcached::OPT_COMPRESSION, \false);
         $this->memcached->addServer('127.0.0.1', 11211);
         if (@\fsockopen('127.0.0.1', 11211) === \false) {
             unset($this->memcached);
@@ -22,7 +22,7 @@ class MemcachedCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
     }
     public function tearDown()
     {
-        if ($this->memcached instanceof \Memcached) {
+        if ($this->memcached instanceof Memcached) {
             $this->memcached->flush();
         }
     }
@@ -41,7 +41,7 @@ class MemcachedCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests
     }
     protected function _getCacheDriver()
     {
-        $driver = new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\MemcachedCache();
+        $driver = new MemcachedCache();
         $driver->setMemcached($this->memcached);
         return $driver;
     }

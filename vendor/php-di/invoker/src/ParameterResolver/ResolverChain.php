@@ -10,7 +10,7 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ResolverChain implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class ResolverChain implements ParameterResolver
 {
     /**
      * @var ParameterResolver[]
@@ -20,7 +20,7 @@ class ResolverChain implements \DeliciousBrains\WPMDB\Container\Invoker\Paramete
     {
         $this->resolvers = $resolvers;
     }
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         $reflectionParameters = $reflection->getParameters();
         foreach ($this->resolvers as $resolver) {
@@ -38,7 +38,7 @@ class ResolverChain implements \DeliciousBrains\WPMDB\Container\Invoker\Paramete
      *
      * @param ParameterResolver $resolver
      */
-    public function appendResolver(\DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver $resolver)
+    public function appendResolver(ParameterResolver $resolver)
     {
         $this->resolvers[] = $resolver;
     }
@@ -47,7 +47,7 @@ class ResolverChain implements \DeliciousBrains\WPMDB\Container\Invoker\Paramete
      *
      * @param ParameterResolver $resolver
      */
-    public function prependResolver(\DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver $resolver)
+    public function prependResolver(ParameterResolver $resolver)
     {
         \array_unshift($this->resolvers, $resolver);
     }

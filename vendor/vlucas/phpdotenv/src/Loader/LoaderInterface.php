@@ -15,5 +15,5 @@ interface LoaderInterface
      *
      * @return array<string,string|null>
      */
-    public function load(\DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface $repository, $content);
+    public function load(RepositoryInterface $repository, $content);
 }

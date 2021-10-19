@@ -11,9 +11,9 @@ use ReflectionFunctionAbstract;
  *
  * @author Felix Becker <f.becker@outlook.com>
  */
-class TypeHintResolver implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class TypeHintResolver implements ParameterResolver
 {
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         $parameters = $reflection->getParameters();
         // Skip parameters already resolved

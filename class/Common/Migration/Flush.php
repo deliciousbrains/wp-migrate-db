@@ -98,9 +98,11 @@ class Flush
         // flush rewrite rules to prevent 404s and other oddities
         wp_cache_flush();
         global $wp_rewrite;
+        $endpoints = $wp_rewrite->endpoints;
         $wp_rewrite->init();
+        $wp_rewrite->endpoints = $endpoints;
         flush_rewrite_rules(true); // true = hard refresh, recreates the .htaccess file
-
+        
         return true;
     }
 }

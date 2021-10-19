@@ -38,6 +38,14 @@ class Command
 	 *     Should be used in conjunction with the --find=<strings> argument, see it's
 	 *     documentation for further explanation of the find & replace functionality.
 	 *
+     * [--case-sensitive-find]
+     * : A comma separated list of strings to find when performing a string find
+     * and replace across the database.
+     *
+     * [--case-sensitive-replace]
+     * : A comma separated list of replace value strings to implement when
+     * performing a string find & replace across the database.
+     *
 	 * [--exclude-post-revisions]
 	 * : Exclude post revisions from export.
 	 *
@@ -105,6 +113,14 @@ class Command
 	 *     Should be used in conjunction with the --find=<strings> argument, see it's
 	 *     documentation for further explanation of the find & replace functionality.
 	 *
+     * [--case-sensitive-find]
+     * : A comma separated list of strings to find when performing a string find
+     * and replace across the database.
+     *
+     * [--case-sensitive-replace]
+     * : A comma separated list of replace value strings to implement when
+     * performing a string find & replace across the database.
+     *
 	 * [--exclude-post-revisions]
 	 * : Exclude post revisions from the find & replace.
 	 *

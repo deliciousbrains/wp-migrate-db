@@ -16,7 +16,7 @@ use DeliciousBrains\WPMDB\Container\Invoker\Reflection\CallableReflection;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class Invoker implements \DeliciousBrains\WPMDB\Container\Invoker\InvokerInterface
+class Invoker implements InvokerInterface
 {
     /**
      * @var CallableResolver|null
@@ -30,12 +30,12 @@ class Invoker implements \DeliciousBrains\WPMDB\Container\Invoker\InvokerInterfa
      * @var ContainerInterface|null
      */
     private $container;
-    public function __construct(\DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver $parameterResolver = null, \DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container = null)
+    public function __construct(ParameterResolver $parameterResolver = null, ContainerInterface $container = null)
     {
         $this->parameterResolver = $parameterResolver ?: $this->createParameterResolver();
         $this->container = $container;
         if ($container) {
-            $this->callableResolver = new \DeliciousBrains\WPMDB\Container\Invoker\CallableResolver($container);
+            $this->callableResolver = new CallableResolver($container);
         }
     }
     /**
@@ -47,9 +47,9 @@ class Invoker implements \DeliciousBrains\WPMDB\Container\Invoker\InvokerInterfa
             $callable = $this->callableResolver->resolve($callable);
         }
         if (!\is_callable($callable)) {
-            throw new \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException(\sprintf('%s is not a callable', \is_object($callable) ? 'Instance of ' . \get_class($callable) : \var_export($callable, \true)));
+            throw new NotCallableException(\sprintf('%s is not a callable', \is_object($callable) ? 'Instance of ' . \get_class($callable) : \var_export($callable, \true)));
         }
-        $callableReflection = \DeliciousBrains\WPMDB\Container\Invoker\Reflection\CallableReflection::create($callable);
+        $callableReflection = CallableReflection::create($callable);
         $args = $this->parameterResolver->getParameters($callableReflection, $parameters, array());
         // Sort by array key because call_user_func_array ignores numeric keys
         \ksort($args);
@@ -58,7 +58,7 @@ class Invoker implements \DeliciousBrains\WPMDB\Container\Invoker\InvokerInterfa
         if (!empty($diff)) {
             /** @var \ReflectionParameter $parameter */
             $parameter = \reset($diff);
-            throw new \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotEnoughParametersException(\sprintf('Unable to invoke the callable because no value was given for parameter %d ($%s)', $parameter->getPosition() + 1, $parameter->name));
+            throw new NotEnoughParametersException(\sprintf('Unable to invoke the callable because no value was given for parameter %d ($%s)', $parameter->getPosition() + 1, $parameter->name));
         }
         return \call_user_func_array($callable, $args);
     }
@@ -69,7 +69,7 @@ class Invoker implements \DeliciousBrains\WPMDB\Container\Invoker\InvokerInterfa
      */
     private function createParameterResolver()
     {
-        return new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ResolverChain(array(new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\NumericArrayResolver(), new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\AssociativeArrayResolver(), new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\DefaultValueResolver()));
+        return new ResolverChain(array(new NumericArrayResolver(), new AssociativeArrayResolver(), new DefaultValueResolver()));
     }
     /**
      * @return ParameterResolver By default it's a ResolverChain

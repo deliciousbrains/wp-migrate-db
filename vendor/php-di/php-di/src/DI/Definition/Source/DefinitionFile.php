@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class DefinitionFile extends \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionArray
+class DefinitionFile extends DefinitionArray
 {
     /**
      * @var bool
@@ -47,7 +47,7 @@ class DefinitionFile extends \DeliciousBrains\WPMDB\Container\DI\Definition\Sour
         }
         $definitions = (require $this->file);
         if (!\is_array($definitions)) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException("File {$this->file} should return an array of definitions");
+            throw new DefinitionException("File {$this->file} should return an array of definitions");
         }
         $this->addDefinitions($definitions);
         $this->initialized = \true;

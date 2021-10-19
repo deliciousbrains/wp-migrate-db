@@ -24,7 +24,7 @@ use IteratorAggregate;
  *
  * @implements IteratorAggregate<T>
  */
-abstract class Option implements \IteratorAggregate
+abstract class Option implements IteratorAggregate
 {
     /**
      * Creates an option given a return value.
@@ -44,9 +44,9 @@ abstract class Option implements \IteratorAggregate
     public static function fromValue($value, $noneValue = null)
     {
         if ($value === $noneValue) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+            return None::create();
         }
-        return new \DeliciousBrains\WPMDB\Container\PhpOption\Some($value);
+        return new Some($value);
     }
     /**
      * Creates an option from an array's value.
@@ -64,10 +64,10 @@ abstract class Option implements \IteratorAggregate
      */
     public static function fromArraysValue($array, $key)
     {
-        if (!(\is_array($array) || $array instanceof \ArrayAccess) || !isset($array[$key])) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        if (!(\is_array($array) || $array instanceof ArrayAccess) || !isset($array[$key])) {
+            return None::create();
         }
-        return new \DeliciousBrains\WPMDB\Container\PhpOption\Some($array[$key]);
+        return new Some($array[$key]);
     }
     /**
      * Creates a lazy-option with the given callback.
@@ -87,13 +87,13 @@ abstract class Option implements \IteratorAggregate
      */
     public static function fromReturn($callback, array $arguments = [], $noneValue = null)
     {
-        return new \DeliciousBrains\WPMDB\Container\PhpOption\LazyOption(static function () use($callback, $arguments, $noneValue) {
+        return new LazyOption(static function () use($callback, $arguments, $noneValue) {
             /** @var mixed */
             $return = \call_user_func_array($callback, $arguments);
             if ($return === $noneValue) {
-                return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+                return None::create();
             }
-            return new \DeliciousBrains\WPMDB\Container\PhpOption\Some($return);
+            return new Some($return);
         });
     }
     /**
@@ -117,7 +117,7 @@ abstract class Option implements \IteratorAggregate
         if ($value instanceof self) {
             return $value;
         } elseif (\is_callable($value)) {
-            return new \DeliciousBrains\WPMDB\Container\PhpOption\LazyOption(static function () use($value, $noneValue) {
+            return new LazyOption(static function () use($value, $noneValue) {
                 /** @var mixed */
                 $return = $value();
                 if ($return instanceof self) {
@@ -161,7 +161,7 @@ abstract class Option implements \IteratorAggregate
             );
             // if at least one parameter is empty, return None
             if ($reduced_args) {
-                return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+                return None::create();
             }
             $args = \array_map(
                 /** @return T */

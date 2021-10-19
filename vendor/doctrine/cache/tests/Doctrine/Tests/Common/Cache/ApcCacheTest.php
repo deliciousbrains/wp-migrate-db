@@ -3,7 +3,7 @@
 namespace DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache;
 
 use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\ApcCache;
-class ApcCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class ApcCacheTest extends CacheTest
 {
     public function setUp()
     {
@@ -13,6 +13,6 @@ class ApcCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Commo
     }
     protected function _getCacheDriver()
     {
-        return new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\ApcCache();
+        return new ApcCache();
     }
 }

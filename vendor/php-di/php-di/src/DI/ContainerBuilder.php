@@ -99,20 +99,20 @@ class ContainerBuilder
     {
         $sources = \array_reverse($this->definitionSources);
         if ($this->useAnnotations) {
-            $sources[] = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\AnnotationReader($this->ignorePhpDocErrors);
+            $sources[] = new AnnotationReader($this->ignorePhpDocErrors);
         } elseif ($this->useAutowiring) {
-            $sources[] = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\Autowiring();
+            $sources[] = new Autowiring();
         }
-        $chain = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\SourceChain($sources);
+        $chain = new SourceChain($sources);
         if ($this->cache) {
-            $source = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\CachedDefinitionSource($chain, $this->cache);
+            $source = new CachedDefinitionSource($chain, $this->cache);
             $chain->setRootDefinitionSource($source);
         } else {
             $source = $chain;
             // Mutable definition source
-            $source->setMutableDefinitionSource(new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionArray());
+            $source->setMutableDefinitionSource(new DefinitionArray());
         }
-        $proxyFactory = new \DeliciousBrains\WPMDB\Container\DI\Proxy\ProxyFactory($this->writeProxiesToFile, $this->proxyDirectory);
+        $proxyFactory = new ProxyFactory($this->writeProxiesToFile, $this->proxyDirectory);
         $this->locked = \true;
         $containerClass = $this->containerClass;
         return new $containerClass($source, $proxyFactory, $this->wrapperContainer);
@@ -163,7 +163,7 @@ class ContainerBuilder
      * @param Cache $cache Cache backend to use
      * @return ContainerBuilder
      */
-    public function setDefinitionCache(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache $cache)
+    public function setDefinitionCache(Cache $cache)
     {
         $this->ensureNotLocked();
         $this->cache = $cache;
@@ -185,7 +185,7 @@ class ContainerBuilder
         $this->ensureNotLocked();
         $this->writeProxiesToFile = $writeToFile;
         if ($writeToFile && $proxyDirectory === null) {
-            throw new \InvalidArgumentException('The proxy directory must be specified if you want to write proxies on disk');
+            throw new InvalidArgumentException('The proxy directory must be specified if you want to write proxies on disk');
         }
         $this->proxyDirectory = $proxyDirectory;
         return $this;
@@ -197,7 +197,7 @@ class ContainerBuilder
      * @param ContainerInterface $otherContainer
      * @return $this
      */
-    public function wrapContainer(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $otherContainer)
+    public function wrapContainer(ContainerInterface $otherContainer)
     {
         $this->ensureNotLocked();
         $this->wrapperContainer = $otherContainer;
@@ -216,11 +216,11 @@ class ContainerBuilder
         $this->ensureNotLocked();
         if (\is_string($definitions)) {
             // File
-            $definitions = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionFile($definitions);
+            $definitions = new DefinitionFile($definitions);
         } elseif (\is_array($definitions)) {
-            $definitions = new \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionArray($definitions);
-        } elseif (!$definitions instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource) {
-            throw new \InvalidArgumentException(\sprintf('%s parameter must be a string, an array or a DefinitionSource object, %s given', 'ContainerBuilder::addDefinitions()', \is_object($definitions) ? \get_class($definitions) : \gettype($definitions)));
+            $definitions = new DefinitionArray($definitions);
+        } elseif (!$definitions instanceof DefinitionSource) {
+            throw new InvalidArgumentException(\sprintf('%s parameter must be a string, an array or a DefinitionSource object, %s given', 'ContainerBuilder::addDefinitions()', \is_object($definitions) ? \get_class($definitions) : \gettype($definitions)));
         }
         $this->definitionSources[] = $definitions;
         return $this;

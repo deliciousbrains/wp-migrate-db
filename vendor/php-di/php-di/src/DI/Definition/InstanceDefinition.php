@@ -9,7 +9,7 @@ use DeliciousBrains\WPMDB\Container\DI\Scope;
  * @since  5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class InstanceDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definition\Definition
+class InstanceDefinition implements Definition
 {
     /**
      * Instance on which to inject dependencies.
@@ -25,7 +25,7 @@ class InstanceDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definiti
      * @param object          $instance
      * @param ObjectDefinition $objectDefinition
      */
-    public function __construct($instance, \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $objectDefinition)
+    public function __construct($instance, ObjectDefinition $objectDefinition)
     {
         $this->instance = $instance;
         $this->objectDefinition = $objectDefinition;
@@ -43,7 +43,7 @@ class InstanceDefinition implements \DeliciousBrains\WPMDB\Container\DI\Definiti
      */
     public function getScope()
     {
-        return \DeliciousBrains\WPMDB\Container\DI\Scope::PROTOTYPE;
+        return Scope::PROTOTYPE;
     }
     /**
      * @return object

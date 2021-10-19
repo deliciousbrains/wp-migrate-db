@@ -31,7 +31,7 @@ use Memcache;
  * @author Roman Borschel <roman@code-factory.org>
  * @author David Abdemoulaie <dave@hobodave.com>
  */
-class MemcacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class MemcacheCache extends CacheProvider
 {
     /**
      * @var Memcache|null
@@ -44,7 +44,7 @@ class MemcacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cac
      *
      * @return void
      */
-    public function setMemcache(\Memcache $memcache)
+    public function setMemcache(Memcache $memcache)
     {
         $this->memcache = $memcache;
     }
@@ -101,6 +101,6 @@ class MemcacheCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cac
     protected function doGetStats()
     {
         $stats = $this->memcache->getStats();
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => $stats['get_hits'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => $stats['get_misses'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => $stats['uptime'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $stats['bytes'], \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $stats['limit_maxbytes']);
+        return array(Cache::STATS_HITS => $stats['get_hits'], Cache::STATS_MISSES => $stats['get_misses'], Cache::STATS_UPTIME => $stats['uptime'], Cache::STATS_MEMORY_USAGE => $stats['bytes'], Cache::STATS_MEMORY_AVAILABLE => $stats['limit_maxbytes']);
     }
 }

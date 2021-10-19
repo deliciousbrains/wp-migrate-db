@@ -16,7 +16,7 @@ class CallableResolver
      * @var ContainerInterface
      */
     private $container;
-    public function __construct(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -36,7 +36,7 @@ class CallableResolver
         }
         $callable = $this->resolveFromContainer($callable);
         if (!\is_callable($callable)) {
-            throw \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException::fromInvalidCallable($callable, \true);
+            throw NotCallableException::fromInvalidCallable($callable, \true);
         }
         return $callable;
     }
@@ -63,8 +63,8 @@ class CallableResolver
         if (\is_string($callable)) {
             try {
                 return $this->container->get($callable);
-            } catch (\DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundException $e) {
-                throw \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException::fromInvalidCallable($callable, \true);
+            } catch (NotFoundException $e) {
+                throw NotCallableException::fromInvalidCallable($callable, \true);
             }
         }
         // The callable is an array whose first item is a container entry name
@@ -74,11 +74,11 @@ class CallableResolver
                 // Replace the container entry name by the actual object
                 $callable[0] = $this->container->get($callable[0]);
                 return $callable;
-            } catch (\DeliciousBrains\WPMDB\Container\Interop\Container\Exception\NotFoundException $e) {
+            } catch (NotFoundException $e) {
                 if ($isStaticCallToNonStaticMethod) {
-                    throw new \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException(\sprintf('Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry', $callable[0], $callable[1], $callable[1], $callable[0]));
+                    throw new NotCallableException(\sprintf('Cannot call %s::%s() because %s() is not a static method and "%s" is not a container entry', $callable[0], $callable[1], $callable[1], $callable[0]));
                 }
-                throw new \DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException(\sprintf('Cannot call %s on %s because it is not a class nor a valid container entry', $callable[1], $callable[0]));
+                throw new NotCallableException(\sprintf('Cannot call %s on %s because it is not a class nor a valid container entry', $callable[1], $callable[0]));
             }
         }
         // Unrecognized stuff, we let it fail later

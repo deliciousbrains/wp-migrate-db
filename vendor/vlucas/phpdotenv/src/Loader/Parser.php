@@ -47,7 +47,7 @@ class Parser
             list($name, $value) = \array_map('trim', \explode('=', $line, 2));
         }
         if ($name === '') {
-            throw new \DeliciousBrains\WPMDB\Container\Dotenv\Exception\InvalidFileException(self::getErrorMessage('an unexpected equals', $line));
+            throw new InvalidFileException(self::getErrorMessage('an unexpected equals', $line));
         }
         return [$name, $value];
     }
@@ -64,7 +64,7 @@ class Parser
     {
         $name = \trim(\str_replace(['export ', '\'', '"'], '', $name));
         if (!self::isValidName($name)) {
-            throw new \DeliciousBrains\WPMDB\Container\Dotenv\Exception\InvalidFileException(self::getErrorMessage('an invalid name', $name));
+            throw new InvalidFileException(self::getErrorMessage('an invalid name', $name));
         }
         return $name;
     }
@@ -77,7 +77,7 @@ class Parser
      */
     private static function isValidName($name)
     {
-        return \DeliciousBrains\WPMDB\Container\Dotenv\Regex\Regex::match('~\\A[a-zA-Z0-9_.]+\\z~', $name)->success()->getOrElse(0) === 1;
+        return Regex::match('~\\A[a-zA-Z0-9_.]+\\z~', $name)->success()->getOrElse(0) === 1;
     }
     /**
      * Strips quotes and comments from the environment variable value.
@@ -94,17 +94,17 @@ class Parser
             return null;
         }
         if (\trim($value) === '') {
-            return \DeliciousBrains\WPMDB\Container\Dotenv\Loader\Value::blank();
+            return Value::blank();
         }
         $result = \array_reduce(\str_split($value), function ($data, $char) use($value) {
             return self::processChar($data[1], $char)->mapError(function ($err) use($value) {
-                throw new \DeliciousBrains\WPMDB\Container\Dotenv\Exception\InvalidFileException(self::getErrorMessage($err, $value));
+                throw new InvalidFileException(self::getErrorMessage($err, $value));
             })->mapSuccess(function ($val) use($data) {
                 return [$data[0]->append($val[0], $val[1]), $val[2]];
             })->getSuccess();
-        }, [\DeliciousBrains\WPMDB\Container\Dotenv\Loader\Value::blank(), self::INITIAL_STATE]);
+        }, [Value::blank(), self::INITIAL_STATE]);
         if (\in_array($result[1], [self::SINGLE_QUOTED_STATE, self::DOUBLE_QUOTED_STATE, self::ESCAPE_SEQUENCE_STATE], \true)) {
-            throw new \DeliciousBrains\WPMDB\Container\Dotenv\Exception\InvalidFileException(self::getErrorMessage('a missing closing quote', $value));
+            throw new InvalidFileException(self::getErrorMessage('a missing closing quote', $value));
         }
         return $result[0];
     }
@@ -122,86 +122,86 @@ class Parser
             case self::INITIAL_STATE:
                 if ($char === '\'') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::SINGLE_QUOTED_STATE]);
+                    return Success::create(['', \false, self::SINGLE_QUOTED_STATE]);
                 } elseif ($char === '"') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create(['', \false, self::DOUBLE_QUOTED_STATE]);
                 } elseif ($char === '#') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::COMMENT_STATE]);
+                    return Success::create(['', \false, self::COMMENT_STATE]);
                 } elseif ($char === '$') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \true, self::UNQUOTED_STATE]);
+                    return Success::create([$char, \true, self::UNQUOTED_STATE]);
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::UNQUOTED_STATE]);
+                    return Success::create([$char, \false, self::UNQUOTED_STATE]);
                 }
             case self::UNQUOTED_STATE:
                 if ($char === '#') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::COMMENT_STATE]);
+                    return Success::create(['', \false, self::COMMENT_STATE]);
                 } elseif (\ctype_space($char)) {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::WHITESPACE_STATE]);
+                    return Success::create(['', \false, self::WHITESPACE_STATE]);
                 } elseif ($char === '$') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \true, self::UNQUOTED_STATE]);
+                    return Success::create([$char, \true, self::UNQUOTED_STATE]);
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::UNQUOTED_STATE]);
+                    return Success::create([$char, \false, self::UNQUOTED_STATE]);
                 }
             case self::SINGLE_QUOTED_STATE:
                 if ($char === '\'') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::WHITESPACE_STATE]);
+                    return Success::create(['', \false, self::WHITESPACE_STATE]);
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::SINGLE_QUOTED_STATE]);
+                    return Success::create([$char, \false, self::SINGLE_QUOTED_STATE]);
                 }
             case self::DOUBLE_QUOTED_STATE:
                 if ($char === '"') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::WHITESPACE_STATE]);
+                    return Success::create(['', \false, self::WHITESPACE_STATE]);
                 } elseif ($char === '\\') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::ESCAPE_SEQUENCE_STATE]);
+                    return Success::create(['', \false, self::ESCAPE_SEQUENCE_STATE]);
                 } elseif ($char === '$') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \true, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create([$char, \true, self::DOUBLE_QUOTED_STATE]);
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
                 }
             case self::ESCAPE_SEQUENCE_STATE:
                 if ($char === '"' || $char === '\\') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
                 } elseif ($char === '$') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create([$char, \false, self::DOUBLE_QUOTED_STATE]);
                 } elseif (\in_array($char, ['f', 'n', 'r', 't', 'v'], \true)) {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create([\stripcslashes('\\' . $char), \false, self::DOUBLE_QUOTED_STATE]);
+                    return Success::create([\stripcslashes('\\' . $char), \false, self::DOUBLE_QUOTED_STATE]);
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Error::create('an unexpected escape sequence');
+                    return Error::create('an unexpected escape sequence');
                 }
             case self::WHITESPACE_STATE:
                 if ($char === '#') {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::COMMENT_STATE]);
+                    return Success::create(['', \false, self::COMMENT_STATE]);
                 } elseif (!\ctype_space($char)) {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Error::create('unexpected whitespace');
+                    return Error::create('unexpected whitespace');
                 } else {
                     /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                    return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::WHITESPACE_STATE]);
+                    return Success::create(['', \false, self::WHITESPACE_STATE]);
                 }
             case self::COMMENT_STATE:
                 /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
-                return \DeliciousBrains\WPMDB\Container\Dotenv\Result\Success::create(['', \false, self::COMMENT_STATE]);
+                return Success::create(['', \false, self::COMMENT_STATE]);
             default:
-                throw new \RuntimeException('Parser entered invalid state.');
+                throw new RuntimeException('Parser entered invalid state.');
         }
     }
     /**

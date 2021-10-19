@@ -138,7 +138,7 @@ class FinalizeMigration
             $data['intent']   = 'pull';
             $data['prefix']   = $wpdb->base_prefix;
             $data['type']     = 'push';
-            $data['location'] = home_url();
+            $data['location'] = Util::home_url();
             $data['sig']      = $this->http_helper->create_signature($data, $state_data['key']);
             $data['stage']    = $state_data['stage'];
             $ajax_url         = $this->util->ajax_url();
@@ -160,13 +160,16 @@ class FinalizeMigration
      */
     function finalize_migration($state_data = false)
     {
-        $state_data       = !$state_data ? Persistence::getStateData() : $state_data;
-        $tables           = explode(',', $state_data['tables']);
-        $temp_prefix      = (isset($state_data['temp_prefix'])) ? $state_data['temp_prefix'] : $this->props->temp_prefix;
-        $temp_tables      = array();
-        $type             = $state_data['intent'];
-        $alter_table_name = $this->table->get_alter_table_name();
-
+        $state_data                         = !$state_data ? Persistence::getStateData() : $state_data; 
+        if ( in_array($state_data['intent'], ['push', 'pull'])) {
+            $state_data['destination_prefix']   = ('push' === $state_data['type']) ? $state_data['site_details']['remote']['prefix'] : $state_data['site_details']['local']['prefix'];
+            $state_data['source_prefix']        = ('push' === $state_data['type']) ? $state_data['site_details']['local']['prefix'] : $state_data['site_details']['remote']['prefix'];
+        }
+        
+        $temp_prefix                        = isset($state_data['temp_prefix']) ? $state_data['temp_prefix'] : $this->props->temp_prefix;
+        $temp_tables                        = array();
+        $type                               = $state_data['intent'];
+        $alter_table_name                   = $this->table->get_alter_table_name();
         $before_finalize_response = apply_filters('wpmdb_before_finalize_migration', true, $this);
 
         if (is_wp_error($before_finalize_response)) {
@@ -177,8 +180,10 @@ class FinalizeMigration
             $type = 'push';
         }
 
+        $tables = $this->get_tables($state_data);
+
         if ('find_replace' === $state_data['intent'] || 'import' === $state_data['intent']) {
-            $location = home_url();
+            $location = Util::home_url();
         } else {
             $location = (isset($state_data['location'])) ? $state_data['location'] : $state_data['url'];
         }
@@ -229,7 +234,7 @@ class FinalizeMigration
         if (!isset($state_data['location']) && !in_array($state_data['intent'], array('find_replace', 'import'))) {
             $data           = array();
             $data['action'] = 'wpmdb_fire_migration_complete';
-            $data['url']    = home_url();
+            $data['url']    = Util::home_url();
             $data['sig']    = $this->http_helper->create_signature($data, $state_data['key']);
             $ajax_url       = $this->util->ajax_url();
             $response       = $this->remote_post->post($ajax_url, $data, __FUNCTION__);
@@ -251,4 +256,24 @@ class FinalizeMigration
 
         return true;
     }
+
+    /**
+     * Convert string of table names to array, changes prefix if needed.
+     *
+     * @param array $state_data
+     * 
+     * @return array of tables
+     *  
+     **/
+    private function get_tables($state_data)
+    {
+        $source_tables      = explode(',', $state_data['tables']);
+        $source_prefix      = $state_data['source_prefix'];
+        $destination_prefix = $state_data['destination_prefix'];
+        if ($source_prefix === $destination_prefix || '1' === $state_data['mst_select_subsite']) {
+            return $source_tables;
+        }
+        return Util::change_tables_prefix($source_tables, $source_prefix, $destination_prefix);
+    }
+
 }

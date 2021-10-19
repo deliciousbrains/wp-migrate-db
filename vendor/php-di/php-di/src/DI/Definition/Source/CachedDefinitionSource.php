@@ -10,7 +10,7 @@ use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class CachedDefinitionSource implements \DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource
+class CachedDefinitionSource implements DefinitionSource
 {
     /**
      * Prefix for cache key, to avoid conflicts with other systems using the same cache.
@@ -25,7 +25,7 @@ class CachedDefinitionSource implements \DeliciousBrains\WPMDB\Container\DI\Defi
      * @var Cache
      */
     private $cache;
-    public function __construct(\DeliciousBrains\WPMDB\Container\DI\Definition\Source\DefinitionSource $source, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache $cache)
+    public function __construct(DefinitionSource $source, Cache $cache)
     {
         $this->source = $source;
         $this->cache = $cache;
@@ -40,7 +40,7 @@ class CachedDefinitionSource implements \DeliciousBrains\WPMDB\Container\DI\Defi
         if ($definition === \false) {
             $definition = $this->source->getDefinition($name);
             // Save to cache
-            if ($definition === null || $definition instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\CacheableDefinition) {
+            if ($definition === null || $definition instanceof CacheableDefinition) {
                 $this->saveToCache($name, $definition);
             }
         }
@@ -74,7 +74,7 @@ class CachedDefinitionSource implements \DeliciousBrains\WPMDB\Container\DI\Defi
      * @param string          $name Entry name
      * @param Definition|null $definition
      */
-    private function saveToCache($name, \DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition = null)
+    private function saveToCache($name, Definition $definition = null)
     {
         $cacheKey = self::CACHE_PREFIX . $name;
         $this->cache->save($cacheKey, $definition);

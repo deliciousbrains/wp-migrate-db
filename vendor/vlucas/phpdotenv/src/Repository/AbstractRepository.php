@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Container\Dotenv\Repository;
 
 use DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ArrayAdapter;
 use InvalidArgumentException;
-abstract class AbstractRepository implements \DeliciousBrains\WPMDB\Container\Dotenv\Repository\RepositoryInterface
+abstract class AbstractRepository implements RepositoryInterface
 {
     /**
      * Are we immutable?
@@ -28,7 +28,7 @@ abstract class AbstractRepository implements \DeliciousBrains\WPMDB\Container\Do
     public function __construct($immutable)
     {
         $this->immutable = $immutable;
-        $this->loaded = new \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ArrayAdapter();
+        $this->loaded = new ArrayAdapter();
     }
     /**
      * Get an environment variable.
@@ -42,7 +42,7 @@ abstract class AbstractRepository implements \DeliciousBrains\WPMDB\Container\Do
     public function get($name)
     {
         if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
         return $this->getInternal($name);
     }
@@ -67,7 +67,7 @@ abstract class AbstractRepository implements \DeliciousBrains\WPMDB\Container\Do
     public function set($name, $value = null)
     {
         if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
         // Don't overwrite existing environment variables if we're immutable
         // Ruby's dotenv does this with `ENV[key] ||= value`.
@@ -98,7 +98,7 @@ abstract class AbstractRepository implements \DeliciousBrains\WPMDB\Container\Do
     public function clear($name)
     {
         if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
         // Don't clear anything if we're immutable.
         if ($this->immutable) {

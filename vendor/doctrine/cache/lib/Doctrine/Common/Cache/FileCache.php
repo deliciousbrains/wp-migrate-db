@@ -25,7 +25,7 @@ namespace DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache;
  * @since  2.3
  * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
  */
-abstract class FileCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+abstract class FileCache extends CacheProvider
 {
     /**
      * The cache directory.
@@ -124,7 +124,7 @@ abstract class FileCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Commo
             $usage += $file->getSize();
         }
         $free = \disk_free_space($this->directory);
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => $usage, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => $free);
+        return array(Cache::STATS_HITS => null, Cache::STATS_MISSES => null, Cache::STATS_UPTIME => null, Cache::STATS_MEMORY_USAGE => $usage, Cache::STATS_MEMORY_AVAILABLE => $free);
     }
     /**
      * Create path if needed.

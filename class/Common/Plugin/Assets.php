@@ -149,7 +149,7 @@ class  Assets
         }, array_keys($raw_data), $raw_data);
 
         usort( $migrations, function ( $a, $b ) {
-            return $a < $b;
+            return $a < $b ? 1 : 0;
         } );
 
         return $migrations;

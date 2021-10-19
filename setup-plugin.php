@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 use Dotenv\Dotenv;
 
 $wpmdb_base_path = dirname(__FILE__);

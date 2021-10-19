@@ -28,7 +28,7 @@ use MongoDate;
  * @since  1.1
  * @author Jeremy Mikola <jmikola@gmail.com>
  */
-class MongoDBCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\CacheProvider
+class MongoDBCache extends CacheProvider
 {
     /**
      * The data field will store the serialized PHP value.
@@ -67,7 +67,7 @@ class MongoDBCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
      * @see http://www.php.net/manual/en/mongo.writeconcerns.php
      * @param MongoCollection $collection
      */
-    public function __construct(\MongoCollection $collection)
+    public function __construct(MongoCollection $collection)
     {
         $this->collection = $collection;
     }
@@ -106,7 +106,7 @@ class MongoDBCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
      */
     protected function doSave($id, $data, $lifeTime = 0)
     {
-        $result = $this->collection->update(array('_id' => $id), array('$set' => array(self::EXPIRATION_FIELD => $lifeTime > 0 ? new \MongoDate(\time() + $lifeTime) : null, self::DATA_FIELD => new \MongoBinData(\serialize($data), \MongoBinData::BYTE_ARRAY))), array('upsert' => \true, 'multiple' => \false));
+        $result = $this->collection->update(array('_id' => $id), array('$set' => array(self::EXPIRATION_FIELD => $lifeTime > 0 ? new MongoDate(\time() + $lifeTime) : null, self::DATA_FIELD => new MongoBinData(\serialize($data), MongoBinData::BYTE_ARRAY))), array('upsert' => \true, 'multiple' => \false));
         return isset($result['ok']) ? $result['ok'] == 1 : \true;
     }
     /**
@@ -133,7 +133,7 @@ class MongoDBCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
     {
         $serverStatus = $this->collection->db->command(array('serverStatus' => 1, 'locks' => 0, 'metrics' => 0, 'recordStats' => 0, 'repl' => 0));
         $collStats = $this->collection->db->command(array('collStats' => 1));
-        return array(\DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_HITS => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MISSES => null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_UPTIME => isset($serverStatus['uptime']) ? (int) $serverStatus['uptime'] : null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_USAGE => isset($collStats['size']) ? (int) $collStats['size'] : null, \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\Cache::STATS_MEMORY_AVAILABLE => null);
+        return array(Cache::STATS_HITS => null, Cache::STATS_MISSES => null, Cache::STATS_UPTIME => isset($serverStatus['uptime']) ? (int) $serverStatus['uptime'] : null, Cache::STATS_MEMORY_USAGE => isset($collStats['size']) ? (int) $collStats['size'] : null, Cache::STATS_MEMORY_AVAILABLE => null);
     }
     /**
      * Check if the document is expired.
@@ -143,6 +143,6 @@ class MongoDBCache extends \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cach
      */
     private function isExpired(array $document)
     {
-        return isset($document[self::EXPIRATION_FIELD]) && $document[self::EXPIRATION_FIELD] instanceof \MongoDate && $document[self::EXPIRATION_FIELD]->sec < \time();
+        return isset($document[self::EXPIRATION_FIELD]) && $document[self::EXPIRATION_FIELD] instanceof MongoDate && $document[self::EXPIRATION_FIELD]->sec < \time();
     }
 }

@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\DI\Factory\RequestedEntry;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-interface Definition extends \DeliciousBrains\WPMDB\Container\DI\Factory\RequestedEntry
+interface Definition extends RequestedEntry
 {
     /**
      * Returns the name of the entry in the container.

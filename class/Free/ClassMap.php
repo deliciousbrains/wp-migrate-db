@@ -27,7 +27,8 @@ class ClassMap extends \DeliciousBrains\WPMDB\ClassMap
             $this->WPMDBRestAPIServer,
             $this->http_helper,
             $this->template_base,
-            $this->notice
+            $this->notice,
+            $this->profile_manager
         );
 
         $this->free_template = new Template(

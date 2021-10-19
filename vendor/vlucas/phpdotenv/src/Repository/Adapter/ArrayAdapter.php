@@ -4,7 +4,7 @@ namespace DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter;
 
 use DeliciousBrains\WPMDB\Container\PhpOption\None;
 use DeliciousBrains\WPMDB\Container\PhpOption\Some;
-class ArrayAdapter implements \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\AvailabilityInterface, \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\ReaderInterface, \DeliciousBrains\WPMDB\Container\Dotenv\Repository\Adapter\WriterInterface
+class ArrayAdapter implements AvailabilityInterface, ReaderInterface, WriterInterface
 {
     /**
      * The variables and their values.
@@ -31,9 +31,9 @@ class ArrayAdapter implements \DeliciousBrains\WPMDB\Container\Dotenv\Repository
     public function get($name)
     {
         if (\array_key_exists($name, $this->variables)) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\Some::create($this->variables[$name]);
+            return Some::create($this->variables[$name]);
         }
-        return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        return None::create();
     }
     /**
      * Set an environment variable.

@@ -8,7 +8,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\ValueDefinition;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ValueDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class ValueDefinitionHelper implements DefinitionHelper
 {
     /**
      * @var mixed
@@ -27,6 +27,6 @@ class ValueDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defin
      */
     public function getDefinition($entryName)
     {
-        return new \DeliciousBrains\WPMDB\Container\DI\Definition\ValueDefinition($entryName, $this->value);
+        return new ValueDefinition($entryName, $this->value);
     }
 }

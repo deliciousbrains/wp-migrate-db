@@ -10,7 +10,7 @@ use ReflectionFunctionAbstract;
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ParameterNameContainerResolver implements \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ParameterResolver
+class ParameterNameContainerResolver implements ParameterResolver
 {
     /**
      * @var ContainerInterface
@@ -19,11 +19,11 @@ class ParameterNameContainerResolver implements \DeliciousBrains\WPMDB\Container
     /**
      * @param ContainerInterface $container The container to get entries from.
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
-    public function getParameters(\ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
+    public function getParameters(ReflectionFunctionAbstract $reflection, array $providedParameters, array $resolvedParameters)
     {
         $parameters = $reflection->getParameters();
         // Skip parameters already resolved

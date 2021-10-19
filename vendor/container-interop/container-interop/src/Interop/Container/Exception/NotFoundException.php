@@ -9,6 +9,6 @@ use DeliciousBrains\WPMDB\Container\Psr\Container\NotFoundExceptionInterface as 
 /**
  * No entry was found in the container.
  */
-interface NotFoundException extends \DeliciousBrains\WPMDB\Container\Interop\Container\Exception\ContainerException, \DeliciousBrains\WPMDB\Container\Psr\Container\NotFoundExceptionInterface
+interface NotFoundException extends ContainerException, PsrNotFoundException
 {
 }

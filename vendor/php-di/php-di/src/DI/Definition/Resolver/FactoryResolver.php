@@ -20,7 +20,7 @@ use DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ResolverChain;
  * @since 4.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class FactoryResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver
+class FactoryResolver implements DefinitionResolver
 {
     /**
      * @var ContainerInterface
@@ -40,7 +40,7 @@ class FactoryResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\
      *
      * @param ContainerInterface $container
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container, \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver $resolver)
+    public function __construct(ContainerInterface $container, DefinitionResolver $resolver)
     {
         $this->container = $container;
         $this->resolver = $resolver;
@@ -54,11 +54,11 @@ class FactoryResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\
      *
      * {@inheritdoc}
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function resolve(Definition $definition, array $parameters = [])
     {
         if (!$this->invoker) {
-            $parameterResolver = new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\ResolverChain([new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\AssociativeArrayResolver(), new \DeliciousBrains\WPMDB\Container\DI\Invoker\FactoryParameterResolver($this->container), new \DeliciousBrains\WPMDB\Container\Invoker\ParameterResolver\NumericArrayResolver()]);
-            $this->invoker = new \DeliciousBrains\WPMDB\Container\Invoker\Invoker($parameterResolver, $this->container);
+            $parameterResolver = new ResolverChain([new AssociativeArrayResolver(), new FactoryParameterResolver($this->container), new NumericArrayResolver()]);
+            $this->invoker = new Invoker($parameterResolver, $this->container);
         }
         $callable = $definition->getCallable();
         try {
@@ -66,20 +66,20 @@ class FactoryResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\
             $extraParams = $this->resolveExtraParams($definition->getParameters());
             $providedParams = \array_merge($providedParams, $extraParams);
             return $this->invoker->call($callable, $providedParams);
-        } catch (\DeliciousBrains\WPMDB\Container\Invoker\Exception\NotCallableException $e) {
+        } catch (NotCallableException $e) {
             // Custom error message to help debugging
             if (\is_string($callable) && \class_exists($callable) && \method_exists($callable, '__invoke')) {
-                throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Entry "%s" cannot be resolved: factory %s. Invokable classes cannot be automatically resolved if autowiring is disabled on the container, you need to enable autowiring or define the entry manually.', $definition->getName(), $e->getMessage()));
+                throw new DefinitionException(\sprintf('Entry "%s" cannot be resolved: factory %s. Invokable classes cannot be automatically resolved if autowiring is disabled on the container, you need to enable autowiring or define the entry manually.', $definition->getName(), $e->getMessage()));
             }
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Entry "%s" cannot be resolved: factory %s', $definition->getName(), $e->getMessage()));
-        } catch (\DeliciousBrains\WPMDB\Container\Invoker\Exception\NotEnoughParametersException $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Entry "%s" cannot be resolved: %s', $definition->getName(), $e->getMessage()));
+            throw new DefinitionException(\sprintf('Entry "%s" cannot be resolved: factory %s', $definition->getName(), $e->getMessage()));
+        } catch (NotEnoughParametersException $e) {
+            throw new DefinitionException(\sprintf('Entry "%s" cannot be resolved: %s', $definition->getName(), $e->getMessage()));
         }
     }
     /**
      * {@inheritdoc}
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function isResolvable(Definition $definition, array $parameters = [])
     {
         return \true;
     }
@@ -87,11 +87,11 @@ class FactoryResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\
     {
         $resolved = [];
         foreach ($params as $key => $value) {
-            if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+            if ($value instanceof DefinitionHelper) {
                 // As per ObjectCreator::injectProperty, use '' for an anonymous sub-definition
                 $value = $value->getDefinition('');
             }
-            if (!$value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Definition) {
+            if (!$value instanceof Definition) {
                 $resolved[$key] = $value;
             } else {
                 $resolved[$key] = $this->resolver->resolve($value);

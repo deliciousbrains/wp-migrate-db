@@ -132,7 +132,6 @@ class Persistence
         }
 
         $existing_data = get_site_option($key);
-
         if (!empty($existing_data) && is_array($existing_data)) {
             $state_data = array_merge($existing_data, $state_data);
         }

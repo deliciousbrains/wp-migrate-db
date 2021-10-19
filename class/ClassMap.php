@@ -5,6 +5,9 @@ namespace DeliciousBrains\WPMDB;
 use DeliciousBrains\WPMDB\Common\BackupExport;
 use DeliciousBrains\WPMDB\Common\Cli\CliManager;
 use DeliciousBrains\WPMDB\Common\Compatibility\CompatibilityManager;
+use DeliciousBrains\WPMDB\Common\DryRun\DiffGroup;
+use DeliciousBrains\WPMDB\Common\DryRun\DiffInterpreter;
+use DeliciousBrains\WPMDB\Common\DryRun\MemoryPersistence;
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
@@ -29,6 +32,7 @@ use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
 use DeliciousBrains\WPMDB\Common\UI\TemplateBase;
 use DeliciousBrains\WPMDB\Common\Migration\Flush;
+use DeliciousBrains\WPMDB\Common\Replace\PairFactory;
 
 class ClassMap
 {
@@ -67,6 +71,9 @@ class ClassMap
     public $cli;
     public $WPMDBRestAPIServer;
     public $flush;
+    public $pair_factory;
+    public $diff_interpreter;
+
     /**
      * @var ProfileImporter
      */
@@ -146,13 +153,22 @@ class ClassMap
             $this->properties
         );
 
+        $this->pair_factory = new PairFactory();
+        // Swap persistence interface at this point to change storage method.
+        $this->diff_interpreter = new DiffInterpreter(new DiffGroup(new MemoryPersistence()));
+
         $this->replace = new Replace(
             $this->migration_state_manager,
             $this->table_helper,
             $this->error_log,
             $this->util,
             $this->form_data,
-            $this->properties
+            $this->properties,
+            $this->pair_factory,
+            $this->WPMDBRestAPIServer,
+            $this->http_helper,
+            $this->http,
+            $this->diff_interpreter
         );
 
         // Notice
@@ -321,7 +337,8 @@ class ClassMap
             $this->WPMDBRestAPIServer,
             $this->http_helper,
             $this->template_base,
-            $this->notice
+            $this->notice,
+            $this->profile_manager
         );
 
         $this->cli_manager = new CliManager();

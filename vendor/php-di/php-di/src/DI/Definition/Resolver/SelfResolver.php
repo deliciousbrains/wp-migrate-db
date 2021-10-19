@@ -11,13 +11,13 @@ use DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface;
  * @since 5.3
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class SelfResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver
+class SelfResolver implements DefinitionResolver
 {
     /**
      * @var ContainerInterface
      */
     private $container;
-    public function __construct(\DeliciousBrains\WPMDB\Container\Interop\Container\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -26,7 +26,7 @@ class SelfResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Res
      *
      * {@inheritdoc}
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function resolve(Definition $definition, array $parameters = [])
     {
         return $definition->resolve($this->container);
     }
@@ -35,7 +35,7 @@ class SelfResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Res
      *
      * {@inheritdoc}
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function isResolvable(Definition $definition, array $parameters = [])
     {
         return $definition->isResolvable($this->container);
     }

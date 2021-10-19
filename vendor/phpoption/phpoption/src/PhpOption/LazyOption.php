@@ -22,7 +22,7 @@ namespace DeliciousBrains\WPMDB\Container\PhpOption;
  *
  * @extends Option<T>
  */
-final class LazyOption extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
+final class LazyOption extends Option
 {
     /** @var callable(mixed...):(Option<T>) */
     private $callback;
@@ -77,7 +77,7 @@ final class LazyOption extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
     {
         return $this->option()->getOrThrow($ex);
     }
-    public function orElse(\DeliciousBrains\WPMDB\Container\PhpOption\Option $else)
+    public function orElse(Option $else)
     {
         return $this->option()->orElse($else);
     }
@@ -133,10 +133,10 @@ final class LazyOption extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
         if (null === $this->option) {
             /** @var mixed */
             $option = \call_user_func_array($this->callback, $this->arguments);
-            if ($option instanceof \DeliciousBrains\WPMDB\Container\PhpOption\Option) {
+            if ($option instanceof Option) {
                 $this->option = $option;
             } else {
-                throw new \RuntimeException(\sprintf('Expected instance of %s', \DeliciousBrains\WPMDB\Container\PhpOption\Option::class));
+                throw new \RuntimeException(\sprintf('Expected instance of %s', Option::class));
             }
         }
         return $this->option;

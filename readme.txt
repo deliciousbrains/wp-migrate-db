@@ -3,9 +3,9 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress migration plugin, WP Migrate DB
 Requires at least: 5.2
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 2.0.1
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,8 @@ Make WordPress migration easy. Migrate your database at the click of a button wi
 == Description ==
 
 WP Migrate DB takes the hassle out of moving your WordPress site.
+
+https://deliciousbrains.wistia.com/medias/vahu041lkd
 
 WP Migrate DB is a WordPress migration plugin that makes exporting and migrating your database easy, fast, and straightforward.
 
@@ -65,7 +67,9 @@ Glad you asked! WP Migrate DB Pro is the perfect accompaniment to any WordPress 
 
 And that's just the tip of the iceberg, we're always working on adding value to WP Migrate DB Pro!
 
-Find out about the [incredible value that WP Migrate DB Pro brings on our website](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting).
+Find out about the [incredible value that WP Migrate DB Pro brings on our website](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting), or watch the video below.
+
+https://deliciousbrains.wistia.com/medias/5co63n4jqq
 
 == Frequently Asked Questions  ==
 
@@ -181,6 +185,28 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 2.2.0 - 2021-10-18 =
+* New: Find & Replace tool now includes an option to preview changes before applying them to the database
+* Improvement: Keyboard navigation is now more accessible thanks to new focus styles throughout the plugin
+* Bug Fix: WP Migrate DB is now more compatible with other plugins that use Composer's autoloader and have dependencies with the same name
+
+= WP Migrate DB 2.1.2 - 2021-08-30 =
+* Improvement - Accessibility: Better support for `Skip to main content` keyboard navigation.
+
+= WP Migrate DB 2.1.1 - 2021-08-18 =
+* Improvement: Migrations can now be run on sites that use the default permalink structure
+* Bug fix: PHP fatal error when running find and replace on a serialized unclonable object
+* Bug fix: PHP notices during an existing find and replace related to the addition of regex support
+
+= WP Migrate DB 2.1 - 2021-08-04 =
+* New: Case-sensitive custom find and replace
+* Improvement: Show a notice when the REST API is disabled or inaccessible
+
+= WP Migrate DB 2.0.2 - 2021-06-17 =
+* Improvement: "Search & Replace" updated to "Find & Replace" for consistency
+* Bug fix: Some PHP files can be directly accessed in a browser
+* Bug fix: Rewrite rules lost after migration
 
 = WP Migrate DB 2.0.1 - 2021-05-06 =
 * Bug fix: Replacing a string with nothing not supported

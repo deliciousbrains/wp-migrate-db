@@ -32,7 +32,7 @@ class PhpDocReader
      */
     public function __construct($ignorePhpDocErrors = \false)
     {
-        $this->parser = new \DeliciousBrains\WPMDB\Container\PhpDocReader\PhpParser\UseStatementParser();
+        $this->parser = new UseStatementParser();
         $this->ignorePhpDocErrors = $ignorePhpDocErrors;
     }
     /**
@@ -45,7 +45,7 @@ class PhpDocReader
      *
      * @deprecated Use getPropertyClass instead.
      */
-    public function getPropertyType(\ReflectionProperty $property)
+    public function getPropertyType(ReflectionProperty $property)
     {
         return $this->getPropertyClass($property);
     }
@@ -57,7 +57,7 @@ class PhpDocReader
      * @throws AnnotationException
      * @return string|null Type of the property (content of var annotation)
      */
-    public function getPropertyClass(\ReflectionProperty $property)
+    public function getPropertyClass(ReflectionProperty $property)
     {
         // Get the content of the @var annotation
         if (\preg_match('/@var\\s+([^\\s]+)/', $property->getDocComment(), $matches)) {
@@ -79,12 +79,12 @@ class PhpDocReader
             // Try to resolve the FQN using the class context
             $resolvedType = $this->tryResolveFqn($type, $class, $property);
             if (!$resolvedType && !$this->ignorePhpDocErrors) {
-                throw new \DeliciousBrains\WPMDB\Container\PhpDocReader\AnnotationException(\sprintf('The @var annotation on %s::%s contains a non existent class "%s". ' . 'Did you maybe forget to add a "use" statement for this annotation?', $class->name, $property->getName(), $type));
+                throw new AnnotationException(\sprintf('The @var annotation on %s::%s contains a non existent class "%s". ' . 'Did you maybe forget to add a "use" statement for this annotation?', $class->name, $property->getName(), $type));
             }
             $type = $resolvedType;
         }
         if (!$this->classExists($type) && !$this->ignorePhpDocErrors) {
-            throw new \DeliciousBrains\WPMDB\Container\PhpDocReader\AnnotationException(\sprintf('The @var annotation on %s::%s contains a non existent class "%s"', $class->name, $property->getName(), $type));
+            throw new AnnotationException(\sprintf('The @var annotation on %s::%s contains a non existent class "%s"', $class->name, $property->getName(), $type));
         }
         // Remove the leading \ (FQN shouldn't contain it)
         $type = \ltrim($type, '\\');
@@ -100,7 +100,7 @@ class PhpDocReader
      *
      * @deprecated Use getParameterClass instead.
      */
-    public function getParameterType(\ReflectionParameter $parameter)
+    public function getParameterType(ReflectionParameter $parameter)
     {
         return $this->getParameterClass($parameter);
     }
@@ -112,7 +112,7 @@ class PhpDocReader
      * @throws AnnotationException
      * @return string|null Type of the property (content of var annotation)
      */
-    public function getParameterClass(\ReflectionParameter $parameter)
+    public function getParameterClass(ReflectionParameter $parameter)
     {
         // Use reflection
         $parameterClass = $parameter->getClass();
@@ -141,12 +141,12 @@ class PhpDocReader
             // Try to resolve the FQN using the class context
             $resolvedType = $this->tryResolveFqn($type, $class, $parameter);
             if (!$resolvedType && !$this->ignorePhpDocErrors) {
-                throw new \DeliciousBrains\WPMDB\Container\PhpDocReader\AnnotationException(\sprintf('The @param annotation for parameter "%s" of %s::%s contains a non existent class "%s". ' . 'Did you maybe forget to add a "use" statement for this annotation?', $parameterName, $class->name, $method->name, $type));
+                throw new AnnotationException(\sprintf('The @param annotation for parameter "%s" of %s::%s contains a non existent class "%s". ' . 'Did you maybe forget to add a "use" statement for this annotation?', $parameterName, $class->name, $method->name, $type));
             }
             $type = $resolvedType;
         }
         if (!$this->classExists($type) && !$this->ignorePhpDocErrors) {
-            throw new \DeliciousBrains\WPMDB\Container\PhpDocReader\AnnotationException(\sprintf('The @param annotation for parameter "%s" of %s::%s contains a non existent class "%s"', $parameterName, $class->name, $method->name, $type));
+            throw new AnnotationException(\sprintf('The @param annotation for parameter "%s" of %s::%s contains a non existent class "%s"', $parameterName, $class->name, $method->name, $type));
         }
         // Remove the leading \ (FQN shouldn't contain it)
         $type = \ltrim($type, '\\');
@@ -161,7 +161,7 @@ class PhpDocReader
      * 
      * @return string|null Fully qualified name of the type, or null if it could not be resolved
      */
-    private function tryResolveFqn($type, \ReflectionClass $class, \Reflector $member)
+    private function tryResolveFqn($type, ReflectionClass $class, Reflector $member)
     {
         $alias = ($pos = \strpos($type, '\\')) === \false ? $type : \substr($type, 0, $pos);
         $loweredAlias = \strtolower($alias);
@@ -200,7 +200,7 @@ class PhpDocReader
      *
      * @return string|null Fully qualified name of the type, or null if it could not be resolved
      */
-    private function tryResolveFqnInTraits($type, \ReflectionClass $class, \Reflector $member)
+    private function tryResolveFqnInTraits($type, ReflectionClass $class, Reflector $member)
     {
         /** @var ReflectionClass[] $traits */
         $traits = array();
@@ -211,11 +211,11 @@ class PhpDocReader
         }
         foreach ($traits as $trait) {
             // Eliminate traits that don't have the property/method/parameter
-            if ($member instanceof \ReflectionProperty && !$trait->hasProperty($member->name)) {
+            if ($member instanceof ReflectionProperty && !$trait->hasProperty($member->name)) {
                 continue;
-            } elseif ($member instanceof \ReflectionMethod && !$trait->hasMethod($member->name)) {
+            } elseif ($member instanceof ReflectionMethod && !$trait->hasMethod($member->name)) {
                 continue;
-            } elseif ($member instanceof \ReflectionParameter && !$trait->hasMethod($member->getDeclaringFunction()->name)) {
+            } elseif ($member instanceof ReflectionParameter && !$trait->hasMethod($member->getDeclaringFunction()->name)) {
                 continue;
             }
             // Run the resolver again with the ReflectionClass instance for the trait

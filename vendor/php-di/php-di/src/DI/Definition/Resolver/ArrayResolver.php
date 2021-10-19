@@ -13,7 +13,7 @@ use Exception;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ArrayResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver
+class ArrayResolver implements DefinitionResolver
 {
     /**
      * @var DefinitionResolver
@@ -22,7 +22,7 @@ class ArrayResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
     /**
      * @param DefinitionResolver $definitionResolver Used to resolve nested definitions.
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver $definitionResolver)
+    public function __construct(DefinitionResolver $definitionResolver)
     {
         $this->definitionResolver = $definitionResolver;
     }
@@ -35,12 +35,12 @@ class ArrayResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
      *
      * {@inheritdoc}
      */
-    public function resolve(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function resolve(Definition $definition, array $parameters = [])
     {
         $values = $definition->getValues();
         // Resolve nested definitions
         foreach ($values as $key => $value) {
-            if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+            if ($value instanceof DefinitionHelper) {
                 $values[$key] = $this->resolveDefinition($value, $definition, $key);
             }
         }
@@ -49,18 +49,18 @@ class ArrayResolver implements \DeliciousBrains\WPMDB\Container\DI\Definition\Re
     /**
      * {@inheritdoc}
      */
-    public function isResolvable(\DeliciousBrains\WPMDB\Container\DI\Definition\Definition $definition, array $parameters = [])
+    public function isResolvable(Definition $definition, array $parameters = [])
     {
         return \true;
     }
-    private function resolveDefinition(\DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper $value, \DeliciousBrains\WPMDB\Container\DI\Definition\ArrayDefinition $definition, $key)
+    private function resolveDefinition(DefinitionHelper $value, ArrayDefinition $definition, $key)
     {
         try {
             return $this->definitionResolver->resolve($value->getDefinition(''));
-        } catch (\DeliciousBrains\WPMDB\Container\DI\DependencyException $e) {
+        } catch (DependencyException $e) {
             throw $e;
-        } catch (\Exception $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\DependencyException(\sprintf('Error while resolving %s[%s]. %s', $definition->getName(), $key, $e->getMessage()), 0, $e);
+        } catch (Exception $e) {
+            throw new DependencyException(\sprintf('Error while resolving %s[%s]. %s', $definition->getName(), $key, $e->getMessage()), 0, $e);
         }
     }
 }

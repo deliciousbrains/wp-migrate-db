@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 use DeliciousBrains\WPMDB\SetupProviders;
 
 $providers = new SetupProviders();

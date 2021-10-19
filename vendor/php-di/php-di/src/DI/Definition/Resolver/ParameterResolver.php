@@ -22,7 +22,7 @@ class ParameterResolver
     /**
      * @param DefinitionResolver $definitionResolver Will be used to resolve nested definitions.
      */
-    public function __construct(\DeliciousBrains\WPMDB\Container\DI\Definition\Resolver\DefinitionResolver $definitionResolver)
+    public function __construct(DefinitionResolver $definitionResolver)
     {
         $this->definitionResolver = $definitionResolver;
     }
@@ -34,7 +34,7 @@ class ParameterResolver
      * @throws DefinitionException A parameter has no value defined or guessable.
      * @return array Parameters to use to call the function.
      */
-    public function resolveParameters(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection $definition = null, \ReflectionMethod $method = null, array $parameters = [])
+    public function resolveParameters(MethodInjection $definition = null, ReflectionMethod $method = null, array $parameters = [])
     {
         $args = [];
         if (!$method) {
@@ -54,9 +54,9 @@ class ParameterResolver
                     $args[] = $this->getParameterDefaultValue($parameter, $method);
                     continue;
                 }
-                throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('Parameter $%s of %s has no value defined or guessable', $parameter->getName(), $this->getFunctionName($method)));
+                throw new DefinitionException(\sprintf('Parameter $%s of %s has no value defined or guessable', $parameter->getName(), $this->getFunctionName($method)));
             }
-            if ($value instanceof \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper) {
+            if ($value instanceof DefinitionHelper) {
                 $nestedDefinition = $value->getDefinition('');
                 // If the container cannot produce the entry, we can use the default parameter value
                 if ($parameter->isOptional() && !$this->definitionResolver->isResolvable($nestedDefinition)) {
@@ -78,15 +78,15 @@ class ParameterResolver
      * @throws DefinitionException Can't get default values from PHP internal classes and functions
      * @return mixed
      */
-    private function getParameterDefaultValue(\ReflectionParameter $parameter, \ReflectionMethod $function)
+    private function getParameterDefaultValue(ReflectionParameter $parameter, ReflectionMethod $function)
     {
         try {
             return $parameter->getDefaultValue();
         } catch (\ReflectionException $e) {
-            throw new \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException(\sprintf('The parameter "%s" of %s has no type defined or guessable. It has a default value, ' . 'but the default value can\'t be read through Reflection because it is a PHP internal class.', $parameter->getName(), $this->getFunctionName($function)));
+            throw new DefinitionException(\sprintf('The parameter "%s" of %s has no type defined or guessable. It has a default value, ' . 'but the default value can\'t be read through Reflection because it is a PHP internal class.', $parameter->getName(), $this->getFunctionName($function)));
         }
     }
-    private function getFunctionName(\ReflectionMethod $method)
+    private function getFunctionName(ReflectionMethod $method)
     {
         return $method->getName() . '()';
     }

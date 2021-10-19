@@ -7,7 +7,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\StringDefinition;
  * @since 5.0
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class StringDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class StringDefinitionHelper implements DefinitionHelper
 {
     /**
      * @var string
@@ -24,6 +24,6 @@ class StringDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defi
      */
     public function getDefinition($entryName)
     {
-        return new \DeliciousBrains\WPMDB\Container\DI\Definition\StringDefinition($entryName, $this->expression);
+        return new StringDefinition($entryName, $this->expression);
     }
 }

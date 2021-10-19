@@ -11,7 +11,7 @@ use DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\RiakCache;
  *
  * @group Riak
  */
-class RiakCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Common\Cache\CacheTest
+class RiakCacheTest extends CacheTest
 {
     /**
      * @var \Riak\Connection
@@ -30,9 +30,9 @@ class RiakCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Comm
             $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of Riak');
         }
         try {
-            $this->connection = new \DeliciousBrains\WPMDB\Container\Riak\Connection('127.0.0.1', 8087);
-            $this->bucket = new \DeliciousBrains\WPMDB\Container\Riak\Bucket($this->connection, 'test');
-        } catch (\DeliciousBrains\WPMDB\Container\Riak\Exception\RiakException $e) {
+            $this->connection = new Connection('127.0.0.1', 8087);
+            $this->bucket = new Bucket($this->connection, 'test');
+        } catch (Exception\RiakException $e) {
             $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of Riak');
         }
     }
@@ -52,6 +52,6 @@ class RiakCacheTest extends \DeliciousBrains\WPMDB\Container\Doctrine\Tests\Comm
      */
     protected function _getCacheDriver()
     {
-        return new \DeliciousBrains\WPMDB\Container\Doctrine\Common\Cache\RiakCache($this->bucket);
+        return new RiakCache($this->bucket);
     }
 }

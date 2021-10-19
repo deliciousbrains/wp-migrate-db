@@ -23,7 +23,7 @@ use ArrayIterator;
  *
  * @extends Option<T>
  */
-final class Some extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
+final class Some extends Option
 {
     /** @var T */
     private $value;
@@ -69,7 +69,7 @@ final class Some extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
     {
         return $this->value;
     }
-    public function orElse(\DeliciousBrains\WPMDB\Container\PhpOption\Option $else)
+    public function orElse(Option $else)
     {
         return $this;
     }
@@ -90,7 +90,7 @@ final class Some extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
     {
         /** @var mixed */
         $rs = $callable($this->value);
-        if (!$rs instanceof \DeliciousBrains\WPMDB\Container\PhpOption\Option) {
+        if (!$rs instanceof Option) {
             throw new \RuntimeException('Callables passed to flatMap() must return an Option. Maybe you should use map() instead?');
         }
         return $rs;
@@ -100,32 +100,32 @@ final class Some extends \DeliciousBrains\WPMDB\Container\PhpOption\Option
         if (\true === $callable($this->value)) {
             return $this;
         }
-        return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        return None::create();
     }
     public function filterNot($callable)
     {
         if (\false === $callable($this->value)) {
             return $this;
         }
-        return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        return None::create();
     }
     public function select($value)
     {
         if ($this->value === $value) {
             return $this;
         }
-        return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+        return None::create();
     }
     public function reject($value)
     {
         if ($this->value === $value) {
-            return \DeliciousBrains\WPMDB\Container\PhpOption\None::create();
+            return None::create();
         }
         return $this;
     }
     public function getIterator()
     {
-        return new \ArrayIterator([$this->value]);
+        return new ArrayIterator([$this->value]);
     }
     public function foldLeft($initialValue, $callable)
     {

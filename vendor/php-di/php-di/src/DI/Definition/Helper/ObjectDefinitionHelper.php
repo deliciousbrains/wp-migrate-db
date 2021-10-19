@@ -11,7 +11,7 @@ use DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\PropertyInjec
  *
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  */
-class ObjectDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Definition\Helper\DefinitionHelper
+class ObjectDefinitionHelper implements DefinitionHelper
 {
     /**
      * @var string|null
@@ -179,7 +179,7 @@ class ObjectDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defi
      */
     public function getDefinition($entryName)
     {
-        $definition = new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition($entryName, $this->className);
+        $definition = new ObjectDefinition($entryName, $this->className);
         if ($this->lazy !== null) {
             $definition->setLazy($this->lazy);
         }
@@ -188,19 +188,19 @@ class ObjectDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defi
         }
         if (!empty($this->constructor)) {
             $parameters = $this->fixParameters($definition, '__construct', $this->constructor);
-            $constructorInjection = \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection::constructor($parameters);
+            $constructorInjection = MethodInjection::constructor($parameters);
             $definition->setConstructorInjection($constructorInjection);
         }
         if (!empty($this->properties)) {
             foreach ($this->properties as $property => $value) {
-                $definition->addPropertyInjection(new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\PropertyInjection($property, $value));
+                $definition->addPropertyInjection(new PropertyInjection($property, $value));
             }
         }
         if (!empty($this->methods)) {
             foreach ($this->methods as $method => $calls) {
                 foreach ($calls as $parameters) {
                     $parameters = $this->fixParameters($definition, $method, $parameters);
-                    $methodInjection = new \DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition\MethodInjection($method, $parameters);
+                    $methodInjection = new MethodInjection($method, $parameters);
                     $definition->addMethodInjection($methodInjection);
                 }
             }
@@ -218,7 +218,7 @@ class ObjectDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defi
      * @throws DefinitionException
      * @return array
      */
-    private function fixParameters(\DeliciousBrains\WPMDB\Container\DI\Definition\ObjectDefinition $definition, $method, $parameters)
+    private function fixParameters(ObjectDefinition $definition, $method, $parameters)
     {
         $fixedParameters = [];
         foreach ($parameters as $index => $parameter) {
@@ -228,7 +228,7 @@ class ObjectDefinitionHelper implements \DeliciousBrains\WPMDB\Container\DI\Defi
                 try {
                     $reflectionParameter = new \ReflectionParameter($callable, $index);
                 } catch (\ReflectionException $e) {
-                    throw \DeliciousBrains\WPMDB\Container\DI\Definition\Exception\DefinitionException::create($definition, \sprintf("Parameter with name '%s' could not be found. %s.", $index, $e->getMessage()));
+                    throw DefinitionException::create($definition, \sprintf("Parameter with name '%s' could not be found. %s.", $index, $e->getMessage()));
                 }
                 $index = $reflectionParameter->getPosition();
             }

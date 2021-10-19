@@ -80,6 +80,8 @@ class FormData
             'import_find_replace',
             'current_migration',
             'search_replace',
+            'regex',
+            'case_sensitive',
         );
     }
 
@@ -163,6 +165,7 @@ class FormData
         $form_data = json_decode($data, true);
 
         $this->accepted_fields = apply_filters('wpmdb_accepted_profile_fields', $this->accepted_fields);
+
         $form_data             = array_intersect_key($form_data, array_flip($this->accepted_fields));
 
         $compat_form_data = $this->form_data_compat($form_data);
