@@ -5,7 +5,7 @@ Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress 
 Requires at least: 5.2
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -185,6 +185,9 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate DB 2.2.1 - 2021-11-09 =
+* Bug Fix: WP Migrate DB profiles can now be re-saved without requiring a page refresh
 
 = WP Migrate DB 2.2.0 - 2021-10-18 =
 * New: Find & Replace tool now includes an option to preview changes before applying them to the database

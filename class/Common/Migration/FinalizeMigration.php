@@ -162,8 +162,9 @@ class FinalizeMigration
     {
         $state_data                         = !$state_data ? Persistence::getStateData() : $state_data; 
         if ( in_array($state_data['intent'], ['push', 'pull'])) {
-            $state_data['destination_prefix']   = ('push' === $state_data['type']) ? $state_data['site_details']['remote']['prefix'] : $state_data['site_details']['local']['prefix'];
-            $state_data['source_prefix']        = ('push' === $state_data['type']) ? $state_data['site_details']['local']['prefix'] : $state_data['site_details']['remote']['prefix'];
+            $intent_type = isset($state_data['type']) ? $state_data['type'] : $state_data['intent'];
+            $state_data['destination_prefix']   = ('push' === $intent_type) ? $state_data['site_details']['remote']['prefix'] : $state_data['site_details']['local']['prefix'];
+            $state_data['source_prefix']        = ('push' === $intent_type) ? $state_data['site_details']['local']['prefix'] : $state_data['site_details']['remote']['prefix'];
         }
         
         $temp_prefix                        = isset($state_data['temp_prefix']) ? $state_data['temp_prefix'] : $this->props->temp_prefix;
@@ -270,7 +271,7 @@ class FinalizeMigration
         $source_tables      = explode(',', $state_data['tables']);
         $source_prefix      = $state_data['source_prefix'];
         $destination_prefix = $state_data['destination_prefix'];
-        if ($source_prefix === $destination_prefix || '1' === $state_data['mst_select_subsite']) {
+        if ($source_prefix === $destination_prefix || (isset($state_data['mst_select_subsite']) && '1' === $state_data['mst_select_subsite'])) {
             return $source_tables;
         }
         return Util::change_tables_prefix($source_tables, $source_prefix, $destination_prefix);
