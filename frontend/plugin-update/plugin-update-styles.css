@@ -33,6 +33,9 @@
 .plugin-update-tr.wpmdbpro-custom .update-message.post-shiny-updates p::before {
   position: absolute;
 }
+.plugin-update-tr.wpmdbpro-custom.legacy-addon .update-message p::before {
+  content: "\f182";
+}
 .plugin-update-tr.wpmdbpro-custom-visible .update-message.post-shiny-updates p span,
 .plugin-update-tr.wpmdbpro-custom .update-message.post-shiny-updates p span {
   margin-left: 30px;

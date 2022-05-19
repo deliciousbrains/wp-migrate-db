@@ -42,7 +42,12 @@
 			display: block;
 		}
 	}
+	&.legacy-addon .update-message p::before {
+		content: "\f182";
+	}
+	
 }
+
 
 .plugins #the-list tr.wpmdbpro-has-message td,
 .plugins #the-list tr.wpmdbpro-has-message th {

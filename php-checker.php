@@ -30,11 +30,11 @@ class WPMDB_PHP_Checker {
 	}
 
 	public static function wpmdb_php_version_too_low() {
-		wp_die( sprintf( self::$base_message, __( 'WP Migrate DB' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
+		wp_die( sprintf( self::$base_message, __( 'WP Migrate Lite' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
 	}
 
 	public static function wpmdb_pro_php_version_too_low() {
-		wp_die( sprintf( self::$base_message, __( 'WP Migrate DB Pro' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
+		wp_die( sprintf( self::$base_message, __( 'WP Migrate' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
 	}
 
 	public function maybe_deactivate_plugin() {
@@ -63,8 +63,7 @@ class WPMDB_PHP_Checker {
 				<p>%s %s</p>
 		</div>';
 
-		// Add 'Pro' string
-		$plugin  = 'wp-migrate-db-pro.php' === basename( $this->path ) ? __( 'WP Migrate DB Pro' ) : __( 'WP Migrate DB' );
+		$plugin  = 'wp-migrate-db-pro.php' === basename( $this->path ) ? __( 'WP Migrate' ) : __( 'WP Migrate Lite' );
 		$message = sprintf( __( 'requires PHP version %s or higher to run and has been deactivated. You are currently running version %s. <a href="%s">Learn More »</a>', 'wp-migrate-db' ), self::$min_php, PHP_VERSION, self::$php_doc_link );
 
 		echo sprintf( $str, $plugin, $message );

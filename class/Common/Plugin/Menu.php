@@ -92,7 +92,7 @@ class Menu
     function network_admin_menu()
     {
         $template    = Util::is_wp_compatible() ? 'options_page' : 'options_page_outdated_wp';
-        $title       = $this->properties->is_pro ? __('Migrate DB Pro', 'wp-migrate-db') : __('Migrate DB', 'wp-migrate-db');
+        $title       = __('WP Migrate', 'wp-migrate-db');
         $hook_suffix = add_submenu_page('settings.php',
             $title,
             $title,
@@ -131,7 +131,7 @@ class Menu
     function admin_menu()
     {
         $template    = Util::is_wp_compatible() ? 'options_page' : 'options_page_outdated_wp';
-        $title       = $this->properties->is_pro ? __('Migrate DB Pro', 'wp-migrate-db') : __('Migrate DB', 'wp-migrate-db');
+        $title       = __('WP Migrate', 'wp-migrate-db');
         $hook_suffix = add_management_page($title,
             $title,
             'export',

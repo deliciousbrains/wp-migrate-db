@@ -562,8 +562,9 @@ class Table
 
         $temp_prefix       = (isset($state_data['temp_prefix']) ? $state_data['temp_prefix'] : $this->props->temp_prefix);
         $site_details      = empty($state_data['site_details']) ? array() : $state_data['site_details'];
-        $target_table_name = apply_filters('wpmdb_target_table_name', $table, $state_data, $site_details);
-        if (in_array($state_data['intent'], ['push', 'pull'])) {
+        $subsite_migration = array_key_exists('mst_select_subsite', $state_data) && '1' === $state_data['mst_select_subsite'];
+        $target_table_name = apply_filters('wpmdb_target_table_name', $table, $state_data, $site_details, $subsite_migration );
+        if (in_array($state_data['intent'], ['push', 'pull']) && !$subsite_migration) {
             $target_table_name = $this->prefix_target_table_name($target_table_name, $state_data);
         }
         $temp_table_name   = $state_data["intent"] === 'import' ? $target_table_name : $temp_prefix . $target_table_name;
@@ -1132,7 +1133,7 @@ class Table
                     $table = str_replace($this->props->temp_prefix, '', $table);
 
                     if ('import' === $context) {
-                        $message = sprintf(__('The imported table `%1s` contains characters which are invalid in the target schema.<br><br>If this is a WP Migrate DB Pro export file, ensure that the `Compatible with older versions of MySQL` setting under `Advanced Options` is unchecked and try exporting again.<br><br> See&nbsp;<a href="%2s">our documentation</a> for more information.', 'wp-migrate-db'), $table, 'https://deliciousbrains.com/wp-migrate-db-pro/doc/invalid-text/#imports');
+                        $message = sprintf(__('The imported table `%1s` contains characters which are invalid in the target schema.<br><br>If this is a WP Migrate export file, ensure that the `Compatible with older versions of MySQL` setting under `Advanced Options` is unchecked and try exporting again.<br><br> See&nbsp;<a href="%2s">our documentation</a> for more information.', 'wp-migrate-db'), $table, 'https://deliciousbrains.com/wp-migrate-db-pro/doc/invalid-text/#imports');
                         $return  = new WP_Error('import_sql_execution_failed', $message);
                     } else {
                         $message = sprintf(__('The table `%1s` contains characters which are invalid in the target database. See&nbsp;<a href="%2s" target="_blank">our documentation</a> for more information.', 'wp-migrate-db'), $table, 'https://deliciousbrains.com/wp-migrate-db-pro/doc/invalid-text/');
@@ -2030,9 +2031,9 @@ class Table
      * Changes db prefix for values that use prefixes
      *
      * @param string $key
-     * 
+     *
      * @param string $value
-     * 
+     *
      * @param string $table
      *
      * @return string
@@ -2044,9 +2045,9 @@ class Table
         if ('meta_key' === $key && $this->table_helper->table_is('usermeta', $table)) {
             if (strpos($value , $source_prefix) === 0) {
                 $value = Util::prefix_updater($value, $source_prefix, $destination_prefix);
-            }  
+            }
         }
-        if ('option_name' === $key && $this->is_user_roles($source_prefix, $value) && $this->table_helper->table_is('options', $table)) {   
+        if ('option_name' === $key && $this->is_user_roles($source_prefix, $value) && $this->table_helper->table_is('options', $table)) {
             $value = Util::prefix_updater($value, $source_prefix, $destination_prefix);
         }
         return $value;
@@ -2057,7 +2058,7 @@ class Table
      * and multisite options values
      *
      * @param string $source_prefix
-     * 
+     *
      * @param string $value
      *
      * @return bool

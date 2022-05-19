@@ -3,6 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use DeliciousBrains\WPMDB\Common\Cli\Cli;
+use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\WPMDBDI;
 
 /**
@@ -57,30 +58,16 @@ function wpmdb_cli() {
 	return $wpmdb_cli;
 }
 
-function wpmdb_is_ajax() {
-	// must be doing AJAX the WordPress way
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
-		return false;
-	}
-
-	// must be one of our actions -- e.g. core plugin (wpmdb_*), media files (wpmdbmf_*)
-	if ( ! isset( $_POST['action'] ) || 0 !== strpos( $_POST['action'], 'wpmdb' ) ) {
-		return false;
-	}
-
-	// must be on blog #1 (first site) if multisite
-	if ( is_multisite() && 1 != get_current_site()->id ) {
-		return false;
-	}
-
-	return true;
-}
 
 function wp_migrate_db_loaded()
 {
+    if ( Util::is_frontend() ) {
+        return false;
+    }
+
     // @TODO revisit since we're reming is_admin()
     // exit quickly unless: standalone admin; one of our AJAX calls
-    if (is_multisite() && !current_user_can('manage_network_options') && !wpmdb_is_ajax()) {
+    if (is_multisite() && !current_user_can('manage_network_options') && ! Util::wpmdb_is_ajax()) {
         return false;
     }
     if (function_exists('wp_migrate_db')) {

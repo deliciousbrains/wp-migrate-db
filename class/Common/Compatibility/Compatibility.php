@@ -65,7 +65,7 @@ class Compatibility {
 		$force_enable_theme = apply_filters( 'wpmdb_compatibility_enable_theme', false );
 
 		if ( $this->wpmdbc_is_compatibility_mode_request() && ! $force_enable_theme ) {
-			$theme_dir  = realpath( dirname( __FILE__ ) . '/../compatibility' );
+			$theme_dir  = realpath( dirname( __FILE__ ) . '/../Compatibility' );
 			$stylesheet = 'temp-theme';
 			$theme_root = "$theme_dir/$stylesheet";
 

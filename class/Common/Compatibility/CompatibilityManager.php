@@ -200,7 +200,7 @@ class CompatibilityManager {
 		//Rename muplugin in header
 		if ( ! $this->props->is_pro ) {
 			$mu_contents = file_get_contents( $this->mu_plugin_dest );
-			$mu_contents = str_replace( 'Plugin Name: WP Migrate DB Pro Compatibility', 'Plugin Name: WP Migrate DB Compatibility', $mu_contents );
+			$mu_contents = str_replace( 'Plugin Name: WP Migrate Compatibility', 'Plugin Name: WP Migrate DB Compatibility', $mu_contents );
 			file_put_contents( $this->mu_plugin_dest, $mu_contents );
 		}
 

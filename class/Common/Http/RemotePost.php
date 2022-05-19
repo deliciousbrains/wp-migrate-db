@@ -322,7 +322,7 @@ class RemotePost extends Http
             case self::RESPONSE_MDB_INACTIVE:
                 return new \WP_Error(
                     self::RESPONSE_MDB_INACTIVE,
-                    sprintf(__('WP Migrate DB Pro does not seem to be installed or active on the remote site. (#131 - scope: %s)', 'wp-migrate-db'), $scope)
+                    sprintf(__('WP Migrate does not seem to be installed or active on the remote site. (#131 - scope: %s)', 'wp-migrate-db'), $scope)
                 );
             case self::RESPONSE_EMPTY_RESPONSE:
                 return new \WP_Error(

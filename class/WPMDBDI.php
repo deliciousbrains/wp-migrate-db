@@ -1,6 +1,9 @@
 <?php
 
 namespace DeliciousBrains\WPMDB;
+use DeliciousBrains\WPMDBCli\Cli;
+use DeliciousBrains\WPMDBCli\CliAddon;
+use DeliciousBrains\WPMDBMST\MultisiteToolsAddon;
 use DeliciousBrains\WPMDB\Container\DI;
 
 class WPMDBDI

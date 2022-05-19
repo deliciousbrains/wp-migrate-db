@@ -268,7 +268,7 @@ class FinalizeMigration
      **/
     private function get_tables($state_data)
     {
-        $source_tables      = explode(',', $state_data['tables']);
+        $source_tables      = is_string($state_data['tables']) ? explode(',', $state_data['tables']) : $state_data['tables'];
         $source_prefix      = $state_data['source_prefix'];
         $destination_prefix = $state_data['destination_prefix'];
         if ($source_prefix === $destination_prefix || (isset($state_data['mst_select_subsite']) && '1' === $state_data['mst_select_subsite'])) {

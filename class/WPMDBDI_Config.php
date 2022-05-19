@@ -27,6 +27,9 @@ if ($providers !== null) {
     }
 }
 
+if ($is_pro) {
+    DeliciousBrains\WPMDB\Pro\Compatibility\Layers\Addons\Addons::substitute_classes($classes);
+}
 
 if (!empty($classes)) {
     return $classes;

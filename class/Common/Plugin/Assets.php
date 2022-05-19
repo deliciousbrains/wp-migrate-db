@@ -75,7 +75,7 @@ class  Assets
                 'connection_info_local_key'             => __('Looks like your remote secret key is the same as the secret key for this site. To fix this, go to the <a href="#settings">Settings tab</a> and click "Reset Secret Key"', 'wp-migrate-db'),
                 'migration_cancelled'                   => _x('Migration cancelled', 'The migration has been cancelled', 'wp-migrate-db'),
                 'migration_cancelled_success'           => __('The migration has been stopped and all temporary files and data have been cleaned up.', 'wp-migrate-db'),
-                'welcome_title'                         => __('Welcome to WP Migrate DB Pro! &#127881;', 'wp-migrate-db'),
+                'welcome_title'                         => __('Welcome to WP Migrate! &#127881;', 'wp-migrate-db'),
                 'welcome_text'                          => __('Hey, this is the first time activating your license, nice! Your migrations are about to get awesome! If you haven’t already, you should check out our <a href="%1$s" target="_blank">Quick Start Guide</a> and <a href="%2$s" target="_blank">Videos</a>. If you run into any trouble at all, use the <strong>Help tab</strong> above to submit a support request.', 'wp-migrate-db'),
                 'invalid_sql_file'                      => __('The selected file does not have a recognized file type. Please upload a valid SQL file to continue.', 'wp-migrate-db'),
                 'please_select_sql_file'                => __('Please select an SQL export file above to continue.', 'wp-migrate-db'),

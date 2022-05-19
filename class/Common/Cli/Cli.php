@@ -15,6 +15,7 @@ use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Container;
 use DeliciousBrains\WPMDB\Common\MigrationPersistence\Persistence;
+use function WP_CLI\Utils\make_progress_bar;
 
 class Cli
 {
@@ -119,6 +120,7 @@ class Cli
 	public function register()
 	{
 		add_filter('wpmdb_cli_finalize_migration_response', array($this, 'finalize_ajax'), 10, 2);
+        add_filter('wpmdb_cli_tables_to_migrate', array($this, 'filter_non_database_migration_tables'), 99, 2);
 	}
 
 	/**
@@ -261,8 +263,8 @@ class Cli
 				$tables_to_process = $this->get_tables_to_migrate();
 			}
 		} else {
-			$tables_to_process = $this->migrate_tables();
-		}
+            $tables_to_process = $this->migrate_tables();
+        }
 
 		if (is_wp_error($tables_to_process)) {
 			return $tables_to_process;
@@ -412,6 +414,10 @@ class Cli
 	function get_progress_bar($tables, $stage)
 	{
 
+        if(2 === $stage && $this->is_non_database_migration($this->profile)) {
+            return null;
+        }
+
 		$progress_label = __('Exporting tables', 'wp-migrate-db-cli');
 
 		if ('find_replace' === $this->profile['action']) {
@@ -496,7 +502,7 @@ class Cli
 			extract($filtered_vars, EXTR_OVERWRITE);
 		}
 
-		if (empty($tables)) {
+		if (empty($tables) && !$this->is_non_database_migration($this->profile)) {
 			return $this->cli_error(__('No tables selected for migration.', 'wp-migrate-db'));
 		}
 
@@ -560,11 +566,15 @@ class Cli
 
 					$increment = $migration_progress - $last_migration_progress;
 
-					$notify->tick($increment);
+                    if (null !== $notify) {
+                        $notify->tick($increment);
+                    }
 				} while (-1 != $current_row);
 			}
 
-			$notify->finish();
+            if (null !== $notify) {
+                $notify->finish();
+            }
 
 			++$stage_iterator;
 			$args['stage'] = 'migrate';
@@ -599,7 +609,9 @@ class Cli
 	{
 		do_action('wpmdb_cli_before_finalize_migration', $this->profile, $this->migration);
 
-		\WP_CLI::log(__('Cleaning up...', 'wp-migrate-db-cli'));
+        if (!$this->is_non_database_migration($this->profile)) {
+            \WP_CLI::log(__('Cleaning up...', 'wp-migrate-db-cli'));
+        }
 
 		$finalize = apply_filters('wpmdb_cli_finalize_migration', true, $this->profile, $this->migration);
 		if (is_wp_error($finalize)) {
@@ -728,6 +740,7 @@ class Cli
 			'exclude-post-revisions',
 			'skip-replace-guids',
 			'include-transients',
+            'exclude-database'
 		);
 
 		$known_args   = apply_filters('wpmdb_cli_filter_get_extra_args', $known_args);
@@ -766,12 +779,6 @@ class Cli
 				$message .= "\n " . sprintf(__('unknown %s parameter', 'wp-migrate-db-cli'), '--' . $unknown_arg);
 			}
 
-			if (
-				is_a($this->wpmdb_cli, '\DeliciousBrains\WPMDB\Pro\Cli\Export') ||
-				is_a($this->wpmdb_cli, '\DeliciousBrains\WPMDBCli\Cli')
-			) {
-				$message .= "\n" . __('Please make sure that you have activated the appropriate addons for WP Migrate DB Pro.', 'wp-migrate-db-cli');
-			}
 
 			return $this->wpmdb_cli->cli_error($message);
 		}
@@ -915,7 +922,12 @@ class Cli
 			}
 		}
 
-		$profile = compact(
+        $databaseEnabled = true;
+        if ( ! empty($assoc_args['exclude-database'])) {
+            $databaseEnabled = false;
+        }
+
+            $profile = compact(
 			'action',
 			'replace_old',
 			'table_migrate_option',
@@ -932,7 +944,8 @@ class Cli
 			'name',
 			'cli_profile',
 			'regex',
-			'case_sensitive'
+			'case_sensitive',
+            'databaseEnabled'
 		);
 
 		$home        = preg_replace('/^https?:/', '', home_url());
@@ -953,5 +966,37 @@ class Cli
 	        return str_getcsv($assoc_args[$argument]);
         }
 	    return null;
+    }
+
+
+    /**
+     * Checks if a database migration is turned off for the current migration profile.
+     *
+     * @param array $profile
+     *
+     * @return bool
+     */
+    public function is_non_database_migration($profile)
+    {
+        return $profile['current_migration']['databaseEnabled'] === false  && in_array($profile['action'], ['push', 'pull']);
+    }
+
+
+    /**
+     * If the current migration is a non database migration, it filters the provided tables and returns an empty array.
+     * hooks on: wpmdb_cli_tables_to_migrate.
+     *
+     * @param string[] $tables
+     * @param array $profile
+     *
+     * @return array
+     */
+    public function filter_non_database_migration_tables($tables, $profile)
+    {
+        if ($this->is_non_database_migration($profile)) {
+            return [];
+        }
+
+        return $tables;
     }
 }

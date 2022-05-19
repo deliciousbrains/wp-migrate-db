@@ -77,10 +77,11 @@ class MigrationHelper
     public function siteDetails()
     {
         $site_details = $this->util->site_details();
-
+        $url = esc_html(addslashes(Util::home_url()));
+        
         return [
             'connection_info'             => array(site_url('', 'https'), $this->settings['key']),
-            'this_url'                    => esc_html(addslashes(Util::home_url())),
+            'this_url'                    => $url,
             'this_path'                   => esc_html(addslashes($this->util->get_absolute_root_file_path())),
             'this_domain'                 => esc_html($this->multisite->get_domain_current_site()),
             'this_tables'                 => $this->tables->get_tables(),
@@ -99,6 +100,7 @@ class MigrationHelper
             'this_temp_prefix'            => $this->props->temp_prefix,
             'this_plugin_base'            => esc_html($this->props->plugin_base),
             'this_post_types'             => $this->tables->get_post_types(),
+            'url'                         => $url,
             'is_multisite'                => $site_details['is_multisite'], // TODO: Remove backwards compatibility.
             'openssl_available'           => esc_html($this->util->open_ssl_enabled() ? 'true' : 'false'),
             'max_request'                 => esc_html($this->settings['max_request']),
@@ -119,9 +121,9 @@ class MigrationHelper
             'diagnostic_log_download_url' => network_admin_url($this->props->plugin_base . '&nonce=' . Util::create_nonce('wpmdb-download-log') . '&wpmdb-download-log=1'),
             'migration_profiles'          => $this->assets->get_saved_migration_profiles(),
             'recent_migrations'           => $this->assets->get_recent_migrations(get_site_option('wpmdb_recent_migrations')),
-            'mst_available'               => Util::isPro() && (int)class_exists('\DeliciousBrains\WPMDBMST\MultisiteToolsAddon'),
-            'tpf_available'               => Util::isPro() && (int)class_exists('\DeliciousBrains\WPMDBTP\ThemePluginFilesAddon'),
-            'mf_available'                => Util::isPro() && (int)class_exists('\DeliciousBrains\WPMDBMF\MediaFilesAddon'),
+            'mst_available'               => Util::isPro() && Util::is_addon_registered('mst'),
+            'tpf_available'               => Util::isPro() && Util::is_addon_registered('tpf'),
+            'mf_available'                => Util::isPro() && Util::is_addon_registered('mf'),
             'mst_required_message'        => $this->multisite->mst_required_message(),
             'time_format'                 => get_option( 'time_format' ),
         ];

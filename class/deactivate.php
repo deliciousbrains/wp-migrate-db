@@ -29,7 +29,7 @@ function wpmdb_deactivate_other_instances( $plugin ){
 		$plugin_to_deactivate  = 'wp-migrate-db-pro.php';
 		$deactivated_notice_id = '2';
 	}
-
+	DeliciousBrains\WPMDB\Common\Util\Util::disable_legacy_addons();
 	$active_plugins = wpmdb_get_active_plugins();
 
 	foreach ( $active_plugins as $basename ) {

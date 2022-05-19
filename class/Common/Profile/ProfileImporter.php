@@ -138,6 +138,7 @@ class ProfileImporter
         $allowedExtraOpts = [
             'mst_select_subsite',
             'mst_selected_subsite',
+            'mst_destination_subsite',
             'new_prefix',
             'media_files',
             'migrate_themes',
@@ -253,9 +254,9 @@ class ProfileImporter
         ];
 
         if (isset($profile->mst_select_subsite) && isset($profile->mst_selected_subsite)) {
-            $output['enabled']          = true;
-            $output['selected_subsite'] = (int) $profile->mst_selected_subsite;
-
+            $output['enabled']             = true;
+            $output['selected_subsite']    = (int) $profile->mst_selected_subsite;
+            $output['destination_subsite'] = (int) $profile->mst_destination_subsite;
             if (isset($profile->new_prefix)) {
                 $output['new_prefix'] = $profile->new_prefix;
             }
@@ -489,6 +490,7 @@ class ProfileImporter
             'advanced_options_selected' => $advanced_options,
             'profile_name'              => $profileObj->name,
             'migration_enabled'         => in_array($intent, ['savefile', 'find_replace']) ? true : false,
+            'databaseEnabled'           => isset($profile['databaseEnabled']) ? $profile['databaseEnabled'] : true
         ];
 
         $current_migration_details = $this->appendExtraProfileOpts($profile, $current_migration_details);

@@ -81,7 +81,7 @@ class PluginManager extends PluginManagerBase
             'settings'   => sprintf('<a href="%s">%s</a>', network_admin_url($this->props->plugin_base) . '#settings', _x('Settings', 'Plugin configuration and preferences', 'wp-migrate-db'))
         );
         $end_links   = array(
-            'upgradepro' => sprintf('<a href="%s" style="font-weight:700">%s</a>', 'https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=MDB%2BFree&utm_medium=plugins%2Blist&utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade', __('Upgrade to Pro', 'wp-migrate-db'))
+            'upgradepro' => sprintf('<a href="%s" style="font-weight:700">%s</a>', 'https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=MDB%2BFree&utm_medium=plugins%2Blist&utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade', __('Upgrade', 'wp-migrate-db'))
         );
 
         return $start_links + $links + $end_links;

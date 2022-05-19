@@ -54,23 +54,25 @@ class Helpers
      */
     public static function get_current_or_first_user_id_with_licence_key()
     {
-        if (is_user_logged_in()) {
-            return get_current_user_id();
+        if ((defined('DOING_AJAX') && DOING_AJAX) || (defined('REST_REQUEST') && REST_REQUEST) || (defined('WP_CLI') && WP_CLI) || is_admin()) {
+
+            if (is_user_logged_in()) {
+                return get_current_user_id();
+            }
+
+            $user_query = new \WP_User_Query([
+                'number' => 1,
+                'meta_key' => self::USER_LICENCE_META_KEY,
+                'meta_value' => '',
+                'meta_compare' => '!=',
+            ]);
+
+            $users = $user_query->get_results();
+
+            if ( ! empty($users) && ! is_wp_error($users)) {
+                return $users[0]->ID;
+            }
         }
-
-        $user_query = new \WP_User_Query([
-            'number'       => 1,
-            'meta_key'     => self::USER_LICENCE_META_KEY,
-            'meta_value'   => '',
-            'meta_compare' => '!=',
-        ]);
-
-        $users = $user_query->get_results();
-
-        if (! empty($users) && ! is_wp_error($users)) {
-            return $users[0]->ID;
-        }
-
         return false;
     }
 
