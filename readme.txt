@@ -3,9 +3,9 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress migration plugin, WP Migrate DB
 Requires at least: 5.2
-Tested up to: 5.9.3
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -185,6 +185,9 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+
+= WP Migrate 2.3.2 - 2022-07-11 =
+* Bug Fix: Activating or upgrading WP Migrate Lite no longer results in the following error: “The plugin does not have a valid header.”
 
 = WP Migrate 2.3.1 - 2022-05-19 =
 * Bug Fix: WP Migrate no longer initializes on pages outside of WP Admin in order to improve front-end performance
