@@ -3,6 +3,7 @@
 namespace DeliciousBrains\WPMDB\Common;
 
 use DeliciousBrains\WPMDB\Common\Exceptions\SanitizationFailureException;
+use DeliciousBrains\WPMDB\Common\Util\Util;
 
 /**
  *
@@ -96,6 +97,11 @@ class Sanitize
                     throw new SanitizationFailureException(self::create_error_string('a string', $context, $data, self::$field_key));
                 }
                 $data = filter_var($data, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            } elseif ('regex' === $key_rules) {
+                if (Util::is_regex_pattern_valid($data) === false) {
+                    throw new SanitizationFailureException(self::create_error_string('a regex string', $context, $data, self::$field_key));
+                }
+                $data = $data;
             } elseif ('key' === $key_rules) {
                 $key_name = sanitize_key($data);
                 if ($key_name !== $data) {
@@ -114,13 +120,13 @@ class Sanitize
                 }
                 // @TODO - Needs sanitizing
             } elseif ('json_array' === $key_rules) {
-                if (!is_string($data) || !Util\Util::is_json($data)) {
+                if (!is_string($data) || !Util::is_json($data)) {
                     throw new SanitizationFailureException(self::create_error_string('JSON data', $context, $data, self::$field_key));
                 }
                 // @TODO - Needs sanitizing
                 $data = json_decode($data, true);
             } elseif ('json' === $key_rules) {
-                if (!is_string($data) || !Util\Util::is_json($data)) {
+                if (!is_string($data) || !Util::is_json($data)) {
                     throw new SanitizationFailureException(self::create_error_string('JSON data', $context, $data, self::$field_key));
                 }
                 // @TODO - Needs sanitizing

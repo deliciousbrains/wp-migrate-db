@@ -147,7 +147,7 @@ class FinalizeMigration
         } else {
             $return = $this->finalize_migration($state_data);
         }
-
+        do_action('wpmdb_after_finalize_migration');
         $result = $this->http->end_ajax($return);
 
         return $result;

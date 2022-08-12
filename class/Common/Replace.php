@@ -852,14 +852,19 @@ class Replace
      * @throws \DI\NotFoundException
      */
     public function validate_regex_pattern() {
-        $_POST = $this->http_helper->convert_json_body_to_post();
-
+       $_POST = $this->http_helper->convert_json_body_to_post();
+        if (isset($_POST['pattern'])) {
+            $pattern = Util::safe_wp_unslash($_POST['pattern']);
+            if (Util::is_regex_pattern_valid( $pattern ) === false) {
+                return $this->http->end_ajax(false);
+            }
+        }
         $key_rules = array(
-            'pattern' => 'string',
+            'pattern' => 'regex',
         );
 
         $state_data = $this->migration_state_manager->set_post_data( $key_rules );
-        return $this->http->end_ajax( Util::is_regex_pattern_valid( $state_data['pattern'] ) );
+        return $this->http->end_ajax(isset($state_data['pattern']) === true);
     }
 
     public function register_rest_routes() {

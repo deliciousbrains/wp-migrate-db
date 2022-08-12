@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2022-07-11 12:05-0400\n"
+"POT-Creation-Date: 2022-08-12 14:30+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,6 +48,49 @@ msgstr ""
 #: src/wp-migrate-db-pro/template/options.php:14
 #, php-format
 msgid "Your current PHP run time limit is set to %s seconds."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/BackupExport.php:87
+msgid "MySQL export file not found."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/BackupExport.php:91
+msgid "Could not delete the MySQL export file."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Replace.php:656
+#, php-format
+msgid ""
+"WP Migrate - Failed to instantiate object for replacement. If the serialized "
+"object's class is defined by a plugin, you should enable that plugin for "
+"migration requests. \n"
+"Class Name: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Replace.php:714
+msgid ""
+"Failed attempting to do the recursive unserialize replace. Please contact "
+"support."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:48
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:49
+#, php-format
+msgid ""
+"Sanitization Error: `%1$s` method was expecting %2$s for the `%3$s` field, "
+"but got something else: \"%4$s\""
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:71
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:72
+#, php-format
+msgid "%1$s was not expecting data to be an array."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:175
+#: src/wp-migrate-db-pro/class/Common/Sanitize.php:181
+#, php-format
+msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Api.php:136
@@ -292,10 +335,10 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/License.php:646
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:84
+#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:81
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:239
 #: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:543
-#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:81
-#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:84
 msgctxt "Plugin configuration and preferences"
 msgid "Settings"
 msgstr ""
@@ -352,46 +395,6 @@ msgctxt "Delete license"
 msgid "Remove"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Common/BackupExport.php:87
-msgid "MySQL export file not found."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/BackupExport.php:91
-msgid "Could not delete the MySQL export file."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/Replace.php:656
-#, php-format
-msgid ""
-"WP Migrate - Failed to instantiate object for replacement. If the serialized "
-"object's class is defined by a plugin, you should enable that plugin for "
-"migration requests. \n"
-"Class Name: %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/Replace.php:714
-msgid ""
-"Failed attempting to do the recursive unserialize replace. Please contact "
-"support."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/Sanitize.php:48
-#, php-format
-msgid ""
-"Sanitization Error: `%1$s` method was expecting %2$s for the `%3$s` field, "
-"but got something else: \"%4$s\""
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/Sanitize.php:71
-#, php-format
-msgid "%1$s was not expecting data to be an array."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Common/Sanitize.php:175
-#, php-format
-msgid "Unknown sanitization rule \"%1$s\" supplied by %2$s"
-msgstr ""
-
 #: src/wp-migrate-db-pro/template/common/muplugin-failed-update-warning.php:3
 msgid "<strong>Compatibility Plugin Update Failed</strong> &mdash; "
 msgstr ""
@@ -442,354 +445,6 @@ msgid ""
 "a> and reset your secret key."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:140
-msgctxt "A new version of the plugin is available"
-msgid "Update Available"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:141
-#, php-format
-msgid "A new version of %1$s is now available. %2$s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:141
-msgctxt "Download and install a new version of the plugin"
-msgid "Update Now"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:150
-msgid "Beta Update Available"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:151
-msgid "Update Available"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:153
-#, php-format
-msgid ""
-"%1$s %2$s is now available. You currently have %3$s installed. <a href=\"%4$s"
-"\">%5$s</a>"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:153
-msgid "Update Now"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/AddonAbstract.php:117
-#, php-format
-msgid ""
-"The version of %1$s you have installed requires version %2$s of WP Migrate. "
-"You currently have %3$s installed. <strong><a href=\"%4$s\">Update Now</a></"
-"strong>"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Addon/AddonsFacade.php:110
-#: src/wp-migrate-db-pro/class/Pro/Addon/AddonsFacade.php:114
-msgid ""
-"Legacy addons cannot be activated alongside WP Migrate version 2.3.0 or "
-"above. These features have been moved to WP Migrate."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:81
-msgid "Backup not found."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:95
-msgid "Could not find backup file to download:"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:123
-#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:147
-#, php-format
-msgid "File does not exist — %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:154
-#, php-format
-msgid "Unable to delete file — %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Beta/BetaManager.php:116
-msgid "Would you like to rollback WP Migrate to the latest stable release now?"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesAddon.php:102
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:181
-msgid "Downloading files"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesAddon.php:103
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:180
-msgid "Uploading files"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesLocal.php:190
-msgid "Invalid folder path supplied."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:423
-msgid ""
-"Please only enter letters, numbers or underscores for the new table prefix."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:890
-#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:891
-msgid "Expected local subsite \"short_basedir\" missing from `state_data`."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:896
-#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:897
-msgid "Expected remote subsite \"short_basedir\" missing from `state_data`."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Queue/Cron.php:86
-#, php-format
-msgid "Every %d Minutes"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Queue/QueueHelper.php:61
-msgid "File list empty or incomplete. Please contact support."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Queue/QueueHelper.php:182
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesLocal.php:172
-msgid "Error: empty folder list supplied."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:229
-#, php-format
-msgid "There is a new version of %s available."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:231
-#, php-format
-msgid "View version %s details"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:241
-#, php-format
-msgid ""
-"To update, go to %1$s and enter your license key. If you don't have a "
-"license key, you may <a href=\"%2$s\">purchase one</a>."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:243
-#, php-format
-msgid ""
-"To finish activating %1$s, please go to %2$s and enter your license key. If "
-"you don't have a license key, you may <a href=\"%3$s\">purchase one</a>."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:246
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:584
-msgid "Check my license again"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:310
-#, php-format
-msgid ""
-"<strong>Addon No Longer Required</strong> - As of WP Migrate version 2.3.0, "
-"this addon is <a href=\"%s\" target=\"_blank\">no longer required</a> and "
-"can be safely deleted."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:344
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:355
-msgid "Could not retrieve version details. Please try again."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:542
-#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:80
-msgid "Migrate"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:584
-msgid "A problem occurred when trying to check the license, please try again."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:621
-#: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:95
-#: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:134
-#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:374
-msgid "WP Migrate"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:168
-msgid "Themes"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:169
-msgid "Plugins"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:170
-msgid "Theme & Plugin Files"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:171
-msgid "(active)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:172
-msgid "Please select themes for migration."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:173
-msgid "Please select plugins for migration."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:174
-msgid "remote"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:175
-msgid "local"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:176
-msgid "Failed to transfer file."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:177
-msgid "Theme & Plugin Files Transfer Error"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:178
-msgid "Loading transfer queue"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:179
-msgid "Transferring: "
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:126
-#, php-format
-msgid "Unable to determine folder name for theme %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:162
-#, php-format
-msgid ""
-"Temporary file not found when finalizing Theme & Plugin Files migration: %s "
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:170
-#, php-format
-msgid ""
-"Unable to overwrite destination file when finalizing Theme & Plugin Files "
-"migration: %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:186
-#, php-format
-msgid ""
-"Unable to move file into place when finalizing Theme & Plugin Files "
-"migration. Source: %s | Destination: %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:265
-#, php-format
-msgid "Unable to verify file migration, %s does not exist."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesLocal.php:188
-msgid "Invalid folder list supplied (invalid array)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:58
-msgid "A problem occurred starting the Theme & Plugin files migration."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:73
-msgid ""
-"Unfortunately it looks like we can't migrate your theme or plugin files. "
-"However, running a migration without theme and plugin files should work. "
-"Please uncheck the Theme Files checkbox, uncheck the Plugin Files checkbox, "
-"and try your migration again."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:75
-msgid "More Details »"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/RemoteUpdates/RemoteUpdatesManager.php:114
-msgid "Please activate your license before updating."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:103
-#, php-format
-msgid "Remote server responded with %s and body of %s"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:135
-#, php-format
-msgid "File transfer error - Unable to create a temporary folder. (%s)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:145
-#, php-format
-msgid "File transfer error - Unable to create a PHP file on the server. (%s)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:155
-#, php-format
-msgid ""
-"File transfer error - Unable to update file contents using using PHP's "
-"file_put_contents() function. (%s)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:165
-#, php-format
-msgid ""
-"File transfer error - Unable to move file to the correct location using "
-"PHP's rename() function. (%s)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:176
-#, php-format
-msgid ""
-"File transfer error - Unable to delete file using PHP's unlink() function. "
-"(%s)"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:228
-msgid "Unable to process payload."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Sender.php:56
-msgid "$_POST['batch'] is empty."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Sender.php:63
-msgid "Request for batch of files failed."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:78
-msgctxt "Get backups"
-msgid "Backups"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:129
-#, php-format
-msgid ""
-"The version of the %1$s addon you have installed%2$s is out-of-date and will "
-"not work with this beta version WP Migrate. There may be a <a href=\"%3$s"
-"\">beta update available</a>, otherwise please <a href=\"%4$s\">deactivate "
-"this addon</a>."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:132
-#, php-format
-msgid ""
-"The version of the %1$s addon you have installed%2$s is out-of-date and will "
-"not work with this version WP Migrate. <a href=\"%3$s\">Update Now</a>"
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:84
-msgid "Upgrade"
-msgstr ""
-
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:174
 msgid "Profile not found or unable to be generated from params."
 msgstr ""
@@ -828,66 +483,83 @@ msgstr ""
 msgid "Performing backup"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:509
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:506
 msgid "No tables selected for migration."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:616
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:613
 msgid "Cleaning up..."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:710
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:707
 msgid "Unable to move exported file."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:780
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:777
 msgid "Parameter errors: "
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:782
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:779
 #, php-format
 msgid "unknown %s parameter"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:791
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:788
 msgid "--"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:796
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:793
 msgid "Missing action parameter"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:815
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:812
 msgid "Please make sure Regular Expression find & replace pattern is valid"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:819
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:829
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:816
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:826
 msgid "Missing Regex find and replace values."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:837
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:853
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:834
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:850
 msgid "Missing case sensitive find and replace values."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:863
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:860
 msgid "Missing find and replace values."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:866
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:863
 msgid "Find value is required."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:873
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:870
 msgid "Replace value is required."
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:878
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:875
 #, php-format
 msgid "%1$s and %2$s must contain the same number of values"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:924
 #: src/wp-migrate-db-pro/class/Common/Cli/Cli.php:921
 #, php-format
 msgid ""
@@ -900,13 +572,11 @@ msgid "You must provide a destination filename."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Cli/Command.php:205
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:694
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:651
 msgid "WP Migrate CLI class not available."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Cli/Command.php:213
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:704
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:661
 #, php-format
 msgid "Export saved to: %s"
@@ -961,6 +631,7 @@ msgid "Access denied for: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:272
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:282
 #, php-format
 msgid ""
 "We've detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled and the "
@@ -971,6 +642,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:283
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:293
 #, php-format
 msgid ""
 "The connection failed, an unexpected error occurred, please contact support. "
@@ -978,6 +650,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:288
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:298
 #, php-format
 msgid ""
 "The connection to the remote server has timed out, no changes have been "
@@ -985,6 +658,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:296
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:306
 #, php-format
 msgid ""
 "Couldn't connect over HTTPS. You might want to try regular HTTP instead. "
@@ -992,6 +666,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:302
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:312
 #, php-format
 msgid ""
 "<strong>HTTPS Connection Error:</strong>  (#121 - scope: %s) This typically "
@@ -1002,12 +677,14 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:310
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:320
 msgid ""
 "The remote site is protected with Basic Authentication. Please enter the "
 "username and password above to continue. (401 Unauthorized)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:315
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:325
 #, php-format
 msgid ""
 "Unable to connect to the remote server, the remote server responded with: %s "
@@ -1015,6 +692,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:320
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:330
 #, php-format
 msgid ""
 "Unable to connect to the remote server, please check the connection details "
@@ -1022,6 +700,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:325
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:335
 #, php-format
 msgid ""
 "WP Migrate does not seem to be installed or active on the remote site. (#131 "
@@ -1029,6 +708,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:330
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:340
 #, php-format
 msgid ""
 "A response was expected from the remote, instead we got nothing. (#146 - "
@@ -1037,15 +717,18 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:330
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:140
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:340
 msgid "our documentation"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:494
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:504
 #, php-format
 msgid "We could not find: %s. Are you sure this is the correct URL?"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:501
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:511
 msgid ""
 "It appears that you might be trying to pull from a local environment. This "
 "will not work if <u>this</u> website happens to be located on a remote "
@@ -1054,6 +737,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:503
+#: src/wp-migrate-db-pro/class/Common/Http/RemotePost.php:513
 msgid ""
 "It appears that you might be trying to push to a local environment. This "
 "will not work if <u>this</u> website happens to be located on a remote "
@@ -1220,6 +904,13 @@ msgstr ""
 msgid "Importing data from %s"
 msgstr ""
 
+#: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:95
+#: src/wp-migrate-db-pro/class/Common/Plugin/Menu.php:134
+#: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:374
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:621
+msgid "WP Migrate"
+msgstr ""
+
 #: src/wp-migrate-db-pro/class/Common/Plugin/PluginManagerBase.php:176
 #, php-format
 msgid ""
@@ -1257,6 +948,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Profile/ProfileManager.php:680
 #: src/wp-migrate-db-pro/class/Common/Profile/ProfileManager.php:692
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Cli.php:260
+#: src/wp-migrate-db-pro/class/Common/Profile/ProfileManager.php:658
+#: src/wp-migrate-db-pro/class/Common/Profile/ProfileManager.php:670
 msgid "Profile not found."
 msgstr ""
 
@@ -1438,29 +1131,364 @@ msgstr ""
 msgid "WPMDB Error: Data cannot be unserialized. %s"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:148
-msgid "--media must be set to an acceptable value, see: wp help migratedb "
+#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:80
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:542
+msgid "Migrate"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:159
+#: src/wp-migrate-db-pro/class/Free/Plugin/PluginManager.php:84
+msgid "Upgrade"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:140
+msgctxt "A new version of the plugin is available"
+msgid "Update Available"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:141
+#, php-format
+msgid "A new version of %1$s is now available. %2$s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:141
+msgctxt "Download and install a new version of the plugin"
+msgid "Update Now"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:150
+msgid "Beta Update Available"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:151
+msgid "Update Available"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:153
+#, php-format
 msgid ""
-"--media-date required when using --media=since-date, see: wp help migratedb "
+"%1$s %2$s is now available. You currently have %3$s installed. <a href=\"%4$s"
+"\">%5$s</a>"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:173
+#: src/wp-migrate-db-pro/class/Pro/Addon/Addon.php:153
+msgid "Update Now"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Addon/AddonAbstract.php:117
+#, php-format
 msgid ""
-"--media-date parameter received an invalid date format, see wp help "
-"migratedb "
+"The version of %1$s you have installed requires version %2$s of WP Migrate. "
+"You currently have %3$s installed. <strong><a href=\"%4$s\">Update Now</a></"
+"strong>"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:239
-msgid "Initiating media migration..."
-msgstr ""
-
-#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:310
+#: src/wp-migrate-db-pro/class/Pro/Addon/AddonsFacade.php:114
 msgid ""
-"WP Migrate Media Files does not seem to be installed/active on the remote "
-"website."
+"Legacy addons cannot be activated alongside WP Migrate version 2.3.0 or "
+"above. These features have been moved to WP Migrate."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:81
+msgid "Backup not found."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:95
+msgid "Could not find backup file to download:"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:123
+#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:147
+#, php-format
+msgid "File does not exist — %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Backups/BackupsManager.php:154
+#, php-format
+msgid "Unable to delete file — %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Beta/BetaManager.php:116
+msgid "Would you like to rollback WP Migrate to the latest stable release now?"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesAddon.php:102
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:181
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:182
+msgid "Downloading files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesAddon.php:103
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:180
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:181
+msgid "Uploading files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/MediaFilesLocal.php:190
+msgid "Invalid folder path supplied."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:424
+msgid ""
+"Please only enter letters, numbers or underscores for the new table prefix."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:892
+msgid "Expected local subsite \"short_basedir\" missing from `state_data`."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MST/MultisiteToolsAddon.php:898
+msgid "Expected remote subsite \"short_basedir\" missing from `state_data`."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:229
+#, php-format
+msgid "There is a new version of %s available."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:231
+#, php-format
+msgid "View version %s details"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:241
+#, php-format
+msgid ""
+"To update, go to %1$s and enter your license key. If you don't have a "
+"license key, you may <a href=\"%2$s\">purchase one</a>."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:243
+#, php-format
+msgid ""
+"To finish activating %1$s, please go to %2$s and enter your license key. If "
+"you don't have a license key, you may <a href=\"%3$s\">purchase one</a>."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:246
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:584
+msgid "Check my license again"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:310
+#, php-format
+msgid ""
+"<strong>Addon No Longer Required</strong> - As of WP Migrate version 2.3.0, "
+"this addon is <a href=\"%s\" target=\"_blank\">no longer required</a> and "
+"can be safely deleted."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:344
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:355
+msgid "Could not retrieve version details. Please try again."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Plugin/ProPluginManager.php:584
+msgid "A problem occurred when trying to check the license, please try again."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Queue/Cron.php:86
+#, php-format
+msgid "Every %d Minutes"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Queue/QueueHelper.php:61
+msgid "File list empty or incomplete. Please contact support."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Queue/QueueHelper.php:182
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesLocal.php:172
+msgid "Error: empty folder list supplied."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/RemoteUpdates/RemoteUpdatesManager.php:114
+msgid "Please activate your license before updating."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:168
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:169
+msgid "Themes"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:169
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:170
+msgid "Plugins"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:170
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:171
+msgid "Theme & Plugin Files"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:171
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:172
+msgid "(active)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:172
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:173
+msgid "Please select themes for migration."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:173
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:174
+msgid "Please select plugins for migration."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:174
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:175
+msgid "remote"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:175
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:176
+msgid "local"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:176
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:177
+msgid "Failed to transfer file."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:177
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:178
+msgid "Theme & Plugin Files Transfer Error"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:178
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:179
+msgid "Loading transfer queue"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:179
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesAddon.php:180
+msgid "Transferring: "
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:126
+#, php-format
+msgid "Unable to determine folder name for theme %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:162
+#, php-format
+msgid ""
+"Temporary file not found when finalizing Theme & Plugin Files migration: %s "
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:170
+#, php-format
+msgid ""
+"Unable to overwrite destination file when finalizing Theme & Plugin Files "
+"migration: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:186
+#, php-format
+msgid ""
+"Unable to move file into place when finalizing Theme & Plugin Files "
+"migration. Source: %s | Destination: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesFinalize.php:265
+#, php-format
+msgid "Unable to verify file migration, %s does not exist."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/ThemePluginFilesLocal.php:188
+msgid "Invalid folder list supplied (invalid array)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:58
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:59
+msgid "A problem occurred starting the Theme & Plugin files migration."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:73
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:74
+msgid ""
+"Unfortunately it looks like we can't migrate your theme or plugin files. "
+"However, running a migration without theme and plugin files should work. "
+"Please uncheck the Theme Files checkbox, uncheck the Plugin Files checkbox, "
+"and try your migration again."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:75
+#: src/wp-migrate-db-pro/class/Pro/TPF/TransferCheck.php:76
+msgid "More Details »"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:103
+#, php-format
+msgid "Remote server responded with %s and body of %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:135
+#, php-format
+msgid "File transfer error - Unable to create a temporary folder. (%s)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:145
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:149
+#, php-format
+msgid "File transfer error - Unable to create a PHP file on the server. (%s)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:155
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:159
+#, php-format
+msgid ""
+"File transfer error - Unable to update file contents using using PHP's "
+"file_put_contents() function. (%s)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:165
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:169
+#, php-format
+msgid ""
+"File transfer error - Unable to move file to the correct location using "
+"PHP's rename() function. (%s)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:176
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:180
+#, php-format
+msgid ""
+"File transfer error - Unable to delete file using PHP's unlink() function. "
+"(%s)"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:228
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:232
+msgid "Unable to process payload."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Sender.php:56
+msgid "$_POST['batch'] is empty."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Sender.php:63
+msgid "Request for batch of files failed."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:78
+msgctxt "Get backups"
+msgid "Backups"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:129
+#, php-format
+msgid ""
+"The version of the %1$s addon you have installed%2$s is out-of-date and will "
+"not work with this beta version WP Migrate. There may be a <a href=\"%3$s"
+"\">beta update available</a>, otherwise please <a href=\"%4$s\">deactivate "
+"this addon</a>."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:132
+#, php-format
+msgid ""
+"The version of the %1$s addon you have installed%2$s is out-of-date and will "
+"not work with this version WP Migrate. <a href=\"%3$s\">Update Now</a>"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Cli.php:227
@@ -1529,9 +1557,6 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Cli.php:828
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:202
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:211
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:240
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:209
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:218
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:247
@@ -1571,77 +1596,64 @@ msgstr ""
 msgid "Importing file"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:175
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:173
 msgid "You must provide an import file."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:567
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:565
 msgid "There are no saved profiles for this site."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:583
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:581
 msgctxt "Export data to remote database"
 msgid "push"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:584
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:582
 msgctxt "Import data from remote database"
 msgid "pull"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:585
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:583
 msgctxt "Export file from local database"
 msgid "export"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:586
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:584
 msgctxt "Run a find & replace on local database"
 msgid "find & replace"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:587
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:585
 msgctxt "Import data from SQL file"
 msgid "import"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:588
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:586
 msgctxt "Backup the local database"
 msgid "backup"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:606
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:604
 msgctxt "Profile list column heading"
 msgid "ID"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:607
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:605
 msgctxt "Profile list column heading"
 msgid "NAME"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:608
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:606
 msgctxt "Profile list column heading"
 msgid "ACTION"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:609
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:607
 msgctxt "Profile list column heading"
 msgid "REMOTE"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:702
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Command.php:659
 msgid "Migration successful."
 msgstr ""
@@ -1687,73 +1699,86 @@ msgstr ""
 msgid "No setting `%s` currently saved in the database."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:193
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:195
 msgid "License updated."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:229
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:231
 msgid "License requires specifying a user via --user=<id|login|email>"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:232
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:234
 msgid "User must be an Admin"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:278
 #: src/wp-migrate-db-pro/class/Pro/Cli/Extra/Setting.php:280
 msgid "Checking license key..."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:199
+#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:148
+msgid "--media must be set to an acceptable value, see: wp help migratedb "
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:159
+msgid ""
+"--media-date required when using --media=since-date, see: wp help migratedb "
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:173
+msgid ""
+"--media-date parameter received an invalid date format, see wp help "
+"migratedb "
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:239
+msgid "Initiating media migration..."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/MF/CliCommand/MediaFilesCli.php:310
+msgid ""
+"WP Migrate Media Files does not seem to be installed/active on the remote "
+"website."
+msgstr ""
+
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:206
 msgid ""
 "The installation must be a Multisite network to make use of the export "
 "subsite option"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:206
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:213
 msgid ""
 "For subsite to subsite migrations subsite-source and subsite-destination are "
 "both required"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:223
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:230
 msgid ""
 "subsite-source must also be used to make use of the subsite to subsite option"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:227
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:234
 msgid ""
 "subsite-destination must also be used to make use of the subsite to subsite "
 "option"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:231
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:238
 msgid ""
 "A valid Blog ID or Subsite URL must be supplied for both networks to make "
 "use of the subsite to subsite option"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:235
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:242
 msgid ""
 "Both source and destination must be networks to make use of the subsite to "
 "subsite option"
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:253
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:260
 msgid "A new table name prefix may only be specified for subsite exports."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:256
 #: src/wp-migrate-db-pro/class/Pro/MST/CliCommand/MultisiteToolsAddonCli.php:263
 msgid "A valid prefix must be supplied to make use of the prefix option"
 msgstr ""
@@ -1814,6 +1839,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:380
+#: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:384
 msgid ""
 "The connection succeeded but the remote site is configured to reject pull "
 "connections. You can change this in the \"settings\" tab on the remote site. "
@@ -1821,6 +1847,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:382
+#: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:386
 msgid ""
 "The connection succeeded but the remote site is configured to reject push "
 "connections. You can change this in the \"settings\" tab on the remote site. "
@@ -1933,23 +1960,26 @@ msgstr ""
 msgid "Failed to respond to payload post."
 msgstr ""
 
-#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:134
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:129
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:132
 #, php-format
 msgid "Payload transfer failed with code %s: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:263
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:268
 #, php-format
 msgid "The following files failed to transfer: <br> %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:303
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:308
 #, php-format
 msgid "Unable to create folder for file transfers: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:310
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:315
 #, php-format
 msgid ""
 "Unable to create the transfer manifest file. Verify the web server can write "
@@ -1957,9 +1987,11 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:602
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:607
 msgid "Failed to load manifest file."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:608
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Util.php:613
 msgid "Failed to parse manifest file."
 msgstr ""

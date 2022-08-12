@@ -938,7 +938,7 @@ class Filesystem
 
     public function format_backup_name($file_name)
     {
-        $new_name = preg_replace('/-\w{5}.sql/', '.sql${1}', $file_name);
+        $new_name = preg_replace('/-\w{5}.sql/', '.sql', $file_name);
 
         return $new_name;
     }

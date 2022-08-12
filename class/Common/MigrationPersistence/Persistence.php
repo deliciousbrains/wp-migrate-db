@@ -87,6 +87,36 @@ class Persistence
         return update_site_option('wpmdb_remote_response', $response);
     }
 
+    /**
+     * Stores value of WPE auth cookie stored in site options
+     * @param string $cookie
+     * @return bool
+     **/
+    public static function storeRemoteWPECookie($cookie)
+    {
+        return update_site_option('wpmdb_wpe_remote_cookie', $cookie);
+    }
+
+    /**
+     * Get value of WPE auth cookie stored in site options
+     *
+     * @return bool
+     **/
+    public static function getRemoteWPECookie()
+    {
+        return get_site_option('wpmdb_wpe_remote_cookie');
+    }
+
+     /**
+     * Remove WPE auth cookie stored in site options
+     *
+     * @return bool
+     **/
+    public static function removeRemoteWPECookie()
+    {
+        return delete_site_option('wpmdb_wpe_remote_cookie');
+    }
+
     public static function getPostData($fields)
     {
         $state_data = get_site_option('wpmdb_migration_state');

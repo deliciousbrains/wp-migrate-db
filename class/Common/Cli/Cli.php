@@ -678,6 +678,9 @@ class Cli
 	 */
 	function  finalize_ajax($response, $post_data)
 	{
+		if (is_wp_error($response)) {
+			return $response;
+		}
 		// don't send redundant POST variables
 		$args = $this->http_helper->filter_post_elements($post_data, array('action', 'migration_state_id', 'prefix', 'tables', 'profileID', 'profileType'));
 		$_POST    = $args;

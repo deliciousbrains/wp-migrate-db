@@ -121,7 +121,17 @@ class RemotePost extends Http
         );
 
         $args['method'] = 'POST';
-
+        $remote_cookie = Persistence::getRemoteWPECookie();
+        if (false !== $remote_cookie) {
+            $cookies         = [];
+            $cookie_args     = [
+                'name' => 'wpe-auth',
+                'value' => $remote_cookie,
+            ];
+            $cookie          = new \WP_Http_Cookie($cookie_args);
+            $cookies[]       = $cookie;
+            $args['cookies'] = $cookies;
+        }
         if (!isset($args['body'])) {
             $args['body'] = $this->array_to_multipart($data);
         }

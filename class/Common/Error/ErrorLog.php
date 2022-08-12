@@ -88,8 +88,14 @@ class ErrorLog
 
         $error_header = "********************************************\n******  Log date: " . date('Y/m/d H:i:s') . " ******\n********************************************\n\n";
         $error        = $error_header;
+        if ($this->get_migration_id($state_data)) {
+            $error .= 'Migration ID: ' . $this->get_migration_id($state_data) . "\n";
+        }
         if (isset($state_data['intent'])) {
             $error .= 'Intent: ' . $state_data['intent'] . "\n";
+        }
+        if (isset($state_data['stages'])) {
+            $error .= 'Stages: ' . implode(' | ', json_decode($state_data['stages'], true) ). "\n";
         }
         if (isset($state_data['action'])) {
             $error .= 'Action: ' . $state_data['action'] . "\n";
@@ -98,9 +104,14 @@ class ErrorLog
             $error .= 'Local: ' . $state_data['site_details']['local']['site_url'] . "\n";
         }
         if (isset($state_data['remote']) && isset($state_data['remote']['site_url'])) {
-            $error .= 'Remote: ' . $state_data['site_details']['remote']['site_url'] . "\n\n";
+            $error .= 'Remote: ' . $state_data['site_details']['remote']['site_url'] . "\n";
         }
-        $error .= 'WPMDB Error: ' . $wpmdb_error . "\n\n";
+        if (isset($GLOBALS['wpmdb_meta']) && isset($GLOBALS['wpmdb_meta']['wp-migrate-db-pro'])) {
+            $error .= 'WP Migrate Version: ' .$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] . "\n\n";
+        }
+        $error .= 'Error: ' . $wpmdb_error . "\n";
+        
+        
 
         if (!empty($this->props->attempting_to_connect_to)) {
             $ip    = $this->get_remote_ip($this->props->attempting_to_connect_to);
@@ -152,6 +163,26 @@ class ErrorLog
         }
 
         update_site_option('wpmdb_error_log', $this->error_log);
+    }
+
+    /**
+     * Get Migration ID
+     *
+     * @param array $state_data Description
+     * @return mixed string|bool
+     **/
+    public function get_migration_id($state_data)
+    {
+        if (!isset($state_data['form_data'])) {
+            return false;           
+        }
+        $form_data = json_decode($state_data['form_data']);
+        if (property_exists($form_data, 'current_migration')
+            && property_exists($form_data->current_migration, 'migration_id')
+        ) {
+            return $form_data->current_migration->migration_id;
+        }
+        return false;
     }
 
     function get_remote_ip($url)

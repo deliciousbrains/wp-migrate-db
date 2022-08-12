@@ -643,28 +643,6 @@ class ProfileManager
     }
 
     /**
-     * @param $saved_profiles
-     * @param $state_data
-     *
-     * @return array|\WP_Error
-     */
-    public function decode_profile_data($the_profile)
-    {
-        if (empty($saved_profiles) || !\is_array($saved_profiles)) {
-            return new \WP_Error('wpmdb_profile_not_found', __('Profile not found.', 'wp-migrate-db'));
-        }
-
-
-        $parsed_profile = json_decode($the_profile['value'], true);
-
-        if (!$parsed_profile) {
-            return new \WP_Error('wpmdb_profile_invalid_json', __('Profile saved as invalid JSON.', 'wp-migrate-db'));
-        }
-
-        return $parsed_profile;
-    }
-
-    /**
      * @param $option_key
      * @param $profile_id
      *

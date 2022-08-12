@@ -102,7 +102,7 @@ class CompatibilityManager {
 		$this->util            = $util;
 
 		//Version of the compatibility plugin, to force an update of the MU plugin, increment this value
-		$this->compatibility_plugin_version = '1.2';
+		$this->compatibility_plugin_version = '1.3';
 
 		$this->mu_plugin_dir    = $this->props->mu_plugin_dir;
 		$this->mu_plugin_source = $this->props->mu_plugin_source;
