@@ -15,8 +15,6 @@ Make WordPress migration easy. Migrate your database at the click of a button wi
 
 WP Migrate takes the hassle out of moving your WordPress site.
 
-https://deliciousbrains.wistia.com/medias/vahu041lkd
-
 WP Migrate is a WordPress migration plugin that makes exporting and migrating your database easy, fast, and straightforward.
 
 Each migration takes shape in the form of an easy to follow three-step process.
@@ -67,9 +65,7 @@ Glad you asked! The pro features in WP Migrate are the perfect accompaniment to 
 
 And that's just the tip of the iceberg, we're always working on adding value to WP Migrate!
 
-Find out about the [incredible value that WP Migrate brings on our website](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting), or watch the video below.
-
-https://deliciousbrains.wistia.com/medias/5co63n4jqq
+Find out about the [incredible value that WP Migrate brings on our website](https://deliciousbrains.com/wp-migrate-db-pro/upgrade/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting).
 
 == Frequently Asked Questions  ==
 
