@@ -96,7 +96,7 @@ class Sanitize
                 if (!is_string($data)) {
                     throw new SanitizationFailureException(self::create_error_string('a string', $context, $data, self::$field_key));
                 }
-                $data = filter_var($data, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $data = filter_var($data, FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
             } elseif ('regex' === $key_rules) {
                 if (Util::is_regex_pattern_valid($data) === false) {
                     throw new SanitizationFailureException(self::create_error_string('a regex string', $context, $data, self::$field_key));

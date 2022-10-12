@@ -582,7 +582,12 @@ class Replace
         }
 
         if ('find_replace' === $this->intent) {
-            $this->diff_interpreter->compute(DiffEntity::create($original, $subject, $this->column, is_object($this->row) ? reset($this->row) : null));
+            $row = null;
+            if (is_object($this->row) ) {
+                $get_vars = function_exists('get_mangled_object_vars') ? get_mangled_object_vars($this->row) : $this->row;
+                $row      = reset($get_vars);
+            }
+            $this->diff_interpreter->compute(DiffEntity::create($original, $subject, $this->column, $row));
         }
 
         return $subject;

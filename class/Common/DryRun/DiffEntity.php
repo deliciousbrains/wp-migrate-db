@@ -111,8 +111,9 @@ class DiffEntity implements \JsonSerializable
 
     /**
      * Json serializes the class data
-     * @return array
+     * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

@@ -747,16 +747,18 @@ class Util
         $uploads      = wp_upload_dir();
 
         $site_details = array(
-            'is_multisite'         => esc_html(is_multisite() ? 'true' : 'false'),
-            'site_url'             => esc_html(addslashes(site_url())),
-            'home_url'             => esc_html(addslashes(Util::home_url())),
-            'prefix'               => esc_html($table_prefix),
-            'uploads_baseurl'      => esc_html(addslashes(trailingslashit($uploads['baseurl']))),
-            'uploads'              => $this->uploads_info(),
-            'uploads_dir'          => esc_html(addslashes($this->get_short_uploads_dir())),
-            'subsites'             => $this->subsites_list(),
-            'subsites_info'        => $this->subsites_info(),
-            'is_subdomain_install' => esc_html((is_multisite() && is_subdomain_install()) ? 'true' : 'false'),
+            'is_multisite'                  => esc_html(is_multisite() ? 'true' : 'false'),
+            'site_url'                      => esc_html(addslashes(site_url())),
+            'home_url'                      => esc_html(addslashes(Util::home_url())),
+            'prefix'                        => esc_html($table_prefix),
+            'uploads_baseurl'               => esc_html(addslashes(trailingslashit($uploads['baseurl']))),
+            'uploads'                       => $this->uploads_info(),
+            'uploads_dir'                   => esc_html(addslashes($this->get_short_uploads_dir())),
+            'subsites'                      => $this->subsites_list(),
+            'subsites_info'                 => $this->subsites_info(),
+            'is_subdomain_install'          => esc_html((is_multisite() && is_subdomain_install()) ? 'true' : 'false'),
+            'high_performance_transfers'    => (bool)Settings::get_setting('high_performance_transfers'),
+            'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0)
         );
 
         $site_details = apply_filters('wpmdb_site_details', $site_details);
@@ -1292,6 +1294,21 @@ class Util
             'wp-migrate-db-pro-multisite-tools/wp-migrate-db-pro-multisite-tools.php',
             'wp-migrate-db-pro-theme-plugin-files/wp-migrate-db-pro-theme-plugin-files.php',
         ]);
+    }
+
+    /**
+     * Checks if a directory is empty
+     *
+     * @return bool
+     */
+    public static function is_empty_dir($dir)
+    {
+        $res = scandir($dir);
+        if ($res === false) {
+            return false;
+        }
+        //do not include directories with only '.' '..'
+        return count(array_diff($res, ['.', '..'])) === 0;
     }
 
     /**

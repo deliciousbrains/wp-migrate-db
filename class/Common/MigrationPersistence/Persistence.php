@@ -52,7 +52,7 @@ class Persistence
         $state_data = get_site_option($key);
 
         if (false === $state_data) {
-            $filtered = filter_var_array($_POST, FILTER_SANITIZE_STRING);
+            $filtered = filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             return $filtered;
         }
 
@@ -64,7 +64,7 @@ class Persistence
         $state_data = get_site_option($key);
 
         if (false === $state_data) {
-            return filter_var_array($_POST, FILTER_SANITIZE_STRING);
+            return filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
 
         return $state_data;

@@ -243,11 +243,11 @@ class PluginManagerBase
             $schema_version = 3.2;
         }
 
-        if($schema_version < 3.5) {
+        if($schema_version < 3.6) {
             $this->update_profiles();
 
             $update_schema  = true;
-            $schema_version = 3.5;
+            $schema_version = 3.6;
         }
 
         if (true === $update_schema) {
@@ -424,8 +424,28 @@ class PluginManagerBase
                         $profile_data->theme_plugin_files->themes_excludes = property_exists($profile_data->theme_plugin_files, 'excludes')
                             ? $profile_data->theme_plugin_files->excludes
                             : '';
-                    }   
+                    }  
+                    
+                    //updates for others and muplugins added 2.3.4
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'other_files')) {
+                        $profile_data->theme_plugin_files->other_files = ['enabled' => false];
+                        $profile_data->theme_plugin_files->others_option = 'selected';
+                        $profile_data->theme_plugin_files->others_selected = [];
+                        $profile_data->theme_plugin_files->others_excludes = '';
+                    }
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {
+                        $profile_data->theme_plugin_files->muplugin_files = ['enabled' => false];
+                        $profile_data->theme_plugin_files->muplugins_option = 'selected';
+                        $profile_data->theme_plugin_files->muplugins_selected = [];
+                        $profile_data->theme_plugin_files->muplugins_excludes = '';
+                    }
+                   
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {}
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_option')) {}
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_selected')) {}
+                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_excludes')) {}
                 }
+                //gonna need to update the profiles
 
                 $saved_profiles = get_site_option($profile_type);
                 $saved_profiles[$profile['id']]['value'] = json_encode($profile_data);

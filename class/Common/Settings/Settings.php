@@ -74,18 +74,19 @@ class Settings
         $this->settings  = get_site_option('wpmdb_settings');
 
         $default_settings = array(
-            'key'                    => $this->util->generate_key(),
-            'allow_pull'             => false,
-            'allow_push'             => false,
-            'profiles'               => array(),
-            'licence'                => '',
-            'verify_ssl'             => false,
-            'whitelist_plugins'      => array(),
-            'max_request'            => min(1024 * 1024, $this->util->get_bottleneck('max')),
-            'delay_between_requests' => 0,
-            'prog_tables_hidden'     => true,
-            'pause_before_finalize'  => false,
-            'allow_tracking'         => null,
+            'key'                        => $this->util->generate_key(),
+            'allow_pull'                 => false,
+            'allow_push'                 => false,
+            'profiles'                   => array(),
+            'licence'                    => '',
+            'verify_ssl'                 => false,
+            'whitelist_plugins'          => array(),
+            'max_request'                => min(1024 * 1024, $this->util->get_bottleneck('max')),
+            'delay_between_requests'     => 0,
+            'prog_tables_hidden'         => true,
+            'pause_before_finalize'      => false,
+            'allow_tracking'             => null,
+            'high_performance_transfers' => false
         );
 
         // if we still don't have settings exist this must be a fresh install, set up some default settings

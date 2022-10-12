@@ -109,7 +109,7 @@ class ErrorLog
         if (isset($GLOBALS['wpmdb_meta']) && isset($GLOBALS['wpmdb_meta']['wp-migrate-db-pro'])) {
             $error .= 'WP Migrate Version: ' .$GLOBALS['wpmdb_meta']['wp-migrate-db-pro']['version'] . "\n\n";
         }
-        $error .= 'Error: ' . $wpmdb_error . "\n";
+        $error .= 'Error: ' . $wpmdb_error . "\n\n";
         
         
 
@@ -177,7 +177,8 @@ class ErrorLog
             return false;           
         }
         $form_data = json_decode($state_data['form_data']);
-        if (property_exists($form_data, 'current_migration')
+        if ($form_data 
+            && property_exists($form_data, 'current_migration')
             && property_exists($form_data->current_migration, 'migration_id')
         ) {
             return $form_data->current_migration->migration_id;

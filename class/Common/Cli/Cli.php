@@ -414,7 +414,7 @@ class Cli
 	function get_progress_bar($tables, $stage)
 	{
 
-        if(2 === $stage && $this->is_non_database_migration($this->profile)) {
+        if($this->is_non_database_migration($this->profile)) {
             return null;
         }
 
@@ -486,6 +486,9 @@ class Cli
 	 */
 	function migrate_tables()
 	{
+		if($this->is_non_database_migration($this->profile)) {
+			return [];
+		}
 		$tables_to_migrate                   = $this->get_tables_to_migrate();
 		$this->dynamic_properties->post_data = $this->post_data;
 

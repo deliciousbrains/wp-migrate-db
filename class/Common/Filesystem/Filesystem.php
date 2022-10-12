@@ -571,7 +571,7 @@ class Filesystem
         if ($symlink) {
             $return['subpath'] = DIRECTORY_SEPARATOR . basename(dirname($real_path)) . DIRECTORY_SEPARATOR . $entry;
         } else {
-            $return['subpath'] = preg_replace("#^(themes|plugins|{$uploads_folder})#", '', $return['wp_content_path']);
+            $return['subpath'] = preg_replace("#^(themes|plugins|mu-plugins|{$uploads_folder})#", '', $return['wp_content_path']);
         }
 
         $exploded              = explode(DIRECTORY_SEPARATOR, $return['subpath']);
@@ -1000,10 +1000,14 @@ class Filesystem
                 $active_plugins  = array_merge($active_plugins, $network_plugins);
             }
             $sites = get_sites();
-            foreach($sites as $site) {
-                $site_plugins = get_blog_option($site->blog_id, 'active_plugins'); 
-                $active_plugins  = array_merge($active_plugins, $site_plugins);
-            } 
+            if (!empty($sites)) {
+                foreach($sites as $site) {
+                    $site_plugins   = get_blog_option($site->blog_id, 'active_plugins');
+                    if (is_array($site_plugins)) {
+                        $active_plugins = array_merge($active_plugins, $site_plugins);
+                    }   
+                } 
+            }
         }
 
         return $active_plugins;

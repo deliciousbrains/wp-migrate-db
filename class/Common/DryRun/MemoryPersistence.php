@@ -7,7 +7,7 @@ namespace DeliciousBrains\WPMDB\Common\DryRun;
  */
 class MemoryPersistence implements PersistenceInterface {
 
-    /**src/wp-migrate-db-pro/frontend/src/common/components/ComboButton.js
+    /**
      * @var DiffGroup[]
      */
     private $store = [];

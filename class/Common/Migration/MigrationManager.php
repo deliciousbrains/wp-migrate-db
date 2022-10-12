@@ -181,6 +181,11 @@ class MigrationManager
             'methods'  => 'POST',
             'callback' => [$this, 'ajax_cancel_migration'],
         ]);
+
+        $this->rest_API_server->registerRestRoute('/error-migration', [
+            'methods'  => 'POST',
+            'callback' => [$this, 'error_migration'],
+        ]);
     }
 
     /**
@@ -407,6 +412,20 @@ class MigrationManager
     }
 
     /**
+     * Called to cleanup on error
+     */
+    function error_migration()
+    {
+        $_POST = $this->http_helper->convert_json_body_to_post();
+        $error_message = '';
+        if (isset($_POST['error_message'])) {
+            $error_message = sanitize_text_field($_POST['error_message']);   
+        }
+        do_action('wpmdb_error_migration', $error_message);
+        $this->ajax_cancel_migration();
+    }
+
+    /**
      * Called to cancel an in-progress migration.
      */
     function ajax_cancel_migration()
@@ -474,11 +493,12 @@ class MigrationManager
                 } else {
                     // Import might have been deleted already
                     if ($this->filesystem->file_exists($state_data['import_path'])) {
+                        $sanitized_import_filename = sanitize_file_name($state_data['import_filename']);
                         if ($state_data['import_info']['import_gzipped']) {
                             $is_backup = $this->filesystem->file_exists(substr($state_data['import_path'], 0, -3)) ? true : false;
-                            $this->backup_export->delete_export_file($state_data['import_filename'], $is_backup);
+                            $this->backup_export->delete_export_file($sanitized_import_filename, $is_backup);
                         } else {
-                            $this->backup_export->delete_export_file($state_data['import_filename'], true);
+                            $this->backup_export->delete_export_file($sanitized_import_filename, true);
                         }
                     }
                     $this->table->delete_temporary_tables($this->props->temp_prefix);

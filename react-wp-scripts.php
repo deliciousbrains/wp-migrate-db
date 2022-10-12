@@ -202,8 +202,6 @@ function enqueue_assets($directory, $opts = [])
         'base_url' => '',
         'handle'   => basename($directory),
         'scripts'  => [
-            'react',
-            'react-dom',
             'wp-date',
         ],
         'styles'   => [],
@@ -212,9 +210,6 @@ function enqueue_assets($directory, $opts = [])
 
     $opts = wp_parse_args($opts, $defaults);
 
-    // Ensure react & react-dom are dependencies.
-    $opts['scripts'] = array_merge($opts['scripts'], ['react', 'react-dom']);
-    $opts['scripts'] = array_unique($opts['scripts']);
 
     $base_url = $opts['base_url'];
     if (empty($base_url)) {

@@ -3,9 +3,9 @@ Contributors: bradt, deliciousbrains
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: Export WordPress, Migrate WordPress, WordPress database plugin, WordPress migration plugin, WP Migrate DB
 Requires at least: 5.2
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 5.6
-Stable tag: 2.3.3
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -185,6 +185,15 @@ Find out all relevant [pricing information over on our official site](https://de
 3. Saving the exported database
 
 == Changelog ==
+= WP Migrate 2.4.1 - 2022-10-12 =
+* Bug Fix: Find and replace via CLI is now more compatible with PHP 8 and above
+
+= WP Migrate 2.4.0 - 2022-09-22 =
+* Improvement: Temporary tables and directories are now cleaned up after migration failure
+* Improvement: Re-rendering of the user interface is now optimized
+* Improvement: Settings sliders are now more accessible
+* Improvement: Migration complete modal is now more accessible
+
 = WP Migrate 2.3.3 - 2022-08-12 =
 * Improvement: Settings sliders now have a visible focus style and improved keyboard accessibility
 * Improvement: Error log messages now provide additional context about the migration to assist our support team
