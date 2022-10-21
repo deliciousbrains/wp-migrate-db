@@ -181,7 +181,7 @@ class InitiateMigration
         $return['site_url'] = (empty($return['site_url'])) ? site_url() : $return['site_url'];
 
         $return['find_replace_pairs']   = Replace::parse_find_replace_pairs($state_data['intent'], $return['site_url']);
-        $return['source_prefix']        = ('push' === $state_data['intent']) ? $state_data['site_details']['local']['prefix'] : $state_data['site_details']['remote']['prefix'];
+        $return['source_prefix']        = ('pull' === $state_data['intent']) ? $state_data['site_details']['remote']['prefix'] : $state_data['site_details']['local']['prefix'];
         $return['destination_prefix']   = ('push' === $state_data['intent']) ? $state_data['site_details']['remote']['prefix'] : $state_data['site_details']['local']['prefix'];
         // Store current migration state.
         $state = array_merge($state_data, $return);
@@ -205,7 +205,7 @@ class InitiateMigration
 		    'action'       => 'wpmdb_remote_initiate_migration',
 		    'intent'       => $state_data['intent'],
 		    'form_data'    => base64_encode( $state_data['form_data'] ),
-		    'site_details' => base64_encode( serialize( $this->migration_helper->getMergedSiteDetails() ) ),
+		    'site_details' => base64_encode( serialize( $this->migration_helper->getMergedSiteDetails($state_data) ) ),
 	    ];
 
         $data['sig']          = $this->http_helper->create_signature($data, $state_data['key']);

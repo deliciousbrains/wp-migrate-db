@@ -737,10 +737,10 @@ class Util
 
     /**
      * Returns an associative array of html escaped useful information about the site.
-     *
+     * @param array $state_data
      * @return array
      */
-    public function site_details()
+    public function site_details($state_data = [])
     {
         global $wpdb;
         $table_prefix = $wpdb->base_prefix;
@@ -761,7 +761,7 @@ class Util
             'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0)
         );
 
-        $site_details = apply_filters('wpmdb_site_details', $site_details);
+        $site_details = apply_filters('wpmdb_site_details', $site_details, $state_data);
 
         return $site_details;
     }

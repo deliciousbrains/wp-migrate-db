@@ -172,9 +172,8 @@ class Persistence
             (!isset($state_data['site_details']['remote']) || empty($state_data['site_details']['remote']))
             && isset($state_data['site_details']['local'])
         ) {
-            $migration_helper = WPMDBDI::getInstance()->get(MigrationHelper::class);
-
-            $state_data['site_details']['remote'] = $migration_helper->siteDetails()['site_details'];
+            $migration_helper                     = WPMDBDI::getInstance()->get(MigrationHelper::class);
+            $state_data['site_details']['remote'] = $migration_helper->siteDetails($state_data)['site_details'];;
         }
 
 

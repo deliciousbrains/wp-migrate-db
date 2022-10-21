@@ -326,6 +326,10 @@ class Replace
             $i = 1;
             foreach ($custom_pairs as $pair) {
                 $index = $i + $standard_pairs_count;
+                if (empty($pair['replace_old']) && empty($pair['replace_new'])) {
+                    $i++;
+                    continue;
+                }
                 $tmp_find_replace_pairs[$pair['replace_old']] = $pair['replace_new'];
 
                 if(empty($migration_options['regex']) && isset($pair['regex'])) {

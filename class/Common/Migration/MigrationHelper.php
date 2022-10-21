@@ -61,9 +61,14 @@ class MigrationHelper
         $this->assets     = $assets;
     }
 
-    public function getMergedSiteDetails()
+    /**
+     * Merge local and remote site details
+     * @param Array $state_dat
+     * @return array
+     **/
+    public function getMergedSiteDetails($state_data)
     {
-        $local       = $this->util->site_details();
+        $local       = $this->util->site_details($state_data);
         $remote_info = get_site_option('wpmdb_remote_response');
         $remote      = ! empty($remote_info) ? $remote_info['site_details'] : '';
 
@@ -114,7 +119,7 @@ class MigrationHelper
             'is_pro'                        => esc_html($this->props->is_pro ? 'true' : 'false'),
             'lower_case_table_names'        => esc_html($this->tables->get_lower_case_table_names_setting()),
             'subsites'                      => $site_details['subsites'], // TODO: Remove backwards compatibility.
-            'site_details'                  => $this->util->site_details(),
+            'site_details'                  => $site_details,
             'alter_table_name'              => $this->tables->get_alter_table_name(),
             'allow_tracking'                => $this->settings['allow_tracking'],
             'MDB_API_BASE'                  => $this->util->rest_url(),
