@@ -13,6 +13,5 @@ return array(
     'DeliciousBrains\\WPMDB\\Container\\Invoker\\' => array($vendorDir . '/php-di/invoker/src'),
     'DeliciousBrains\\WPMDB\\Container\\Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'DeliciousBrains\\WPMDB\\Container\\Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
-    'DeliciousBrains\\WPMDB\\Container\\Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
     'DeliciousBrains\\WPMDB\\Container\\DI\\' => array($vendorDir . '/php-di/php-di/src/DI'),
 );
