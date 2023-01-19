@@ -281,8 +281,9 @@ class ErrorLog
         $diagnostic_info = array(); // group display sections into arrays
 
         $diagnostic_info['basic-info'] = array(
-            'site_url()' => site_url(),
-            'home_url()' => Util::home_url(),
+            'site_url()'  => site_url(),
+            'home_url()'  => Util::home_url(),
+            'site_path()' =>  esc_html(addslashes(Util::get_absolute_root_file_path())),
         );
 
         $diagnostic_info['db-info'] = array(

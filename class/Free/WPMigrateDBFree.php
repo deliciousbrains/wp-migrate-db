@@ -15,6 +15,8 @@ use DeliciousBrains\WPMDB\Free\Plugin\PluginManager;
 use DeliciousBrains\WPMDB\Free\UI\Template;
 use DeliciousBrains\WPMDB\WPMDBDI;
 use DeliciousBrains\WPMDB\WPMigrateDB;
+use DeliciousBrains\WPMDB\Common\Addon\Addon;
+use DeliciousBrains\WPMDB\Common\Addon\AddonsFacade;
 
 class WPMigrateDBFree extends WPMigrateDB
 {
@@ -33,6 +35,13 @@ class WPMigrateDBFree extends WPMigrateDB
     {
         parent::register();
         $container = WPMDBDI::getInstance();
+
+        //Addons
+        $addons_facade = $container->get(AddonsFacade::class);
+        $addons_facade->register();
+
+        $addons = $container->get(Addon::class);
+        $addons->register();
 
         $container->set(Menu::class, new Menu(
             $container->get(Util::class),

@@ -6,6 +6,7 @@ use DeliciousBrains\WPMDB\Common\BackupExport;
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
+use DeliciousBrains\WPMDB\Common\FullSite\FullSiteExport;
 use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
@@ -76,10 +77,14 @@ class InitiateMigration
      * @var MigrationHelper
      */
     private $migration_helper;
-    /**
-     * @var BackupExport
+    /**	    
+     * @var BackupExport	     
      */
-    private $backup_export;
+     private $backup_export;
+    /**
+     * @var FullSiteExport
+     */
+    private $full_site_export;
 
     public function __construct(
         MigrationStateManager $migration_state_manager,
@@ -94,7 +99,8 @@ class InitiateMigration
         ErrorLog $error_log,
         Properties $properties,
         MigrationHelper $migration_helper,
-        BackupExport $backup_export
+        BackupExport $backup_export,
+        FullSiteExport $full_site_export
     ) {
         $this->migration_state_manager = $migration_state_manager;
         $this->table                   = $table;
@@ -110,6 +116,7 @@ class InitiateMigration
         $this->migration_state         = $migration_state;
         $this->migration_helper        = $migration_helper;
         $this->backup_export           = $backup_export;
+        $this->full_site_export        = $full_site_export;
     }
 
     /**
@@ -285,11 +292,20 @@ class InitiateMigration
 
         // Backups and exports require special handling
         if (in_array($state_data['stage'], array('backup', 'migrate'))) {
-            $return['dump_path']        = $this->table->get_sql_dump_info($state_data['stage'], 'path');
+            $is_full_site_export        = isset($state_data['stages']) ? json_decode($state_data['stages']) !== ['tables']: false;
+            $migration_type             = $is_full_site_export ? 'export' : $state_data['stage'];
+            $return['full_site_export'] = $is_full_site_export;
+            $return['dump_path']        = $this->table->get_sql_dump_info($migration_type, 'path');
             $return['dump_filename']    = wp_basename($return['dump_path']);
-            $return['dump_url']         = $this->table->get_sql_dump_info($state_data['stage'], 'url');
+            $return['dump_url']         = $this->table->get_sql_dump_info($migration_type, 'url');
             $dump_filename_no_extension = substr($return['dump_filename'], 0, -4);
 
+            if ($is_full_site_export) {
+                $return['export_path']     = substr($return['dump_path'], 0, -4) . '.zip';
+                $return['export_url']      = substr($return['dump_url'], 0 , -4) . '.zip';
+                $return['export_dir_name'] = $dump_filename_no_extension;
+                //might need a export directory here.
+            }
             // sets up our table to store 'ALTER' queries
             $create_alter_table_query = $this->table->get_create_alter_table_query();
             $process_chunk_result     = $this->table->process_chunk($create_alter_table_query);
@@ -304,6 +320,7 @@ class InitiateMigration
                     isset($this->migration_options['gzip_file'])
                     && $this->migration_options['gzip_file'] === '1'
                     && Util::gzip()
+                    && !$is_full_site_export
                 ) {
                     $return['dump_path']     .= '.gz';
                     $return['dump_filename'] .= '.gz';
@@ -322,10 +339,18 @@ class InitiateMigration
                         )
                     );
                 }
+                if ($is_full_site_export) {
+                    $create_zip = $this->full_site_export->create_export_zip($upload_path . DIRECTORY_SEPARATOR . $return['export_dir_name'] . '.zip' , $state_data);
 
-                $fp = $this->filesystem->open($upload_path . DIRECTORY_SEPARATOR . $return['dump_filename']);
+                    if (is_wp_error($create_zip)) {
+                        return $this->http->end_ajax($create_zip);
+                    }
+                }
+               
+                $destination = !$is_full_site_export ? $return['dump_filename'] : $return['export_dir_name'] . DIRECTORY_SEPARATOR . $return['dump_filename'];
+                $fp = $this->filesystem->open($upload_path . DIRECTORY_SEPARATOR . $return['dump_filename'], 'a', $is_full_site_export);
                 $this->table->db_backup_header($fp);
-                $this->filesystem->close($fp);
+                $this->filesystem->close($fp, $is_full_site_export);
             }
             $return['dump_filename'] = $dump_filename_no_extension;
         }

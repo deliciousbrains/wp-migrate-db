@@ -504,10 +504,11 @@ class Filesystem
      * @param int $offset
      * @param int $limit
      * @param int $scan_count
+     * @param string $stage
      *
      * @return array|bool|\WP_error
      */
-    public function scandir($abs_path, $offset = 0, $limit = -1, &$scan_count = 0)
+    public function scandir($abs_path, $offset = 0, $limit = -1, &$scan_count = 0, $stage = '')
     {
         $symlink = is_link($abs_path);
         $dirlist = @scandir($abs_path, SCANDIR_SORT_DESCENDING);
@@ -535,7 +536,7 @@ class Filesystem
                 continue;
             }
 
-            $return[$entry] = $this->get_file_info($entry, $abs_path, $symlink);
+            $return[$entry] = $this->get_file_info($entry, $abs_path, $symlink, $stage);
         }
 
         return $return;
@@ -545,33 +546,35 @@ class Filesystem
      * @param string $entry
      * @param string $abs_path
      * @param bool   $symlink
+     * @param string $stage
      *
      * @return array
      */
-    public function get_file_info($entry, $abs_path, $symlink = false )
+    public function get_file_info($entry, $abs_path, $symlink = false, $stage = '')
     {
         $abs_path  = $this->slash_one_direction($abs_path);
         $full_path = trailingslashit($abs_path) . $entry;
         $real_path = realpath($full_path); // Might be different due to symlinks.
 
-        $upload_info     = wp_get_upload_dir();
-        $uploads_basedir = $upload_info['basedir'];
-        $uploads_folder  = wp_basename($uploads_basedir);
-        $is_uploads_in_content     = strpos($uploads_basedir, WP_CONTENT_DIR);
-        $content_path              = false !== $is_uploads_in_content ? WP_CONTENT_DIR : dirname($uploads_basedir);
-        $return                    = array();
-        $return['name']            = $entry;
-        $return['relative_path']   = str_replace($abs_path, '', $full_path);
-        $return['wp_content_path'] = str_replace($this->slash_one_direction($content_path) . DIRECTORY_SEPARATOR, '', $full_path);
-        $return['absolute_path']   = $full_path;
-        $return['type']            = $this->is_dir($abs_path . DIRECTORY_SEPARATOR . $entry) ? 'd' : 'f';
-        $return['size']            = $this->filesize($abs_path . DIRECTORY_SEPARATOR . $entry);
-        $return['filemtime']       = filemtime($abs_path . DIRECTORY_SEPARATOR . $entry);
+        $upload_info                  = wp_get_upload_dir();
+        $uploads_basedir              = $upload_info['basedir'];
+        $uploads_folder               = wp_basename($uploads_basedir);
+        $is_uploads_in_content        = strpos($uploads_basedir, WP_CONTENT_DIR);
+        $content_path                 = false !== $is_uploads_in_content ? WP_CONTENT_DIR : dirname($uploads_basedir);
+        $return                       = array();
+        $return['name']               = $entry;
+        $return['relative_path']      = str_replace($abs_path, '', $full_path);
+        $return['wp_content_path']    = str_replace($this->slash_one_direction($content_path) . DIRECTORY_SEPARATOR, '', $full_path);
+        $return['relative_root_path'] = str_replace($this->slash_one_direction(ABSPATH), '', $full_path);
+        $return['absolute_path']      = $full_path;
+        $return['type']               = $this->is_dir($abs_path . DIRECTORY_SEPARATOR . $entry) ? 'd' : 'f';
+        $return['size']               = $this->filesize($abs_path . DIRECTORY_SEPARATOR . $entry);
+        $return['filemtime']          = filemtime($abs_path . DIRECTORY_SEPARATOR . $entry);
 
         if ($symlink) {
             $return['subpath'] = DIRECTORY_SEPARATOR . basename(dirname($real_path)) . DIRECTORY_SEPARATOR . $entry;
         } else {
-            $return['subpath'] = preg_replace("#^(themes|plugins|mu-plugins|{$uploads_folder})#", '', $return['wp_content_path']);
+            $return['subpath'] = str_replace(Util::get_stage_base_dir($stage), '', $full_path);
         }
 
         $exploded              = explode(DIRECTORY_SEPARATOR, $return['subpath']);
@@ -764,15 +767,24 @@ class Filesystem
 
     function download_file()
     {
+        $is_full_site_export = !empty($_GET['fullSiteExport']);
+        if ($is_full_site_export) {
+            do_action('wpmdb_migration_complete');
+        }
+
         $util         = $this->container->get(Util::class);
         $table_helper = $this->container->get(TableHelper::class);
+
         // don't need to check for user permissions as our 'add_management_page' already takes care of this
         $util->set_time_limit();
 
         $raw_dump_name = filter_input(INPUT_GET, 'download', FILTER_SANITIZE_STRIPPED);
         $dump_name     = $table_helper->format_dump_name($raw_dump_name);
+        $diskfile      = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $dump_name;
+        if ($is_full_site_export) {
+            $diskfile = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $raw_dump_name . '.zip';
+        }
 
-        $diskfile         = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $dump_name;
         $filename         = basename($diskfile);
         $last_dash        = strrpos($filename, '-');
         $salt             = substr($filename, $last_dash, 6);
@@ -781,11 +793,21 @@ class Filesystem
         $backup = filter_input(INPUT_GET, 'backup', FILTER_SANITIZE_STRIPPED);
 
         if (file_exists($diskfile)) {
+            $filesize = $this->filesize($diskfile);
             if (!headers_sent()) {
+
+                ob_end_clean();
+
                 header('Content-Description: File Transfer');
                 header('Content-Type: application/octet-stream');
-                header('Content-Length: ' . $this->filesize($diskfile));
+                header('Content-Length: ' . $filesize);
                 header('Content-Disposition: attachment; filename=' . $filename_no_salt);
+                header('Connection: Keep-Alive');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+
+                ob_end_flush();
+
                 readfile($diskfile);
 
                 Persistence::cleanupStateOptions();
@@ -903,7 +925,7 @@ class Filesystem
     }
 
 
-    function open($filename = '', $mode = 'a', $gzip = false)
+    function open($filename = '', $mode = 'a', $is_full_site_export = false)
     {
         $form_data_class = $this->container->get(FormData::class);
         $form_data       = $form_data_class->getFormData();
@@ -914,7 +936,7 @@ class Filesystem
             return false;
         }
 
-        if ($util->gzip() && $form_data['gzip_file']) {
+        if ($util->gzip() && $form_data['gzip_file'] && !$is_full_site_export) {
             $fp = gzopen($filename, $mode);
         } else {
             $fp = fopen($filename, $mode);
@@ -923,13 +945,13 @@ class Filesystem
         return $fp;
     }
 
-    function close($fp)
+    function close($fp, $is_full_site_export = false)
     {
         $form_data_class = $this->container->get(FormData::class);
         $form_data       = $form_data_class->getFormData();
         $util            = $this->container->get(Util::class);
 
-        if ($util->gzip() && $form_data['gzip_file']) {
+        if ($util->gzip() && $form_data['gzip_file'] && !$is_full_site_export) {
             gzclose($fp);
         } else {
             fclose($fp);
@@ -1005,8 +1027,8 @@ class Filesystem
                     $site_plugins   = get_blog_option($site->blog_id, 'active_plugins');
                     if (is_array($site_plugins)) {
                         $active_plugins = array_merge($active_plugins, $site_plugins);
-                    }   
-                } 
+                    }
+                }
             }
         }
 
@@ -1029,9 +1051,6 @@ class Filesystem
                     continue;
                 }
 
-                if (stristr($file, 'wp-migrate-db')) {
-                    continue;
-                }
 
                 if (is_dir($plugin_root . DIRECTORY_SEPARATOR . $file)) {
                     $plugin_files[$file] = $plugin_root . DIRECTORY_SEPARATOR . $file;

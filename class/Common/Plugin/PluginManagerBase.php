@@ -15,6 +15,7 @@ use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
 use DeliciousBrains\WPMDB\Common\UI\TemplateBase;
+use DeliciousBrains\WPMDB\Common\Upgrades\UpgradeRoutinesManager;
 use DeliciousBrains\WPMDB\Common\Util\Util;
 use DeliciousBrains\WPMDB\Pro\UI\Template;
 use PHP_CodeSniffer\Tokenizers\PHP;
@@ -94,6 +95,11 @@ class PluginManagerBase
     private $profile_manager;
 
     /**
+     * @var UpgradeRoutinesManager
+     */
+    private $upgrade_routines_manager;
+
+    /**
      * PluginManagerBase constructor.
      *
      * Free and Pro extend this class
@@ -124,22 +130,24 @@ class PluginManagerBase
         Helper $http_helper,
         TemplateBase $template,
         Notice $notice,
-        ProfileManager $profile_manager
+        ProfileManager $profile_manager,
+        UpgradeRoutinesManager $upgrade_routines_manager
     ) {
-        $this->props            = $properties;
-        $this->settings         = $settings->get_settings();
-        $this->assets           = $assets;
-        $this->util             = $util;
-        $this->tables           = $table;
-        $this->http             = $http;
-        $this->filesystem       = $filesystem;
-        $this->multisite        = $multisite;
-        $this->migration_helper = $migration_helper;
-        $this->rest_API_server  = $rest_API_server;
-        $this->http_helper      = $http_helper;
-        $this->template         = $template;
-        $this->notice           = $notice;
-        $this->profile_manager  = $profile_manager;
+        $this->props                    = $properties;
+        $this->settings                 = $settings->get_settings();
+        $this->assets                   = $assets;
+        $this->util                     = $util;
+        $this->tables                   = $table;
+        $this->http                     = $http;
+        $this->filesystem               = $filesystem;
+        $this->multisite                = $multisite;
+        $this->migration_helper         = $migration_helper;
+        $this->rest_API_server          = $rest_API_server;
+        $this->http_helper              = $http_helper;
+        $this->template                 = $template;
+        $this->notice                   = $notice;
+        $this->profile_manager          = $profile_manager;
+        $this->upgrade_routines_manager = $upgrade_routines_manager;
     }
 
     /**
@@ -253,6 +261,9 @@ class PluginManagerBase
         if (true === $update_schema) {
             update_site_option('wpmdb_schema_version', $schema_version);
         }
+
+        //Since 2.6.0, this is the way to manage upgrade routines.
+        $this->upgrade_routines_manager->perform_upgrade_routines();
 
         do_action('wpmdb_after_schema_update', $schema_version);
     }
@@ -424,8 +435,8 @@ class PluginManagerBase
                         $profile_data->theme_plugin_files->themes_excludes = property_exists($profile_data->theme_plugin_files, 'excludes')
                             ? $profile_data->theme_plugin_files->excludes
                             : '';
-                    }  
-                    
+                    }
+
                     //updates for others and muplugins added 2.3.4
                     if ( ! property_exists($profile_data->theme_plugin_files, 'other_files')) {
                         $profile_data->theme_plugin_files->other_files = ['enabled' => false];
@@ -439,7 +450,7 @@ class PluginManagerBase
                         $profile_data->theme_plugin_files->muplugins_selected = [];
                         $profile_data->theme_plugin_files->muplugins_excludes = '';
                     }
-                   
+
                     if ( ! property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {}
                     if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_option')) {}
                     if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_selected')) {}

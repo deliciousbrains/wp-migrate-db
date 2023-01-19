@@ -6,6 +6,7 @@ use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
 use DeliciousBrains\WPMDB\Common\Error\HandleRemotePostError;
 use DeliciousBrains\WPMDB\Common\Filesystem\Filesystem;
 use DeliciousBrains\WPMDB\Common\FormData\FormData;
+use DeliciousBrains\WPMDB\Common\FullSite\FullSiteExport;
 use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\Http;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
@@ -132,6 +133,10 @@ class Table
      * @var MigrationHelper
      */
     private $migration_helper;
+     /**
+     * @var FullSiteExport
+     */
+    private $full_site_export;
 
     /**
      * Table constructor.
@@ -161,7 +166,8 @@ class Table
         Helper $http_helper,
         RemotePost $remote_post,
         Properties $properties,
-        Replace $replace
+        Replace $replace,
+        FullSiteExport $full_site_export
     ) {
         $this->rows_per_segment = apply_filters('wpmdb_rows_per_segment', 100);
 
@@ -178,6 +184,7 @@ class Table
         $this->http_helper             = $http_helper;
         $this->remote_post             = $remote_post;
         $this->replace                 = $replace;
+        $this->full_site_export        = $full_site_export;
     }
 
     /**
@@ -290,7 +297,10 @@ class Table
 
         $datetime  = date('YmdHis');
         $ds        = ($info_type == 'path' ? DIRECTORY_SEPARATOR : '/');
-        $dump_info = sprintf('%s%s%s-%s-%s-%s.sql', $this->filesystem->get_upload_info($info_type), $ds, sanitize_title_with_dashes(DB_NAME), $migration_type, $datetime, $session_salt);
+        $dump_name = get_bloginfo() ? strtolower(preg_replace('/\s+/', '', get_bloginfo())) : sanitize_title_with_dashes(DB_NAME);
+        $dump_name .= 'export' === $migration_type ? '' : '-' . $migration_type;
+        $dump_name = apply_filters('wpmdb_export_filename', sprintf('%s-%s',$dump_name, $datetime));
+        $dump_info = sprintf('%s%s%s-%s.sql', $this->filesystem->get_upload_info($info_type), $ds, $dump_name, $session_salt);
 
         return ($info_type == 'path' ? $this->filesystem->slash_one_direction($dump_info) : $dump_info);
     }
@@ -1052,7 +1062,8 @@ class Table
         }
 
         if ('savefile' === $state_data['intent'] || in_array($state_data['stage'], array('backup', 'import'))) {
-            if (Util::gzip() && (isset($form_data['gzip_file']) && $form_data['gzip_file'])) {
+            $is_full_site_export = isset($state_data['stages']) && json_decode($state_data['stages']) !== ['tables'] ? true : false;
+            if (Util::gzip() && (isset($form_data['gzip_file']) && $form_data['gzip_file']) && !$is_full_site_export) {
                 if (!gzwrite($fp, $query_line)) {
                     $this->error_log->setError(__('Failed to write the gzipped SQL data to the file. (#127)', 'wp-migrate-db'));
 
@@ -1682,8 +1693,22 @@ class Table
             );
 
             if ($state_data['intent'] == 'savefile' && $state_data['last_table'] == '1') {
-                $result['dump_filename'] = $state_data['dump_filename'];
-                $result['dump_path']     = $state_data['dump_path'];
+                $result['dump_filename']    = $state_data['dump_filename'];
+                $result['dump_path']        = $state_data['dump_path'];
+                $result['full_site_export'] = $state_data['full_site_export'];
+                if ($state_data['full_site_export'] === true ) {
+                    $result['export_path'] = $state_data['export_path'];
+                    $move_into_zip = $this->full_site_export->move_into_zip($state_data['dump_path'], $state_data['export_path']);
+
+                    if ($move_into_zip === false) {
+                        return $this->http->end_ajax(
+                            new \WP_Error(
+                                'wpmdb-error-moving-sql-file',
+                                __('Error moving SQL file into ZIP archive', 'wp-migrate-db')
+                            )
+                        );
+                    }
+                }
             }
 
             if ($this->row_tracker === -1) {
@@ -1922,7 +1947,7 @@ class Table
 
         $this->stow('# URL: ' . esc_html(addslashes($url)) . "\n", false, $fp);
 
-        $path = $this->util->get_absolute_root_file_path();
+        $path = Util::get_absolute_root_file_path();
         $key  = array_search($path, $search_replace_values['replace_old']);
 
         if (false !== $key) {

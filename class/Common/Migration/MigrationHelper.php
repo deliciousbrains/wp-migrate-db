@@ -86,7 +86,7 @@ class MigrationHelper
         return [
             'connection_info'               => array(site_url('', 'https'), $this->settings['key']),
             'this_url'                      => $url,
-            'this_path'                     => esc_html(addslashes($this->util->get_absolute_root_file_path())),
+            'this_path'                     => esc_html(addslashes(Util::get_absolute_root_file_path())),
             'this_domain'                   => esc_html($this->multisite->get_domain_current_site()),
             'this_tables'                   => $this->tables->get_tables(),
             'this_prefixed_tables'          => $this->tables->get_tables('prefix'),
@@ -127,8 +127,8 @@ class MigrationHelper
             'migration_profiles'            => $this->assets->get_saved_migration_profiles(),
             'recent_migrations'             => $this->assets->get_recent_migrations(get_site_option('wpmdb_recent_migrations')),
             'mst_available'                 => Util::isPro() && Util::is_addon_registered('mst'),
-            'tpf_available'                 => Util::isPro() && Util::is_addon_registered('tpf'),
-            'mf_available'                  => Util::isPro() && Util::is_addon_registered('mf'),
+            'tpf_available'                 => Util::is_addon_registered('tpf'),
+            'mf_available'                  => Util::is_addon_registered('mf'),
             'mst_required_message'          => $this->multisite->mst_required_message(),
             'time_format'                   => get_option('time_format'),
             'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0)

@@ -47,6 +47,19 @@ class Util
     }
 
     /**
+     * Gets the global plugin meta info
+     *
+     * @return array
+     **/
+    public static function getPluginMeta()
+    {
+        if (self::isPro()) {
+            return $GLOBALS['wpmdb_meta']['wp-migrate-db-pro'];
+        }
+        return $GLOBALS['wpmdb_meta']['wp-migrate-db'];
+    }
+
+    /**
      * Has a specific method been called in the stack trace.
      *
      * @param string     $method
@@ -612,7 +625,7 @@ class Util
      *
      * @return string
      */
-    function get_absolute_root_file_path()
+    public static function get_absolute_root_file_path()
     {
         static $absolute_path;
 
@@ -773,7 +786,7 @@ class Util
      */
     public function get_short_uploads_dir()
     {
-        $short_path = str_replace($this->get_absolute_root_file_path(), '', $this->filesystem->get_upload_info('path'));
+        $short_path = str_replace(self::get_absolute_root_file_path(), '', $this->filesystem->get_upload_info('path'));
 
         return trailingslashit(substr(str_replace('\\', '/', $short_path), 1));
     }
@@ -1353,5 +1366,32 @@ class Util
         }
 
         return true;
+    }
+
+    /**
+     * Gets the directory for each stage
+     * Defaults to uploads dir if no match
+     * 
+     * @param string $stage
+     * @return string
+     **/
+    public static function get_stage_base_dir($stage)
+    {
+        $wp_upload_dir = wp_upload_dir();
+        $dirs          = [
+            'media_files'     => $wp_upload_dir['basedir'],
+            'theme_files'     => WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes',
+            'themes'          => WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes',
+            'plugin_files'    => WP_PLUGIN_DIR,
+            'plugins'         => WP_PLUGIN_DIR,
+            'mu_plugin_files' => WPMU_PLUGIN_DIR,
+            'muplugins'       => WPMU_PLUGIN_DIR,
+            'other_files'     => WP_CONTENT_DIR,
+            'others'          => WP_CONTENT_DIR,
+            'core_files'      => ABSPATH ,
+            'core'            => ABSPATH
+        ];
+        $stage = in_array($stage, array_keys($dirs)) ? $stage : 'media_files';
+        return $dirs[$stage];
     }
 }

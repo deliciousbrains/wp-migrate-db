@@ -2,6 +2,8 @@
 
 namespace DeliciousBrains\WPMDB;
 
+use DeliciousBrains\WPMDB\Common\Addon\Addon;
+use DeliciousBrains\WPMDB\Common\Addon\AddonsFacade;
 use DeliciousBrains\WPMDB\Common\BackupExport;
 use DeliciousBrains\WPMDB\Common\Cli\CliManager;
 use DeliciousBrains\WPMDB\Common\Compatibility\CompatibilityManager;
@@ -9,10 +11,14 @@ use DeliciousBrains\WPMDB\Common\DryRun\DiffGroup;
 use DeliciousBrains\WPMDB\Common\DryRun\DiffInterpreter;
 use DeliciousBrains\WPMDB\Common\DryRun\MemoryPersistence;
 use DeliciousBrains\WPMDB\Common\Error\ErrorLog;
+use DeliciousBrains\WPMDB\Common\Filesystem\RecursiveScanner;
+use DeliciousBrains\WPMDB\Common\FullSite\FullSiteExport;
 use DeliciousBrains\WPMDB\Common\Http\Helper;
 use DeliciousBrains\WPMDB\Common\Http\RemotePost;
 use DeliciousBrains\WPMDB\Common\Http\Scramble;
 use DeliciousBrains\WPMDB\Common\Http\WPMDBRestAPIServer;
+use DeliciousBrains\WPMDB\Common\MF\MediaFilesAddon;
+use DeliciousBrains\WPMDB\Common\MF\MediaFilesLocal;
 use DeliciousBrains\WPMDB\Common\Migration\FinalizeMigration;
 use DeliciousBrains\WPMDB\Common\Migration\InitiateMigration;
 use DeliciousBrains\WPMDB\Common\Migration\MigrationHelper;
@@ -24,15 +30,27 @@ use DeliciousBrains\WPMDB\Common\Plugin\PluginManagerBase;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileImporter;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
+use DeliciousBrains\WPMDB\Common\Queue\Manager;
+use DeliciousBrains\WPMDB\Common\Queue\QueueHelper;
 use DeliciousBrains\WPMDB\Common\Replace;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\Common\Settings\SettingsManager;
 use DeliciousBrains\WPMDB\Common\Sql\Table;
 use DeliciousBrains\WPMDB\Common\Sql\TableHelper;
+use DeliciousBrains\WPMDB\Common\TPF\ThemePluginFilesAddon;
+use DeliciousBrains\WPMDB\Common\TPF\ThemePluginFilesFinalize;
+use DeliciousBrains\WPMDB\Common\TPF\ThemePluginFilesLocal;
+use DeliciousBrains\WPMDB\Common\TPF\TransferCheck;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\FileProcessor;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\Filters\WPConfigFilter;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\PluginHelper;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\TransferManager;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\Util;
 use DeliciousBrains\WPMDB\Common\UI\Notice;
 use DeliciousBrains\WPMDB\Common\UI\TemplateBase;
 use DeliciousBrains\WPMDB\Common\Migration\Flush;
 use DeliciousBrains\WPMDB\Common\Replace\PairFactory;
+use DeliciousBrains\WPMDB\Common\Upgrades\UpgradeRoutinesManager;
 
 class ClassMap
 {
@@ -73,11 +91,86 @@ class ClassMap
     public $flush;
     public $pair_factory;
     public $diff_interpreter;
+    public $full_site_export;
 
     /**
      * @var ProfileImporter
      */
     public $profile_importer;
+    /**
+     * @var Util
+     */
+    public $transfers_util;
+    /**
+     * @var Manager
+     */
+    public $queue_manager;
+    /**
+     * @var TransferManager
+     */
+    public $transfers_manager;
+    /**
+     * @var RecursiveScanner
+     */
+    public $recursive_scanner;
+    /**
+     * @var FileProcessor
+     */
+    public $transfers_file_processor;
+    /**
+     * @var QueueHelper
+     */
+    public $transfers_queue_helper;
+    /**
+     * @var PluginHelper
+     */
+    public $transfers_plugin_helper;
+    /**
+     * @var Addon
+     */
+    public $addon;
+    /**
+     * @var MediaFilesAddon
+     */
+    public $media_files_addon;
+    /**
+     * @var MediaFilesLocal
+     */
+    public $media_files_addon_local;
+    /**
+     * @var ThemePluginFilesFinalize
+     */
+    public $tp_addon_finalize;
+    /**
+     * @var ThemePluginFilesAddon
+     */
+    public $tp_addon;
+    /**
+     * @var TransferCheck
+     */
+    public $tp_addon_transfer_check;
+    /**
+     * @var ThemePluginFilesLocal
+     */
+    public $tp_addon_local;
+    /**
+     * @var Common\TPF\Manager
+     */
+    public $theme_plugin_manager;
+
+    /**
+     * @var AddonsFacade
+     */
+    public $addons_facade;
+    /**
+     * @var Common\MF\Manager
+     */
+    public $media_files_manager;
+
+    /**
+     * @var UpgradeRoutinesManager
+     */
+    public $upgrade_routines_manager;
 
     public function __construct()
     {
@@ -174,6 +267,10 @@ class ClassMap
         // Notice
         $this->notice = new Notice();
 
+        $this->full_site_export = new FullSiteExport([
+            new WPConfigFilter(),
+        ]);
+
         //Table
         $this->table = new Table(
             $this->filesystem,
@@ -187,7 +284,8 @@ class ClassMap
             $this->http_helper,
             $this->remote_post,
             $this->properties,
-            $this->replace
+            $this->replace,
+            $this->full_site_export
         );
         $this->profile_importer = new ProfileImporter($this->util, $this->table);
         // BackupExport
@@ -235,7 +333,8 @@ class ClassMap
             $this->error_log,
             $this->properties,
             $this->migration_helper,
-            $this->backup_export
+            $this->backup_export,
+            $this->full_site_export
         );
 
         //FinalizeMigration
@@ -271,7 +370,8 @@ class ClassMap
             $this->finalize_migration,
             $this->properties,
             $this->WPMDBRestAPIServer,
-            $this->migration_helper
+            $this->migration_helper,
+            $this->full_site_export
         );
 
         // ProfileManager
@@ -324,6 +424,9 @@ class ClassMap
             $this->util
         );
 
+        $this->upgrade_routines_manager = new UpgradeRoutinesManager($this->assets, $this->profile_manager);
+
+
         $this->plugin_manager_base = new PluginManagerBase(
             $this->settings,
             $this->assets,
@@ -338,7 +441,8 @@ class ClassMap
             $this->http_helper,
             $this->template_base,
             $this->notice,
-            $this->profile_manager
+            $this->profile_manager,
+            $this->upgrade_routines_manager
         );
 
         $this->cli_manager = new CliManager();
@@ -356,5 +460,151 @@ class ClassMap
             $this->migration_state_manager
         );
         $this->flush = new Flush($this->http_helper, $this->util, $this->remote_post, $this->http);
+
+        // Transfers classes
+
+        $this->transfers_util = new Util(
+            $this->filesystem,
+            $this->http,
+            $this->error_log,
+            $this->http_helper,
+            $this->remote_post,
+            $this->settings,
+            $this->migration_state_manager,
+            $this->util
+        );
+
+        $this->queue_manager = new Manager(
+            $this->properties,
+            $this->state_data_container,
+            $this->migration_state_manager,
+            $this->form_data
+        );
+
+        $this->transfers_manager = new TransferManager(
+            $this->queue_manager,
+            $this->transfers_util,
+            $this->http,
+            $this->full_site_export
+        );
+
+        $this->recursive_scanner = new RecursiveScanner($this->filesystem, $this->transfers_util);
+
+
+        $this->transfers_file_processor = new FileProcessor(
+            $this->filesystem,
+            $this->http,
+            $this->recursive_scanner
+        );
+
+        $this->transfers_queue_helper = new QueueHelper(
+            $this->filesystem,
+            $this->http,
+            $this->http_helper,
+            $this->transfers_util,
+            $this->queue_manager,
+            $this->util
+        );
+
+        $this->transfers_plugin_helper = new PluginHelper(
+            $this->filesystem,
+            $this->properties,
+            $this->http,
+            $this->http_helper,
+            $this->settings,
+            $this->migration_state_manager,
+            $this->scrambler,
+            $this->transfers_file_processor,
+            $this->transfers_util,
+            $this->queue_manager,
+            $this->queue_manager,
+            $this->state_data_container
+        );
+
+        $this->addon = new Addon(
+            $this->error_log,
+            $this->settings,
+            $this->properties
+        );
+
+        /* Start MF Section */
+        $this->media_files_addon = new MediaFilesAddon(
+            $this->addon,
+            $this->properties,
+            $this->util,
+            $this->transfers_util,
+            $this->filesystem
+        );
+
+        $this->media_files_addon_local = new MediaFilesLocal(
+            $this->form_data,
+            $this->http,
+            $this->util,
+            $this->http_helper,
+            $this->WPMDBRestAPIServer,
+            $this->transfers_manager,
+            $this->transfers_util,
+            $this->transfers_file_processor,
+            $this->transfers_queue_helper,
+            $this->queue_manager,
+            $this->transfers_plugin_helper,
+            $this->profile_manager
+        );
+
+        $this->media_files_manager = new Common\MF\Manager();
+        /* End MF Section */
+
+        /* Start TPF Section */
+        $this->tp_addon_finalize = new ThemePluginFilesFinalize(
+            $this->form_data,
+            $this->filesystem,
+            $this->transfers_util,
+            $this->error_log,
+            $this->http,
+            $this->state_data_container,
+            $this->queue_manager,
+            $this->migration_state_manager,
+            $this->transfers_plugin_helper
+        );
+
+        $this->tp_addon = new ThemePluginFilesAddon(
+            $this->addon,
+            $this->properties,
+            $this->filesystem,
+            $this->profile_manager,
+            $this->util,
+            $this->transfers_util,
+            $this->tp_addon_finalize,
+            $this->transfers_plugin_helper
+        );
+
+        $this->tp_addon_transfer_check = new TransferCheck(
+            $this->form_data,
+            $this->http,
+            $this->error_log
+        );
+
+        $this->tp_addon_local = new ThemePluginFilesLocal(
+            $this->transfers_util,
+            $this->util,
+            $this->transfers_file_processor,
+            $this->queue_manager,
+            $this->transfers_manager,
+            $this->migration_state_manager,
+            $this->http,
+            $this->filesystem,
+            $this->tp_addon_transfer_check,
+            $this->WPMDBRestAPIServer,
+            $this->http_helper,
+            $this->transfers_queue_helper
+        );
+
+        $this->theme_plugin_manager = new Common\TPF\Manager();
+        /* End TPF Section */
+
+        $this->addons_facade = new AddonsFacade([
+            $this->media_files_manager,
+            $this->theme_plugin_manager
+        ]);
     }
 }

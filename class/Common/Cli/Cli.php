@@ -955,7 +955,7 @@ class Cli
 		);
 
 		$home        = preg_replace('/^https?:/', '', home_url());
-		$path        = esc_html(addslashes($this->util->get_absolute_root_file_path()));
+		$path        = esc_html(addslashes(Util::get_absolute_root_file_path()));
 
 		$old_profile = apply_filters('wpmdb_cli_filter_get_profile_data_from_args', $profile, $args, $assoc_args);
 

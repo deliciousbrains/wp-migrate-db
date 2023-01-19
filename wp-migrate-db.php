@@ -2,10 +2,10 @@
 /*
 Plugin Name: WP Migrate Lite
 Plugin URI: https://wordpress.org/plugins/wp-migrate-db/
-Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
-Author: Delicious Brains
-Version: 2.5.0
-Author URI: https://deliciousbrains.com/?utm_campaign=WP%2BMigrate%2BDB%2BPro%2BUpgrade&utm_source=wordpress.org&utm_medium=free%2Bplugin%2Blisting
+Description: Migrate your database. Export full sites including media, themes, and plugins. Find and replace content with support for serialized data.
+Author: WP Engine
+Version: 2.6.0
+Author URI: https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=plugin-header&utm_medium=plugin&utm_campaign=plugin-author&utm_content=wp-migrate-author
 Network: True
 Text Domain: wp-migrate-db
 Domain Path: /languages/

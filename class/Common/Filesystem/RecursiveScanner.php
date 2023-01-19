@@ -3,8 +3,8 @@
 namespace DeliciousBrains\WPMDB\Common\Filesystem;
 
 use DeliciousBrains\WPMDB\Common\MigrationPersistence\Persistence;
-use DeliciousBrains\WPMDB\Pro\Transfers\Files\Excludes;
-use DeliciousBrains\WPMDB\Pro\Transfers\Files\Util;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\Excludes;
+use DeliciousBrains\WPMDB\Common\Transfers\Files\Util;
 
 class RecursiveScanner
 {
@@ -79,9 +79,11 @@ class RecursiveScanner
      * Recursively scans a directory contents while minding the scan bottleneck.
      *
      * @param string $abs_path
+     * @param string $stage
+     * 
      * @return array|bool|\WP_error
      */
-    public function scan($abs_path)
+    public function scan($abs_path, $stage = '')
     {
         $offset = 0;
 
@@ -109,7 +111,7 @@ class RecursiveScanner
 
         $scan_count = 0;
 
-        $dirlist = $this->filesystem->scandir($abs_path, $offset, $this->get_bottleneck(), $scan_count);
+        $dirlist = $this->filesystem->scandir($abs_path, $offset, $this->get_bottleneck(), $scan_count, $stage);
 
         if (is_wp_error($dirlist)) {
             return $dirlist;
@@ -134,7 +136,7 @@ class RecursiveScanner
         if (!$this->reached_bottleneck()) {
             $this->update_manifest_item($abs_path, $root, 0, true);
             if (!$this->is_scan_complete($root)) {
-                $dirlist += $this->scan($root);
+                $dirlist += $this->scan($root, $stage);
             }
         } else {
             //Scan isn't complete, just update the offset.

@@ -2,6 +2,8 @@
 
 namespace DeliciousBrains\WPMDB\Common\Cli;
 
+use DeliciousBrains\WPMDB\Common\Transfers\Files\Util;
+
 class Command
 {
 
@@ -75,7 +77,7 @@ class Command
 	{
 
 		$assoc_args['action']      = 'savefile';
-		$assoc_args['export_dest'] = sanitize_file_name($args[0]);
+		$assoc_args['export_dest'] = Util::sanitize_file_path($args[0]);
 
 		if (empty($assoc_args['export_dest'])) {
 			\WP_CLI::error(Cli::cleanup_message(__('You must provide a destination filename.', 'wp-migrate-db-cli')));

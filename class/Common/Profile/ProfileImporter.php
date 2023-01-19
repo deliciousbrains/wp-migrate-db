@@ -63,7 +63,7 @@ class ProfileImporter
         $new_saved_profiles = get_site_option('wpmdb_saved_profiles'); //New profiles
         $wpmdb_settings     = get_site_option('wpmdb_settings');
         $home               = preg_replace('/^https?:/', '', Util::home_url());
-        $path               = esc_html(addslashes($this->util->get_absolute_root_file_path()));
+        $path               = esc_html(addslashes(Util::get_absolute_root_file_path()));
 
         $new_saved_profiles = $this->importOldProfiles($new_saved_profiles, $wpmdb_settings, $home, $path);
 

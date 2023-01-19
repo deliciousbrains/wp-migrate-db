@@ -28,7 +28,8 @@ class ClassMap extends \DeliciousBrains\WPMDB\ClassMap
             $this->http_helper,
             $this->template_base,
             $this->notice,
-            $this->profile_manager
+            $this->profile_manager,
+            $this->upgrade_routines_manager
         );
 
         $this->free_template = new Template(
