@@ -111,7 +111,7 @@ class RecursiveScanner
 
         $scan_count = 0;
 
-        $dirlist = $this->filesystem->scandir($abs_path, $offset, $this->get_bottleneck(), $scan_count, $stage);
+        $dirlist = $this->filesystem->scandir($abs_path, $stage, $offset, $this->get_bottleneck(), $scan_count);
 
         if (is_wp_error($dirlist)) {
             return $dirlist;

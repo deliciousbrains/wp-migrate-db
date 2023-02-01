@@ -624,17 +624,24 @@ class Replace
         }
 
         //If the intent is find_replace we need to prefix the tables with the temp prefix and wp base table prefix.
-        $table_prefix = '';
+        global $wpdb;
+        $table_prefix = $wpdb->base_prefix;
         if ( 'find_replace' === $this->get_intent() ) {
-            global $wpdb;
-            $table_prefix = $this->properties->temp_prefix . $wpdb->base_prefix;
+            
+            $table_prefix = $this->properties->temp_prefix . $table_prefix;
         }
 
-        // Some options contain serialized self-references which leads to memory exhaustion. Skip these.
-        if ( $this->table_is( 'options', $table_prefix ) && 'option_value' === $this->get_column() && is_serialized( $data ) ) {
-            if ( preg_match( '/r\:\d+;/i', $data ) ) {
-                return $data;
-            }
+        if ($this->should_do_reference_check($table_prefix) && is_serialized( $data ) && preg_match('/r\:\d+;/i', $data)) {
+            $current_row   = $this->get_row();
+            $first_row_key = reset($current_row);
+            $skipped       = [
+                'table'          => str_replace('_mig_', '', $this->get_table()),
+                'primary_key'    => $first_row_key,
+                'column'         => $this->get_column(),
+                'contains_match' => $this->has_skipped_values($data)
+            ];
+            error_log('WPMDB Find & Replace skipped: ' . json_encode($skipped));
+            return $data;
         }
 
         $is_json           = false;
@@ -731,6 +738,38 @@ class Replace
         }
 
         return $data;
+    }
+
+    /**
+     * Search unseralized string for potential match
+     * 
+     * @param string $data
+     * @return bool
+     **/
+    protected function has_skipped_values($data)
+    {
+        foreach( $this->search as $search_string) {
+            if (false !== strpos($data, $search_string)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Table and cloumns to search for references
+     * @param string $table_prefix
+     * @return bool
+     **/
+    protected function should_do_reference_check($table_prefix)
+    {
+        if ( $this->table_is('options', $table_prefix) && 'option_value' === $this->get_column()) {
+            return true;
+        }
+        if ( $table_prefix . 'duplicator_packages' === $this->get_table()  && 'package' === $this->get_column() ) {
+            return  true;
+        }
+        return false;
     }
 
     /**

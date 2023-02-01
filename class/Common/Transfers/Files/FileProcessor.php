@@ -268,7 +268,7 @@ class FileProcessor
             $this->recursive_scanner->initialize($directory);
             $files = $this->recursive_scanner->scan($directory, $stage);
         } else {
-            $files = $this->filesystem->scandir_recursive($directory);
+            $files = $this->filesystem->scandir_recursive($directory, $stage);
         }
 
         if (is_wp_error($files)) {

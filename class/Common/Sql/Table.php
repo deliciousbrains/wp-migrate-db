@@ -291,13 +291,15 @@ class Table
         return empty($setting) ? '-1' : $setting;
     }
 
-    function get_sql_dump_info($migration_type, $info_type)
+    public function get_sql_dump_info($migration_type, $info_type)
     {
         $session_salt = strtolower(wp_generate_password(5, false, false));
 
         $datetime  = date('YmdHis');
         $ds        = ($info_type == 'path' ? DIRECTORY_SEPARATOR : '/');
         $dump_name = get_bloginfo() ? strtolower(preg_replace('/\s+/', '', get_bloginfo())) : sanitize_title_with_dashes(DB_NAME);
+        //Strip out any non-alphanumeric characters
+        $dump_name = preg_replace("/[^A-Za-z0-9 ]/", '', $dump_name);
         $dump_name .= 'export' === $migration_type ? '' : '-' . $migration_type;
         $dump_name = apply_filters('wpmdb_export_filename', sprintf('%s-%s',$dump_name, $datetime));
         $dump_info = sprintf('%s%s%s-%s.sql', $this->filesystem->get_upload_info($info_type), $ds, $dump_name, $session_salt);

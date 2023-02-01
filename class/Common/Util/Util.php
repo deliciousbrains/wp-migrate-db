@@ -615,7 +615,7 @@ class Util
      *
      * @return string
      */
-    function slash_one_direction($path)
+    public static function slash_one_direction($path)
     {
         return str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
     }
@@ -1392,6 +1392,6 @@ class Util
             'core'            => ABSPATH
         ];
         $stage = in_array($stage, array_keys($dirs)) ? $stage : 'media_files';
-        return $dirs[$stage];
+        return self::slash_one_direction($dirs[$stage]);
     }
 }

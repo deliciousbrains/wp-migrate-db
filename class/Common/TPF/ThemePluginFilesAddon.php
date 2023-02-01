@@ -14,6 +14,7 @@ use DeliciousBrains\WPMDB\Common\Transfers\Files\PluginHelper;
 use DeliciousBrains\WPMDB\Pro\Transfers\Receiver;
 use DeliciousBrains\WPMDB\Pro\UI\Template;
 use DeliciousBrains\WPMDB\WPMDBDI;
+use DeliciousBrains\WPMDB\Common\Properties\DynamicProperties;
 
 class ThemePluginFilesAddon extends AddonAbstract
 {
@@ -516,7 +517,6 @@ class ThemePluginFilesAddon extends AddonAbstract
         if (array_key_exists('max_request', $site_details) && array_key_exists('transfer_bottleneck', $site_details)) {
             return $site_details;
         }
-
 
         $exclude_wpdb_plugins                = in_array($intent, ['savefile', '']) ? false : true;
         $site_details['plugins']             = $this->filesystem->get_local_plugins($exclude_wpdb_plugins);

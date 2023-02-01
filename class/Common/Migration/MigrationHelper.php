@@ -115,6 +115,10 @@ class MigrationHelper
             'bottleneck'                    => esc_html($this->util->get_bottleneck('max')),
             // TODO: Use WP_Filesystem API.
             'write_permissions'             => esc_html(is_writable($this->filesystem->get_upload_info('path')) ? 'true' : 'false'),
+            'themes_permissions'            => is_writeable(WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes') ? 'true' : 'false',
+            'plugins_permissions'           => is_writeable(WP_PLUGIN_DIR) ? 'true' : 'false',
+            'muplugins_permissions'         => is_writeable(WPMU_PLUGIN_DIR) ? 'true' : 'false',
+            'others_permissions'            => is_writeable(WP_CONTENT_DIR) ? 'true' : 'false',
             'profile'                       => isset($_GET['wpmdb-profile']) ? $_GET['wpmdb-profile'] : '-1',
             'is_pro'                        => esc_html($this->props->is_pro ? 'true' : 'false'),
             'lower_case_table_names'        => esc_html($this->tables->get_lower_case_table_names_setting()),

@@ -4,7 +4,7 @@ Tags: migrate, push pull, clone, import site, export site, transfer, restore, ba
 Requires at least: 5.2
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ https://deliciousbrains.wistia.com/medias/vahu041lkd
 
 == WP Migrate Lite Features ==
 
-** Database Migrations **
+**Database Migrations**
 
 WP Migrate Lite can help move your WordPress database using an easy-to-follow three-step process.
 
@@ -28,15 +28,15 @@ WP Migrate Lite can help move your WordPress database using an easy-to-follow th
 
 Simple, right? WordPress database migrations shouldn’t have to be overly complicated or cumbersome. With WP Migrate Lite, database transfers become so much easier.
 
-** Full-Site Exports **
+**Full-Site Exports**
 
 WP Migrate Lite can now [export your entire site](https://deliciousbrains.com/wp-migrate-db-pro/doc/full-site-exports/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=wp-migrate-readme&utm_content=full-site-exports), including the database, media uploads, themes, plugins, and other files required to create an exact copy of your site in a new environment. In the same friendly interface you know, you can configure your export, choose what you want to include or exclude, and then single-click your way to a downloadable ZIP file of your complete site. A perfect solution for simple migrations and site copying.
 
-** Import to Local **
+**Import to Local**
 
 Thanks to our good friends at WP Engine, [Local](https://localwp.com/?utm_source=migrate-wp-plugin-repo&utm_medium=wpmigrate&utm_campaign=local&utm_content=local-cta)—the #1 local WordPress development tool—can now [import full-site ZIP archives](https://deliciousbrains.com/wp-migrate-db-pro/doc/importing-wordpress-local-development-environment/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=wp-migrate-readme&utm_content=import-to-local) that have been exported using WP Migrate. Simply drag and drop the downloaded ZIP file into Local and you’re up and running with a complete copy of your site in minutes.
 
-** Find & Replace **
+**Find & Replace**
 
 WP Migrate can find and replace content anywhere in your WordPress database with support for serialized data. This makes it easier to migrate your database without risk of corruption.
 
@@ -46,7 +46,7 @@ Example: `s:5:"hello"` becomes `s:11:"hello world"`
 
 You can also run a find and replace on the current database even if you have no plans to migrate it.
 
-** Database Backups **
+**Database Backups**
 
 WP Migrate can automatically back up your database before running a find and replace operation or on demand as needed.
 
@@ -116,6 +116,13 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.6.1 - 2023-02-01 =
+* Improvement: Duplicator is now more compatible as a result of skipping references in the `duplicator_packages` table
+* Improvement: Windows servers and WAMP are now more compatible due to consistent handling of file paths
+* Bug Fix: Export file downloads no longer cause PHP warnings and notices
+* Bug Fix: Non-alphanumeric characters no longer break exported file downloads
+* Bug Fix: Media uploads date picker styles are no longer broken
 
 = WP Migrate 2.6.0 - 2023-01-19 =
 * New: Full-site exports including the database and files are now available to all users

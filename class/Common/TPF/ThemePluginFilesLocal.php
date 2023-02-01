@@ -221,8 +221,8 @@ class ThemePluginFilesLocal
         if (is_wp_error($file_list)) {
             return $this->http->end_ajax($file_list);
         }
-
-        $queue_status = $this->queue_helper->populate_queue($file_list, $state_data['intent'], $state_data['stage'], $state_data['migration_state_id'], $state_data['full_site_export']);
+        $full_site_export = isset($state_data['full_site_export']) ? $state_data['full_site_export'] : false ;
+        $queue_status     = $this->queue_helper->populate_queue($file_list, $state_data['intent'], $state_data['stage'], $state_data['migration_state_id'], $full_site_export);
         set_site_transient('wpmdb_queue_status', $queue_status);
 
         if (isset($file_list['meta']['scan_completed'])) {

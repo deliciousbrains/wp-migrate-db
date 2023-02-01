@@ -501,14 +501,14 @@ class Filesystem
      * Get a list of files/folders under specified directory
      *
      * @param string $abs_path
+     * @param string $stage
      * @param int $offset
      * @param int $limit
      * @param int $scan_count
-     * @param string $stage
      *
      * @return array|bool|\WP_error
      */
-    public function scandir($abs_path, $offset = 0, $limit = -1, &$scan_count = 0, $stage = '')
+    public function scandir($abs_path, $stage = '', $offset = 0, $limit = -1, &$scan_count = 0)
     {
         $symlink = is_link($abs_path);
         $dirlist = @scandir($abs_path, SCANDIR_SORT_DESCENDING);
@@ -587,12 +587,13 @@ class Filesystem
      * List all files in a directory recursively
      *
      * @param $abs_path
+     * @param string $stage
      *
      * @return array|bool
      */
-    public function scandir_recursive($abs_path)
+    public function scandir_recursive($abs_path, $stage = '')
     {
-        $dirlist = $this->scandir($abs_path);
+        $dirlist = $this->scandir($abs_path, $stage);
 
         if (is_wp_error($dirlist)) {
             return $dirlist;
@@ -602,7 +603,7 @@ class Filesystem
             if ('d' === $entry['type']) {
                 $current_dir  = trailingslashit($entry['name']);
                 $current_path = trailingslashit($abs_path) . $current_dir;
-                $contents     = $this->scandir_recursive($current_path);
+                $contents     = $this->scandir_recursive($current_path, $stage);
                 unset($dirlist[$key]);
                 foreach ($contents as $filename => $value) {
                     $contents[$current_dir . $filename] = $value;
@@ -796,8 +797,6 @@ class Filesystem
             $filesize = $this->filesize($diskfile);
             if (!headers_sent()) {
 
-                ob_end_clean();
-
                 header('Content-Description: File Transfer');
                 header('Content-Type: application/octet-stream');
                 header('Content-Length: ' . $filesize);
@@ -806,7 +805,9 @@ class Filesystem
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 
-                ob_end_flush();
+                while(@ob_end_clean()){
+                    // Clear all output buffer at any level
+                }
 
                 readfile($diskfile);
 
