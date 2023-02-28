@@ -771,7 +771,8 @@ class Util
             'subsites_info'                 => $this->subsites_info(),
             'is_subdomain_install'          => esc_html((is_multisite() && is_subdomain_install()) ? 'true' : 'false'),
             'high_performance_transfers'    => (bool)Settings::get_setting('high_performance_transfers'),
-            'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0)
+            'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0),
+            'firewall_plugins'              => $this->get_active_firewall_plugins()
         );
 
         $site_details = apply_filters('wpmdb_site_details', $site_details, $state_data);
@@ -827,6 +828,27 @@ class Util
         }
 
         return $bytes;
+    }
+
+    /**
+     * Get active firewall plugins
+     *
+     * @return array
+     **/
+    protected function get_active_firewall_plugins()
+    {
+        $waf_plugins = [
+            'wp-defender/wp-defender.php',
+            'wordfence/wordfence.php'
+        ];
+        $local_plugins = $this->filesystem->get_local_plugins();
+        $active_waf = [];
+        foreach($local_plugins as $key=> $plugin) {
+            if(in_array($key, $waf_plugins) && true === $plugin[0]['active']) {
+                $active_waf[$key] = $plugin;
+            }
+        }
+        return $active_waf;
     }
 
 

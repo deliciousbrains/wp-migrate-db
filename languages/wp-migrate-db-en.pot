@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2023-02-01 14:15-0500\n"
+"POT-Creation-Date: 2023-02-28 09:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,6 +64,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Replace.php:661
 #: src/wp-migrate-db-pro/class/Common/Replace.php:665
 #: src/wp-migrate-db-pro/class/Common/Replace.php:672
+#: src/wp-migrate-db-pro/class/Common/Replace.php:677
 #, php-format
 msgid ""
 "WP Migrate - Failed to instantiate object for replacement. If the serialized "
@@ -76,6 +77,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Replace.php:719
 #: src/wp-migrate-db-pro/class/Common/Replace.php:723
 #: src/wp-migrate-db-pro/class/Common/Replace.php:730
+#: src/wp-migrate-db-pro/class/Common/Replace.php:735
 msgid ""
 "Failed attempting to do the recursive unserialize replace. Please contact "
 "support."
@@ -1727,6 +1729,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:103
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:104
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:105
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:107
 #, php-format
 msgid "Remote server responded with %s and body of %s"
 msgstr ""
@@ -1804,6 +1807,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:250
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:251
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:147
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:150
 msgid "Unable to process payload."
 msgstr ""
 
@@ -2208,6 +2212,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:384
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:388
+#: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:389
 msgid ""
 "The connection succeeded but the remote site is configured to reject pull "
 "connections. You can change this in the \"settings\" tab on the remote site. "
@@ -2216,6 +2221,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:386
 #: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:390
+#: src/wp-migrate-db-pro/class/Pro/Migration/Connection/Remote.php:391
 msgid ""
 "The connection succeeded but the remote site is configured to reject push "
 "connections. You can change this in the \"settings\" tab on the remote site. "

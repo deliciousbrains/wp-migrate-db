@@ -80,7 +80,7 @@ class RecursiveScanner
      *
      * @param string $abs_path
      * @param string $stage
-     * 
+     *
      * @return array|bool|\WP_error
      */
     public function scan($abs_path, $stage = '')
@@ -507,6 +507,8 @@ class RecursiveScanner
      * @return bool
      */
     private function should_exclude($path) {
-        return !empty(Excludes::shouldExcludeFile($path, $this->excludes));
+        $excludes = Excludes::shouldExcludeFile($path, $this->excludes);
+
+        return !empty($excludes['exclude']);
     }
 }

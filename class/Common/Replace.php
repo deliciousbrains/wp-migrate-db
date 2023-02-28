@@ -310,7 +310,7 @@ class Replace
         ) {
             $standard_pairs = $migration_options['search_replace']['standard_search_replace'];
             foreach ($standard_pairs as $key => $pair) {
-                if (in_array($key, $migration_options['search_replace']['standard_options_enabled'], true)) {
+                if (!empty(trim($pair['replace'])) && in_array($key, $migration_options['search_replace']['standard_options_enabled'], true)) {
                     $tmp_find_replace_pairs[$pair['search']] = $pair['replace'];
                 }
             }
@@ -627,7 +627,7 @@ class Replace
         global $wpdb;
         $table_prefix = $wpdb->base_prefix;
         if ( 'find_replace' === $this->get_intent() ) {
-            
+
             $table_prefix = $this->properties->temp_prefix . $table_prefix;
         }
 
@@ -640,6 +640,11 @@ class Replace
                 'column'         => $this->get_column(),
                 'contains_match' => $this->has_skipped_values($data)
             ];
+
+            if (property_exists($this->get_row(), 'option_name') && $this->table_is('options', $table_prefix)) {
+                $skipped['option_name'] = $this->get_row()->option_name;
+            }
+
             error_log('WPMDB Find & Replace skipped: ' . json_encode($skipped));
             return $data;
         }
@@ -742,7 +747,7 @@ class Replace
 
     /**
      * Search unseralized string for potential match
-     * 
+     *
      * @param string $data
      * @return bool
      **/
@@ -771,6 +776,7 @@ class Replace
         }
         return false;
     }
+
 
     /**
      * Getter for the $table class property.

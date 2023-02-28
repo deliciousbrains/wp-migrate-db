@@ -119,6 +119,7 @@ class MigrationHelper
             'plugins_permissions'           => is_writeable(WP_PLUGIN_DIR) ? 'true' : 'false',
             'muplugins_permissions'         => is_writeable(WPMU_PLUGIN_DIR) ? 'true' : 'false',
             'others_permissions'            => is_writeable(WP_CONTENT_DIR) ? 'true' : 'false',
+            'firewall_plugins'              => $site_details['firewall_plugins'],
             'profile'                       => isset($_GET['wpmdb-profile']) ? $_GET['wpmdb-profile'] : '-1',
             'is_pro'                        => esc_html($this->props->is_pro ? 'true' : 'false'),
             'lower_case_table_names'        => esc_html($this->tables->get_lower_case_table_names_setting()),
