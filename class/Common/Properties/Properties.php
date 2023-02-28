@@ -72,7 +72,7 @@ class Properties
         $this->plugin_file_path = $is_pro ? realpath(dirname(__DIR__) . '/../../wp-migrate-db-pro.php') : realpath(dirname(__DIR__) . '/../../wp-migrate-db.php');
 
         if ($is_pro) {
-            $this->unhook_templates = ['wordpress_org_support', 'progress_upgrade', 'sidebar'];
+            $this->unhook_templates = ['exclude_post_revisions', 'wordpress_org_support', 'progress_upgrade', 'sidebar'];
         }
 
         $this->plugin_dir_path    = plugin_dir_path($this->plugin_file_path);

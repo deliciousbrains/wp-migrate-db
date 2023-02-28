@@ -133,12 +133,7 @@ class FormData
             $return['select_post_types']  = array_diff($table->get_post_types(), ['revision']);
             $return['exclude_post_types'] = 1;
         }
-        
-        //make sure revisions are included when user has selected post types to migrate but did not exclude revisions
-        if ($return['exclude_post_revisions'] === '0' && !in_array('revision',$return['select_post_types'])) {
-            $return['select_post_types'][] = 'revision'; 
-            $return['exclude_post_types']  = 1;
-        }
+
         return $return;
     }
 

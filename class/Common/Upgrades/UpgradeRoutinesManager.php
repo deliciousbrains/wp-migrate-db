@@ -5,7 +5,6 @@ namespace DeliciousBrains\WPMDB\Common\Upgrades;
 use DeliciousBrains\WPMDB\Common\Plugin\Assets;
 use DeliciousBrains\WPMDB\Common\Profile\ProfileManager;
 use DeliciousBrains\WPMDB\Common\Upgrades\Routines\Routine_2_6_0;
-use DeliciousBrains\WPMDB\Common\Upgrades\Routines\Routine_2_6_2;
 use DeliciousBrains\WPMDB\Common\Upgrades\Routines\RoutineInterface;
 
 /**
@@ -42,7 +41,6 @@ class UpgradeRoutinesManager {
         // New routines should be added here, in order, newer last.
         return [
             new Routine_2_6_0(),
-            new Routine_2_6_2(),
         ];
     }
 
