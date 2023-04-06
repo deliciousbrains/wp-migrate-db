@@ -2,9 +2,9 @@
 Contributors: wpengine, deliciousbrains, bradt, ahmedgeek, philwebs, dalewilliams, tysonreeder, kevinwhoffman
 Tags: migrate, push pull, clone, import site, export site, transfer, restore, backup, wordpress migration plugin, move site, database migration, site migration
 Requires at least: 5.2
-Tested up to: 6.1.1
+Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 2.6.3
+Stable tag: 2.6.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,7 +62,7 @@ We've made an impact since launching the first version of WP Migrate with over 3
 
 == Migrate More with WP Migrate Pro ==
 
-If you’re in need of a complete, reliable, and fast push/pull site migration solution with fine-tuned control over the database, media uploads, themes, plugins, and other wp-content files, then WP Migrate Pro is for you. 
+If you’re in need of a complete, reliable, and fast push/pull site migration solution with fine-tuned control over the database, media uploads, themes, plugins, and other wp-content files, then WP Migrate Pro is for you.
 
 The pro features in WP Migrate fit perfectly into any WordPress developer’s toolbox. Here’s what you get when you upgrade:
 
@@ -116,6 +116,10 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.6.4 - 2023-04-06 =
+* Improvement: Easy Updates Manager and WP Migrate are now more compatible as a result of skipping the `eum_logs` table
+* Bug Fix: Migrations no longer cause PHP warnings that mention an “undefined array key”
 
 = WP Migrate 2.6.3 - 2023-02-28 =
 * Bug Fix: Reverted a change from 2.6.2 that inadvertently caused profiles with `all post types` selected to behave as if no post types were selected

@@ -617,18 +617,20 @@ class Replace
             return $pre;
         }
 
-        //Check if find and replace needs be skipped for the current table
-        $skipped_tables = apply_filters('wpmdb_skip_search_replace_tables', []);
-        if (in_array($this->table, $skipped_tables, true)) {
-            return $data;
-        }
-
         //If the intent is find_replace we need to prefix the tables with the temp prefix and wp base table prefix.
         global $wpdb;
         $table_prefix = $wpdb->base_prefix;
         if ( 'find_replace' === $this->get_intent() ) {
 
             $table_prefix = $this->properties->temp_prefix . $table_prefix;
+        }
+
+        //Check if find and replace needs be skipped for the current table
+        $skipped_tables = apply_filters('wpmdb_skip_search_replace_tables', ['eum_logs']);
+        foreach ($skipped_tables as $skipped_table) {
+            if ($this->table === $table_prefix . $skipped_table) {
+                return $data;
+            }
         }
 
         if ($this->should_do_reference_check($table_prefix) && is_serialized( $data ) && preg_match('/r\:\d+;/i', $data)) {

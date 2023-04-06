@@ -1578,7 +1578,7 @@ class Table
                     $value = str_replace($multibyte_search, $multibyte_replace, $value);
                 }
 
-                if ($state_data['destination_prefix'] !== $state_data['source_prefix']) {
+                if (isset($state_data['destination_prefix'], $state_data['source_prefix']) && $state_data['destination_prefix'] !== $state_data['source_prefix']) {
                     $value = $this->handle_different_prefix($key, $value, $table);
                 }
 

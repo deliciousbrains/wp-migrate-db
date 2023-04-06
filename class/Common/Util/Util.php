@@ -772,8 +772,15 @@ class Util
             'is_subdomain_install'          => esc_html((is_multisite() && is_subdomain_install()) ? 'true' : 'false'),
             'high_performance_transfers'    => (bool)Settings::get_setting('high_performance_transfers'),
             'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0),
-            'firewall_plugins'              => $this->get_active_firewall_plugins()
+            'firewall_plugins'              => $this->get_active_firewall_plugins(),
+            'platform'                      => apply_filters('wpmdb_hosting_platform', null),
         );
+
+        $wpe_cookie = self::get_wpe_cookie();
+
+        if ( ! empty($wpe_cookie)) {
+            $site_details['wpe_cookie'] = $wpe_cookie;
+        }
 
         $site_details = apply_filters('wpmdb_site_details', $site_details, $state_data);
 
@@ -1393,7 +1400,7 @@ class Util
     /**
      * Gets the directory for each stage
      * Defaults to uploads dir if no match
-     * 
+     *
      * @param string $stage
      * @return string
      **/
@@ -1415,5 +1422,22 @@ class Util
         ];
         $stage = in_array($stage, array_keys($dirs)) ? $stage : 'media_files';
         return self::slash_one_direction($dirs[$stage]);
+    }
+
+    public static function get_wpe_cookie() {
+        if(method_exists('WpeCommon', 'get_wpe_auth_cookie_value')) {
+            return \WpeCommon::get_wpe_auth_cookie_value();
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the current environment is a development environment.
+     *
+     * @return bool
+     */
+    public static function is_dev_environment() {
+        return isset($_ENV['MDB_IS_DEV']) && (bool) $_ENV['MDB_IS_DEV'];
     }
 }

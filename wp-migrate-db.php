@@ -4,7 +4,7 @@ Plugin Name: WP Migrate Lite
 Plugin URI: https://wordpress.org/plugins/wp-migrate-db/
 Description: Migrate your database. Export full sites including media, themes, and plugins. Find and replace content with support for serialized data.
 Author: WP Engine
-Version: 2.6.3
+Version: 2.6.4
 Author URI: https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=plugin-header&utm_medium=plugin&utm_campaign=plugin-author&utm_content=wp-migrate-author
 Network: True
 Text Domain: wp-migrate-db
@@ -47,4 +47,8 @@ if ( version_compare( PHP_VERSION, WPMDB_MINIMUM_PHP_VERSION, '>=' ) ) {
 
 function wpmdb_remove_mu_plugin() {
 	do_action( 'wp_migrate_db_remove_compatibility_plugin' );
+}
+
+if (class_exists('\Deliciousbrains\MigrateDevTools\Launcher') && \DeliciousBrains\WPMDB\Common\Util\Util::is_dev_environment()) {
+    \Deliciousbrains\MigrateDevTools\Launcher::register($wpmdb_base_path);
 }
