@@ -4,7 +4,7 @@ Tags: migrate, push pull, clone, import site, export site, transfer, restore, ba
 Requires at least: 5.2
 Tested up to: 6.2
 Requires PHP: 5.6
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,9 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.6.5 - 2023-04-25 =
+* Bug Fix: Migrations no longer cause PHP notices when a file path is null
 
 = WP Migrate 2.6.4 - 2023-04-06 =
 * Improvement: Easy Updates Manager and WP Migrate are now more compatible as a result of skipping the `eum_logs` table

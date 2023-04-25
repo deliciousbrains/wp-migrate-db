@@ -322,12 +322,17 @@ class Filesystem
     /**
      * Is the specified path a file?
      *
-     * @param string $abs_path
+     * @param string|null $abs_path
      *
      * @return bool
      */
     public function is_file($abs_path)
     {
+        // if the path is not valid, return false
+        if (null === $abs_path) {
+            return false;
+        }
+
         $return = is_file($abs_path);
 
         if (!$return && $this->use_filesystem) {
