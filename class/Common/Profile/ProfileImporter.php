@@ -240,7 +240,7 @@ class ProfileImporter
      *
      * @return array
      */
-    protected function computeMultisiteToolsDetails($profile)
+    public function computeMultisiteToolsDetails($profile)
     {
         // We might already be using the new format.
         if (isset($profile->multisite_tools)) {
@@ -253,10 +253,12 @@ class ProfileImporter
             'selected_subsite' => 0,
         ];
 
-        if (isset($profile->mst_select_subsite) && isset($profile->mst_selected_subsite)) {
-            $output['enabled']             = true;
-            $output['selected_subsite']    = (int) $profile->mst_selected_subsite;
-            $output['destination_subsite'] = (int) $profile->mst_destination_subsite;
+        if (property_exists($profile, 'mst_select_subsite') && $profile->mst_select_subsite === true && isset($profile->mst_selected_subsite)) {
+            $output['enabled']          = true;
+            $output['selected_subsite'] = (int) $profile->mst_selected_subsite;
+            if (isset($profile->mst_destination_subsite)) {
+                $output['destination_subsite'] = (int) $profile->mst_destination_subsite;
+            }
             if (isset($profile->new_prefix)) {
                 $output['new_prefix'] = $profile->new_prefix;
             }

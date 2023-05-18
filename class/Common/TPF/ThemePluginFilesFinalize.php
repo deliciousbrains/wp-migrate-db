@@ -98,7 +98,7 @@ class ThemePluginFilesFinalize
 
         $current_migration = $form_data['current_migration'];
 
-        if (empty(array_diff(['theme_files', 'plugin_files', 'muplugin_files', 'other_files'], $current_migration['stages']))) {
+        if (empty(array_intersect(['theme_files', 'plugin_files', 'muplugin_files', 'other_files'], $current_migration['stages']))) {
             return;
         }
 

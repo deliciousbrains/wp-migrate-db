@@ -784,7 +784,7 @@ class Filesystem
         // don't need to check for user permissions as our 'add_management_page' already takes care of this
         $util->set_time_limit();
 
-        $raw_dump_name = filter_input(INPUT_GET, 'download', FILTER_SANITIZE_STRIPPED);
+        $raw_dump_name = htmlspecialchars($_GET['download'], ENT_QUOTES | ENT_HTML5);
         $dump_name     = $table_helper->format_dump_name($raw_dump_name);
         $diskfile      = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $dump_name;
         if ($is_full_site_export) {
@@ -795,8 +795,6 @@ class Filesystem
         $last_dash        = strrpos($filename, '-');
         $salt             = substr($filename, $last_dash, 6);
         $filename_no_salt = str_replace($salt, '', $filename);
-
-        $backup = filter_input(INPUT_GET, 'backup', FILTER_SANITIZE_STRIPPED);
 
         if (file_exists($diskfile)) {
             $filesize = $this->filesize($diskfile);
@@ -818,7 +816,7 @@ class Filesystem
 
                 Persistence::cleanupStateOptions();
 
-                if (!$backup || (int)$backup !== 1) { // Don't delete file if file was created during a local backup
+                if ( ! isset($_GET['backup'])) { // Don't delete file if file was created during a local backup
                     $this->unlink($diskfile);
                 }
 

@@ -117,6 +117,9 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 
 == Changelog ==
 
+= WP Migrate 2.6.6 - 2023-05-18 =
+* Bug Fix: Exports are now compatible with PHP 8.1+
+
 = WP Migrate 2.6.5 - 2023-04-25 =
 * Bug Fix: Migrations no longer cause PHP notices when a file path is null
 
