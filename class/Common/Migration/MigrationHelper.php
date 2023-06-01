@@ -134,7 +134,8 @@ class MigrationHelper
             'mst_available'                 => Util::isPro() && Util::is_addon_registered('mst'),
             'tpf_available'                 => Util::is_addon_registered('tpf'),
             'mf_available'                  => Util::is_addon_registered('mf'),
-            'mst_required_message'          => $this->multisite->mst_required_message(),
+            'mst_required_message_push'     => $this->multisite->mst_required_message('push'),
+            'mst_required_message_pull'     => $this->multisite->mst_required_message('pull'),
             'time_format'                   => get_option('time_format'),
             'theoreticalTransferBottleneck' => apply_filters('wpmdb_theoretical_transfer_bottleneck', 0)
         ];
