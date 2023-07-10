@@ -22,52 +22,73 @@ class ProfileManager
      * @var Http
      */
     private $http;
+
     /**
      * @var Properties
      */
     private $properties;
+
     /**
      * @var Settings
      */
     private $settings;
+
     /**
      * @var MigrationStateManager
      */
     private $state_manager;
+
     /**
      * @var Util
      */
     private $util;
+
     /**
      * @var ErrorLog
      */
     private $error_log;
+
     /**
      * @var Table
      */
     private $table;
+
     /**
      * @var FormData
      */
     private $form_data;
+
     /**
      * @var Helper
      */
     private $http_helper;
+
     /**
      * @var Assets
      */
     private $assets;
+
     /**
      * @var WPMDBRestAPIServer
      */
     private $rest_API_server;
 
     protected $valid_post_types;
+
     /**
      * @var ProfileImporter
      */
     private $profile_importer;
+
+    /**
+     * @var string[]
+     */
+    private $checkbox_options;
+
+    /**
+     * @var array
+     */
+    private $default_profile;
 
     /**
      * ProfileManager constructor.

@@ -25,6 +25,12 @@ if (!defined('WPMDB_MINIMUM_PHP_VERSION')) {
     define('WPMDB_MINIMUM_PHP_VERSION', '5.6');
 }
 
+// Silence WP 6.2 Requests library autoloader deprecation warnings
+// https://make.wordpress.org/core/2023/03/08/requests-library-upgraded-to-2-0-5-in-wordpress-6-2/
+if ( ! defined('REQUESTS_SILENCE_PSR0_DEPRECATIONS')) {
+    define('REQUESTS_SILENCE_PSR0_DEPRECATIONS', true);
+}
+
 if (!class_exists('WPMDB_PHP_Checker')) {
     require_once $wpmdb_base_path . '/php-checker.php';
 }

@@ -4,7 +4,7 @@ Tags: migrate, push pull, clone, import site, export site, transfer, restore, ba
 Requires at least: 5.2
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 2.6.7
+Stable tag: 2.6.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,9 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.6.8 - 2023-07-10 =
+* Improvement: PHP 8.2 and WP Migrate are now compatible
 
 = WP Migrate 2.6.7 - 2023-06-01 =
 * Bug Fix: All-In-One Security and WP Migrate are now more compatible as a result of skipping the `stacktrace` column in the `aiowps_audit_log` table during find and replace operations

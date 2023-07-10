@@ -2,7 +2,7 @@
 
 namespace DeliciousBrains\WPMDB\Common\Queue\Connections;
 
-use DeliciousBrains\WPMDB\Common\Queue\Carbon;
+use DateTime;
 use Exception;
 use DeliciousBrains\WPMDB\Common\Queue\Job;
 
@@ -215,9 +215,9 @@ class DatabaseConnection implements ConnectionInterface {
 
 		$job->set_id( $raw_job->id );
 		$job->set_attempts( $raw_job->attempts );
-		$job->set_reserved_at( empty( $raw_job->reserved_at ) ? null : new Carbon( $raw_job->reserved_at ) );
-		$job->set_available_at( new Carbon( $raw_job->available_at ) );
-		$job->set_created_at( new Carbon( $raw_job->created_at ) );
+		$job->set_reserved_at( empty( $raw_job->reserved_at ) ? null : new DateTime( $raw_job->reserved_at ) );
+		$job->set_available_at( new DateTime( $raw_job->available_at ) );
+		$job->set_created_at( new DateTime( $raw_job->created_at ) );
 
 		return $job;
 	}

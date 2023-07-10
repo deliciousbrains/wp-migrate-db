@@ -870,7 +870,7 @@ class Replace
     {
         $prefix         = in_array($this->intent, ['find_replace', 'import']) ? '_mig_' . $prefix : $prefix;
         $default_tables = [
-            "${prefix}posts",
+            "{$prefix}posts",
         ];
 
         // Account for multisite subsites.

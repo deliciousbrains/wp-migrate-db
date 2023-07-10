@@ -15,20 +15,28 @@ class Multisite
 	 * @var Properties
 	 */
 	public $props;
+
 	/**
 	 * @var Util
 	 */
 	public $util;
+
 	/**
 	 * @var DynamicProperties
 	 */
 	public $dynamic_props;
+
 	/**
 	 * @var MigrationStateManager
 	 */
 	public $migration_state_manager;
 
-	public function __construct(
+    /**
+     * @var bool|string
+     */
+    private $domain_replace;
+
+    public function __construct(
 		MigrationStateManager $migration_state_manager,
 		Properties $properties,
 		Util $util

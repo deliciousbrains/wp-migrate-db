@@ -50,9 +50,9 @@ class Table
      */
     public $form_data;
     /**
-     * @var
+     * @var string
      */
-    public $query_template;
+    public $query_template = '';
     /**
      * @var
      */
@@ -62,13 +62,13 @@ class Table
      */
     public $row_tracker;
     /**
-     * @var
+     * @var string
      */
-    public $query_buffer;
+    public $query_buffer = '';
     /**
-     * @var
+     * @var string
      */
-    public $current_chunk;
+    public $current_chunk = '';
     /**
      * @var Properties
      */

@@ -42,6 +42,10 @@ class WPMigrateDB
      * @var Assets
      */
     private $assets;
+    /**
+     * @var Flush
+     */
+    private $flush;
 
     public function __construct($pro = false) { }
 
