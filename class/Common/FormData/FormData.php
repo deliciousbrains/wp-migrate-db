@@ -101,12 +101,12 @@ class FormData
 
         $return = [
             'action'                    => $current_migration['intent'],
-            'select_tables'             => isset($current_migration['tables_selected']) ? $current_migration['tables_selected'] : '',
+            'select_tables'             => isset($current_migration['tables_selected']) ? $current_migration['tables_selected'] : [],
             'table_migrate_option'      => isset($current_migration['tables_option']) ? $current_migration['tables_option'] : '',
             'create_backup'             => isset($current_migration['backup_option']) && $current_migration['backup_option'] !== 'none' ? 1 : 0,
             'backup_option'             => isset($current_migration['backup_option']) ? $current_migration['backup_option'] : '',
-            'select_backup'             => isset($current_migration['backup_tables_selected']) ? $current_migration['backup_tables_selected'] : '',
-            'select_post_types'         => isset($current_migration['post_types_selected']) ? $current_migration['post_types_selected'] : '',
+            'select_backup'             => isset($current_migration['backup_tables_selected']) ? $current_migration['backup_tables_selected'] : [],
+            'select_post_types'         => isset($current_migration['post_types_selected']) ? $current_migration['post_types_selected'] : [],
             'exclude_post_revisions'    => in_array('exclude_post_revisions', $advanced_options) ? '1' : '0',
             'replace_guids'             => in_array('replace_guids', $advanced_options) ? '1' : '0',
             'compatibility_older_mysql' => in_array('compatibility_older_mysql', $advanced_options) ? '1' : '0',

@@ -28,6 +28,9 @@ use PHP_CodeSniffer\Tokenizers\PHP;
 class PluginManagerBase
 {
 
+    const DBRAINS_URL = 'https://deliciousbrains.com';
+    const WPE_URL     = 'https://wpengine.com';
+
     /**
      * @var Properties
      */
@@ -251,7 +254,7 @@ class PluginManagerBase
             $schema_version = 3.2;
         }
 
-        if($schema_version < 3.6) {
+        if ($schema_version < 3.6) {
             $this->update_profiles();
 
             $update_schema  = true;
@@ -277,11 +280,11 @@ class PluginManagerBase
                 $message = __("WP Migrate Lite and WP Migrate cannot both be active. We've automatically deactivated WP Migrate.", 'wp-migrate-db');
             } ?>
 
-			<div class="updated" style="border-left: 4px solid #ffba00;">
-				<p><?php echo esc_html($message); ?></p>
-			</div> <?php
+            <div class="updated" style="border-left: 4px solid #ffba00;">
+                <p><?php echo esc_html($message); ?></p>
+            </div> <?php
 
-            delete_transient('wp_migrate_db_deactivated_notice_id');
+                    delete_transient('wp_migrate_db_deactivated_notice_id');
         }
     }
 
@@ -304,7 +307,7 @@ class PluginManagerBase
 
         $data = $site_details_extended;
 
-        if(Util::isPro()) {
+        if (Util::isPro()) {
             $data = apply_filters('wpmdb_data', $site_details_extended);
         }
 
@@ -398,14 +401,14 @@ class PluginManagerBase
 
                 $loaded_profile = $this->profile_manager->get_profile_by_id($profile_type === 'wpmdb_recent_migrations' ? 'unsaved' : $profile_type, $profile['id']);
 
-                if(is_wp_error($loaded_profile)) {
+                if (is_wp_error($loaded_profile)) {
                     continue;
                 }
 
                 $profile_data = json_decode($loaded_profile['value']);
 
                 //Enable database migration by default for pre 2.3 profiles
-                if(!property_exists($profile_data->current_migration, 'databaseEnabled')) {
+                if (!property_exists($profile_data->current_migration, 'databaseEnabled')) {
                     $profile_data->current_migration->databaseEnabled = true;
                 }
 
@@ -414,47 +417,51 @@ class PluginManagerBase
                 }
 
                 if (property_exists($profile_data, 'theme_plugin_files')) {
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'themes_option')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'themes_option')) {
                         $profile_data->theme_plugin_files->themes_option = $profile_data->theme_plugin_files->themes_selected ? 'selected' : 'all';
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'plugins_option')) {
-                        $profile_data->theme_plugin_files->plugins_option = $profile_data->theme_plugin_files->plugins_selected ? 'selected': 'all';
+                    if (!property_exists($profile_data->theme_plugin_files, 'plugins_option')) {
+                        $profile_data->theme_plugin_files->plugins_option = $profile_data->theme_plugin_files->plugins_selected ? 'selected' : 'all';
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'themes_excluded')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'themes_excluded')) {
                         $profile_data->theme_plugin_files->themes_excluded = [];
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'plugins_excluded')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'plugins_excluded')) {
                         $profile_data->theme_plugin_files->plugins_excluded = [];
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'plugins_excludes')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'plugins_excludes')) {
                         $profile_data->theme_plugin_files->plugins_excludes = property_exists($profile_data->theme_plugin_files, 'excludes')
                             ? $profile_data->theme_plugin_files->excludes
                             : '';
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'themes_excludes')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'themes_excludes')) {
                         $profile_data->theme_plugin_files->themes_excludes = property_exists($profile_data->theme_plugin_files, 'excludes')
                             ? $profile_data->theme_plugin_files->excludes
                             : '';
                     }
 
                     //updates for others and muplugins added 2.3.4
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'other_files')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'other_files')) {
                         $profile_data->theme_plugin_files->other_files = ['enabled' => false];
                         $profile_data->theme_plugin_files->others_option = 'selected';
                         $profile_data->theme_plugin_files->others_selected = [];
                         $profile_data->theme_plugin_files->others_excludes = '';
                     }
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {
+                    if (!property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {
                         $profile_data->theme_plugin_files->muplugin_files = ['enabled' => false];
                         $profile_data->theme_plugin_files->muplugins_option = 'selected';
                         $profile_data->theme_plugin_files->muplugins_selected = [];
                         $profile_data->theme_plugin_files->muplugins_excludes = '';
                     }
 
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {}
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_option')) {}
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_selected')) {}
-                    if ( ! property_exists($profile_data->theme_plugin_files, 'muplugins_excludes')) {}
+                    if (!property_exists($profile_data->theme_plugin_files, 'muplugin_files')) {
+                    }
+                    if (!property_exists($profile_data->theme_plugin_files, 'muplugins_option')) {
+                    }
+                    if (!property_exists($profile_data->theme_plugin_files, 'muplugins_selected')) {
+                    }
+                    if (!property_exists($profile_data->theme_plugin_files, 'muplugins_excludes')) {
+                    }
                 }
                 //gonna need to update the profiles
 
@@ -463,5 +470,75 @@ class PluginManagerBase
                 update_site_option($profile_type, $saved_profiles);
             }
         }
+    }
+
+    /**
+     * Filter admin footer text for Migrate pages
+     *
+     * @param string $text
+     * @param string $product_link
+     * @param string $wpe_link
+     * @return type
+     * @handles admin_footer_text
+     **/
+    public function generate_admin_footer_text($text, $product_link, $wpe_link)
+    {
+        if (empty($product_link) || empty($wpe_link)) {
+            return $text;
+        }
+        return sprintf(
+            /* translators: %1$s is a link to WP Migrate's website, and %2$s is a link to WP Engine's website. */
+            __('%1$s is developed and maintained by %2$s.', 'wp-migrate-db'),
+            $product_link,
+            $wpe_link
+        );
+    }
+
+    /**
+	 * Generate Delicious Brains site URL with correct UTM tags.
+	 *
+	 * @param string $path
+	 * @param array  $args
+	 * @param string $hash
+	 *
+	 * @return string
+	 */
+	public static function delicious_brains_url( $path, $args = array(), $hash = '' ) {
+		$args = wp_parse_args( $args, array(
+			'utm_medium' => 'insideplugin'
+		) );
+		$args = array_map( 'urlencode', $args );
+		$url  = trailingslashit( self::DBRAINS_URL ) . ltrim( $path, '/' );
+		$url  = add_query_arg( $args, $url );
+		if ( $hash ) {
+			$url .= '#' . $hash;
+		}
+		return $url;
+	}
+
+    /**
+     * Generate WP Engine site URL with correct UTM tags.
+     *
+     * @param string $path
+     * @param array  $args
+     * @param string $hash
+     *
+     * @return string
+     */
+    public static function wpe_url($path = '', $args = array(), $hash = '')
+    {
+        $args = wp_parse_args($args, [
+            'utm_medium'   => 'referral',
+            'utm_campaign' => 'bx_prod_referral'
+        ]);
+        $args = array_map('urlencode', $args);
+        $url  = trailingslashit(self::WPE_URL) . ltrim($path, '/');
+        $url  = add_query_arg($args, $url);
+
+        if ($hash) {
+            $url .= '#' . $hash;
+        }
+
+        return $url;
     }
 }

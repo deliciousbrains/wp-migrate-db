@@ -1440,4 +1440,16 @@ class Util
     public static function is_dev_environment() {
         return isset($_ENV['MDB_IS_DEV']) && (bool) $_ENV['MDB_IS_DEV'];
     }
+
+    /**
+     * Create an external link for given URL.
+     *
+     * @param string $url
+     * @param string $text
+     *
+     * @return string
+     */
+    public static function external_link( $url, $text ) {
+        return sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $url ), esc_html( $text ) );
+    }
 }
