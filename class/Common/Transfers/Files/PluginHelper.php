@@ -114,8 +114,8 @@ class PluginHelper
         $key_rules         = array(
             'action'   => 'key',
             'intent'   => 'key',
-            'folders'  => 'serialized',
-            'excludes' => 'serialized',
+            'folders'  => 'json',
+            'excludes' => 'json',
             'stage'    => 'string',
             'sig'      => 'string',
             'date'     => 'string',
@@ -178,7 +178,7 @@ class PluginHelper
         $date     = isset($_POST['date']) ? $state_data['date'] : null;
         $timezone = !empty($_POST['timezone']) ? $state_data['timezone'] : 'UTC';
 
-        $folders = unserialize($state_data['folders']);
+        $folders = json_decode($state_data['folders'], true);
 
         if ('media_files' === $stage) {
             $folders = apply_filters('wpmdb_mf_remote_uploads_folder', $folders, $state_data);
@@ -190,10 +190,10 @@ class PluginHelper
             $items = $this->get_top_level_items($folders[0]);
         }
 
-        $files = $this->file_processor->get_local_files($items, $slashed, unserialize($state_data['excludes']), $stage, $date, $timezone, 'pull');
+        $files = $this->file_processor->get_local_files($items, $slashed, json_decode($state_data['excludes'], true), $stage, $date, $timezone, 'pull');
 
 
-        $files = ZipAndEncode::encode(serialize($files));
+        $files = ZipAndEncode::encode(json_encode($files));
 
         return $this->http->end_ajax($files);
     }
@@ -237,7 +237,7 @@ class PluginHelper
         }
 
         $queue_status = filter_var($_POST['queue_status'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $queue_data   = unserialize(gzdecode(base64_decode($queue_status)));
+        $queue_data   = json_decode(gzdecode(base64_decode($queue_status)), true);
 
         if ($queue_data) {
             try {

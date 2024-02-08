@@ -576,7 +576,7 @@ class Table
         $site_details      = empty($state_data['site_details']) ? array() : $state_data['site_details'];
         $subsite_migration = array_key_exists('mst_select_subsite', $state_data) && '1' === $state_data['mst_select_subsite'];
         $target_table_name = apply_filters('wpmdb_target_table_name', $table, $state_data, $site_details, $subsite_migration );
-        if (in_array($state_data['intent'], ['push', 'pull']) && !$subsite_migration) {
+        if (in_array($state_data['intent'], ['push', 'pull']) && !$subsite_migration && $state_data['stage'] !== 'backup') {
             $target_table_name = $this->prefix_target_table_name($target_table_name, $state_data);
         }
         $temp_table_name   = $state_data["intent"] === 'import' ? $target_table_name : $temp_prefix . $target_table_name;
@@ -702,10 +702,12 @@ class Table
             }
         }
 
-        if (!empty($state_data['primary_keys'])) {
-            $state_data['primary_keys'] = trim($state_data['primary_keys']);
-            $this->primary_keys         = Util::unserialize(stripslashes($state_data['primary_keys']), __METHOD__);
-            if (false !== $this->primary_keys && !empty($state_data['primary_keys'])) {
+        if ( ! empty($state_data['primary_keys'])) {
+            if ( ! Util::is_json($state_data['primary_keys'])) {
+                $state_data['primary_keys'] = base64_decode(trim($state_data['primary_keys']));
+            }
+            $this->primary_keys = json_decode(stripslashes($state_data['primary_keys']), true);
+            if (false !== $this->primary_keys && ! empty($state_data['primary_keys'])) {
                 $this->first_select = false;
             }
         }
@@ -1691,7 +1693,7 @@ class Table
 
             $result = array(
                 'current_row'  => $this->row_tracker,
-                'primary_keys' => serialize($this->primary_keys),
+                'primary_keys' => json_encode($this->primary_keys),
             );
 
             if ($state_data['intent'] == 'savefile' && $state_data['last_table'] == '1') {
@@ -1727,7 +1729,7 @@ class Table
         }
 
         if ($state_data['intent'] === 'pull') {
-            $str    = $this->row_tracker . ',' . serialize($this->primary_keys);
+            $str    = $this->row_tracker . ',' . json_encode($this->primary_keys);
             $result = $this->http->end_ajax($str, '', true);
 
             return $result;
@@ -1757,7 +1759,7 @@ class Table
         $result = $this->http->end_ajax(
             [
                 'current_row'  => $this->row_tracker,
-                'primary_keys' => serialize($this->primary_keys),
+                'primary_keys' => json_encode($this->primary_keys),
             ]
         );
 

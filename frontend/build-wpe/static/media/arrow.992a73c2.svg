@@ -1,0 +1,9 @@
+<svg width="12px" height="10px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="accordion_collapsed_default_active" transform="translate(-1188.000000, -25.000000)" fill="#000000" fill-rule="nonzero">
+            <g id="arrow_down" transform="translate(1188.000000, 25.000000)">
+                <path d="M3.15926987,3.89259287 L8.05974363,8.83761866 C8.27477314,9.05412711 8.62315535,9.05412711 8.83872786,8.83761866 C9.05375738,8.6211102 9.05375738,8.26944382 8.83872786,8.05293536 L4.32695435,3.50027406 L8.83818486,-1.05238724 C9.05321437,-1.2688957 9.05321437,-1.62056207 8.83818486,-1.83761866 C8.62315535,-2.05412711 8.27423014,-2.05412711 8.05920063,-1.83761866 L3.15872687,3.10736145 C2.94700063,3.32163174 2.94700063,3.67882502 3.15926987,3.89259287 Z" id="arrow" transform="translate(6.000000, 3.500000) rotate(-90.000000) translate(-6.000000, -3.500000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

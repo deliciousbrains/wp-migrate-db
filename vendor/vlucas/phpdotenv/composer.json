@@ -10,13 +10,13 @@
     "authors": [
         {
             "name": "Graham Campbell",
-            "email": "graham@alt-three.com",
-            "homepage": "https:\/\/gjcampbell.co.uk\/"
+            "email": "hello@gjcampbell.co.uk",
+            "homepage": "https:\/\/github.com\/GrahamCampbell"
         },
         {
             "name": "Vance Lucas",
             "email": "vance@vancelucas.com",
-            "homepage": "https:\/\/vancelucas.com\/"
+            "homepage": "https:\/\/github.com\/vlucas"
         }
     ],
     "require": {
@@ -28,7 +28,7 @@
         "ext-filter": "*",
         "ext-pcre": "*",
         "bamarni\/composer-bin-plugin": "^1.4.1",
-        "phpunit\/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20"
+        "phpunit\/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.30"
     },
     "autoload": {
         "psr-4": {
@@ -45,11 +45,18 @@
         "ext-pcre": "Required to use most of the library."
     },
     "config": {
+        "allow-plugins": {
+            "bamarni\/composer-bin-plugin": true
+        },
         "preferred-install": "dist"
     },
     "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": true
+        },
         "branch-alias": {
-            "dev-master": "4.1-dev"
+            "dev-master": "4.3-dev"
         }
     }
 }

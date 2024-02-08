@@ -313,7 +313,7 @@ class ThemePluginFilesFinalize
         foreach ($stages as $stage) {
             $filename      = '.' . $migration_key . '-manifest';
             $manifest_path = Util::get_temp_dir($stage) . $filename;
-            $queue_info    = unserialize(file_get_contents($manifest_path));
+            $queue_info    = json_decode(file_get_contents($manifest_path), true);
 
             if (!$queue_info) {
                 throw new \Exception(sprintf(__('Unable to verify file migration, %s does not exist.'), $manifest_path));

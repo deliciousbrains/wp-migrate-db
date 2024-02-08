@@ -1,6 +1,49 @@
 {
     "packages": [
         {
+            "name": "brumann\/polyfill-unserialize",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/dbrumann\/polyfill-unserialize.git",
+                "reference": "46e5c18ee87d8a9b5765ef95468c1ac27bd107bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/dbrumann\/polyfill-unserialize\/zipball\/46e5c18ee87d8a9b5765ef95468c1ac27bd107bf",
+                "reference": "46e5c18ee87d8a9b5765ef95468c1ac27bd107bf",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3|^7.0"
+            },
+            "time": "2020-07-24T10:16:53+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "DeliciousBrains\\WPMDB\\Container\\Brumann\\Polyfill\\": "src\/"
+                }
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Brumann",
+                    "email": "denis.brumann@sensiolabs.de"
+                }
+            ],
+            "description": "Backports unserialize options introduced in PHP 7.0 to older PHP versions.",
+            "support": {
+                "issues": "https:\/\/github.com\/dbrumann\/polyfill-unserialize\/issues",
+                "source": "https:\/\/github.com\/dbrumann\/polyfill-unserialize\/tree\/v2.0.0"
+            },
+            "install-path": "..\/brumann\/polyfill-unserialize"
+        },
+        {
             "name": "container-interop\/container-interop",
             "version": "1.2.0",
             "version_normalized": "1.2.0.0",
@@ -132,12 +175,12 @@
             "type": "library",
             "installation-source": "dist",
             "autoload": {
-                "psr-4": {
-                    "DeliciousBrains\\WPMDB\\Container\\DI\\": "src\/DI\/"
-                },
                 "files": [
                     "src\/DI\/functions.php"
-                ]
+                ],
+                "psr-4": {
+                    "DeliciousBrains\\WPMDB\\Container\\DI\\": "src\/DI\/"
+                }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
             "license": [
@@ -362,12 +405,12 @@
             },
             "installation-source": "dist",
             "autoload": {
-                "psr-4": {
-                    "DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\": ""
+                }
             },
             "notification-url": "https:\/\/packagist.org\/downloads\/",
             "license": [
@@ -412,17 +455,17 @@
         },
         {
             "name": "vlucas\/phpdotenv",
-            "version": "v4.2.0",
-            "version_normalized": "4.2.0.0",
+            "version": "v4.3.0",
+            "version_normalized": "4.3.0.0",
             "source": {
                 "type": "git",
                 "url": "https:\/\/github.com\/vlucas\/phpdotenv.git",
-                "reference": "da64796370fc4eb03cc277088f6fede9fde88482"
+                "reference": "67a491df68208bef8c37092db11fa3885008efcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https:\/\/api.github.com\/repos\/vlucas\/phpdotenv\/zipball\/da64796370fc4eb03cc277088f6fede9fde88482",
-                "reference": "da64796370fc4eb03cc277088f6fede9fde88482",
+                "url": "https:\/\/api.github.com\/repos\/vlucas\/phpdotenv\/zipball\/67a491df68208bef8c37092db11fa3885008efcf",
+                "reference": "67a491df68208bef8c37092db11fa3885008efcf",
                 "shasum": ""
             },
             "require": {
@@ -434,17 +477,21 @@
                 "bamarni\/composer-bin-plugin": "^1.4.1",
                 "ext-filter": "*",
                 "ext-pcre": "*",
-                "phpunit\/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20"
+                "phpunit\/phpunit": "^4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.30"
             },
             "suggest": {
                 "ext-filter": "Required to use the boolean validator.",
                 "ext-pcre": "Required to use most of the library."
             },
-            "time": "2021-01-20T15:11:48+00:00",
+            "time": "2022-10-16T00:51:09+00:00",
             "type": "library",
             "extra": {
+                "bamarni-bin": {
+                    "bin-links": true,
+                    "forward-command": true
+                },
                 "branch-alias": {
-                    "dev-master": "4.1-dev"
+                    "dev-master": "4.3-dev"
                 }
             },
             "installation-source": "dist",
@@ -460,13 +507,13 @@
             "authors": [
                 {
                     "name": "Graham Campbell",
-                    "email": "graham@alt-three.com",
-                    "homepage": "https:\/\/gjcampbell.co.uk\/"
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https:\/\/github.com\/GrahamCampbell"
                 },
                 {
                     "name": "Vance Lucas",
                     "email": "vance@vancelucas.com",
-                    "homepage": "https:\/\/vancelucas.com\/"
+                    "homepage": "https:\/\/github.com\/vlucas"
                 }
             ],
             "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
@@ -477,7 +524,7 @@
             ],
             "support": {
                 "issues": "https:\/\/github.com\/vlucas\/phpdotenv\/issues",
-                "source": "https:\/\/github.com\/vlucas\/phpdotenv\/tree\/v4.2.0"
+                "source": "https:\/\/github.com\/vlucas\/phpdotenv\/tree\/v4.3.0"
             },
             "funding": [
                 {

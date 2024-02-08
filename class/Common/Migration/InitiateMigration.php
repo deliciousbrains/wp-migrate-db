@@ -212,7 +212,7 @@ class InitiateMigration
 		    'action'       => 'wpmdb_remote_initiate_migration',
 		    'intent'       => $state_data['intent'],
 		    'form_data'    => base64_encode( $state_data['form_data'] ),
-		    'site_details' => base64_encode( serialize( $this->migration_helper->getMergedSiteDetails($state_data) ) ),
+            'site_details' => base64_encode( json_encode( $this->migration_helper->getMergedSiteDetails($state_data) ) ),
 	    ];
 
         $data['sig']          = $this->http_helper->create_signature($data, $state_data['key']);

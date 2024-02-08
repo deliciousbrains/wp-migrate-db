@@ -6,6 +6,7 @@ use DeliciousBrains\WPMDB\Common\FormData\FormData;
 use DeliciousBrains\WPMDB\Common\MigrationState\MigrationStateManager;
 use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
+use WP_Error;
 
 class Manager
 {
@@ -50,7 +51,7 @@ class Manager
         $this->jobs_table     = $this->prefix . "queue_jobs";
         $this->failures_table = $this->prefix . "queue_failures";
 
-        $this->connection = new Connection($GLOBALS['wpdb'], $properties->temp_prefix);
+        $this->connection = new Connection($GLOBALS['wpdb'], [Jobs\WPMDB_Job::class], $properties->temp_prefix);
         $this->queue      = new Queue($this->connection, $this->prefix);
         $this->worker     = new Worker($this->connection, 1);
     }
@@ -201,7 +202,7 @@ class Manager
      * @param int  $offset
      * @param bool $raw if true, method will return serialized instead of instantiated objects
      *
-     * @return array
+     * @return array|WP_Error
      */
     public function list_jobs($limit = 9999999, $offset = 0, $raw = false)
     {

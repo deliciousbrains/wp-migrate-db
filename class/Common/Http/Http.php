@@ -170,30 +170,6 @@ class Http
         return $result;
     }
 
-    /**
-     * Convert file data, including contents, into a serialized array
-     *
-     * @param $file
-     *
-     * @return bool|string
-     */
-    function file_to_serialized($file)
-    {
-        if (false == file_exists($file)) {
-            return false;
-        }
-
-        $filetype = wp_check_filetype($file);
-        $contents = file_get_contents($file);
-
-        $file_details = [
-            'name'      => basename($file),
-            'file_type' => $filetype['type'],
-            'contents'  => $contents,
-        ];
-
-        return serialize($file_details);
-    }
 
     /**
      * Check for download

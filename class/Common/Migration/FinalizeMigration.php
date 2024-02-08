@@ -132,7 +132,7 @@ class FinalizeMigration
                 )
             );
             $data['form_data']    = base64_encode($data['form_data']);
-            $data['site_details'] = base64_encode(serialize($data['site_details']));
+            $data['site_details'] = base64_encode(json_encode($data['site_details']));
 
             $data['action']   = 'wpmdb_remote_finalize_migration';
             $data['intent']   = 'pull';

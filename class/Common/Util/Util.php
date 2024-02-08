@@ -11,6 +11,7 @@ use DeliciousBrains\WPMDB\Common\MigrationState\StateDataContainer;
 use DeliciousBrains\WPMDB\Common\Properties\Properties;
 use DeliciousBrains\WPMDB\Common\Settings\Settings;
 use DeliciousBrains\WPMDB\WPMDBDI;
+use DeliciousBrains\WPMDB\Container\Brumann\Polyfill\Unserialize;
 
 /**
  * Class Util
@@ -242,12 +243,14 @@ class Util
      */
     public static function unserialize($serialized_string, $method = '')
     {
-        if (!is_serialized($serialized_string)) {
+        if ( ! is_serialized($serialized_string)) {
             return false;
         }
 
-        $serialized_string   = trim($serialized_string);
-        $unserialized_string = @unserialize($serialized_string);
+        $serialized_string = trim($serialized_string);
+
+        // Because we support PHP versions less than 7.0 we need to use the polyfill.
+        $unserialized_string = @Unserialize::unserialize($serialized_string, array('allowed_classes' => false));
 
         if (false === $unserialized_string && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
             $scope = $method ? sprintf(__('Scope: %s().', 'wp-migrate-db'), $method) : false;

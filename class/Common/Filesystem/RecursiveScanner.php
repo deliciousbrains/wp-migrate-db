@@ -421,7 +421,7 @@ class RecursiveScanner
     private function get_scandir_manifest()
     {
         $file_data = $this->filesystem->get_contents($this->get_scandir_manifest_filename());
-        return unserialize($file_data);
+        return json_decode($file_data, true);
     }
 
     /**
@@ -430,9 +430,9 @@ class RecursiveScanner
     private function save_manifest()
     {
         $manifest_filename = $this->get_scandir_manifest_filename();
-        $result = $this->filesystem->put_contents($manifest_filename, serialize($this->manifest));
+        $result            = $this->filesystem->put_contents($manifest_filename, json_encode($this->manifest));
 
-        if (!$result) {
+        if ( ! $result) {
             $this->transfer_utils->catch_general_error('Could not create scandir manifest.');
         }
     }

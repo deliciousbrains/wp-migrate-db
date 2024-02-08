@@ -287,6 +287,10 @@ class ThemePluginFilesLocal
         $count = apply_filters('wpmdbtp_file_batch_size', 1000);
         $data  = $this->queueManager->list_jobs($count);
 
+        if (is_wp_error($data)) {
+            return $this->http->end_ajax($data);
+        }
+
         $processed = $this->transfer_util->process_file_data($data);
 
         if (empty($data)) {

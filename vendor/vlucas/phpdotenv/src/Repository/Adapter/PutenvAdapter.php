@@ -17,7 +17,7 @@ class PutenvAdapter implements AvailabilityInterface, ReaderInterface, WriterInt
     /**
      * Get an environment variable, if it exists.
      *
-     * @param string $name
+     * @param non-empty-string $name
      *
      * @return \PhpOption\Option<string|null>
      */
@@ -29,8 +29,8 @@ class PutenvAdapter implements AvailabilityInterface, ReaderInterface, WriterInt
     /**
      * Set an environment variable.
      *
-     * @param string      $name
-     * @param string|null $value
+     * @param non-empty-string $name
+     * @param string|null      $value
      *
      * @return void
      */
@@ -41,7 +41,7 @@ class PutenvAdapter implements AvailabilityInterface, ReaderInterface, WriterInt
     /**
      * Clear an environment variable.
      *
-     * @param string $name
+     * @param non-empty-string $name
      *
      * @return void
      */

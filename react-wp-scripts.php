@@ -232,7 +232,7 @@ function enqueue_assets($directory, $opts = [])
     uksort(
         $assets,
         function ($asset_path) {
-            if (strstr($asset_path, 'runtime') || strstr($asset_path, 'bundle')) {
+            if (strstr(basename($asset_path), 'runtime') || strstr(basename($asset_path), 'bundle')) {
                 return -1;
             }
 
@@ -245,7 +245,7 @@ function enqueue_assets($directory, $opts = [])
     foreach ($assets as $asset_path) {
         $is_js      = preg_match('/\.js$/', $asset_path);
         $is_css     = preg_match('/\.css$/', $asset_path);
-        $is_runtime = preg_match('/(runtime|bundle)/', $asset_path);
+        $is_runtime = preg_match('/(runtime|bundle)/', basename($asset_path));
 
         if (!$is_js && !$is_css) {
             // Assets such as source maps and images are also listed; ignore these.

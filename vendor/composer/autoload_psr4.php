@@ -14,4 +14,5 @@ return array(
     'DeliciousBrains\\WPMDB\\Container\\Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'DeliciousBrains\\WPMDB\\Container\\Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'DeliciousBrains\\WPMDB\\Container\\DI\\' => array($vendorDir . '/php-di/php-di/src/DI'),
+    'DeliciousBrains\\WPMDB\\Container\\Brumann\\Polyfill\\' => array($vendorDir . '/brumann/polyfill-unserialize/src'),
 );

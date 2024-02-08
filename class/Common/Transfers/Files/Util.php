@@ -80,8 +80,8 @@ class Util
         $data             = array();
         $data['action']   = $action;
         $data['intent']   = $state_data['intent'];
-        $data['folders']  = serialize($directories);
-        $data['excludes'] = serialize($excludes);
+        $data['folders']  = json_encode($directories);
+        $data['excludes'] = json_encode($excludes);
         $data['stage']    = $state_data['stage'];
         $data['is_cli_migration'] = isset($state_data['is_cli_migration']) ? (int)$state_data['is_cli_migration'] : 0;
         $data['sig']              = $this->http_helper->create_signature($data, $state_data['key']);
@@ -97,7 +97,7 @@ class Util
         $ajax_url         = trailingslashit($state_data['url']) . 'wp-admin/admin-ajax.php';
         $response         = $this->remote_post->post($ajax_url, $data, __FUNCTION__);
         $response         = $this->remote_post->verify_remote_post_response($response);
-        $response['data'] = unserialize(ZipAndEncode::decode($response['data']));
+        $response['data'] = json_decode(ZipAndEncode::decode($response['data']), true);
 
         if (isset($response['wpmdb_error'])) {
             return $response;
@@ -128,7 +128,7 @@ class Util
         $data['remote_state_id'] = $state_data['migration_state_id'];
         $data['sig']             = $this->http_helper->create_signature($data, $state_data['key']);
 
-        $data['queue_status'] = base64_encode(gzencode(serialize($queue_status)));
+        $data['queue_status'] = base64_encode(gzencode(json_encode($queue_status)));
 
         $ajax_url = trailingslashit($state_data['url']) . 'wp-admin/admin-ajax.php';
         $response = $this->remote_post_and_verify($ajax_url, $data);
@@ -315,7 +315,7 @@ class Util
         }
 
         $filename = $this->get_queue_manifest_file_name($migration_state_id);
-        $manifest = @file_put_contents($tmp_path . DIRECTORY_SEPARATOR . $filename, serialize($data));
+        $manifest = @file_put_contents($tmp_path . DIRECTORY_SEPARATOR . $filename, json_encode($data));
 
         if (!$manifest) {
             throw new \Exception(sprintf(__('Unable to create the transfer manifest file. Verify the web server can write to this file/folder: `%s`'), $tmp_path . DIRECTORY_SEPARATOR . '.manifest'));
@@ -341,7 +341,7 @@ class Util
         $manifest  = is_file($file_path) ? @file_get_contents($file_path) : false;
 
         if (false !== $manifest) {
-            return unserialize($manifest);
+            return json_decode($manifest, true);
         }
 
         return false;
@@ -612,7 +612,7 @@ class Util
             $this->http->end_ajax(new \WP_Error('wpmdb_load_manifest_failed', __("Failed to load manifest file.")));
         }
 
-        $queue_info = unserialize($contents);
+        $queue_info = json_decode($contents, true);
 
         if (!$queue_info) {
             $this->http->end_ajax(new \WP_Error('wpmdb_parse_manifest_failed', __("Failed to parse manifest file.")));
