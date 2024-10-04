@@ -1,2 +1,2 @@
 <?php
-$GLOBALS['wpmdb_meta']['wp-migrate-db']['version'] = '2.6.10';
+$GLOBALS['wpmdb_meta']['wp-migrate-db']['version'] = '2.7.0';

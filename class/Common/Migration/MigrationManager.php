@@ -368,7 +368,7 @@ class MigrationManager
             // need to split this up into a chunk and row_tracker
             // only strip the last new line if it exists
             $row_information = false !== strpos($response, "\n") ? trim(substr(strrchr($response, "\n"), 1)) : trim($response);
-            $row_information = explode(',', $row_information);
+            $row_information = explode('##MDB_SEPARATOR##', $row_information);
             $chunk           = substr($response, 0, strrpos($response, ";\n") + 1);
 
             if (!empty($chunk)) {

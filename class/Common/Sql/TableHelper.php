@@ -196,6 +196,7 @@ class TableHelper
      * @param string $scope         Optional type of table to match against, default is 'table'.
      * @param string $new_prefix    Optional new prefix already added to $given_table.
      * @param int    $blog_id       Optional Only used with 'blog' scope to test against a specific subsite's tables other than current for $wpdb.
+     * @param string $source_prefix Optional prefix from source site already added to $given_table.
      *
      * @return boolean
      */

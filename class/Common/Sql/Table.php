@@ -1729,7 +1729,7 @@ class Table
         }
 
         if ($state_data['intent'] === 'pull') {
-            $str    = $this->row_tracker . ',' . json_encode($this->primary_keys);
+            $str    = $this->row_tracker . '##MDB_SEPARATOR##' . json_encode($this->primary_keys);
             $result = $this->http->end_ajax($str, '', true);
 
             return $result;

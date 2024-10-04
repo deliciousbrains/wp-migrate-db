@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: WP Migrate Lite
-Plugin URI: https://wordpress.org/plugins/wp-migrate-db/
+Plugin URI: https://deliciousbrains.com/
 Description: Migrate your database. Export full sites including media, themes, and plugins. Find and replace content with support for serialized data.
 Author: WP Engine
-Version: 2.6.10
+Version: 2.7.0
 Author URI: https://deliciousbrains.com/wp-migrate-db-pro/?utm_source=plugin-header&utm_medium=plugin&utm_campaign=plugin-author&utm_content=wp-migrate-author
+Update URI: false
 Network: True
 Text Domain: wp-migrate-db
 Domain Path: /languages/
@@ -52,3 +53,17 @@ function wpmdb_remove_mu_plugin() {
 if (class_exists('\Deliciousbrains\MigrateDevTools\Launcher') && \DeliciousBrains\WPMDB\Common\Util\Util::is_dev_environment()) {
     \Deliciousbrains\MigrateDevTools\Launcher::register($wpmdb_base_path);
 }
+
+/**
+ * Initialize the checking for plugin updates.
+ */
+function wpmdb_check_for_upgrades() {
+	$properties = array(
+		'plugin_slug'     => 'wp-migrate-db',
+		'plugin_basename' => plugin_basename( __FILE__ ),
+	);
+
+	require_once __DIR__ . '/class/Free/PluginUpdater.php';
+	new \DeliciousBrains\WPMDB\Free\PluginUpdater( $properties );
+}
+add_action( 'admin_init', 'wpmdb_check_for_upgrades' );
