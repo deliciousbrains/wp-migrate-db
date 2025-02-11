@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2024-10-04 15:32+0100\n"
+"POT-Creation-Date: 2025-02-11 09:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,9 +201,9 @@ msgid ""
 "notifications or be able to activate your license until this is fixed. This "
 "issue is often caused by an improperly configured SSL server (https). We "
 "recommend fixing the SSL configuration on your server, but if you need a "
-"quick fix you can temporarily disable SSL for connections to api."
-"deliciousbrains.com by adding `define( 'DBRAINS_API_BASE', 'http://api."
-"deliciousbrains.com' );` to your wp-config.php file."
+"quick fix you can temporarily disable SSL for connections to "
+"api.deliciousbrains.com by adding `define( 'DBRAINS_API_BASE', 'http://"
+"api.deliciousbrains.com' );` to your wp-config.php file."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/License.php:505
@@ -438,9 +438,9 @@ msgid ""
 "We've detected that <code>WP_HTTP_BLOCK_EXTERNAL</code> is enabled which "
 "will prevent WP Migrate from functioning properly. You should either disable "
 "<code>WP_HTTP_BLOCK_EXTERNAL</code> or add any sites that you'd like to "
-"migrate to or from with WP Migrate to <code>WP_ACCESSIBLE_HOSTS</code> (api."
-"deliciousbrains.com must be added to <code>WP_ACCESSIBLE_HOSTS</code> for "
-"the API to work). More information on this can be found <a href=\"%s\" "
+"migrate to or from with WP Migrate to <code>WP_ACCESSIBLE_HOSTS</code> "
+"(api.deliciousbrains.com must be added to <code>WP_ACCESSIBLE_HOSTS</code> "
+"for the API to work). More information on this can be found <a href=\"%s\" "
 "target=\"_blank\">here</a>."
 msgstr ""
 
@@ -1090,6 +1090,7 @@ msgid "Setting does not exist"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:744
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:745
 #, php-format
 msgid ""
 "Failed to retrieve table structure for table '%s', please ensure your "
@@ -1097,40 +1098,48 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:817
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:840
 #, php-format
 msgid "Error creating temporary table. Table \"%s\" does not exist."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:868
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:891
 #, php-format
 msgid "Delete any existing table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:879
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:902
 #, php-format
 msgid "Table structure of table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:887
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:910
 msgid ""
 "Failed to generate the create table query, please ensure your database is "
 "online. (#126)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:945
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:968
 #, php-format
 msgid "Data contents of table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1072
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1095
 msgid "Failed to write the gzipped SQL data to the file. (#127)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1079
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1102
 msgid "Failed to write the SQL data to the file. (#128)"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1151
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1174
 #, php-format
 msgid ""
 "The imported table `%1s` contains characters which are invalid in the target "
@@ -1141,6 +1150,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1154
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1177
 #, php-format
 msgid ""
 "The table `%1s` contains characters which are invalid in the target "
@@ -1149,29 +1159,41 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1711
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1724
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1747
 msgid "Error moving SQL file into ZIP archive"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1806
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1819
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1842
 #, php-format
 msgid "End of data contents of table %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1931
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1944
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1967
 msgid "WordPress MySQL database migration"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1933
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1946
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1969
 #, php-format
 msgid "Generated: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1934
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1947
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1970
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1935
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1948
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1971
 #, php-format
 msgid "Database: %s"
 msgstr ""

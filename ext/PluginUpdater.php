@@ -1,6 +1,7 @@
 <?php
 /**
  * The PluginUpdater class which can be used to pull plugin updates from a new location.
+ *
  * @package wp-migrate-db
  */
 
@@ -19,33 +20,38 @@ use stdClass;
 class PluginUpdater {
 	/**
 	 * The URL where the api is located.
-	 * @var ApiUrl
+	 *
+	 * @var string
 	 */
 	private $api_url;
 
 	/**
 	 * The amount of time to wait before checking for new updates.
-	 * @var CacheTime
+	 *
+	 * @var int
 	 */
 	private $cache_time;
 
 	/**
 	 * These properties are passed in when instantiating to identify the plugin and it's update location.
-	 * @var Properties
+	 *
+	 * @var array
 	 */
 	private $properties;
 
 	/**
 	 * Get the class constructed.
 	 *
-	 * @param Properties $properties These properties are passed in when instantiating to identify the plugin and it's update location.
+	 * @param array $properties These properties are passed in when instantiating to identify the plugin and it's update location.
 	 */
 	public function __construct( $properties ) {
 		if (
 			empty( $properties['plugin_slug'] ) ||
 			empty( $properties['plugin_basename'] )
 		) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'WPE Secure Plugin Updater received a malformed request.' );
+
 			return;
 		}
 
@@ -65,8 +71,10 @@ class PluginUpdater {
 	/**
 	 * Get the full plugin properties, including the directory name, version, basename, and add a transient name.
 	 *
-	 * @param Properties $properties These properties are passed in when instantiating to identify the plugin and it's update location.
-	 * @param ApiUrl     $api_url    The URL where the api is located.
+	 * @param array  $properties These properties are passed in when instantiating to identify the plugin and it's update location.
+	 * @param string $api_url    The URL where the api is located.
+	 *
+	 * @return array|null
 	 */
 	public function get_full_plugin_properties( $properties, $api_url ) {
 		$plugins = \get_plugins();
@@ -103,30 +111,33 @@ class PluginUpdater {
 	/**
 	 * Filter the plugin update transient to take over update notifications.
 	 *
-	 * @param object $transient The site_transient_update_plugins transient.
+	 * @param ?object $transient_value The value of the `site_transient_update_plugins` transient.
 	 *
 	 * @handles site_transient_update_plugins
-	 * @return object
+	 * @return object|null
 	 */
-	public function filter_plugin_update_transient( $transient ) {
+	public function filter_plugin_update_transient( $transient_value ) {
 		// No update object exists. Return early.
-		if ( empty( $transient ) ) {
-			return $transient;
+		if ( empty( $transient_value ) ) {
+			return $transient_value;
 		}
 
 		$result = $this->fetch_plugin_info();
 
 		if ( false === $result ) {
-			return $transient;
+			return $transient_value;
 		}
+
+		$res = $this->parse_plugin_info( $result );
 
 		if ( version_compare( $this->properties['plugin_version'], $result->version, '<' ) ) {
-			$res                                 = $this->parse_plugin_info( $result );
-			$transient->response[ $res->plugin ] = $res;
-			$transient->checked[ $res->plugin ]  = $result->version;
+			$transient_value->response[ $res->plugin ] = $res;
+			$transient_value->checked[ $res->plugin ]  = $result->version;
+		} else {
+			$transient_value->no_update[ $res->plugin ] = $res;
 		}
 
-		return $transient;
+		return $transient_value;
 	}
 
 	/**
@@ -213,7 +224,6 @@ class PluginUpdater {
 	 * @return stdClass
 	 */
 	private function parse_plugin_info( $response ) {
-
 		global $wp_version;
 
 		$res                = new stdClass();

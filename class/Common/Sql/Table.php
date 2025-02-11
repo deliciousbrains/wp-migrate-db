@@ -56,7 +56,7 @@ class Table
     /**
      * @var
      */
-    public $primary_keys;
+	public $primary_keys = array();
     /**
      * @var
      */
@@ -640,22 +640,21 @@ class Table
         return $this->transfer_chunk($fp, $state_data);
     }
 
-    /**
-     * Parses the provided table structure.
-     *
-     * @param array $table_structure
-     *
-     * @return array
-     */
-    function get_structure_info($table, $table_structure = array(), $state_data = [])
-    {
-        if (empty($state_data)) {
-            $state_data = Persistence::getStateData();
-        }
+	/**
+	 * Parses the provided table structure.
+	 *
+	 * @param array $table_structure
+	 *
+	 * @return array
+	 */
+	public function get_structure_info( $table, $table_structure = array(), $state_data = [] ) {
+		if ( empty( $state_data ) ) {
+			$state_data = Persistence::getStateData();
+		}
 
-        if (empty($table_structure)) {
-            $table_structure = $this->get_table_structure($table);
-        }
+		if ( empty( $table_structure ) ) {
+			$table_structure = $this->get_table_structure( $table );
+		}
 
         if (!is_array($table_structure)) {
             $this->error_log->log_error($this->error_log->getError());
@@ -665,63 +664,65 @@ class Table
             return $result;
         }
 
-        // $defs = mysql defaults, looks up the default for that particular column, used later on to prevent empty inserts values for that column
-        // $ints = holds a list of the possible integer types so as to not wrap them in quotation marks later in the insert statements
-        $defs               = array();
-        $ints               = array();
-        $bins               = array();
-        $bits               = array();
-        $field_set          = array();
-        $this->primary_keys = array();
-        $use_primary_keys   = true;
+		// $defs = mysql defaults, looks up the default for that particular column, used later on to prevent empty inserts values for that column
+		// $ints = holds a list of the possible integer types so as to not wrap them in quotation marks later in the insert statements
+		$defs             = array();
+		$ints             = array();
+		$bins             = array();
+		$bits             = array();
+		$points           = array();
+		$field_set        = array();
+		$use_primary_keys = true;
 
-        foreach ($table_structure as $struct) {
-            if ((0 === strpos($struct->Type, 'tinyint')) ||
-                (0 === strpos(strtolower($struct->Type), 'smallint')) ||
-                (0 === strpos(strtolower($struct->Type), 'mediumint')) ||
-                (0 === strpos(strtolower($struct->Type), 'int')) ||
-                (0 === strpos(strtolower($struct->Type), 'bigint'))
-            ) {
-                $defs[strtolower($struct->Field)] = (null === $struct->Default) ? 'NULL' : $struct->Default;
-                $ints[strtolower($struct->Field)] = '1';
-            } elseif (0 === strpos($struct->Type, 'binary') || apply_filters('wpmdb_process_column_as_binary', false, $struct)) {
-                $bins[strtolower($struct->Field)] = '1';
-            } elseif (0 === strpos($struct->Type, 'bit') || apply_filters('wpmdb_process_column_as_bit', false, $struct)) {
-                $bits[strtolower($struct->Field)] = '1';
-            }
+		foreach ( $table_structure as $struct ) {
+			if (
+				( 0 === strpos( $struct->Type, 'tinyint' ) ) ||
+				( 0 === strpos( strtolower( $struct->Type ), 'smallint' ) ) ||
+				( 0 === strpos( strtolower( $struct->Type ), 'mediumint' ) ) ||
+				( 0 === strpos( strtolower( $struct->Type ), 'int' ) ) ||
+				( 0 === strpos( strtolower( $struct->Type ), 'bigint' ) )
+			) {
+				$defs[ strtolower( $struct->Field ) ] = ( null === $struct->Default ) ? 'NULL' : $struct->Default;
+				$ints[ strtolower( $struct->Field ) ] = '1';
+			} elseif (
+				0 === strpos( $struct->Type, 'binary' ) ||
+				apply_filters( 'wpmdb_process_column_as_binary', false, $struct )
+			) {
+				$bins[ strtolower( $struct->Field ) ] = '1';
+			} elseif (
+				0 === strpos( $struct->Type, 'bit' ) ||
+				apply_filters( 'wpmdb_process_column_as_bit', false, $struct )
+			) {
+				$bits[ strtolower( $struct->Field ) ] = '1';
+			} elseif ( 0 === strpos( $struct->Type, 'point' ) ) {
+				$points[ strtolower( $struct->Field ) ] = '1';
+			}
 
-            $field_set[] = $this->table_helper->backquote($struct->Field);
+			$field_set[] = $this->table_helper->backquote( $struct->Field );
 
-            if ('PRI' === $struct->Key && true === $use_primary_keys) {
-                if (false === strpos($struct->Type, 'int')) {
-                    $use_primary_keys   = false;
-                    $this->primary_keys = array();
-                    continue;
-                }
-                $this->primary_keys[$struct->Field] = 0;
-            }
-        }
+			if ( 'PRI' === $struct->Key && true === $use_primary_keys ) {
+				if ( false !== strpos( $struct->Type, 'binary' ) ) {
+					$use_primary_keys   = false;
+					$this->primary_keys = array();
+					continue;
+				}
+				$this->primary_keys[ $struct->Field ] = 0;
+			}
+		}
 
-        if ( ! empty($state_data['primary_keys'])) {
-            if ( ! Util::is_json($state_data['primary_keys'])) {
-                $state_data['primary_keys'] = base64_decode(trim($state_data['primary_keys']));
-            }
-            $this->primary_keys = json_decode(stripslashes($state_data['primary_keys']), true);
-            if (false !== $this->primary_keys && ! empty($state_data['primary_keys'])) {
-                $this->first_select = false;
-            }
-        }
+		// Now we have the table structure, set primary keys to last data position
+		// if we've come round for another slice of data.
+		$this->maybe_update_primary_keys_from_state( $state_data );
 
-        $return = array(
-            'defs'      => $defs,
-            'ints'      => $ints,
-            'bins'      => $bins,
-            'bits'      => $bits,
-            'field_set' => $field_set,
-        );
-
-        return $return;
-    }
+		return array(
+			'defs'      => $defs,
+			'ints'      => $ints,
+			'bins'      => $bins,
+			'bits'      => $bits,
+			'field_set' => $field_set,
+			'points'    => $points,
+		);
+	}
 
     /**
      * Returns the table structure for the provided table.
@@ -794,7 +795,29 @@ class Table
         return $current_row;
     }
 
-    /**
+	/**
+	 * If state data contains primary keys, update internal variables used for data position tracking.
+	 *
+	 * @param array $state_data
+	 *
+	 * @return void
+	 */
+	private function maybe_update_primary_keys_from_state( $state_data = [] ) {
+		if ( ! empty( $state_data['primary_keys'] ) ) {
+			if ( ! Util::is_json( $state_data['primary_keys'] ) ) {
+				$state_data['primary_keys'] = base64_decode( trim( $state_data['primary_keys'] ) );
+			}
+
+			$decoded_primary_keys = json_decode( stripslashes( $state_data['primary_keys'] ), true );
+
+			if ( ! empty( $decoded_primary_keys ) ) {
+				$this->primary_keys = $decoded_primary_keys;
+				$this->first_select = false;
+			}
+		}
+	}
+
+	/**
      * Runs before processing the data in a table.
      *
      * @param string $table
@@ -1476,21 +1499,34 @@ class Table
                     continue;
                 }
 
-                $test_bit_key = strtolower($key) . '__bit';
-                // Correct null values IF we're not working with a BIT type field, they're handled separately below
-                if (null === $value && !property_exists($row, $test_bit_key)) {
-                    $values[] = 'NULL';
-                    continue;
-                }
+	            if ( isset( $structure_info['points'][ strtolower( $key ) ] ) && $structure_info['points'][ strtolower( $key ) ] ) {
+		            $unpacked           = empty( $value ) ? $value : unpack( 'x/x/x/x/corder/Ltype/dlon/dlat', $value );
+		            $should_create_geom = is_array( $unpacked )
+		                                  && array_key_exists( 'lon', $unpacked )
+		                                  && array_key_exists( 'lat', $unpacked );
 
-                // If we have binary data, substitute in hex encoded version and remove hex encoded version from row.
-                $hex_key = strtolower($key) . '__hex';
-                if (isset($structure_info['bins'][strtolower($key)]) && $structure_info['bins'][strtolower($key)] && isset($row->$hex_key)) {
-                    $value    = "UNHEX('" . $row->$hex_key . "')";
-                    $values[] = $value;
-                    unset($row->$hex_key);
-                    continue;
-                }
+		            $values[] = $should_create_geom ? 'ST_GeomFromText("POINT(' . $unpacked['lon'] . ' ' . $unpacked['lat'] . ')")' : 'NULL';
+		            continue;
+	            }
+
+	            $test_bit_key = strtolower( $key ) . '__bit';
+	            $hex_key      = strtolower( $key ) . '__hex';
+	            // Correct null values IF we're not working with a BIT of HEX type field, they're handled separately below
+	            if (
+		            null === $value &&
+		            ! property_exists( $row, $test_bit_key ) && ! property_exists( $row, $hex_key )
+	            ) {
+		            $values[] = 'NULL';
+		            continue;
+	            }
+
+	            // If we have binary data, substitute in hex encoded version and remove hex encoded version from row.
+	            if ( isset( $structure_info['bins'][ strtolower( $key ) ] ) && $structure_info['bins'][ strtolower( $key ) ] && ( isset( $row->$hex_key ) || null === $row->$hex_key ) ) {
+		            $value    = null === $row->$hex_key ? 'NULL' : "UNHEX('" . $row->$hex_key . "')";
+		            $values[] = $value;
+		            unset( $row->$hex_key );
+		            continue;
+	            }
 
                 // If we have bit data, substitute in properly bit encoded version.
                 $bit_key = strtolower($key) . '__bit';

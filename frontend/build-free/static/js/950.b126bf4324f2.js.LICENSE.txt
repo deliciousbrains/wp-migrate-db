@@ -102,4 +102,4 @@ and limitations under the License.
 
 //! moment.js
 
-//! version : 0.5.45
+//! version : 0.5.47
