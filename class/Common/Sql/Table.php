@@ -666,13 +666,14 @@ class Table
 
 		// $defs = mysql defaults, looks up the default for that particular column, used later on to prevent empty inserts values for that column
 		// $ints = holds a list of the possible integer types so as to not wrap them in quotation marks later in the insert statements
-		$defs             = array();
-		$ints             = array();
-		$bins             = array();
-		$bits             = array();
-		$points           = array();
-		$field_set        = array();
-		$use_primary_keys = true;
+		$defs               = array();
+		$ints               = array();
+		$bins               = array();
+		$bits               = array();
+		$points             = array();
+		$field_set          = array();
+        $this->primary_keys = array();
+		$use_primary_keys   = true;
 
 		foreach ( $table_structure as $struct ) {
 			if (
