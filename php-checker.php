@@ -23,18 +23,22 @@ class WPMDB_PHP_Checker {
 		$this->path         = $path;
 
 		self::$min_php      =  $min_php; // To increase the minimum PHP required, change this value _AND_ WPMDB_MINIMUM_PHP_VERSION in the main plugin files
-		self::$base_message = __( '%s requires PHP version %s or higher and cannot be activated. You are currently running version %s. <a href="%s">Learn&nbsp;More&nbsp;»</a>', 'wp-migrate-db' );
+
+		// This string is not translated. It is used so early in the plugin load
+		// process that translations are not loaded and can not properly
+		// be loaded.
+		self::$base_message = '%s requires PHP version %s or higher and cannot be activated. You are currently running version %s. <a href="%s">Learn&nbsp;More&nbsp;»</a>';
 		self::$php_doc_link = 'https://deliciousbrains.com/wp-migrate-db-pro/doc/upgrading-php/';
 
 		add_action( 'admin_init', array( $this, 'maybe_deactivate_plugin' ) );
 	}
 
 	public static function wpmdb_php_version_too_low() {
-		wp_die( sprintf( self::$base_message, __( 'WP Migrate Lite' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
+		wp_die( sprintf( self::$base_message, 'WP Migrate Lite', self::$min_php, PHP_VERSION, self::$php_doc_link ) );
 	}
 
 	public static function wpmdb_pro_php_version_too_low() {
-		wp_die( sprintf( self::$base_message, __( 'WP Migrate' ), self::$min_php, PHP_VERSION, self::$php_doc_link ) );
+		wp_die( sprintf( self::$base_message, 'WP Migrate', self::$min_php, PHP_VERSION, self::$php_doc_link ) );
 	}
 
 	public function maybe_deactivate_plugin() {

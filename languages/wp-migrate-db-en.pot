@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2025-02-12 10:21+0000\n"
+"POT-Creation-Date: 2025-04-24 15:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1057,12 +1057,14 @@ msgid "Failed to %s profile, state data is empty."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Properties/Properties.php:70
+#: src/wp-migrate-db-pro/class/Common/Properties/Properties.php:123
 msgid ""
 "Invalid content verification signature, please verify the connection "
 "information on the remote site and try again."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Properties/Properties.php:70
+#: src/wp-migrate-db-pro/class/Common/Properties/Properties.php:123
 #, php-format
 msgid " Remote URL: %s "
 msgstr ""
@@ -1402,28 +1404,33 @@ msgid "Help"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:237
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:202
 msgid "Warning: Mixed Case Table Names"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:240
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:205
 msgid ""
 "Whoa! We've detected that your <b>local</b> site has the MySQL setting "
 "<code>lower_case_table_names</code> set to <code>1</code>."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:242
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:207
 msgid ""
 "Whoa! We've detected that your <b>remote</b> site has the MySQL setting "
 "<code>lower_case_table_names</code> set to <code>1</code>."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:245
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:210
 msgid ""
 "As a result, uppercase characters in table names will be converted to "
 "lowercase during the migration."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:247
+#: src/wp-migrate-db-pro/class/Common/UI/TemplateBase.php:212
 #, php-format
 msgid ""
 "You can read more about this in <a href=\"%s\">our documentation</a>, "
@@ -1525,6 +1532,7 @@ msgid "Backups"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/UI/Template.php:129
+#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:121
 #, php-format
 msgid ""
 "The version of the %1$s addon you have installed%2$s is out-of-date and will "
@@ -1534,6 +1542,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/UI/Template.php:132
+#: src/wp-migrate-db-pro/class/Pro/UI/Template.php:124
 #, php-format
 msgid ""
 "The version of the %1$s addon you have installed%2$s is out-of-date and will "

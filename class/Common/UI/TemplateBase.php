@@ -11,12 +11,7 @@ use DeliciousBrains\WPMDB\Common\Util\Util;
 
 class TemplateBase
 {
-
-    /**
-     * @var array
-     */
-    public $plugin_tabs;
-    /**
+	/**
      * @var Properties
      */
     public $props;
@@ -73,25 +68,6 @@ class TemplateBase
         }
 
         $this->table = $table;
-
-        $this->plugin_tabs = [
-            [
-                'slug'  => 'migrate',
-                'title' => _x('Migrate', 'Configure a migration or export', 'wp-migrate-db'),
-            ],
-            [
-                'slug'  => 'settings',
-                'title' => _x('Settings', 'Plugin configuration and preferences', 'wp-migrate-db'),
-            ],
-            [
-                'slug'  => 'addons',
-                'title' => _x('Addons', 'Plugin extensions', 'wp-migrate-db'),
-            ],
-            [
-                'slug'  => 'help',
-                'title' => _x('Help', 'Get help or contact support', 'wp-migrate-db'),
-            ],
-        ];
     }
 
     function template_compatibility()
@@ -154,17 +130,6 @@ class TemplateBase
             if (method_exists($this, $method_name)) {
                 call_user_func(array($this, $method_name), $args);
             }
-        }
-    }
-
-    public function plugin_tabs()
-    {
-        $i = 0;
-        foreach ($this->plugin_tabs as $tab) {
-            $active = 0 === $i ? ' nav-tab-active' : '';
-            $tpl    = '<a href="#" class="nav-tab js-action-link%s %s" data-div-name="%s-tab">%s</a>';
-            printf($tpl, $active, $tab['slug'], $tab['slug'], $tab['title']);
-            $i++;
         }
     }
 

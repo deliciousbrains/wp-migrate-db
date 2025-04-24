@@ -47,7 +47,7 @@ class Properties
     public $transient_retry_timeout;
     public $dbrains_api_status_url = 'https://s3.amazonaws.com/cdn.deliciousbrains.com/status.json';
     public $multipart_boundary = 'bWH4JVmYCnf6GfXacrcc';
-    public $invalid_content_verification_error;
+    public $invalid_content_verification_error = 'Invalid content verification signature, please verify the connection information on the remote site and try again.';
     public $util;
     public $settingsClass;
     public $unhook_templates = [];
@@ -66,8 +66,6 @@ class Properties
         if ($pro_plugin_active && !$free_plugin_active) {
             $is_pro = true;
         }
-
-        $this->invalid_content_verification_error = __('Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db') . sprintf(__(' Remote URL: %s ', 'Ex. Remote URL: http://wp.dev', 'wp-migrate-db'), Util::home_url());
 
         $this->plugin_file_path = $is_pro ? realpath(dirname(__DIR__) . '/../../wp-migrate-db-pro.php') : realpath(dirname(__DIR__) . '/../../wp-migrate-db.php');
 
@@ -109,5 +107,19 @@ class Properties
         if (isset($GLOBALS['wpmdb_meta'][$this->core_slug])) {
             $this->plugin_version = $GLOBALS['wpmdb_meta'][$this->core_slug]['version'];
         }
+
+		// Other properties to set after init has fired
+	    add_action('init', [$this, 'init'], 99);
     }
+
+	/**
+	 * Properties that need to be set after init has fired.
+	 *
+	 * @return void
+	 * @handles init
+	 */
+	public function init() {
+		// This needs to be after init so that translation functions work.
+        $this->invalid_content_verification_error = __('Invalid content verification signature, please verify the connection information on the remote site and try again.', 'wp-migrate-db') . sprintf(__(' Remote URL: %s ', 'Ex. Remote URL: http://wp.dev', 'wp-migrate-db'), Util::home_url());
+	}
 }
