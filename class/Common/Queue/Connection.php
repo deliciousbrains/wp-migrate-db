@@ -15,11 +15,11 @@ class Connection extends Connections\DatabaseConnection {
      * @param array  $allowed_job_classes Job classes that may be handled, default any Job subclass.
      * @param string $prefix              Table prefix, default temp_prefix.
      */
-    public function __construct(wpdb $wpdb = null, $allowed_job_classes = [], $prefix = null)
+    public function __construct($wpdb = null, $allowed_job_classes = [], $prefix = null)
     {
-        if (null === $wpdb) {
-            $wpdb = $GLOBALS['wpdb'];
-        }
+	    if ( null === $wpdb || ! is_a( $wpdb, 'wpdb' ) ) {
+		    $wpdb = $GLOBALS['wpdb'];
+	    }
         if (null === $prefix) {
             $prefix = $GLOBALS['wpmdbpro']->get('temp_prefix');
         }

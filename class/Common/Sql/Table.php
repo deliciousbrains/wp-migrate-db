@@ -589,10 +589,10 @@ class Table
         }
 
         $this->pre_process_data($table, $target_table_name, $temp_table_name, $fp, $state_data);
-        $to_search                     = isset($state_data['find_replace_pairs']['replace_old']) ? $state_data['find_replace_pairs']['replace_old'] : '';
-        $to_replace                    = isset($state_data['find_replace_pairs']['replace_new']) ? $state_data['find_replace_pairs']['replace_new'] : '';
-        $search_replace_regex          = isset($state_data['find_replace_pairs']['regex']) ? $state_data['find_replace_pairs']['regex'] : '';
-        $search_replace_case_sensitive = isset($state_data['find_replace_pairs']['case_sensitive']) ? $state_data['find_replace_pairs']['case_sensitive'] : '';
+        $to_search                     = isset($state_data['find_replace_pairs']['replace_old']) ? $state_data['find_replace_pairs']['replace_old'] : [];
+        $to_replace                    = isset($state_data['find_replace_pairs']['replace_new']) ? $state_data['find_replace_pairs']['replace_new'] : [];
+        $search_replace_regex          = isset($state_data['find_replace_pairs']['regex']) ? $state_data['find_replace_pairs']['regex'] : [];
+        $search_replace_case_sensitive = isset($state_data['find_replace_pairs']['case_sensitive']) ? $state_data['find_replace_pairs']['case_sensitive'] : [];
 
         $replacer = $this->replace->register(array(
             'table'          => ('find_replace' === $state_data['stage']) ? $temp_table_name : $table,

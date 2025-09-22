@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2025-04-24 15:35+0100\n"
+"POT-Creation-Date: 2025-09-22 10:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,12 @@ msgid "Could not delete the MySQL export file."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Replace.php:733
+#: src/wp-migrate-db-pro/class/Common/Replace.php:737
+#: src/wp-migrate-db-pro/class/Common/Replace.php:738
+#: src/wp-migrate-db-pro/class/Common/Replace.php:739
+#: src/wp-migrate-db-pro/class/Common/Replace.php:745
+#: src/wp-migrate-db-pro/class/Common/Replace.php:746
+#: src/wp-migrate-db-pro/class/Common/Replace.php:747
 msgid ""
 "Failed attempting to do the recursive unserialize replace. Please contact "
 "support."
@@ -1322,11 +1328,19 @@ msgid "More Details »"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:256
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:254
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:257
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:258
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:261
 #, php-format
 msgid "Scope: %s()."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:257
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:255
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:258
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:259
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:262
 #, php-format
 msgid "WPMDB Error: Data cannot be unserialized. %s"
 msgstr ""
@@ -1510,11 +1524,26 @@ msgid "Please activate your license before updating."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:107
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:108
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:109
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:111
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:110
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:112
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:116
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:117
 #, php-format
 msgid "Remote server responded with %s and body of %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:150
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:151
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:152
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:153
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:155
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:154
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:156
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:160
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:161
 msgid "Unable to process payload."
 msgstr ""
 
@@ -2105,6 +2134,7 @@ msgid "Could not determine payload filesize. File name: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:349
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:356
 #, php-format
 msgid ""
 "File size of source and destination do not match: <br>%s<br>Destination "
@@ -2112,6 +2142,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:356
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:363
 #, php-format
 msgid ""
 "File MD5's do not match for file: %s \n"
@@ -2119,16 +2150,19 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:376
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:383
 #, php-format
 msgid "Could not write line to file. File name: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:425
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:432
 #, php-format
 msgid "Could not create directory: %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:442
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:449
 #, php-format
 msgid ""
 "The `%s` file is not writable, please check the file permissions of the "
@@ -2136,6 +2170,7 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:487
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:494
 #, php-format
 msgid "Unable to rename part file %s"
 msgstr ""

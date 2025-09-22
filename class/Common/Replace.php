@@ -269,6 +269,10 @@ class Replace
             $replace = $this->replace;
         }
 
+	    if ( ! is_array( $search ) || ! is_array( $replace ) || count( $search ) !== count( $replace ) ) {
+		    return;
+	    }
+
         foreach ($search as $key => $pattern) {
             if (!$json_pairs && array_key_exists($key, $this->regex) && true === $this->regex[$key]) {
                 $this->pairs[] = $this->pair_factory->create($pattern, $replace[$key], PairFactory::REGEX);
@@ -669,7 +673,7 @@ class Replace
                 // PHP currently has a bug that doesn't allow you to clone the DateInterval / DatePeriod classes.
                 // We skip them here as they probably won't need data to be replaced anyway
                 if (
-                    'object' == gettype($unserialized) && 
+                    'object' == gettype($unserialized) &&
                     (
                         $unserialized instanceof \DateInterval ||
                         $unserialized instanceof \DatePeriod
