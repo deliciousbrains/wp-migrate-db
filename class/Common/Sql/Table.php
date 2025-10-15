@@ -1916,7 +1916,14 @@ class Table
 
     function delete_temporary_tables($prefix)
     {
-        $tables         = $this->get_tables();
+	    if ( empty( $prefix ) ) {
+		    return new WP_Error(
+			    'missing-temp-prefix',
+			    __( 'Temporary table prefix not supplied when trying to delete temporary tables.', 'wp-migrate-db' )
+		    );
+	    }
+
+	    $tables         = $this->get_tables();
         $delete_queries = '';
 
         foreach ($tables as $table) {

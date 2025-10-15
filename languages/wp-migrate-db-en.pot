@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2025-09-22 10:14+0100\n"
+"POT-Creation-Date: 2025-10-15 10:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1195,6 +1195,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1944
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1967
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1968
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1975
 msgid "WordPress MySQL database migration"
 msgstr ""
 
@@ -1202,6 +1203,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1946
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1969
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1970
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1977
 #, php-format
 msgid "Generated: %s"
 msgstr ""
@@ -1210,6 +1212,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1947
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1970
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1971
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1978
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
@@ -1218,6 +1221,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1948
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1971
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1972
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1979
 #, php-format
 msgid "Database: %s"
 msgstr ""
@@ -2186,4 +2190,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:128
 #, php-format
 msgid "Payload transfer failed with code %s: %s"
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1922
+msgid ""
+"Temporary table prefix not supplied when trying to delete temporary tables."
 msgstr ""
