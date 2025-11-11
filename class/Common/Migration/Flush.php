@@ -17,19 +17,19 @@ class Flush
     /**
      * @var Helper
      */
-    private $http_helper;
+    protected $http_helper;
     /**
      * @var Util
      */
-    private $util;
+    protected $util;
     /**
      * @var RemotePost
      */
-    private $remote_post;
+    protected $remote_post;
     /**
      * @var Http
      */
-    private $http;
+    protected $http;
 
     public function __construct(
         Helper $helper,
@@ -45,7 +45,6 @@ class Flush
 
     public function register()
     {
-        add_action('wp_ajax_nopriv_wpmdb_flush', array($this, 'ajax_nopriv_flush',));
         add_action('wp_ajax_wpmdb_flush', array($this, 'ajax_flush'));
     }
 
@@ -58,16 +57,6 @@ class Flush
     {
         $this->http->check_ajax_referer('flush');
 
-        return $this->ajax_nopriv_flush();
-    }
-
-    /**
-     * Handles the request to flush caches and cleanup migration when pulling with user tables being migrated.
-     *
-     * @return bool|null
-     */
-    function ajax_nopriv_flush()
-    {
         $state_data = Persistence::getStateData();
 
         if ('push' === $state_data['intent']) {
@@ -83,9 +72,7 @@ class Flush
 
         Persistence::cleanupStateOptions();
 
-        $result = $this->http->end_ajax($return);
-
-        return $result;
+        return $this->http->end_ajax($return);
     }
 
     /**

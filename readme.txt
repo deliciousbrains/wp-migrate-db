@@ -117,6 +117,9 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 
 == Changelog ==
 
+= WP Migrate 2.7.7 - 2025-11-11 =
+* Security: Improved security of the cache flush functionality, thanks to security researcher Dmitrii Ignatyev
+
 = WP Migrate 2.7.6 - 2025-10-15 =
 * New: Dependencies have been updated for improved security and stability
 * Fixed: The removal of temporary tables after a migration is cancelled is now more robust
