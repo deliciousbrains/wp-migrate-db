@@ -12,7 +12,7 @@ class ComposerStaticInitc3a9210a8f67f3c808c5ed9072cde06b
     );
 
     public static $prefixLengthsPsr4 = array (
-        'D' => 
+        'D' =>
         array (
             'DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\' => 55,
             'DeliciousBrains\\WPMDB\\Container\\Psr\\Container\\' => 46,
@@ -27,39 +27,39 @@ class ComposerStaticInitc3a9210a8f67f3c808c5ed9072cde06b
     );
 
     public static $prefixDirsPsr4 = array (
-        'DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\Psr\\Container\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\PhpOption\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\PhpOption\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\PhpDocReader\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\PhpDocReader\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/phpdoc-reader/src/PhpDocReader',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\Invoker\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Invoker\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\Interop\\Container\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Interop\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\Dotenv\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Dotenv\\' =>
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\DI\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\DI\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/php-di/src/DI',
         ),
-        'DeliciousBrains\\WPMDB\\Container\\Brumann\\Polyfill\\' => 
+        'DeliciousBrains\\WPMDB\\Container\\Brumann\\Polyfill\\' =>
         array (
             0 => __DIR__ . '/..' . '/brumann/polyfill-unserialize/src',
         ),

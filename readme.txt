@@ -1,10 +1,10 @@
-=== WP Migrate Lite - WordPress Migration Made Easy ===
+=== WP Migrate Lite - Migration Made Easy ===
 Contributors: wpengine, deliciousbrains, bradt, ahmedgeek, philwebs, dalewilliams, tysonreeder, kevinwhoffman
 Tags: migrate, push pull, clone, import site, export site, transfer, restore, backup, wordpress migration plugin, move site, database migration, site migration
 Requires at least: 5.2
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 5.6
-Stable tag: 2.7.6
+Stable tag: 2.7.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,10 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.7.8 - 2026-05-28 =
+* New: Dependencies have been updated for improved security and stability
+* Fixed: Various CSS fixes for WordPress 7.0 compatibility
 
 = WP Migrate 2.7.7 - 2025-11-11 =
 * Security: Improved security of the cache flush functionality, thanks to security researcher Dmitrii Ignatyev

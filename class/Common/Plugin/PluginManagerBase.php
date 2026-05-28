@@ -280,7 +280,7 @@ class PluginManagerBase
                 $message = __("WP Migrate Lite and WP Migrate cannot both be active. We've automatically deactivated WP Migrate.", 'wp-migrate-db');
             } ?>
 
-            <div class="updated" style="border-left: 4px solid #ffba00;">
+            <div class="notice notice-warning">
                 <p><?php echo esc_html($message); ?></p>
             </div> <?php
 
