@@ -100,7 +100,7 @@ class MigrationHelper
             'this_uploads_dir'              => $site_details['uploads_dir'], // TODO: Remove backwards compatibility.
             'this_plugin_url'               => trailingslashit(plugins_url($this->props->plugin_folder_name)),
             'this_website_name'             => sanitize_title_with_dashes(DB_NAME),
-            'this_download_url'             => network_admin_url($this->props->plugin_base . '&download='),
+            'this_download_url'             => network_admin_url($this->props->plugin_base . '&nonce=' . Util::create_nonce('wpmdb-download') . '&download='),
             'this_prefix'                   => $site_details['prefix'], // TODO: Remove backwards compatibility.
             'this_temp_prefix'              => $this->props->temp_prefix,
             'this_plugin_base'              => esc_html($this->props->plugin_base),

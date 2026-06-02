@@ -785,10 +785,24 @@ class Filesystem
         $util->set_time_limit();
 
         $raw_dump_name = htmlspecialchars($_GET['download'], ENT_QUOTES | ENT_HTML5);
+        // Strip any path components to prevent directory traversal
+        $raw_dump_name = basename($raw_dump_name);
         $dump_name     = $table_helper->format_dump_name($raw_dump_name);
         $diskfile      = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $dump_name;
         if ($is_full_site_export) {
             $diskfile = $this->get_upload_info('path') . DIRECTORY_SEPARATOR . $raw_dump_name . '.zip';
+        }
+
+        // Verify the resolved path is within the plugin's upload directory
+        $upload_path = realpath($this->get_upload_info('path'));
+        if ($upload_path === false) {
+            wp_die(__('Upload directory not found.', 'wp-migrate-db'));
+        }
+
+        $resolved_diskfile = realpath($diskfile);
+        if ($resolved_diskfile === false ||
+            strpos($resolved_diskfile, $upload_path . DIRECTORY_SEPARATOR) !== 0) {
+            wp_die(__('Invalid file path.', 'wp-migrate-db'));
         }
 
         $filename         = basename($diskfile);
@@ -827,7 +841,7 @@ class Filesystem
                 wp_die(sprintf(__('<h3>Output prevented download. </h3> %s', 'wp-migrate-db'), $msg));
             }
         } else {
-            wp_die(__('Could not find the file to download:', 'wp-migrate-db') . '<br>' . esc_html($diskfile));
+            wp_die(__('Could not find the file to download.', 'wp-migrate-db'));
         }
     }
 

@@ -179,8 +179,22 @@ class Http
      */
     function http_verify_download()
     {
-        if (!empty($_GET['download'])) {
-            $this->filesystem->download_file();
+        if (empty($_GET['download'])) {
+            return;
         }
+
+        // Verify user has appropriate capability
+        $cap = is_multisite() ? 'manage_network_options' : 'export';
+        if (!current_user_can($cap)) {
+            wp_die(__('You do not have permission to download files.', 'wp-migrate-db'));
+        }
+
+        // Verify nonce to prevent CSRF
+        $nonce = isset($_GET['nonce']) ? $_GET['nonce'] : '';
+        if (!wp_verify_nonce($nonce, 'wpmdb-download')) {
+            wp_die(__('Security check failed. Please refresh the page and try again.', 'wp-migrate-db'));
+        }
+
+        $this->filesystem->download_file();
     }
 }
