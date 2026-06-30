@@ -612,6 +612,9 @@ class Table
         // @TODO this has a memory leak
         do {
             $select_sql = $this->build_select_query($table, $row_start, $structure_info, $state_data);
+            if (is_wp_error($select_sql)) {
+                return $this->http->end_ajax($select_sql);
+            }
             $table_data = $wpdb->get_results($select_sql);
 
             if (!is_array($table_data)) {
@@ -799,23 +802,48 @@ class Table
 	/**
 	 * If state data contains primary keys, update internal variables used for data position tracking.
 	 *
+	 * Expects `$this->primary_keys` to already list the table's primary key columns (field name => placeholder
+	 * value), as populated by {@see get_structure_info()} from the table structure before this is called.
+	 * State values are only applied when they match those columns exactly.
+	 *
 	 * @param array $state_data
 	 *
 	 * @return void
 	 */
 	private function maybe_update_primary_keys_from_state( $state_data = [] ) {
-		if ( ! empty( $state_data['primary_keys'] ) ) {
-			if ( ! Util::is_json( $state_data['primary_keys'] ) ) {
-				$state_data['primary_keys'] = base64_decode( trim( $state_data['primary_keys'] ) );
-			}
-
-			$decoded_primary_keys = json_decode( stripslashes( $state_data['primary_keys'] ), true );
-
-			if ( ! empty( $decoded_primary_keys ) ) {
-				$this->primary_keys = $decoded_primary_keys;
-				$this->first_select = false;
-			}
+		if ( empty( $state_data['primary_keys'] ) ) {
+			return;
 		}
+
+		$valid_primary_key_columns = array_keys( $this->primary_keys );
+		if ( empty( $valid_primary_key_columns ) ) {
+			return;
+		}
+
+		if ( ! Util::is_json( $state_data['primary_keys'] ) ) {
+			$state_data['primary_keys'] = base64_decode( trim( $state_data['primary_keys'] ) );
+		}
+
+		$decoded_primary_keys = json_decode( stripslashes( $state_data['primary_keys'] ), true );
+
+		if ( ! is_array( $decoded_primary_keys ) || empty( $decoded_primary_keys ) ) {
+			return;
+		}
+
+		if ( count( $decoded_primary_keys ) !== count( $valid_primary_key_columns ) ) {
+			return;
+		}
+
+		$updated_primary_keys = array();
+		foreach ( $valid_primary_key_columns as $col ) {
+			if ( ! array_key_exists( $col, $decoded_primary_keys ) ) {
+				return;
+			}
+			$updated_primary_keys[ $col ] = $decoded_primary_keys[ $col ];
+		}
+
+		$this->primary_keys = $updated_primary_keys;
+		$this->first_select = false;
 	}
 
 	/**
@@ -1244,7 +1272,7 @@ class Table
      * @param int    $row_start
      * @param array  $structure_info
      *
-     * @return string
+     * @return string|WP_Error
      */
     function build_select_query($table, $row_start, $structure_info, $state_data)
     {
@@ -1270,22 +1298,36 @@ class Table
         }
 
         if ('import' !== $state_data['intent'] && 'backup' != $state_data['stage'] && isset($form_data['exclude_post_types']) && !empty($form_data['select_post_types'])) {
-            $post_types = '\'' . implode('\', \'', $form_data['select_post_types']) . '\'';
+            $post_types_slugs = is_array($form_data['select_post_types'])
+                ? array_values(array_unique(array_filter($form_data['select_post_types'], function ($slug) {
+                    return is_string($slug) && '' !== $slug;
+                })))
+                : array();
+
+            if (empty($post_types_slugs)) {
+                return new WP_Error(
+                    'wpmdb-build_select_query-invalid_post_types',
+                    __('Could not build the post type filter from `select_post_types` form value.', 'wp-migrate-db')
+                );
+            }
+
+            $placeholders = implode(', ', array_fill(0, count($post_types_slugs), '%s'));
+            $post_types   = $wpdb->prepare('(' . $placeholders . ')', ...$post_types_slugs);
             if ($this->table_helper->table_is('posts', $table, 'table', $prefix)) {
-                $where .= ' AND `post_type` IN ( ' . $post_types . ' )';
+                $where .= ' AND `post_type` IN ' . $post_types;
             } elseif ($this->table_helper->table_is('postmeta', $table, 'table', $prefix)) {
                 $tables = $this->get_ms_compat_table_names(array('postmeta', 'posts'), $table);
                 $join[] = sprintf('INNER JOIN %1$s ON %1$s.ID = %2$s.post_id', $this->table_helper->backquote($tables['posts_table']), $this->table_helper->backquote($tables['postmeta_table']));
-                $where  .= sprintf(' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->table_helper->backquote($tables['posts_table']));
+                $where  .= ' AND ' . $this->table_helper->backquote($tables['posts_table']) . '.post_type IN ' . $post_types;
             } elseif ($this->table_helper->table_is('comments', $table, 'table', $prefix)) {
                 $tables = $this->get_ms_compat_table_names(array('comments', 'posts'), $table);
                 $join[] = sprintf('INNER JOIN %1$s ON %1$s.ID = %2$s.comment_post_ID', $this->table_helper->backquote($tables['posts_table']), $this->table_helper->backquote($tables['comments_table']));
-                $where  .= sprintf(' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->table_helper->backquote($tables['posts_table']));
+                $where  .= ' AND ' . $this->table_helper->backquote($tables['posts_table']) . '.post_type IN ' . $post_types;
             } elseif ($this->table_helper->table_is('commentmeta', $table, 'table', $prefix)) {
                 $tables = $this->get_ms_compat_table_names(array('commentmeta', 'posts', 'comments'), $table);
                 $join[] = sprintf('INNER JOIN %1$s ON %1$s.comment_ID = %2$s.comment_id', $this->table_helper->backquote($tables['comments_table']), $this->table_helper->backquote($tables['commentmeta_table']));
                 $join[] = sprintf('INNER JOIN %2$s ON %2$s.ID = %1$s.comment_post_ID', $this->table_helper->backquote($tables['comments_table']), $this->table_helper->backquote($tables['posts_table']));
-                $where  .= sprintf(' AND %1$s.post_type IN ( ' . $post_types . ' )', $this->table_helper->backquote($tables['posts_table']));
+                $where  .= ' AND ' . $this->table_helper->backquote($tables['posts_table']) . '.post_type IN ' . $post_types;
             }
         }
 

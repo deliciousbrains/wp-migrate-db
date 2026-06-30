@@ -4,7 +4,7 @@ Tags: migrate, push pull, clone, import site, export site, transfer, restore, ba
 Requires at least: 5.2
 Tested up to: 7.0
 Requires PHP: 5.6
-Stable tag: 2.7.9
+Stable tag: 2.7.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,12 @@ Yes, WP Migrate Lite includes `export` and `find-replace` commands. Qualifying l
 10. Saved migration profiles
 
 == Changelog ==
+
+= WP Migrate 2.7.10 - 2026-06-30 =
+* New: Dependencies have been updated for improved security and stability
+* Fixed: Backticks in MySQL table and column names are now properly escaped in migration SQL queries, thanks to 0nlymohammed via the Intigriti Bug Bounty program
+* Fixed: Primary key resume state is validated against the table schema before being used in migration queries, thanks to 0nlymohammed via the Intigriti Bug Bounty program
+* Fixed: Post type filters in migration row queries now use the WordPress database prepare method for correct SQL escaping, thanks to 0nlymohammed via the Intigriti Bug Bounty program
 
 = WP Migrate 2.7.9 - 2026-06-02 =
 * Security: Fixed CSRF vulnerability in file download handler, thanks to Nguyen Ba Khanh via Patchstack

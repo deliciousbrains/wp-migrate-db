@@ -52,16 +52,28 @@ class TableHelper
                 $result = array();
                 reset($a_name);
                 foreach ($a_name as $key => $val) {
-                    $result[$key] = '`' . $val . '`';
+                    $result[$key] = '`' . $this->escape_mysql_identifier($val) . '`';
                 }
 
                 return $result;
             } else {
-                return '`' . $a_name . '`';
+                return '`' . $this->escape_mysql_identifier($a_name) . '`';
             }
         } else {
             return $a_name;
         }
+    }
+
+    /**
+     * Escape the body of a MySQL/MariaDB identifier that will be wrapped in backticks.
+     *
+     * @param string|int|float $name
+     *
+     * @return string
+     */
+    public function escape_mysql_identifier($name)
+    {
+        return str_replace('`', '``', (string) $name);
     }
 
     /**
