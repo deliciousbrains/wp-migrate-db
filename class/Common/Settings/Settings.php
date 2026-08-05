@@ -75,6 +75,7 @@ class Settings
 
         $default_settings = array(
             'key'                        => $this->util->generate_key(),
+			'mu_plugin_auth_key'         => $this->util->generate_key(),
             'allow_pull'                 => false,
             'allow_push'                 => false,
             'profiles'                   => array(),

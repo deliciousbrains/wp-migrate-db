@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wp-migrate-db-pro\n"
 "Report-Msgid-Bugs-To: nom@deliciousbrains.com\n"
-"POT-Creation-Date: 2026-06-30 10:41-0400\n"
+"POT-Creation-Date: 2026-08-05 10:50-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -754,6 +754,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:875
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:836
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:841
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:869
 #, php-format
 msgid "<h3>Output prevented download. </h3> %s"
 msgstr ""
@@ -901,6 +902,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:180
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:146
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:152
+#: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:191
 msgid "our documentation"
 msgstr ""
 
@@ -1286,6 +1288,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1047
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1053
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:749
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1058
 #, php-format
 msgid ""
 "Failed to retrieve table structure for table '%s', please ensure your "
@@ -1297,6 +1300,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1198
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:865
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:869
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1228
 #, php-format
 msgid "Error creating temporary table. Table \"%s\" does not exist."
 msgstr ""
@@ -1306,6 +1310,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1251
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:916
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:920
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1281
 #, php-format
 msgid "Delete any existing table %s"
 msgstr ""
@@ -1315,6 +1320,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1265
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:927
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:931
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1295
 #, php-format
 msgid "Table structure of table %s"
 msgstr ""
@@ -1334,6 +1340,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1349
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:993
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:997
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1403
 #, php-format
 msgid "Data contents of table %s"
 msgstr ""
@@ -1344,6 +1351,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1482
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1120
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1124
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1533
 msgid "Failed to write the gzipped SQL data to the file. (#127)"
 msgstr ""
 
@@ -1353,6 +1361,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1491
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1127
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1131
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1542
 msgid "Failed to write the SQL data to the file. (#128)"
 msgstr ""
 
@@ -1362,6 +1371,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1578
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1199
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1203
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1629
 #, php-format
 msgid ""
 "The imported table `%1s` contains characters which are invalid in the target "
@@ -1377,6 +1387,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1588
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1202
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1206
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1639
 #, php-format
 msgid ""
 "The table `%1s` contains characters which are invalid in the target "
@@ -1390,6 +1401,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2433
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1784
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1790
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2492
 msgid "Error moving SQL file into ZIP archive"
 msgstr ""
 
@@ -1399,6 +1411,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2540
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1879
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1885
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2599
 #, php-format
 msgid "End of data contents of table %s"
 msgstr ""
@@ -1409,6 +1422,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2627
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1958
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1964
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2693
 msgid ""
 "Temporary table prefix not supplied when trying to delete temporary tables."
 msgstr ""
@@ -1419,6 +1433,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2701
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2011
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2017
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2767
 msgid "WordPress MySQL database migration"
 msgstr ""
 
@@ -1428,6 +1443,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2704
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2013
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2019
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2770
 #, php-format
 msgid "Generated: %s"
 msgstr ""
@@ -1438,6 +1454,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2708
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2014
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2020
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2774
 #, php-format
 msgid "Hostname: %s"
 msgstr ""
@@ -1448,6 +1465,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2710
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2015
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2021
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2776
 #, php-format
 msgid "Database: %s"
 msgstr ""
@@ -1456,6 +1474,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:174
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:146
 #: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:152
+#: src/wp-migrate-db-pro/class/Common/Sql/TableHelper.php:185
 #, php-format
 msgid ""
 "The source site supports utf8mb4 data but the target does not, aborting "
@@ -1857,12 +1876,14 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:107
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:123
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:124
 #, php-format
 msgid "Remote server responded with %s and body of %s"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:150
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:173
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:178
 msgid "Unable to process payload."
 msgstr ""
 
@@ -1927,6 +1948,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:705
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:687
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:658
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:654
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:656
 #, php-format
 msgid "File transfer error - Unable to create a temporary folder. (%s)"
 msgstr ""
@@ -1940,6 +1963,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:722
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:704
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:675
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:671
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:673
 #, php-format
 msgid "File transfer error - Unable to create a PHP file on the server. (%s)"
 msgstr ""
@@ -1953,6 +1978,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:736
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:718
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:689
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:685
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:687
 #, php-format
 msgid ""
 "File transfer error - Unable to update file contents using using PHP's "
@@ -1968,6 +1995,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:752
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:734
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:705
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:701
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:703
 #, php-format
 msgid ""
 "File transfer error - Unable to move file to the correct location using "
@@ -1983,6 +2012,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:769
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:751
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:722
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:718
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:720
 #, php-format
 msgid ""
 "File transfer error - Unable to delete file using PHP's unlink() function. "
@@ -2570,6 +2601,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:71
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:75
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:76
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:80
 #, php-format
 msgid "File does not exist - %s"
 msgstr ""
@@ -2600,6 +2632,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:612
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:701
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:467
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:451
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:503
 #, php-format
 msgid "Could not copy stream data to file. File name: %s"
 msgstr ""
@@ -2631,6 +2665,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:624
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:713
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:479
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:463
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:515
 #, php-format
 msgid "Could not determine payload filesize. File name: %s"
 msgstr ""
@@ -2693,6 +2729,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:795
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:886
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:646
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:718
 #, php-format
 msgid "Could not write line to file. File name: %s"
 msgstr ""
@@ -2740,6 +2777,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1114
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1205
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:972
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:949
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1048
 #, php-format
 msgid "Could not create directory: %s"
 msgstr ""
@@ -2825,6 +2864,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1068
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:532
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:835
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:812
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:911
 #, php-format
 msgid "Unable to rename part file %s"
 msgstr ""
@@ -2832,6 +2873,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/PluginHelper.php:79
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/PluginHelper.php:99
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/PluginHelper.php:106
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/PluginHelper.php:100
 msgid "Failed to respond to payload post, empty state data."
 msgstr ""
 
@@ -3257,6 +3299,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:820
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:821
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:782
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:815
 #, php-format
 msgid "<h3>Could not get filename to download. </h3> %s"
 msgstr ""
@@ -3484,6 +3527,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1258
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1279
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1309
 #, php-format
 msgid ""
 "Failed to generate create table query for table %s, please ensure your "
@@ -3493,6 +3537,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2485
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2503
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2479
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2538
 #, php-format
 msgid "Transfer failed while migrating table %s."
 msgstr ""
@@ -3500,6 +3545,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2912
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2937
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2906
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:2972
 #, php-format
 msgid "Could not add table \"%1$s\" to queue.<br>Database Error: %2$s"
 msgstr ""
@@ -3555,6 +3601,7 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2097
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2101
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2128
 msgid ""
 "The migration was blocked by the Wordfence plugin, which is active on the "
 "remote site. This issue is related to the Wordfence Web Application Firewall "
@@ -3567,31 +3614,37 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2118
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2149
 msgctxt "Years indicator for display of interval."
 msgid "Y"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2119
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2150
 msgctxt "Months indicator for display of interval."
 msgid "M"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2120
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2151
 msgctxt "Days indicator for display of interval."
 msgid "D"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2121
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2152
 msgctxt "Hours indicator for display of interval."
 msgid "h"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2122
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2153
 msgctxt "Minutes indicator for display of interval."
 msgid "m"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Util/Util.php:2123
+#: src/wp-migrate-db-pro/class/Common/Util/Util.php:2154
 msgctxt "Seconds indicator for display of interval."
 msgid "s"
 msgstr ""
@@ -3687,6 +3740,7 @@ msgid "WP Migrate CLI Settings class not available."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:60
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Receiver.php:61
 msgid "Unable to create payload temporary file."
 msgstr ""
 
@@ -3804,6 +3858,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:914
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1005
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:772
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:749
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:846
 #, php-format
 msgid "Unable to open file: %s"
 msgstr ""
@@ -3863,6 +3919,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:511
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:493
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:468
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:470
 #, php-format
 msgid "File does not exist: %s"
 msgstr ""
@@ -3875,6 +3932,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:546
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:528
 #: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:499
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:495
+#: src/wp-migrate-db-pro/class/Common/Transfers/Files/Util.php:497
 #, php-format
 msgid "Could not add file \"%1$s\" to queue.<br>Database Error: %2$s"
 msgstr ""
@@ -4009,6 +4068,11 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:123
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:239
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:799
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:776
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:105
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:127
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:243
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:873
 msgid "Unable to write to payload file."
 msgstr ""
 
@@ -4021,6 +4085,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:105
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:109
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:110
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:114
 #, php-format
 msgid "Unable to open file %s"
 msgstr ""
@@ -4034,6 +4099,7 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:142
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:146
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:147
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:151
 msgid "Unable to create payload file."
 msgstr ""
 
@@ -4051,6 +4117,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:599
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:686
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:454
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:438
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:490
 msgid "Could not create resource handle for payload from metadata."
 msgstr ""
 
@@ -4086,6 +4154,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:749
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:840
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:600
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:577
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:673
 #, php-format
 msgid ""
 "File size of source and destination do not match: <br>%1$s<br>Destination "
@@ -4124,6 +4194,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:768
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:859
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:619
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:596
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:691
 #, php-format
 msgid ""
 "File MD5's do not match for file: %1$s<br>Local MD5: %2$s Remote MD5: %3$s"
@@ -4172,6 +4244,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:961
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1052
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:819
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:796
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:895
 #, php-format
 msgid "Part file missing expected suffix %s"
 msgstr ""
@@ -4218,6 +4292,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1083
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1174
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:941
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:918
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1017
 #, php-format
 msgid ""
 "The parent folder of the file `%s` is not writable. Folder permissions are "
@@ -4267,6 +4343,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1092
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1183
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:950
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:927
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1026
 #, php-format
 msgid ""
 "The parent folder of the file `%s` is not writable. Please ensure the web "
@@ -4315,6 +4393,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1135
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1226
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:993
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:970
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1069
 #, php-format
 msgid ""
 "The `%s` file is not writable. It has permissions %s. Please ensure the web "
@@ -4363,6 +4443,8 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1144
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1235
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1002
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:979
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:1078
 #, php-format
 msgid ""
 "The `%s` file is not writable, please ensure the web server can read from "
@@ -4370,10 +4452,12 @@ msgid ""
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:162
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:164
 msgid "Could not create payload array for transfer."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:177
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:179
 #, php-format
 msgid "Payload transfer failed with code %1$s: %2$s"
 msgstr ""
@@ -4384,6 +4468,10 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:408
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:378
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:389
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:375
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:386
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:372
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:383
 #, php-format
 msgid "File transfer failed with response code: %s"
 msgstr ""
@@ -4391,12 +4479,16 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:387
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:416
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:397
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:394
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:391
 msgid "File transfer failed"
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:469
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:498
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:479
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:476
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/TransferManager.php:473
 msgid "Resource handle for payload is invalid."
 msgstr ""
 
@@ -4575,6 +4667,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:384
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:471
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:166
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:159
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:164
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:160
 msgid "Invalid chunk count for fragment merge."
 msgstr ""
 
@@ -4583,6 +4678,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:397
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:484
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:200
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:197
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:203
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:198
 #, php-format
 msgid "Unable to open final file for merge: %s"
 msgstr ""
@@ -4592,6 +4690,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:412
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:499
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:213
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:210
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:216
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:211
 #, php-format
 msgid "Missing chunk fragment %d at %s"
 msgstr ""
@@ -4601,6 +4702,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:424
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:511
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:225
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:222
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:228
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:223
 #, php-format
 msgid "Unable to open chunk fragment: %s"
 msgstr ""
@@ -4610,6 +4714,9 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:435
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:522
 #: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:236
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:233
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:239
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/StagedChunker.php:234
 #, php-format
 msgid "Could not merge chunk fragment into final file: %s"
 msgstr ""
@@ -4626,12 +4733,14 @@ msgstr ""
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:834
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:795
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:799
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:828
 msgid "Upload directory not found."
 msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:840
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:801
 #: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:805
+#: src/wp-migrate-db-pro/class/Common/Filesystem/Filesystem.php:834
 msgid "Invalid file path."
 msgstr ""
 
@@ -4677,6 +4786,11 @@ msgstr ""
 
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1304
 #: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1310
+#: src/wp-migrate-db-pro/class/Common/Sql/Table.php:1758
 msgid ""
 "Could not build the post type filter from `select_post_types` form value."
+msgstr ""
+
+#: src/wp-migrate-db-pro/class/Pro/Transfers/Files/Payload.php:634
+msgid "Incomplete file payload was sent."
 msgstr ""

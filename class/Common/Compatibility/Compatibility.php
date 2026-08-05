@@ -223,6 +223,34 @@ class Compatibility {
 		return $this->is_wpmdb_ajax_call();
 	}
 
+	/**
+	 * Check the request header has a connection key and is correct.
+	 *
+	 * @return bool
+	 */
+	private function is_key_header_valid() {
+		if ( ! isset( $_SERVER[ 'HTTP_X_WPMDB_MP_KEY' ] ) ) {
+			error_log('The WPMDB compatibility mu-plugin could not find an auth key in HTTP headers.');
+			return false;
+		}
+
+		$key_from_header = sanitize_text_field( wp_unslash( $_SERVER[ 'HTTP_X_WPMDB_MP_KEY' ] ) );
+
+		$settings = get_site_option( 'wpmdb_settings' );
+		if ( ! is_array( $settings ) || ! isset( $settings['mu_plugin_auth_key'] ) ) {
+			return false;
+		}
+
+		$key_from_settings = $settings['mu_plugin_auth_key'];
+
+		if ( ! hash_equals( $key_from_settings, $key_from_header ) ) {
+			error_log('The WPMDB compatibility mu-plugin was passed an incorrect key.');
+			return false;
+		}
+
+		return true;
+	}
+
     /**
      * Checks if the current request is a WPMDB REST API migration request.
      *
@@ -232,15 +260,36 @@ class Compatibility {
      * @return bool
      */
 	public function wpmdbc_is_wpmdb_rest_request() {
-	    $api_base    = 'mdb-api/v1/';
-	    $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+		$api_base    = 'mdb-api/v1/';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+		$request_path = parse_url( $request_uri, PHP_URL_PATH );
 
-	    if (false === strpos($request_uri, $api_base)) {
-            return false;
-	    }
+		// We need to check both regular endpoints and ?rest_route=<endpoint>
+		// Get the query string to check
+		$query_string = parse_url( $request_uri, PHP_URL_QUERY );
+		if ( $query_string ) {
+			parse_str( $query_string, $url_params );
+		} else {
+			$url_params = [];
+		}
 
-	    $current_endpoint = explode($api_base, $request_uri);
-	    $current_endpoint = end($current_endpoint);
+		if (
+			( isset( $url_params['rest_route'] ) && false === strpos( $url_params['rest_route'], $api_base ) ) ||
+		     false === strpos( $request_path, $api_base )
+		) {
+			// Rest route is not API base and path is not API base
+			return false;
+		}
+
+		if ( isset( $url_params['rest_route'] ) ) {
+			$full_endpoint = $url_params['rest_route'];
+		} else {
+			$full_endpoint = $request_path;
+		}
+
+		// Possible URL endpoint
+		$endpoint_segments = explode( $api_base, $full_endpoint );
+		$final_endpoint_segment = end( $endpoint_segments );
 
 	    $migration_endpoints = apply_filters(
             'wpmdb_compatibility_mode_api_endpoints',
@@ -262,11 +311,16 @@ class Compatibility {
         );
 
         // Checks that the current API call is a MDB migration request.
-        if (in_array($current_endpoint, $migration_endpoints)) {
-            return true;
+        if (! in_array($final_endpoint_segment, $migration_endpoints)) {
+            return false;
         }
 
-        return false;
+		// We have a REST endpoint. Let's check the key was sent in the header.
+		if ( ! $this->is_key_header_valid() ) {
+			return false;
+		}
+
+        return true;
     }
 
 	/**
