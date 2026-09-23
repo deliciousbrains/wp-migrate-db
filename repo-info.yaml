@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: wp-migrate-db
+spec:
+  owner: delicious
+  type: repository
+  engineeringExcellence:
+    # Engineering Excellence checks this repo is exempt from
+    exemptedChecks:
+      sonarQubeConfigPresent:
+        reason: |-
+          SonarQube exemption approved by Security — see linked ticket
+          for review and decision.
+        tickets:
+        - https://wpengine.atlassian.net/browse/ASKSEC-8975
+      sonarQubeStatusCheckRequired:
+        reason: |-
+          SonarQube exemption approved by Security — see linked ticket
+          for review and decision.
+        tickets:
+        - https://wpengine.atlassian.net/browse/ASKSEC-8975
