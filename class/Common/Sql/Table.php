@@ -676,6 +676,7 @@ class Table
 		$points             = array();
 		$field_set          = array();
         $this->primary_keys = array();
+        $this->first_select = null;
 		$use_primary_keys   = true;
 
 		foreach ( $table_structure as $struct ) {
