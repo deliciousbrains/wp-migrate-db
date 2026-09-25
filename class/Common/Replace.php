@@ -385,13 +385,13 @@ class Replace
      */
     function has_same_base_domain()
     {
-        if ('push' !== $this->intent || 'pull' !== $this->intent) {
+        if ('push' !== $this->intent && 'pull' !== $this->intent) {
             $destination_url = $this->base_domain;
         } else {
             $destination_url = isset($this->destination_url) ? $this->destination_url : $this->site_details['local']['site_url'];
         }
 
-        if (stripos($destination_url, $this->site_domain)) {
+        if (false !== stripos($destination_url, $this->site_domain)) {
             return true;
         }
 
