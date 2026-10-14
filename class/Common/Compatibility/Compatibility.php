@@ -262,7 +262,7 @@ class Compatibility {
 	public function wpmdbc_is_wpmdb_rest_request() {
 		$api_base    = 'mdb-api/v1/';
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
-		$request_path = parse_url( $request_uri, PHP_URL_PATH );
+		$request_path = parse_url( $request_uri, PHP_URL_PATH ) ?? '';
 
 		// We need to check both regular endpoints and ?rest_route=<endpoint>
 		// Get the query string to check
